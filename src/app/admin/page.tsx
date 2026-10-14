@@ -44,8 +44,8 @@ export default async function AdminPage() {
 
   const stats = [
     { k: 'درآمد کل', v: formatToman(revenue._sum.totalToman ?? 0) },
-    { k: 'سففارش موففق', v: `${toFa(orderCount)} سففارش` },
-    { k: 'در انتظار اقدام', v: `${toFa(pendingCount)} سففارش` },
+    { k: 'سفارش موفق', v: `${toFa(orderCount)} سفارش` },
+    { k: 'در انتظار اقدام', v: `${toFa(pendingCount)} سفارش` },
     { k: 'کالای کم‌موجود', v: `${toFa(lowStock.length)} قلم` },
   ];
 
@@ -53,7 +53,7 @@ export default async function AdminPage() {
     <Container className="py-12">
       <h1 className="text-2xl font-black text-soil-900">پنل مدیریت</h1>
       <p className="mt-2 text-sm text-soil-700/70">
-        مدیریت محصولات، سففارش‌ها و تراکنش‌های زرین‌پال
+        مدیریت محصولات، سفارش‌ها و تراکنش‌های زرین‌پال
       </p>
 
       <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -67,7 +67,7 @@ export default async function AdminPage() {
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-soil-900/10 bg-white p-6">
-          <h2 className="text-base font-black text-soil-900">پرففروش‌ترین محصولات</h2>
+          <h2 className="text-base font-black text-soil-900">پرفروش‌ترین محصولات</h2>
           <ul className="mt-4 divide-y divide-soil-900/5">
             {topProducts.map((p) => (
               <li
@@ -110,7 +110,7 @@ export default async function AdminPage() {
 
       <section className="mt-10 overflow-hidden rounded-2xl border border-soil-900/10 bg-white">
         <h2 className="border-b border-soil-900/5 px-6 py-4 text-base font-black text-soil-900">
-          آخرین سففارش‌ها
+          آخرین سفارش‌ها
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

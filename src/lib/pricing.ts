@@ -48,7 +48,7 @@ export type CartTotals = {
 };
 
 const CHANNEL_LABEL: Record<string, string> = {
-  RETAIL: 'خرده‌ففروشی',
+  RETAIL: 'خرده‌فروشی',
   BATCH: 'بسته‌ای',
   WHOLESALE: 'عمده',
 };

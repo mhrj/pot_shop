@@ -35,7 +35,7 @@ export default function CheckoutForm({ addresses }: { addresses: Address[] }) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.redirectUrl) {
-        setError(data?.message ?? 'اتصال به درگاه پرداخت ناموففق بود');
+        setError(data?.message ?? 'اتصال به درگاه پرداخت ناموفق بود');
         return;
       }
       window.location.href = data.redirectUrl;
@@ -50,10 +50,10 @@ export default function CheckoutForm({ addresses }: { addresses: Address[] }) {
     return (
       <div className="rounded-2xl border border-dashed border-soil-900/15 bg-white p-8 text-center">
         <p className="text-sm text-soil-700/80">
-          هنوز آدرسی ثبت نکرده‌اید. برای ادامه، یک آدرس اضاففه کنید.
+          هنوز آدرسی ثبت نکرده‌اید. برای ادامه، یک آدرس اضافه کنید.
         </p>
         <p className="mt-3 text-xs text-soil-700/60">
-          (ففرم اففزودن آدرس در پچ بعدی اضاففه می‌شود.)
+          (فرم افزودن آدرس در پچ بعدی اضافه می‌شود.)
         </p>
       </div>
     );
@@ -87,7 +87,7 @@ export default function CheckoutForm({ addresses }: { addresses: Address[] }) {
                     <span className="text-sm font-bold text-soil-900">{a.fullName}</span>
                     {a.isDefault && (
                       <span className="rounded-full bg-flora-100 px-2 py-0.5 text-[10px] font-bold text-flora-700">
-                        پیش‌ففرض
+                        پیش‌فرض
                       </span>
                     )}
                   </div>

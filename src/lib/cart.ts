@@ -50,8 +50,8 @@ export async function addToCart(
     where: { id: productId, isActive: true },
     select: { id: true, stock: true },
   });
-  if (!product) throw new Error('محصول یاففت نشد');
-  if (product.stock < quantity) throw new Error('موجودی کاففی نیست');
+  if (!product) throw new Error('محصول یافت نشد');
+  if (product.stock < quantity) throw new Error('موجودی کافی نیست');
 
   return prisma.cartItem.upsert({
     where: { userId_productId: { userId, productId } },

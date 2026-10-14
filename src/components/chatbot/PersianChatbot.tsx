@@ -8,13 +8,13 @@ type Msg = { role: 'user' | 'model'; content: string; escalated?: boolean };
 const GREETING: Msg = {
   role: 'model',
   content:
-    'سلام! 🌿 من دستیار پات شاپ هستم. می‌تونم درباره اندازه گلدان، سوراخ زهکشی، جنس سففال و سرامیک، قیمت عمده و نگهداری گیاه راهنماییت کنم. چی می‌خوای بدونی؟',
+    'سلام! 🌿 من دستیار پات شاپ هستم. می‌تونم درباره اندازه گلدان، سوراخ زهکشی، جنس سفال و سرامیک، قیمت عمده و نگهداری گیاه راهنماییت کنم. چی می‌خوای بدونی؟',
 };
 
 const QUICK = [
   'چه گلدانی برای سانسوریا مناسبه؟',
   'قیمت عمده بالای ۲۰ عدد چنده؟',
-  'سففال بهتره یا سرامیک؟',
+  'سفال بهتره یا سرامیک؟',
   'هزینه ارسال به شیراز؟',
 ];
 
@@ -87,7 +87,7 @@ export default function PersianChatbot() {
         {
           role: 'model',
           content:
-            'ارتباط برقرار نشد. لطففاً اینترنتت رو بررسی کن یا با پشتیبانی تماس بگیر.',
+            'ارتباط برقرار نشد. لطفاً اینترنتت رو بررسی کن یا با پشتیبانی تماس بگیر.',
           escalated: true,
         },
       ]);
@@ -101,7 +101,7 @@ export default function PersianChatbot() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        aria-label={open ? 'بستن گففتگو' : 'گففتگو با دستیار پات شاپ'}
+        aria-label={open ? 'بستن گفتگو' : 'گفتگو با دستیار پات شاپ'}
         aria-expanded={open}
         className="fixed bottom-5 left-5 z-50 grid size-14 place-items-center rounded-full bg-flora-900 text-white shadow-xl shadow-flora-900/30 transition hover:bg-flora-700 active:scale-95"
       >
@@ -136,7 +136,7 @@ export default function PersianChatbot() {
               </span>
               <div className="flex-1">
                 <p className="text-sm font-black">دستیار پات شاپ</p>
-                <p className="text-[11px] text-flora-100/70">پاسخ‌گویی ففوری · ۲۴ ساعته</p>
+                <p className="text-[11px] text-flora-100/70">پاسخ‌گویی فوری · ۲۴ ساعته</p>
               </div>
             </header>
 

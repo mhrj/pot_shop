@@ -59,14 +59,14 @@ export default async function CartPage() {
 
         <aside className="lg:col-span-4">
           <div className="rounded-2xl bg-white p-6 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
-            <h2 className="font-black text-soil-900">خلاصه سففارش</h2>
+            <h2 className="font-black text-soil-900">خلاصه سفارش</h2>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between">
                 <dt>جمع کالاها</dt>
                 <dd>{formatToman(totals.subtotalToman)}</dd>
               </div>
               <div className="flex justify-between text-flora-700">
-                <dt>تخففیفف پله‌ای</dt>
+                <dt>تخفیف پله‌ای</dt>
                 <dd>−{formatToman(totals.discountToman)}</dd>
               </div>
               <div className="flex justify-between">

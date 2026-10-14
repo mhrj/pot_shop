@@ -18,11 +18,11 @@ export default async function FailedPage({
         <p className="mt-3 text-sm leading-7 text-soil-700/80">
           {reason === 'canceled'
             ? 'پرداخت را لغو کردید. اگر مبلغی از حساب شما کسر شده، طی ۷۲ ساعت به‌صورت خودکار باز می‌گردد.'
-            : 'متأسففانه تأیید پرداخت ناموففق بود. می‌توانید دوباره تلاش کنید.'}
+            : 'متأسفانه تأیید پرداخت ناموفق بود. می‌توانید دوباره تلاش کنید.'}
         </p>
         {order && (
           <p className="mt-4 text-xs text-soil-700/60">
-            شماره سففارش: <span className="font-mono font-bold">{order}</span>
+            شماره سفارش: <span className="font-mono font-bold">{order}</span>
           </p>
         )}
         <div className="mt-8 flex justify-center gap-3">
@@ -36,7 +36,7 @@ export default async function FailedPage({
             href="/"
             className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
           >
-            صففحه اصلی
+            صفحه اصلی
           </Link>
         </div>
       </div>

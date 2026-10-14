@@ -25,7 +25,7 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.message ?? 'ورود ناموففق بود');
+        setError(data?.message ?? 'ورود ناموفق بود');
         return;
       }
       router.replace(next || data.redirectTo || '/dashboard');

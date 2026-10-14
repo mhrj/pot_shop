@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   if (rateLimited(ip)) {
     return NextResponse.json(
-      { message: 'تلاش‌های ناموففق بیش از حد. لطففاً چند دقیقه بعد امتحان کنید.' },
+      { message: 'تلاش‌های ناموفق بیش از حد. لطفاً چند دقیقه بعد امتحان کنید.' },
       { status: 429 },
     );
   }

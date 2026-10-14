@@ -68,7 +68,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data?.message ?? 'اففزودن به سبد ناموففق بود');
+        setError(data?.message ?? 'افزودن به سبد ناموفق بود');
         return;
       }
       setAdded(true);
@@ -87,7 +87,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
             <tr className="text-soil-700/70">
               <th scope="col" className="px-4 py-3 text-start font-medium">تعداد</th>
               <th scope="col" className="px-4 py-3 text-start font-medium">قیمت هر عدد</th>
-              <th scope="col" className="px-4 py-3 text-start font-medium">تخففیفف</th>
+              <th scope="col" className="px-4 py-3 text-start font-medium">تخفیف</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-soil-900/5">
@@ -147,14 +147,14 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
               max={product.stock}
               value={qty}
               onChange={(e) => setQty(clamp(Number(e.target.value)))}
-              aria-label="تعداد سففارش"
+              aria-label="تعداد سفارش"
               className="w-16 border-0 bg-transparent text-center text-base font-black text-soil-900 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
             />
             <button
               type="button"
               onClick={() => setQty((q) => clamp(q + 1))}
               disabled={qty >= product.stock}
-              aria-label="اففزایش تعداد"
+              aria-label="افزایش تعداد"
               className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
             >
               +
@@ -193,7 +193,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
               <span className="font-bold text-dust-500">
                 {toFa(hint.minQuantity - qty)} عدد دیگر
               </span>{' '}
-              اضاففه کن و هر عدد را{' '}
+              اضافه کن و هر عدد را{' '}
               <span className="font-bold">
                 {formatToman(hint.unitPriceToman - unit)}
               </span>{' '}
@@ -201,7 +201,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
               <span className="font-bold text-flora-700">
                 {formatToman(hint.saveMoreToman)}
               </span>{' '}
-              بیشتر صرففه‌جویی کن.
+              بیشتر صرفه‌جویی کن.
             </motion.button>
           )}
         </AnimatePresence>
@@ -243,7 +243,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
             <span className="grid size-5 place-items-center rounded-full bg-flora-500 text-[11px] text-white">
               ✓
             </span>
-            {tierLabel} — {toFa(percent)}٪ تخففیفف، {formatToman(savings)} صرففه‌جویی
+            {tierLabel} — {toFa(percent)}٪ تخفیف، {formatToman(savings)} صرفه‌جویی
           </motion.p>
         )}
       </motion.div>
@@ -258,10 +258,10 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
           {outOfStock
             ? 'ناموجود'
             : pending
-              ? 'در حال اففزودن…'
+              ? 'در حال افزودن…'
               : added
-                ? 'به سبد اضاففه شد ✓'
-                : `اففزودن ${toFa(qty)} عدد به سبد — ${formatToman(total)}`}
+                ? 'به سبد اضافه شد ✓'
+                : `افزودن ${toFa(qty)} عدد به سبد — ${formatToman(total)}`}
         </button>
 
         {error && (

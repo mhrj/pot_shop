@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       images: { take: 1, orderBy: { sortOrder: 'asc' } },
     },
   });
-  if (!product) return { title: 'محصول یاففت نشد' };
+  if (!product) return { title: 'محصول یافت نشد' };
   return {
     title: product.name,
     description: product.shortDesc ?? undefined,
@@ -58,7 +58,7 @@ export default async function ProductPage({ params }: Params) {
     { k: 'متریال', v: product.material },
     { k: 'رنگ', v: product.color ?? '—' },
     { k: 'قطر دهانه', v: `${toFa(product.diameterCm)} سانتی‌متر` },
-    { k: 'ارتففاع', v: `${toFa(product.heightCm)} سانتی‌متر` },
+    { k: 'ارتفاع', v: `${toFa(product.heightCm)} سانتی‌متر` },
     { k: 'وزن خالی', v: `${toFa(product.weightGrams)} گرم` },
     { k: 'سوراخ زهکشی', v: product.drainageHole ? 'دارد' : 'ندارد' },
     { k: 'مقاوم به سرما', v: product.frostProof ? 'بله' : 'خیر' },
@@ -168,7 +168,7 @@ export default async function ProductPage({ params }: Params) {
           </div>
 
           <section className="mt-10">
-            <h2 className="text-lg font-black text-soil-900">مشخصات ففنی</h2>
+            <h2 className="text-lg font-black text-soil-900">مشخصات فنی</h2>
             <dl className="mt-4 divide-y divide-soil-900/5 overflow-hidden rounded-2xl border border-soil-900/10">
               {specs.map((s) => (
                 <div key={s.k} className="flex justify-between gap-4 px-5 py-3.5 text-sm">

@@ -34,7 +34,7 @@ export default async function HomePage() {
           </span>
 
           <h1 className="mt-6 text-4xl leading-[1.25] font-black text-soil-900 sm:text-5xl lg:text-6xl">
-            به ففضاهای خالی،
+            به فضاهای خالی،
             <span className="relative mx-2 inline-block text-dust-400">
               جان
               <svg
@@ -55,8 +55,8 @@ export default async function HomePage() {
           </h1>
 
           <p className="mt-7 max-w-xl text-base leading-8 text-soil-700/85 sm:text-lg">
-            گلدان‌های سففالی، سرامیکی و بتنی دست‌ساز — برای خانه، اداره و پروژه‌های بزرگ.
-            از یک عدد تا سففارش عمده، همه در یک سبد. با قیمت پله‌ای شففافف و ارسال سراسر ایران.
+            گلدان‌های سفالی، سرامیکی و بتنی دست‌ساز — برای خانه، اداره و پروژه‌های بزرگ.
+            از یک عدد تا سفارش عمده، همه در یک سبد. با قیمت پله‌ای شفاف و ارسال سراسر ایران.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -78,7 +78,7 @@ export default async function HomePage() {
             {[
               { k: '۴۲+', v: 'مدل گلدان' },
               { k: '۳۱', v: 'استان تحت پوشش' },
-              { k: '۱۲٬۰۰۰+', v: 'سففارش موففق' },
+              { k: '۱۲٬۰۰۰+', v: 'سفارش موفق' },
             ].map((s) => (
               <div key={s.v}>
                 <dt className="text-2xl font-black text-soil-900">{s.k}</dt>
@@ -92,7 +92,7 @@ export default async function HomePage() {
           <div className="relative aspect-4/5 overflow-hidden rounded-pot bg-dust-200 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
             <Image
               src="https://placehold.co/800x1000/E8D5C4/3E2723?text=Pot+Shop"
-              alt="گلدان سففالی دست‌ساز با گیاه سبز"
+              alt="گلدان سفالی دست‌ساز با گیاه سبز"
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 40vw"
@@ -112,15 +112,15 @@ export default async function HomePage() {
         </h2>
         <p className="mt-5 leading-8 text-soil-700/85">
           خاکف خشک را تصور کن؛ بی‌رنگ، بی‌جان. حالا همان خاک را در گلدانی درست، با گیاهی
-          مناسب — و همه چیز تغییر می‌کند. ما ففقط گلدان نمی‌ففروشیم؛ ابزارف زندگی می‌ففروشیم.
+          مناسب — و همه چیز تغییر می‌کند. ما فقط گلدان نمی‌فروشیم؛ ابزارف زندگی می‌فروشیم.
         </p>
       </Container>
 
       <Container className="mt-16 grid gap-6 md:grid-cols-3">
         {[
-          { t: 'خاک', d: 'انتخاب متریال درست: سففالف نففس‌کش، سرامیکف لعاب‌دار، بتنف مقاوم.', c: 'bg-dust-200' },
-          { t: 'ریشه', d: 'زهکشی اصولی و حجم کاففی خاک، ریشه را از پوسیدگی حففظ می‌کند.', c: 'bg-flora-100' },
-          { t: 'رویش', d: 'بعد از آن، ففقط تماشا کن. ففضای خالی‌ات زنده شده است.', c: 'bg-flora-300/50' },
+          { t: 'خاک', d: 'انتخاب متریال درست: سفالف نفس‌کش، سرامیکف لعاب‌دار، بتنف مقاوم.', c: 'bg-dust-200' },
+          { t: 'ریشه', d: 'زهکشی اصولی و حجم کافی خاک، ریشه را از پوسیدگی حفظ می‌کند.', c: 'bg-flora-100' },
+          { t: 'رویش', d: 'بعد از آن، فقط تماشا کن. فضای خالی‌ات زنده شده است.', c: 'bg-flora-300/50' },
         ].map((s, i) => (
           <div
             key={s.t}
@@ -141,7 +141,7 @@ export default async function HomePage() {
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-black text-soil-900 sm:text-4xl">پرففروش‌ترین‌ها</h2>
+            <h2 className="text-3xl font-black text-soil-900 sm:text-4xl">پرفروش‌ترین‌ها</h2>
             <p className="mt-3 text-soil-700/80">قیمت پله‌ای — هرچه بیشتر، ارزان‌تر.</p>
           </div>
           <Link href="/products" className="text-sm font-bold text-flora-700 hover:text-flora-900">
@@ -214,18 +214,18 @@ export default async function HomePage() {
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <h2 className="text-3xl font-black text-white sm:text-4xl">
-                سففارش عمده، بدون دردسر
+                سفارش عمده، بدون دردسر
               </h2>
               <p className="mt-5 leading-8 text-flora-100/85">
-                برای کاففه‌ها، هتل‌ها، اداره‌ها و ففروشگاه‌های گیاه. تخففیفف پله‌ای خودکار روی
-                همان صففحه محصول اعمال می‌شود — بدون نیاز به تماس یا مذاکره.
+                برای کافه‌ها، هتل‌ها، اداره‌ها و فروشگاه‌های گیاه. تخفیف پله‌ای خودکار روی
+                همان صفحه محصول اعمال می‌شود — بدون نیاز به تماس یا مذاکره.
               </p>
               <ul className="mt-8 space-y-4 text-sm">
                 {[
-                  'تخففیفف تا ۳۰٪ روی سففارش‌های بالای ۲۰ عدد',
+                  'تخفیف تا ۳۰٪ روی سفارش‌های بالای ۲۰ عدد',
                   'بسته‌بندی کارتنی استاندارد و مقاوم',
-                  'ففاکتور رسمی و امکان تسویه اعتباری',
-                  'پشتیبانی اختصاصی و پیگیری سففارش',
+                  'فاکتور رسمی و امکان تسویه اعتباری',
+                  'پشتیبانی اختصاصی و پیگیری سفارش',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3">
                     <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-flora-300" />
@@ -247,7 +247,7 @@ export default async function HomePage() {
                       قیمت هر عدد
                     </th>
                     <th scope="col" className="pb-3 text-start font-medium">
-                      تخففیفف
+                      تخفیف
                     </th>
                   </tr>
                 </thead>
@@ -266,7 +266,7 @@ export default async function HomePage() {
                 </tbody>
               </table>
               <p className="mt-5 text-[11px] leading-6 text-flora-100/50">
-                * قیمت‌ها نمونه است. ماتریس واقعی هر محصول در صففحه آن قابل مشاهده است.
+                * قیمت‌ها نمونه است. ماتریس واقعی هر محصول در صفحه آن قابل مشاهده است.
               </p>
             </div>
           </div>

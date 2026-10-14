@@ -25,15 +25,15 @@ export default async function SuccessPage({ searchParams }: Props) {
         </div>
 
         <h1 className="mt-6 text-2xl font-black text-soil-900 sm:text-3xl">
-          پرداخت با موففقیت انجام شد
+          پرداخت با موفقیت انجام شد
         </h1>
         <p className="mt-3 text-sm leading-7 text-soil-700/80">
-          از خرید شما سپاسگزاریم. سففارش شما ثبت شد و پس از آماده‌سازی ارسال خواهد شد.
+          از خرید شما سپاسگزاریم. سفارش شما ثبت شد و پس از آماده‌سازی ارسال خواهد شد.
         </p>
 
         <dl className="mt-8 divide-y divide-soil-900/5 overflow-hidden rounded-2xl border border-soil-900/10 text-sm">
           <div className="flex justify-between gap-4 px-5 py-4">
-            <dt className="text-soil-700/70">شماره سففارش</dt>
+            <dt className="text-soil-700/70">شماره سفارش</dt>
             <dd className="font-bold text-soil-900">{toFa(orderNumber ?? '—')}</dd>
           </div>
           <div className="flex justify-between gap-4 px-5 py-4">
@@ -67,13 +67,13 @@ export default async function SuccessPage({ searchParams }: Props) {
             href="/dashboard"
             className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700"
           >
-            پیگیری سففارش
+            پیگیری سفارش
           </Link>
           <Link
             href="/"
             className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
           >
-            بازگشت به ففروشگاه
+            بازگشت به فروشگاه
           </Link>
         </div>
       </div>

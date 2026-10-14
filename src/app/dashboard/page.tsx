@@ -36,7 +36,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-black text-soil-900">
             سلام{user.fullName ? `، ${user.fullName}` : ''} 👋
           </h1>
-          <p className="mt-2 text-sm text-soil-700/70">سففارش‌ها و آدرس‌های شما</p>
+          <p className="mt-2 text-sm text-soil-700/70">سفارش‌ها و آدرس‌های شما</p>
         </div>
         <form action="/api/auth/logout" method="post">
           <button className="rounded-full border border-soil-900/15 px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-50">
@@ -46,11 +46,11 @@ export default async function DashboardPage() {
       </header>
 
       <section className="mt-10">
-        <h2 className="text-lg font-black text-soil-900">سففارش‌های من</h2>
+        <h2 className="text-lg font-black text-soil-900">سفارش‌های من</h2>
 
         {orders.length === 0 ? (
           <p className="mt-4 rounded-2xl border border-dashed border-soil-900/15 px-6 py-10 text-center text-sm text-soil-700/70">
-            هنوز سففارشی ثبت نکرده‌اید.
+            هنوز سفارشی ثبت نکرده‌اید.
           </p>
         ) : (
           <ul className="mt-4 space-y-4">
@@ -96,12 +96,12 @@ export default async function DashboardPage() {
                       href={`/checkout/success?order=${o.orderNumber}&ref_id=${o.refId ?? ''}`}
                       className="rounded-full bg-dust-100 px-4 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-200"
                     >
-                      جزئیات سففارش
+                      جزئیات سفارش
                     </Link>
                     <form action="/api/cart/reorder" method="post">
                       <input type="hidden" name="orderId" value={o.id} />
                       <button className="rounded-full bg-flora-900 px-4 py-2 text-[11px] font-bold text-white transition hover:bg-flora-700">
-                        سففارش مجدد
+                        سفارش مجدد
                       </button>
                     </form>
                   </div>
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
                 <span className="font-bold text-soil-900">{a.fullName}</span>
                 {a.isDefault && (
                   <span className="rounded-full bg-flora-100 px-2.5 py-0.5 text-[10px] font-bold text-flora-700">
-                    پیش‌ففرض
+                    پیش‌فرض
                   </span>
                 )}
               </div>

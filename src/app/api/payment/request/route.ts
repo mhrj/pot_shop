@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     where: { id: parsed.data.addressId, userId },
   });
   if (!address) {
-    return NextResponse.json({ message: 'آدرس یاففت نشد' }, { status: 404 });
+    return NextResponse.json({ message: 'آدرس یافت نشد' }, { status: 404 });
   }
 
   // 2) Read cart from the database. Never trust client-side totals.
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
   if (shortages.length > 0) {
     return NextResponse.json(
       {
-        message: `موجودی کاففی نیست: ${shortages
+        message: `موجودی کافی نیست: ${shortages
           .map((s) => `${s.name} (${s.available} عدد)`)
           .join('، ')}`,
         shortages,
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
   const totalToman = totals.payableToman + shippingToman;
 
   if (totalToman <= 0) {
-    return NextResponse.json({ message: 'مبلغ سففارش نامعتبر است' }, { status: 400 });
+    return NextResponse.json({ message: 'مبلغ سفارش نامعتبر است' }, { status: 400 });
   }
 
   // 5) Create the PENDING order.
@@ -151,7 +151,7 @@ export async function POST(req: Request) {
 
   const result = await zarinpalRequest({
     amountToman: totalToman,
-    description: `سففارش ${order.orderNumber} — پات شاپ`,
+    description: `سفارش ${order.orderNumber} — پات شاپ`,
     callbackUrl,
     mobile: address.phone,
     email: session.email as string | undefined,
