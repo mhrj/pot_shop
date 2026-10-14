@@ -1,0 +1,135 @@
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { prisma } from '@/lib/prisma';
+import { getSession } from '@/lib/auth';
+
+export const runtime = 'nodejs';
+
+type Params = { params: Promise<{ id: string }> };
+
+const tierSchema = z.object({
+  minQuantity: z.number().int().min(1),
+  unitPriceToman: z.number().int().min(0),
+  label: z.string().max(50).optional().default(''),
+});
+
+const schema = z.object({
+  slug: z.string().min(2).max(120).regex(/^[a-z0-9-]+$/),
+  name: z.string().min(2).max(150),
+  shortDesc: z.string().max(300).optional().default(''),
+  description: z.string().min(1).max(5000),
+  material: z.string().min(2).max(60),
+  color: z.string().max(60).optional().default(''),
+  diameterCm: z.number().min(0).max(500),
+  heightCm: z.number().min(0).max(500),
+  weightGrams: z.number().int().min(0).max(100000),
+  drainageHole: z.boolean(),
+  frostProof: z.boolean(),
+  stock: z.number().int().min(0).max(100000),
+  unitsPerCarton: z.number().int().min(1).max(200),
+  basePriceToman: z.number().int().min(1000),
+  isActive: z.boolean(),
+  isFeatured: z.boolean(),
+  images: z.array(z.string().url()).max(10),
+  tiers: z.array(tierSchema).min(1).max(5),
+});
+
+async function ensureAdmin() {
+  const session = await getSession();
+  if (!session || session.role !== 'ADMIN') return null;
+  return session;
+}
+
+export async function PATCH(req: Request, { params }: Params) {
+  if (!(await ensureAdmin())) {
+    return NextResponse.json({ message: 'دسترسی ندارید' }, { status: 403 });
+  }
+  const { id } = await params;
+
+  const parsed = schema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { message: parsed.error.issues[0]?.message ?? 'اطلاعات نامعتبر' },
+      { status: 400 },
+    );
+  }
+  const data = parsed.data;
+
+  const existing = await prisma.product.findUnique({ where: { id } });
+  if (!existing) {
+    return NextResponse.json({ message: 'محصول یافت نشد' }, { status: 404 });
+  }
+
+  const slugConflict = await prisma.product.findFirst({
+    where: { slug: data.slug, NOT: { id } },
+  });
+  if (slugConflict) {
+    return NextResponse.json({ message: 'این اسلاگ قبلاً استفاده شده' }, { status: 409 });
+  }
+
+  const updated = await prisma.$transaction(async (tx) => {
+    await tx.productImage.deleteMany({ where: { productId: id } });
+    await tx.priceTier.deleteMany({ where: { productId: id } });
+
+    return tx.product.update({
+      where: { id },
+      data: {
+        slug: data.slug,
+        name: data.name,
+        shortDesc: data.shortDesc || null,
+        description: data.description,
+        material: data.material,
+        color: data.color || null,
+        diameterCm: data.diameterCm,
+        heightCm: data.heightCm,
+        weightGrams: data.weightGrams,
+        drainageHole: data.drainageHole,
+        frostProof: data.frostProof,
+        stock: data.stock,
+        unitsPerCarton: data.unitsPerCarton,
+        basePriceToman: data.basePriceToman,
+        isActive: data.isActive,
+        isFeatured: data.isFeatured,
+        images: {
+          create: data.images.map((url, i) => ({ url, sortOrder: i, alt: data.name })),
+        },
+        tiers: {
+          create: data.tiers.map((t) => ({
+            minQuantity: t.minQuantity,
+            unitPriceToman: t.unitPriceToman,
+            label: t.label || null,
+          })),
+        },
+      },
+    });
+  });
+
+  return NextResponse.json({ ok: true, product: updated });
+}
+
+export async function DELETE(_req: Request, { params }: Params) {
+  if (!(await ensureAdmin())) {
+    return NextResponse.json({ message: 'دسترسی ندارید' }, { status: 403 });
+  }
+  const { id } = await params;
+
+  const existing = await prisma.product.findUnique({
+    where: { id },
+    include: { _count: { select: { orderItems: true } } },
+  });
+  if (!existing) {
+    return NextResponse.json({ message: 'محصول یافت نشد' }, { status: 404 });
+  }
+
+  // Soft delete if the product has ever been ordered; hard delete otherwise.
+  if (existing._count.orderItems > 0) {
+    await prisma.product.update({
+      where: { id },
+      data: { isActive: false, isFeatured: false },
+    });
+    return NextResponse.json({ ok: true, softDeleted: true });
+  }
+
+  await prisma.product.delete({ where: { id } });
+  return NextResponse.json({ ok: true, softDeleted: false });
+}

@@ -1,0 +1,77 @@
+import Link from 'next/link';
+import Image from 'next/image';
+import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth';
+import { formatToman, toFa } from '@/lib/format';
+
+export default async function AdminProductsPage() {
+  await requireAdmin();
+
+  const products = await prisma.product.findMany({
+    include: {
+      images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+      _count: { select: { orderItems: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-soil-900">محصولات</h1>
+          <p className="mt-2 text-sm text-soil-700/70">
+            {toFa(products.length)} محصول ثبت‌شده
+          </p>
+        </div>
+        <Link
+          href="/admin/products/new"
+          className="rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700"
+        >
+          + افزودن محصول
+        </Link>
+      </div>
+
+      {products.length === 0 ? (
+        <p className="mt-8 rounded-2xl border border-dashed border-soil-900/15 px-6 py-12 text-center text-sm text-soil-700/70">
+          هیچ محصولی ثبت نشده.
+        </p>
+      ) : (
+        <ul className="mt-6 space-y-3">
+          {products.map((p) => (
+            <li
+              key={p.id}
+              className="flex items-center gap-4 rounded-2xl border border-soil-900/10 bg-white p-3"
+            >
+              <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-dust-100">
+                {p.images[0] && (
+                  <Image src={p.images[0].url} alt={p.name} fill className="object-cover" sizes="64px" />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-bold text-soil-900">{p.name}</p>
+                <p className="mt-1 text-xs text-soil-700/60">
+                  {formatToman(p.basePriceToman)} · موجودی {toFa(p.stock)} ·{' '}
+                  {toFa(p._count.orderItems)} فروش
+                </p>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                {!p.isActive && (
+                  <span className="rounded-full bg-red-50 px-2.5 py-1 text-[10px] font-bold text-red-700">
+                    غیرفعال
+                  </span>
+                )}
+                <Link
+                  href={'/admin/products/' + p.id}
+                  className="rounded-full bg-dust-100 px-4 py-1.5 text-[11px] font-bold text-soil-900 transition hover:bg-dust-200"
+                >
+                  ویرایش
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

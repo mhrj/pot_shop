@@ -1,17 +1,13 @@
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { formatToman, toFa } from '@/lib/format';
-import Container from '@/components/ui/Container';
 
 export default async function AdminPage() {
   await requireAdmin();
 
   const [revenue, orderCount, pendingCount, lowStock, topProducts, recentOrders] =
     await Promise.all([
-      prisma.order.aggregate({
-        where: { paymentStatus: 'PAID' },
-        _sum: { totalToman: true },
-      }),
+      prisma.order.aggregate({ where: { paymentStatus: 'PAID' }, _sum: { totalToman: true } }),
       prisma.order.count({ where: { paymentStatus: 'PAID' } }),
       prisma.order.count({ where: { status: { in: ['PAID', 'PROCESSING'] } } }),
       prisma.product.findMany({
@@ -30,13 +26,8 @@ export default async function AdminPage() {
         orderBy: { createdAt: 'desc' },
         take: 10,
         select: {
-          id: true,
-          orderNumber: true,
-          totalToman: true,
-          status: true,
-          paymentStatus: true,
-          refId: true,
-          createdAt: true,
+          id: true, orderNumber: true, totalToman: true, status: true,
+          paymentStatus: true, refId: true, createdAt: true,
           user: { select: { fullName: true, phone: true } },
         },
       }),
@@ -44,19 +35,19 @@ export default async function AdminPage() {
 
   const stats = [
     { k: 'درآمد کل', v: formatToman(revenue._sum.totalToman ?? 0) },
-    { k: 'سفارش موفق', v: `${toFa(orderCount)} سفارش` },
-    { k: 'در انتظار اقدام', v: `${toFa(pendingCount)} سفارش` },
-    { k: 'کالای کم‌موجود', v: `${toFa(lowStock.length)} قلم` },
+    { k: 'سفارش موفق', v: toFa(orderCount) + ' سفارش' },
+    { k: 'در انتظار اقدام', v: toFa(pendingCount) + ' سفارش' },
+    { k: 'کالای کم‌موجود', v: toFa(lowStock.length) + ' قلم' },
   ];
 
   return (
-    <Container className="py-12">
+    <div>
       <h1 className="text-2xl font-black text-soil-900">پنل مدیریت</h1>
       <p className="mt-2 text-sm text-soil-700/70">
         مدیریت محصولات، سفارش‌ها و تراکنش‌های زرین‌پال
       </p>
 
-      <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="mt-8 grid gap-4 sm:grid-cols-2">
         {stats.map((s) => (
           <div key={s.k} className="rounded-2xl border border-soil-900/10 bg-white p-5">
             <dt className="text-xs text-soil-700/70">{s.k}</dt>
@@ -65,7 +56,7 @@ export default async function AdminPage() {
         ))}
       </dl>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+      <div className="mt-10 grid gap-6">
         <section className="rounded-2xl border border-soil-900/10 bg-white p-6">
           <h2 className="text-base font-black text-soil-900">پرفروش‌ترین محصولات</h2>
           <ul className="mt-4 divide-y divide-soil-900/5">
@@ -93,9 +84,10 @@ export default async function AdminPage() {
               <li key={p.id} className="flex items-center justify-between py-3 text-sm">
                 <span className="text-soil-900">{p.name}</span>
                 <span
-                  className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
-                    p.stock === 0 ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'
-                  }`}
+                  className={
+                    'rounded-full px-2.5 py-0.5 text-[11px] font-bold ' +
+                    (p.stock === 0 ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700')
+                  }
                 >
                   {toFa(p.stock)} عدد
                 </span>
@@ -151,6 +143,6 @@ export default async function AdminPage() {
           </table>
         </div>
       </section>
-    </Container>
+    </div>
   );
 }
