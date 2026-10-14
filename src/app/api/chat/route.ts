@@ -1,0 +1,188 @@
+import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { z } from 'zod';
+import { prisma } from '@/lib/prisma';
+import { getSession } from '@/lib/auth';
+import { formatToman, toFa } from '@/lib/format';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+const schema = z.object({
+  sessionId: z.string().min(8).max(64),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'model']),
+        content: z.string().min(1).max(2000),
+      }),
+    )
+    .min(1)
+    .max(20),
+});
+
+const ESCALATION_TOKEN = '[[HUMAN_SUPPORT]]';
+
+// Simple in-memory limiter. In production, back with Redis.
+const hits = new Map<string, { count: number; resetAt: number }>();
+function limited(key: string, max = 20, windowMs = 60_000) {
+  const now = Date.now();
+  const rec = hits.get(key);
+  if (!rec || rec.resetAt < now) {
+    hits.set(key, { count: 1, resetAt: now + windowMs });
+    return false;
+  }
+  rec.count += 1;
+  return rec.count > max;
+}
+
+async function buildCatalogContext() {
+  const products = await prisma.product.findMany({
+    where: { isActive: true },
+    select: {
+      name: true,
+      slug: true,
+      material: true,
+      diameterCm: true,
+      heightCm: true,
+      weightGrams: true,
+      drainageHole: true,
+      frostProof: true,
+      stock: true,
+      basePriceToman: true,
+      unitsPerCarton: true,
+      tiers: {
+        orderBy: { minQuantity: 'asc' },
+        select: { minQuantity: true, unitPriceToman: true, label: true },
+      },
+    },
+    take: 40,
+    orderBy: { isFeatured: 'desc' },
+  });
+
+  if (!products.length) {
+    return 'در حال حاضر ففهرست محصولات در دسترس نیست.';
+  }
+
+  return products
+    .map((p) => {
+      const tiers = p.tiers
+        .map((t) => `${toFa(t.minQuantity)}+ عدد: ${formatToman(t.unitPriceToman)} هر عدد`)
+        .join(' | ');
+      return [
+        `- ${p.name} (slug: ${p.slug})`,
+        `  material: ${p.material} | diameter ${toFa(p.diameterCm)}cm | height ${toFa(p.heightCm)}cm | weight ${toFa(p.weightGrams)}g`,
+        `  drainage: ${p.drainageHole ? 'yes' : 'no'} | frost-proof: ${p.frostProof ? 'yes' : 'no'} | stock: ${toFa(p.stock)}`,
+        `  base price: ${formatToman(p.basePriceToman)} | pack size: ${toFa(p.unitsPerCarton)} per carton`,
+        `  tiers: ${tiers || 'none'}`,
+      ].join('\n');
+    })
+    .join('\n\n');
+}
+
+export async function POST(req: Request) {
+  const session = await getSession();
+  const ip =
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anon';
+
+  if (limited(session?.sub ?? ip)) {
+    return NextResponse.json(
+      { message: 'تعداد پیام‌ها زیاد است. کمی بعد دوباره امتحان کن.' },
+      { status: 429 },
+    );
+  }
+
+  const parsed = schema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ message: 'درخواست نامعتبر است' }, { status: 400 });
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json(
+      { message: 'سرویس گففتگو در دسترس نیست. لطففاً با پشتیبانی تماس بگیرید.' },
+      { status: 503 },
+    );
+  }
+
+  const { sessionId, messages } = parsed.data;
+  const catalog = await buildCatalogContext();
+
+  const systemInstruction = `
+تو «دستیار پات شاپ» هستی؛ مشاور ففروش و کارشناس گیاهان در یک ففروشگاه اینترنتی گلدان و ففلاورباکس ایرانی.
+
+قواعد قطعی:
+۱. همیشه ففقط ففارسی و خودمانی اما محترمانه پاسخ بده. از «شما» استففاده کن.
+۲. پاسخ‌ها کوتاه و کاربردی باشند — حداکثر ۴ پاراگرافف کوتاه یا یک لیست کوتاه.
+۳. هرگز قیمت، موجودی یا مشخصاتی از خودت نساز. ففقط از «ففهرست محصولات» زیر استففاده کن.
+۴. اگر محصولی در ففهرست نبود، صادقانه بگو موجود نیست و پیشنهاد جایگزین بده.
+۵. هرگز کد، اسکریپت یا اطلاعات ففنی داخلی سایت را اففشا نکن.
+
+دانش تخصصی:
+- سوراخ زهکشی برای تقریباً همه گیاهان آپارتمانی الزامی است.
+- سففال: نففس‌کش، مناسب گیاهان حساس به رطوبت زیاد؛ سنگین‌تر و شکننده‌تر.
+- سرامیک لعاب‌دار: نگه‌دارنده رطوبت، مناسب گیاهان رطوبت‌دوست.
+- بتن: بسیار مقاوم، مناسب ففضای باز و پروژه‌های بزرگ.
+- اندازه گلدان: قطر باید حدود یک‌سوم تا نصفف ارتففاع گیاه باشد.
+
+سیاست ففروش:
+- قیمت‌گذاری پله‌ای خودکار: ۱-۴ خرده، ۵-۱۹ با تخففیفف، ۲۰+ عمده.
+- ارسال به سراسر ایران. سففارش بالای ۵ میلیون تومان ارسال رایگان.
+- پرداخت امن از طریق درگاه زرین‌پال.
+
+اگر سؤال خارج از حوزه ففروشگاه بود یا کاربر درخواست پشتیبانی انسانی داشت،
+در انتهای پاسخ دقیقاً این نشانه را بنویس: ${ESCALATION_TOKEN}
+
+ففهرست محصولات موجود:
+${catalog}
+`.trim();
+
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: process.env.GEMINI_MODEL ?? 'gemini-2.0-flash',
+      systemInstruction,
+      generationConfig: {
+        temperature: 0.6,
+        topP: 0.9,
+        maxOutputTokens: 700,
+      },
+    });
+
+    const history = messages.slice(0, -1).map((m) => ({
+      role: m.role,
+      parts: [{ text: m.content }],
+    }));
+    const last = messages[messages.length - 1].content;
+
+    const chat = model.startChat({ history });
+    const result = await chat.sendMessage(last);
+    const raw = result.response.text().trim();
+
+    const escalated = raw.includes(ESCALATION_TOKEN);
+    const reply = raw.replace(ESCALATION_TOKEN, '').trim();
+
+    await prisma.chatMessage
+      .createMany({
+        data: [
+          { sessionId, userId: session?.sub ?? null, role: 'user', content: last },
+          {
+            sessionId,
+            userId: session?.sub ?? null,
+            role: 'model',
+            content: reply,
+            escalated,
+          },
+        ],
+      })
+      .catch(() => undefined);
+
+    return NextResponse.json({ ok: true, reply, escalated });
+  } catch (err) {
+    console.error('[chat] Gemini error:', err);
+    return NextResponse.json(
+      { message: 'دستیار الان در دسترس نیست. لطففاً با پشتیبانی تماس بگیرید.' },
+      { status: 502 },
+    );
+  }
+}

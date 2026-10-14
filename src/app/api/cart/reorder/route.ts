@@ -1,0 +1,44 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { getSession } from '@/lib/auth';
+import { addToCart } from '@/lib/cart';
+
+export const runtime = 'nodejs';
+
+/**
+ * Re-add every item from a past order into the user's cart.
+ * Called from the dashboard via a plain HTML form POST.
+ * Items whose product is missing or inactive are skipped silently.
+ */
+export async function POST(req: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.redirect(new URL('/login', req.url), { status: 303 });
+  }
+
+  const form = await req.formData();
+  const orderId = String(form.get('orderId') ?? '');
+  if (!orderId) {
+    return NextResponse.redirect(new URL('/dashboard', req.url), { status: 303 });
+  }
+
+  const order = await prisma.order.findFirst({
+    where: { id: orderId, userId: session.sub },
+    include: { items: true },
+  });
+
+  if (!order) {
+    return NextResponse.redirect(new URL('/dashboard', req.url), { status: 303 });
+  }
+
+  for (const item of order.items) {
+    if (!item.productId) continue;
+    try {
+      await addToCart(session.sub, item.productId, item.quantity);
+    } catch {
+      // Skip products that are inactive or out of stock.
+    }
+  }
+
+  return NextResponse.redirect(new URL('/cart', req.url), { status: 303 });
+}

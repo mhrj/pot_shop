@@ -1,0 +1,233 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+type Msg = { role: 'user' | 'model'; content: string; escalated?: boolean };
+
+const GREETING: Msg = {
+  role: 'model',
+  content:
+    'سلام! 🌿 من دستیار پات شاپ هستم. می‌تونم درباره اندازه گلدان، سوراخ زهکشی، جنس سففال و سرامیک، قیمت عمده و نگهداری گیاه راهنماییت کنم. چی می‌خوای بدونی؟',
+};
+
+const QUICK = [
+  'چه گلدانی برای سانسوریا مناسبه؟',
+  'قیمت عمده بالای ۲۰ عدد چنده؟',
+  'سففال بهتره یا سرامیک؟',
+  'هزینه ارسال به شیراز؟',
+];
+
+export default function PersianChatbot() {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<Msg[]>([GREETING]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef<string>('');
+
+  useEffect(() => {
+    let sid = sessionStorage.getItem('ps_chat_sid');
+    if (!sid) {
+      sid = crypto.randomUUID();
+      sessionStorage.setItem('ps_chat_sid', sid);
+    }
+    sessionIdRef.current = sid;
+  }, []);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  }, [messages, loading]);
+
+  const send = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+
+    const next: Msg[] = [...messages, { role: 'user', content: trimmed }];
+    setMessages(next);
+    setInput('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: sessionIdRef.current,
+          messages: next.slice(-10).map((m) => ({ role: m.role, content: m.content })),
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'model',
+            content:
+              data?.message ??
+              'الان مشکلی پیش اومد. می‌تونی مستقیم با پشتیبانی ما تماس بگیری: ۰۲۱-۹۱۰۰۰۰۰۰',
+            escalated: true,
+          },
+        ]);
+        return;
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { role: 'model', content: data.reply, escalated: data.escalated },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'model',
+          content:
+            'ارتباط برقرار نشد. لطففاً اینترنتت رو بررسی کن یا با پشتیبانی تماس بگیر.',
+          escalated: true,
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-label={open ? 'بستن گففتگو' : 'گففتگو با دستیار پات شاپ'}
+        aria-expanded={open}
+        className="fixed bottom-5 left-5 z-50 grid size-14 place-items-center rounded-full bg-flora-900 text-white shadow-xl shadow-flora-900/30 transition hover:bg-flora-700 active:scale-95"
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={open ? 'close' : 'chat'}
+            initial={{ opacity: 0, scale: 0.6, rotate: -45 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.6, rotate: 45 }}
+            transition={{ duration: 0.16 }}
+            className="text-2xl"
+          >
+            {open ? '✕' : '💬'}
+          </motion.span>
+        </AnimatePresence>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.aside
+            role="dialog"
+            aria-label="دستیار هوشمند پات شاپ"
+            initial={{ opacity: 0, y: 24, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 24, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+            className="fixed bottom-24 left-5 z-50 flex h-[min(34rem,72dvh)] w-[min(23rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-pot bg-white shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]"
+          >
+            <header className="flex items-center gap-3 bg-flora-900 px-5 py-4 text-white">
+              <span className="grid size-9 place-items-center rounded-full bg-flora-500/30 text-lg">
+                🌿
+              </span>
+              <div className="flex-1">
+                <p className="text-sm font-black">دستیار پات شاپ</p>
+                <p className="text-[11px] text-flora-100/70">پاسخ‌گویی ففوری · ۲۴ ساعته</p>
+              </div>
+            </header>
+
+            <div
+              ref={scrollRef}
+              className="flex-1 space-y-3 overflow-y-auto bg-dust-50 p-4"
+            >
+              {messages.map((m, i) => (
+                <div
+                  key={i}
+                  className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13px] leading-7 whitespace-pre-line ${
+                      m.role === 'user'
+                        ? 'bg-flora-900 text-white'
+                        : 'bg-white text-soil-900 shadow-sm'
+                    }`}
+                  >
+                    {m.content}
+
+                    {m.escalated && (
+                      <a
+                        href="tel:+982191000000"
+                        className="mt-3 block rounded-xl bg-dust-100 px-3 py-2 text-center text-[11px] font-bold text-soil-900 transition hover:bg-dust-200"
+                      >
+                        تماس با پشتیبانی انسانی: ۰۲۱-۹۱۰۰۰۰۰۰
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {loading && (
+                <div className="flex justify-end">
+                  <div className="flex gap-1 rounded-2xl bg-white px-4 py-3 shadow-sm">
+                    {[0, 1, 2].map((d) => (
+                      <motion.span
+                        key={d}
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 1, repeat: Infinity, delay: d * 0.18 }}
+                        className="size-1.5 rounded-full bg-flora-500"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {messages.length <= 1 && (
+              <div className="flex flex-wrap gap-2 border-t border-soil-900/5 bg-white px-4 pt-3">
+                {QUICK.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => send(q)}
+                    className="rounded-full bg-dust-100 px-3 py-1.5 text-[11px] font-medium text-soil-700 transition hover:bg-dust-200"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                send(input);
+              }}
+              className="flex items-center gap-2 border-t border-soil-900/5 bg-white p-3"
+            >
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="سوالت رو بنویس…"
+                aria-label="متن پیام"
+                maxLength={500}
+                className="flex-1 rounded-full bg-dust-50 px-4 py-2.5 text-[13px] text-soil-900 outline-none placeholder:text-soil-700/45 focus:ring-2 focus:ring-flora-500/30"
+              />
+              <button
+                type="submit"
+                disabled={loading || !input.trim()}
+                aria-label="ارسال پیام"
+                className="grid size-10 shrink-0 place-items-center rounded-full bg-flora-900 text-white transition hover:bg-flora-700 disabled:opacity-40"
+              >
+                ↑
+              </button>
+            </form>
+          </motion.aside>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

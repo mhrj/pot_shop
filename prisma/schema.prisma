@@ -1,0 +1,276 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
+
+// Retail / batch / wholesale channel derived from total quantity
+enum OrderChannel {
+  RETAIL
+  BATCH
+  WHOLESALE
+}
+
+enum AddressLabel {
+  HOME
+  WORK
+  OTHER
+}
+
+// ---------------------------------------------------------------
+// Users
+// ---------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  phone        String?  @unique
+  email        String?  @unique
+  passwordHash String
+  fullName     String?
+  role         Role     @default(CUSTOMER)
+  isActive     Boolean  @default(true)
+
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  addresses    Address[]
+  cartItems    CartItem[]
+  orders       Order[]
+  chatMessages ChatMessage[]
+
+  @@index([role])
+}
+
+model Address {
+  id         String       @id @default(cuid())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label      AddressLabel @default(HOME)
+  fullName   String
+  phone      String
+  province   String
+  city       String
+  postalCode String
+  line1      String
+  line2      String?
+  isDefault  Boolean      @default(false)
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  orders     Order[]
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------
+// Catalog
+// ---------------------------------------------------------------
+
+model Product {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  shortDesc     String?
+  description   String
+
+  material      String
+  color         String?
+  diameterCm    Float
+  heightCm      Float
+  weightGrams   Int
+  drainageHole  Boolean  @default(true)
+  frostProof    Boolean  @default(false)
+
+  stock         Int      @default(0)
+  unitsPerCarton Int     @default(6)
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+
+  basePriceToman Int
+
+  images        ProductImage[]
+  tiers         PriceTier[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive, isFeatured])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+}
+
+// Tiered pricing matrix: single source of truth for per-unit price
+model PriceTier {
+  id             String  @id @default(cuid())
+  productId      String
+  product        Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  minQuantity    Int
+  unitPriceToman Int
+  label          String?
+
+  @@unique([productId, minQuantity])
+  @@index([productId])
+}
+
+// ---------------------------------------------------------------
+// Cart
+// ---------------------------------------------------------------
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int      @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------
+// Orders
+// ---------------------------------------------------------------
+
+model Order {
+  id          String @id @default(cuid())
+  orderNumber String @unique
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  channel     OrderChannel @default(RETAIL)
+
+  subtotalToman  Int
+  discountToman  Int @default(0)
+  shippingToman  Int @default(0)
+  totalToman     Int
+
+  totalWeightGrams Int @default(0)
+  totalCartons     Int @default(0)
+
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  // Zarinpal fields
+  zarinpalAuthority String?  @unique
+  refId             String?
+  cardPan           String?
+  paidAt            DateTime?
+  failureReason     String?
+
+  // Shipping snapshot (address may change later)
+  addressId      String?
+  address        Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  shipFullName   String
+  shipPhone      String
+  shipProvince   String
+  shipCity       String
+  shipPostalCode String
+  shipLine1      String
+  shipLine2      String?
+
+  trackingCode  String?
+  shippedAt     DateTime?
+  deliveredAt   DateTime?
+
+  note          String?
+  items         OrderItem[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([paymentStatus])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  // Snapshot fields: order history must not change if the product changes
+  productName   String
+  productSlug   String
+  imageUrl      String?
+  material      String?
+  diameterCm    Float?
+  heightCm      Float?
+
+  quantity         Int
+  listUnitToman    Int
+  unitToman        Int
+  lineTotalToman   Int
+  lineSavingsToman Int @default(0)
+  tierLabel        String?
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+// ---------------------------------------------------------------
+// Chatbot
+// ---------------------------------------------------------------
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sessionId String
+  role      String
+  content   String
+  escalated Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId, createdAt])
+}
