@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { randomBytes } from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
+import { getStockShortages } from '@/lib/cart';
 import { calcShippingToman, priceCart, type Tier } from '@/lib/pricing';
 import { zarinpalRequest, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 
@@ -60,9 +61,13 @@ export async function POST(req: Request) {
   }
 
   // 3) Verify stock before creating a pending order.
-  const shortages = activeItems
-    .filter((i) => i.product.stock < i.quantity)
-    .map((i) => ({ name: i.product.name, available: i.product.stock }));
+  const shortages = getStockShortages(
+    activeItems.map((i) => ({
+      name: i.product.name,
+      quantity: i.quantity,
+      stock: i.product.stock,
+    })),
+  );
 
   if (shortages.length > 0) {
     return NextResponse.json(

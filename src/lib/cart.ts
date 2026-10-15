@@ -1,6 +1,19 @@
-import 'server-only';
 import { prisma } from '@/lib/prisma';
 import { priceCart, type CartTotals, type Tier } from '@/lib/pricing';
+
+export function getStockShortages(
+  items: Array<{ name: string; quantity: number; stock: number }>,
+): Array<{ name: string; available: number }> {
+  return items
+    .filter((item) => item.quantity > item.stock)
+    .map((item) => ({ name: item.name, available: item.stock }));
+}
+
+export function isPaymentAlreadyProcessed(
+  order: { paymentStatus?: string | null; refId?: string | null } | null,
+) {
+  return !!order && order.paymentStatus === 'PAID' && !!order.refId;
+}
 
 export async function getCartTotals(userId: string): Promise<CartTotals> {
   const items = await prisma.cartItem.findMany({

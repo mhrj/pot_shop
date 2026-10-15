@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { isPaymentAlreadyProcessed } from '@/lib/cart';
 import { zarinpalVerify, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 
 export const runtime = 'nodejs';
@@ -33,7 +34,7 @@ export async function GET(req: Request) {
   if (!order) return fail('order_not_found');
 
   // 2) Already paid — skip verification and go straight to success.
-  if (order.paymentStatus === 'PAID' && order.refId) {
+  if (isPaymentAlreadyProcessed(order)) {
     return NextResponse.redirect(
       `${appUrl}/checkout/success?ref_id=${order.refId}&order=${order.orderNumber}`,
       { status: 303 },
@@ -71,30 +72,64 @@ export async function GET(req: Request) {
     return fail('verify_failed', order.orderNumber);
   }
 
-  // 5) Atomic update: mark paid, decrement stock, clear cart.
-  await prisma.$transaction(async (tx) => {
-    await tx.order.update({
+  // 5) Atomic update: mark paid once, check stock before decrementing, and clear cart.
+  try {
+    await prisma.$transaction(async (tx) => {
+      const lockedOrder = await tx.order.findUnique({
+        where: { id: order.id },
+        include: { items: true },
+      });
+
+      if (!lockedOrder || isPaymentAlreadyProcessed(lockedOrder)) {
+        return;
+      }
+
+      for (const item of lockedOrder.items) {
+        if (!item.productId) continue;
+
+        const product = await tx.product.findUnique({
+          where: { id: item.productId },
+          select: { id: true, stock: true, name: true },
+        });
+
+        if (!product || product.stock < item.quantity) {
+          throw new Error(`موجودی ${product?.name ?? 'محصول'} کافی نیست`);
+        }
+      }
+
+      await tx.order.update({
+        where: { id: lockedOrder.id },
+        data: {
+          paymentStatus: 'PAID',
+          status: 'PAID',
+          refId: verification.refId,
+          cardPan: verification.cardPan,
+          paidAt: new Date(),
+          failureReason: null,
+        },
+      });
+
+      for (const item of lockedOrder.items) {
+        if (!item.productId) continue;
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { decrement: item.quantity } },
+        });
+      }
+
+      await tx.cartItem.deleteMany({ where: { userId: lockedOrder.userId } });
+    });
+  } catch {
+    await prisma.order.update({
       where: { id: order.id },
       data: {
-        paymentStatus: 'PAID',
-        status: 'PAID',
-        refId: verification.refId,
-        cardPan: verification.cardPan,
-        paidAt: new Date(),
-        failureReason: null,
+        paymentStatus: 'FAILED',
+        status: 'CANCELED',
+        failureReason: 'موجودی محصول برای تکمیل سفارش کافی نبود',
       },
     });
-
-    for (const item of order.items) {
-      if (!item.productId) continue;
-      await tx.product.update({
-        where: { id: item.productId },
-        data: { stock: { decrement: item.quantity } },
-      });
-    }
-
-    await tx.cartItem.deleteMany({ where: { userId: order.userId } });
-  });
+    return fail('stock_shortage', order.orderNumber);
+  }
 
   // 6) Send the user to the success page with the Shaparak reference.
   const success = new URL('/checkout/success', appUrl);

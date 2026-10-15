@@ -17,6 +17,42 @@ export default async function SuccessPage({ searchParams }: Props) {
       })
     : null;
 
+  const isPaid = order?.paymentStatus === 'PAID' && !!order.refId && (!ref_id || order.refId === ref_id);
+
+  if (!isPaid) {
+    return (
+      <Container className="flex min-h-dvh items-center justify-center py-16">
+        <div className="w-full max-w-xl rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] sm:p-12">
+          <div className="grid size-16 place-items-center rounded-full bg-amber-100 text-3xl">
+            ⏳
+          </div>
+
+          <h1 className="mt-6 text-2xl font-black text-soil-900 sm:text-3xl">
+            پرداخت هنوز تکمیل نشده است
+          </h1>
+          <p className="mt-3 text-sm leading-7 text-soil-700/80">
+            وضعیت سفارش در سیستم ثبت شده و در صورت موفقیت‌آمیز بودن پرداخت، اطلاعات آن در این صفحه به‌روزرسانی می‌شود.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/dashboard"
+              className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700"
+            >
+              پیگیری سفارش
+            </Link>
+            <Link
+              href="/cart"
+              className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
+            >
+              بازگشت به سبد
+            </Link>
+          </div>
+        </div>
+      </Container>
+    );
+  }
+
   return (
     <Container className="flex min-h-dvh items-center justify-center py-16">
       <div className="w-full max-w-2xl rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] sm:p-12">
@@ -39,7 +75,7 @@ export default async function SuccessPage({ searchParams }: Props) {
           <div className="flex justify-between gap-4 px-5 py-4">
             <dt className="text-soil-700/70">کد پیگیری پرداخت (شاپرک)</dt>
             <dd className="font-mono font-bold text-flora-900" dir="ltr">
-              {toFa(ref_id ?? '—')}
+              {toFa(ref_id ?? order?.refId ?? '—')}
             </dd>
           </div>
           {order && (
