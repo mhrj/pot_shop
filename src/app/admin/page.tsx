@@ -1,11 +1,12 @@
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { formatToman, toFa } from '@/lib/format';
+import LandingImageManager from '@/components/admin/LandingImageManager';
 
 export default async function AdminPage() {
   await requireAdmin();
 
-  const [revenue, orderCount, pendingCount, lowStock, topProducts, recentOrders] =
+  const [revenue, orderCount, pendingCount, lowStock, topProducts, recentOrders, landingImages] =
     await Promise.all([
       prisma.order.aggregate({ where: { paymentStatus: 'PAID' }, _sum: { totalToman: true } }),
       prisma.order.count({ where: { paymentStatus: 'PAID' } }),
@@ -31,6 +32,10 @@ export default async function AdminPage() {
           user: { select: { fullName: true, phone: true } },
         },
       }),
+      prisma.landingImage.findMany({
+        orderBy: { key: 'asc' },
+        select: { key: true, url: true, alt: true },
+      }),
     ]);
 
   const stats = [
@@ -55,6 +60,16 @@ export default async function AdminPage() {
           </div>
         ))}
       </dl>
+
+      <section className="mt-10 rounded-2xl border border-soil-900/10 bg-white p-6">
+        <h2 className="text-base font-black text-soil-900">تصاویر صفحه اصلی</h2>
+        <p className="mt-2 text-sm text-soil-700/70">
+          فایل‌ها روی سرور ذخیره می‌شوند و برای صفحه اصلی به‌صورت مستقیم استفاده می‌شوند.
+        </p>
+        <div className="mt-5">
+          <LandingImageManager initial={landingImages} />
+        </div>
+      </section>
 
       <div className="mt-10 grid gap-6">
         <section className="rounded-2xl border border-soil-900/10 bg-white p-6">

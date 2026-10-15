@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get('next');
@@ -91,7 +91,22 @@ export default function LoginPage() {
         >
           {loading ? 'در حال ورود…' : 'ورود'}
         </button>
+
+        <p className="mt-5 text-center text-sm text-soil-700/70">
+          حساب ندارید؟{' '}
+          <a href="/register" className="font-bold text-flora-700 hover:text-flora-900">
+            ثبت‌نام کنید
+          </a>
+        </p>
       </form>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-dvh items-center justify-center text-sm text-soil-700">در حال آماده‌سازی…</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

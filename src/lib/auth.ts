@@ -4,6 +4,7 @@ import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
+import { requireEnv } from '@/lib/env';
 import {
   SESSION_COOKIE,
   verifySessionToken,
@@ -13,8 +14,8 @@ import {
 const SESSION_DAYS = 30;
 
 function secret() {
-  const s = process.env.JWT_SECRET;
-  if (!s || s.length < 32) {
+  const s = requireEnv('JWT_SECRET');
+  if (s.length < 32) {
     throw new Error('JWT_SECRET must be at least 32 characters');
   }
   return new TextEncoder().encode(s);

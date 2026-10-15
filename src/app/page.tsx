@@ -21,8 +21,15 @@ async function getFeatured() {
   });
 }
 
+async function getLandingImage(key: string) {
+  return prisma.landingImage.findUnique({
+    where: { key },
+    select: { url: true, alt: true },
+  });
+}
+
 export default async function HomePage() {
-  const products = await getFeatured();
+  const [products, heroImage] = await Promise.all([getFeatured(), getLandingImage('hero')]);
 
   const hero = (
     <section className="relative flex min-h-[92dvh] items-center overflow-hidden pt-24 pb-16">
@@ -30,7 +37,7 @@ export default async function HomePage() {
         <div className="lg:col-span-7">
           <span className="inline-flex items-center gap-2 rounded-full border border-dust-300/70 bg-dust-100/70 px-4 py-1.5 text-xs font-medium text-soil-700 backdrop-blur">
             <span className="size-1.5 rounded-full bg-dust-400" />
-            از خاکف خالی، تا رویشف سبز
+            از خاک خالی، تا رویش سبز
           </span>
 
           <h1 className="mt-6 text-4xl leading-[1.25] font-black text-soil-900 sm:text-5xl lg:text-6xl">
@@ -91,8 +98,8 @@ export default async function HomePage() {
         <div className="lg:col-span-5">
           <div className="relative aspect-4/5 overflow-hidden rounded-pot bg-dust-200 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
             <Image
-              src="https://placehold.co/800x1000/E8D5C4/3E2723?text=Pot+Shop"
-              alt="گلدان سفالی دست‌ساز با گیاه سبز"
+              src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723?text=Pot+Shop'}
+              alt={heroImage?.alt ?? 'گلدان سفالی دست‌ساز با گیاه سبز'}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 40vw"
@@ -111,14 +118,14 @@ export default async function HomePage() {
           هر گلدان، یک شروع تازه
         </h2>
         <p className="mt-5 leading-8 text-soil-700/85">
-          خاکف خشک را تصور کن؛ بی‌رنگ، بی‌جان. حالا همان خاک را در گلدانی درست، با گیاهی
-          مناسب — و همه چیز تغییر می‌کند. ما فقط گلدان نمی‌فروشیم؛ ابزارف زندگی می‌فروشیم.
+          خاک خشک را تصور کن؛ بی‌رنگ، بی‌جان. حالا همان خاک را در گلدانی درست، با گیاهی
+          مناسب — و همه چیز تغییر می‌کند. ما فقط گلدان نمی‌فروشیم؛ ابزار زندگی می‌فروشیم.
         </p>
       </Container>
 
       <Container className="mt-16 grid gap-6 md:grid-cols-3">
         {[
-          { t: 'خاک', d: 'انتخاب متریال درست: سفالف نفس‌کش، سرامیکف لعاب‌دار، بتنف مقاوم.', c: 'bg-dust-200' },
+          { t: 'خاک', d: 'انتخاب متریال درست: سفال نفس‌کش، سرامیک لعاب‌دار، بتن مقاوم.', c: 'bg-dust-200' },
           { t: 'ریشه', d: 'زهکشی اصولی و حجم کافی خاک، ریشه را از پوسیدگی حفظ می‌کند.', c: 'bg-flora-100' },
           { t: 'رویش', d: 'بعد از آن، فقط تماشا کن. فضای خالی‌ات زنده شده است.', c: 'bg-flora-300/50' },
         ].map((s, i) => (
@@ -145,7 +152,7 @@ export default async function HomePage() {
             <p className="mt-3 text-soil-700/80">قیمت پله‌ای — هرچه بیشتر، ارزان‌تر.</p>
           </div>
           <Link href="/products" className="text-sm font-bold text-flora-700 hover:text-flora-900">
-            همه محصولات ف
+            همه محصولات
           </Link>
         </div>
 

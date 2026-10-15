@@ -35,6 +35,7 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<Record<number, boolean>>({});
   const [form, setForm] = useState<ProductFormData>(initial);
 
   function update<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
@@ -86,6 +87,35 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
       router.push('/admin/products');
       router.refresh();
     });
+  }
+
+  async function uploadImage(index: number, file: File | null) {
+    if (!file) return;
+    setError(null);
+    setUploading((prev) => ({ ...prev, [index]: true }));
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('kind', 'product');
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.message ?? 'آپلود عکس ناموفق بود');
+      }
+
+      const next = [...form.images];
+      next[index] = data.url;
+      update('images', next);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'آپلود عکس ناموفق بود');
+    } finally {
+      setUploading((prev) => ({ ...prev, [index]: false }));
+    }
   }
 
   return (
@@ -247,7 +277,7 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-black text-soil-900">تصاویر (URL)</h2>
+          <h2 className="text-sm font-black text-soil-900">تصاویر محصول</h2>
           <button
             type="button"
             onClick={() => update('images', [...form.images, ''])}
@@ -256,29 +286,45 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
             + افزودن تصویر
           </button>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {form.images.map((url, i) => (
-            <div key={i} className="flex gap-2">
-              <input
-                value={url}
-                onChange={(e) => {
-                  const next = [...form.images];
-                  next[i] = e.target.value;
-                  update('images', next);
-                }}
-                dir="ltr"
-                placeholder="https://..."
-                className={inputCls}
-              />
-              {form.images.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => update('images', form.images.filter((_, j) => j !== i))}
-                  className="shrink-0 rounded-xl border border-soil-900/15 px-3 text-xs text-soil-700 transition hover:bg-dust-50"
-                >
-                  حذف
-                </button>
+            <div key={i} className="rounded-xl border border-soil-900/10 bg-dust-50 p-3">
+              {url && (
+                <div className="mb-3 overflow-hidden rounded-lg border border-soil-900/10 bg-white">
+                  <img src={url} alt={`پیش‌نمایش تصویر ${i + 1}`} className="h-28 w-full object-cover" />
+                </div>
               )}
+              <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                <input
+                  value={url}
+                  onChange={(e) => {
+                    const next = [...form.images];
+                    next[i] = e.target.value;
+                    update('images', next);
+                  }}
+                  dir="ltr"
+                  placeholder="https://..."
+                  className={`${inputCls} flex-1`}
+                />
+                <label className="cursor-pointer rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => uploadImage(i, e.target.files?.[0] ?? null)}
+                  />
+                  {uploading[i] ? 'در حال آپلود…' : 'آپلود فایل'}
+                </label>
+                {form.images.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => update('images', form.images.filter((_, j) => j !== i))}
+                    className="shrink-0 rounded-xl border border-soil-900/15 px-3 py-2 text-xs text-soil-700 transition hover:bg-dust-50"
+                  >
+                    حذف
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

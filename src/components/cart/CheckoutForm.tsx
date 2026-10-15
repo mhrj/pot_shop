@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import AddressForm from '@/components/cart/AddressForm';
 
 type Address = {
   id: string;
@@ -16,9 +17,26 @@ type Address = {
 };
 
 export default function CheckoutForm({ addresses }: { addresses: Address[] }) {
-  const [selectedId, setSelectedId] = useState<string>(addresses[0]?.id ?? '');
+  const [addressList, setAddressList] = useState<Address[]>(addresses);
+  const [selectedId, setSelectedId] = useState<string>(
+    addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? '',
+  );
+  const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAddressList(addresses);
+    if (!addresses.some((a) => a.id === selectedId)) {
+      setSelectedId(addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? '');
+    }
+  }, [addresses, selectedId]);
+
+  const handleCreated = (address: Address) => {
+    setAddressList((current) => [address, ...current]);
+    setSelectedId(address.id);
+    setShowForm(false);
+  };
 
   const pay = async () => {
     if (!selectedId) {
@@ -46,15 +64,10 @@ export default function CheckoutForm({ addresses }: { addresses: Address[] }) {
     }
   };
 
-  if (addresses.length === 0) {
+  if (addressList.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-soil-900/15 bg-white p-8 text-center">
-        <p className="text-sm text-soil-700/80">
-          هنوز آدرسی ثبت نکرده‌اید. برای ادامه، یک آدرس اضافه کنید.
-        </p>
-        <p className="mt-3 text-xs text-soil-700/60">
-          (فرم افزودن آدرس در پچ بعدی اضافه می‌شود.)
-        </p>
+      <div className="space-y-4">
+        <AddressForm onCreated={handleCreated} />
       </div>
     );
   }
@@ -65,7 +78,7 @@ export default function CheckoutForm({ addresses }: { addresses: Address[] }) {
         <legend className="px-2 text-sm font-black text-soil-900">آدرس ارسال</legend>
 
         <ul className="space-y-3">
-          {addresses.map((a) => (
+          {addressList.map((a) => (
             <li key={a.id}>
               <label
                 className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
@@ -104,6 +117,18 @@ export default function CheckoutForm({ addresses }: { addresses: Address[] }) {
           ))}
         </ul>
       </fieldset>
+
+      {showForm ? (
+        <AddressForm onCreated={handleCreated} />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowForm(true)}
+          className="w-full rounded-2xl border border-soil-900/10 bg-white px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
+        >
+          + افزودن آدرس جدید
+        </button>
+      )}
 
       {error && (
         <p

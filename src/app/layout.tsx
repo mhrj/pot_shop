@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Vazirmatn } from 'next/font/google';
 import './globals.css';
+import Header from '@/components/layout/Header';
 import PersianChatbot from '@/components/chatbot/PersianChatbot';
 
 const vazirmatn = Vazirmatn({
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${vazirmatn.variable} scroll-smooth antialiased`}
     >
       <body className="min-h-dvh bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950">
+        <Header />
         {children}
         <PersianChatbot />
       </body>

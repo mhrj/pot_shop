@@ -142,6 +142,17 @@ model ProductImage {
   @@index([productId])
 }
 
+model LandingImage {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  url       String
+  alt       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
 // Tiered pricing matrix: single source of truth for per-unit price
 model PriceTier {
   id             String  @id @default(cuid())

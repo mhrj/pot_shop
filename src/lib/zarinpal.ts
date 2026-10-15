@@ -1,15 +1,7 @@
 import 'server-only';
+import { getZarinpalConfig } from '@/lib/zarinpal-config';
 
-const SANDBOX = process.env.ZARINPAL_SANDBOX === 'true';
-const HOST = SANDBOX
-  ? 'https://sandbox.zarinpal.com'
-  : 'https://payment.zarinpal.com';
-
-const MERCHANT_ID = process.env.ZARINPAL_MERCHANT_ID;
-
-if (!MERCHANT_ID) {
-  throw new Error('ZARINPAL_MERCHANT_ID is not set');
-}
+export { getZarinpalConfig };
 
 // Zarinpal expects amounts in Rials, not Toman.
 export const tomanToRial = (toman: number) => Math.round(toman) * 10;
@@ -26,8 +18,18 @@ export async function zarinpalRequest(params: {
   email?: string;
   orderId: string;
 }): Promise<ZarinpalRequestResult> {
+  const { enabled, host, merchantId } = getZarinpalConfig();
+
+  if (!enabled || !merchantId) {
+    return {
+      ok: false,
+      code: 503,
+      message: 'درگاه پرداخت در این محیط فعال نیست. لطفاً تنظیمات زرین‌پال را بررسی کنید.',
+    };
+  }
+
   const body = {
-    merchant_id: MERCHANT_ID,
+    merchant_id: merchantId,
     amount: tomanToRial(params.amountToman),
     callback_url: params.callbackUrl,
     description: params.description,
@@ -38,7 +40,7 @@ export async function zarinpalRequest(params: {
     },
   };
 
-  const res = await fetch(`${HOST}/pg/v4/payment/request.json`, {
+  const res = await fetch(`${host}/pg/v4/payment/request.json`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(body),
@@ -60,7 +62,7 @@ export async function zarinpalRequest(params: {
     ok: true,
     authority: json.data.authority as string,
     code: json.data.code as number,
-    redirectUrl: `${HOST}/pg/StartPay/${json.data.authority}`,
+    redirectUrl: `${host}/pg/StartPay/${json.data.authority}`,
   };
 }
 
@@ -72,11 +74,21 @@ export async function zarinpalVerify(params: {
   amountToman: number;
   authority: string;
 }): Promise<ZarinpalVerifyResult> {
-  const res = await fetch(`${HOST}/pg/v4/payment/verify.json`, {
+  const { enabled, host, merchantId } = getZarinpalConfig();
+
+  if (!enabled || !merchantId) {
+    return {
+      ok: false,
+      code: 503,
+      message: 'درگاه پرداخت در این محیط فعال نیست. لطفاً تنظیمات زرین‌پال را بررسی کنید.',
+    };
+  }
+
+  const res = await fetch(`${host}/pg/v4/payment/verify.json`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
-      merchant_id: MERCHANT_ID,
+      merchant_id: merchantId,
       amount: tomanToRial(params.amountToman),
       authority: params.authority,
     }),
@@ -87,7 +99,6 @@ export async function zarinpalVerify(params: {
   const json = await res.json().catch(() => null);
   const code = json?.data?.code ?? json?.errors?.code ?? res.status;
 
-  // 100 = successful verify, 101 = already verified (idempotent success).
   if (code === 100 || code === 101) {
     return {
       ok: true,
