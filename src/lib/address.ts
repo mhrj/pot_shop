@@ -8,20 +8,20 @@ export const addressInputSchema = z
     fullName: z
       .string()
       .trim()
-      .min(2, 'fullName is required')
-      .max(80, 'fullName is too long'),
+      .min(2, 'نام کامل الزامی است')
+      .max(80, 'نام کامل بیش از حد مجاز است'),
     phone: z
       .string()
       .trim()
-      .regex(/^09\d{9}$/, 'phone must be a valid mobile number'),
-    province: z.string().trim().min(2, 'province is required'),
-    city: z.string().trim().min(2, 'city is required'),
+      .regex(/^09\d{9}$/, 'شماره موبایل معتبر نیست'),
+    province: z.string().trim().min(2, 'نام استان الزامی است'),
+    city: z.string().trim().min(2, 'نام شهر الزامی است'),
     postalCode: z
       .string()
       .trim()
-      .regex(/^\d{5,10}$/, 'postalCode must contain only digits'),
-    line1: z.string().trim().min(3, 'line1 is required'),
-    line2: z.string().trim().max(200, 'line2 is too long').optional().transform((value) => {
+      .regex(/^\d{5,10}$/, 'کد پستی فقط باید شامل اعداد باشد'),
+    line1: z.string().trim().min(3, 'آدرس اصلی الزامی است'),
+    line2: z.string().trim().max(200, 'آدرس تکمیلی بیش از حد مجاز است').optional().transform((value) => {
       if (!value) return null;
       const trimmed = value.trim();
       return trimmed.length > 0 ? trimmed : null;

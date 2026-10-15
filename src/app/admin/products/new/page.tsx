@@ -29,6 +29,7 @@ export default async function NewProductPage() {
             isActive: true,
             isFeatured: false,
             images: [''],
+            tagIds: [],
             tiers: [
               { minQuantity: 1, unitPriceToman: 150000, label: 'خرده' },
               { minQuantity: 5, unitPriceToman: 127500, label: 'بسته‌ای' },

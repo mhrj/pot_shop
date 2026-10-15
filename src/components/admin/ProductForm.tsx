@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
@@ -24,6 +24,7 @@ export type ProductFormData = {
   isActive: boolean;
   isFeatured: boolean;
   images: string[];
+  tagIds: string[];
   tiers: Tier[];
 };
 
@@ -36,7 +37,22 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
+  const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
   const [form, setForm] = useState<ProductFormData>(initial);
+
+  useEffect(() => {
+    async function loadTags() {
+      try {
+        const res = await fetch('/api/admin/tags');
+        if (!res.ok) return;
+        const data = await res.json().catch(() => ({ tags: [] }));
+        setAllTags(data.tags ?? []);
+      } catch {
+        setAllTags([]);
+      }
+    }
+    loadTags();
+  }, []);
 
   function update<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -58,6 +74,7 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
       const url = isNew ? '/api/admin/products' : '/api/admin/products/' + initial.id;
       const payload = {
         ...form,
+        tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
       };
       const res = await fetch(url, {
@@ -291,7 +308,7 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
             <div key={i} className="rounded-xl border border-soil-900/10 bg-dust-50 p-3">
               {url && (
                 <div className="mb-3 overflow-hidden rounded-lg border border-soil-900/10 bg-white">
-                  <img src={url} alt={`پیش‌نمایش تصویر ${i + 1}`} className="h-28 w-full object-cover" />
+                  <img src={url} alt={`پیش‌نمایش تصویر ${i + 1}`} className="h-72 w-full object-contain" />
                 </div>
               )}
               <div className="flex flex-col gap-2 md:flex-row md:items-center">
@@ -303,7 +320,7 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
                     update('images', next);
                   }}
                   dir="ltr"
-                  placeholder="https://..."
+                  placeholder="/uploads/product/example.jpg"
                   className={`${inputCls} flex-1`}
                 />
                 <label className="cursor-pointer rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700">
@@ -328,6 +345,36 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
+        <h2 className="mb-4 text-sm font-black text-soil-900">برچسب‌ها</h2>
+        {allTags.length === 0 ? (
+          <p className="text-xs text-soil-700/70">هنوز برچسبی ثبت نشده است.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {allTags.map((tag) => {
+              const active = form.tagIds.includes(tag.id);
+              return (
+                <button
+                  key={tag.id}
+                  type="button"
+                  onClick={() => {
+                    update('tagIds', active
+                      ? form.tagIds.filter((id) => id !== tag.id)
+                      : [...form.tagIds, tag.id]);
+                  }}
+                  className={
+                    'rounded-full px-3 py-1.5 text-xs font-bold transition ' +
+                    (active ? 'bg-flora-900 text-white' : 'bg-dust-100 text-soil-700 hover:bg-dust-200')
+                  }
+                >
+                  {tag.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">

@@ -23,6 +23,61 @@ const schema = z.object({
 
 const ESCALATION_TOKEN = '[[HUMAN_SUPPORT]]';
 
+async function callGroq(systemInstruction: string, history: Array<{ role: string; content: string }>, last: string) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: process.env.GROQ_MODEL ?? 'llama-3.1-8b-instant',
+      temperature: 0.6,
+      max_tokens: 700,
+      messages: [
+        { role: 'system', content: systemInstruction },
+        ...history.map((m) => ({ role: m.role, content: m.content })),
+        { role: 'user', content: last },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(text || 'Groq provider request failed');
+  }
+
+  const json = await res.json();
+  const text = json?.choices?.[0]?.message?.content;
+  if (!text || typeof text !== 'string') {
+    throw new Error('Groq response did not include a message');
+  }
+  return text;
+}
+
+async function callGemini(systemInstruction: string, history: Array<{ role: string; content: string }>, last: string) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({
+    model: process.env.GEMINI_MODEL ?? 'gemini-2.0-flash',
+    systemInstruction,
+    generationConfig: {
+      temperature: 0.6,
+      topP: 0.9,
+      maxOutputTokens: 700,
+    },
+  });
+
+  const chat = model.startChat({ history: history.map((m) => ({ role: m.role, parts: [{ text: m.content }] })) });
+  const result = await chat.sendMessage(last);
+  return result.response.text().trim();
+}
+
 // Simple in-memory limiter. In production, back with Redis.
 const hits = new Map<string, { count: number; resetAt: number }>();
 function limited(key: string, max = 20, windowMs = 60_000) {
@@ -97,14 +152,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: 'درخواست نامعتبر است' }, { status: 400 });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json(
-      { message: 'سرویس گفتگو در دسترس نیست. لطفاً با پشتیبانی تماس بگیرید.' },
-      { status: 503 },
-    );
-  }
-
+  const provider = process.env.CHAT_PROVIDER ?? 'gemini';
   const { sessionId, messages } = parsed.data;
   const catalog = await buildCatalogContext();
 
@@ -138,26 +186,20 @@ ${catalog}
 `.trim();
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: process.env.GEMINI_MODEL ?? 'gemini-2.0-flash',
-      systemInstruction,
-      generationConfig: {
-        temperature: 0.6,
-        topP: 0.9,
-        maxOutputTokens: 700,
-      },
-    });
-
-    const history = messages.slice(0, -1).map((m) => ({
-      role: m.role,
-      parts: [{ text: m.content }],
-    }));
+    const history = messages.slice(0, -1);
     const last = messages[messages.length - 1].content;
 
-    const chat = model.startChat({ history });
-    const result = await chat.sendMessage(last);
-    const raw = result.response.text().trim();
+    const raw =
+      provider === 'groq'
+        ? await callGroq(systemInstruction, history, last)
+        : await callGemini(systemInstruction, history, last);
+
+    if (!raw) {
+      return NextResponse.json(
+        { message: 'سرویس گفتگو در دسترس نیست. لطفاً با پشتیبانی تماس بگیرید.' },
+        { status: 503 },
+      );
+    }
 
     const escalated = raw.includes(ESCALATION_TOKEN);
     const reply = raw.replace(ESCALATION_TOKEN, '').trim();

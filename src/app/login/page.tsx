@@ -92,12 +92,17 @@ function LoginForm() {
           {loading ? 'در حال ورود…' : 'ورود'}
         </button>
 
-        <p className="mt-5 text-center text-sm text-soil-700/70">
-          حساب ندارید؟{' '}
-          <a href="/register" className="font-bold text-flora-700 hover:text-flora-900">
-            ثبت‌نام کنید
+        <div className="mt-5 flex items-center justify-between gap-3 text-sm text-soil-700/70">
+          <a href="/forgot-password" className="font-bold text-flora-700 hover:text-flora-900">
+            فراموشی رمز عبور
           </a>
-        </p>
+          <span>
+            حساب ندارید؟{' '}
+            <a href="/register" className="font-bold text-flora-700 hover:text-flora-900">
+              ثبت‌نام کنید
+            </a>
+          </span>
+        </div>
       </form>
     </main>
   );

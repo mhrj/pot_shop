@@ -10,6 +10,7 @@ export default async function AdminProductsPage() {
   const products = await prisma.product.findMany({
     include: {
       images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+      tags: { include: { tag: true } },
       _count: { select: { orderItems: true } },
     },
     orderBy: { createdAt: 'desc' },
@@ -50,6 +51,13 @@ export default async function AdminProductsPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-bold text-soil-900">{p.name}</p>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {p.tags.slice(0, 3).map((entry) => (
+                    <span key={entry.tag.id} className="rounded-full bg-dust-100 px-2 py-0.5 text-[10px] font-bold text-soil-700">
+                      {entry.tag.name}
+                    </span>
+                  ))}
+                </div>
                 <p className="mt-1 text-xs text-soil-700/60">
                   {formatToman(p.basePriceToman)} · موجودی {toFa(p.stock)} ·{' '}
                   {toFa(p._count.orderItems)} فروش

@@ -47,6 +47,7 @@ export default async function ProductPage({ params }: Params) {
       include: {
         images: { orderBy: { sortOrder: 'asc' } },
         tiers: { orderBy: { minQuantity: 'asc' } },
+        tags: { include: { tag: true } },
       },
     }),
     getSession(),
@@ -138,6 +139,11 @@ export default async function ProductPage({ params }: Params) {
             <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
               {product.material}
             </span>
+            {product.tags.map((entry) => (
+              <span key={entry.tag.id} className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700">
+                {entry.tag.name}
+              </span>
+            ))}
             {product.drainageHole && (
               <span className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700">
                 سوراخ زهکشی

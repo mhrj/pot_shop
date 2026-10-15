@@ -14,6 +14,7 @@ export default async function EditProductPage({ params }: Props) {
     include: {
       images: { orderBy: { sortOrder: 'asc' } },
       tiers: { orderBy: { minQuantity: 'asc' } },
+      tags: { select: { tagId: true } },
     },
   });
   if (!product) notFound();
@@ -43,6 +44,7 @@ export default async function EditProductPage({ params }: Props) {
             isActive: product.isActive,
             isFeatured: product.isFeatured,
             images: product.images.length ? product.images.map((i) => i.url) : [''],
+            tagIds: product.tags.map((entry) => entry.tagId),
             tiers: product.tiers.map((t) => ({
               minQuantity: t.minQuantity,
               unitPriceToman: t.unitPriceToman,

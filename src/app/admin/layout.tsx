@@ -3,6 +3,8 @@ import Link from 'next/link';
 const NAV = [
   { href: '/admin', label: 'داشبورد' },
   { href: '/admin/products', label: 'محصولات' },
+  { href: '/admin/tags', label: 'برچسب‌ها' },
+  { href: '/admin/content', label: 'محتوای فروشگاه' },
   { href: '/admin/orders', label: 'سفارش‌ها' },
 ];
 

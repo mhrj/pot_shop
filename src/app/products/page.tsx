@@ -12,6 +12,7 @@ export default async function ProductsPage() {
     include: {
       images: { orderBy: { sortOrder: 'asc' }, take: 1 },
       tiers: { orderBy: { minQuantity: 'asc' } },
+      tags: { include: { tag: true } },
     },
     orderBy: { createdAt: 'desc' },
   });
@@ -54,6 +55,13 @@ export default async function ProductsPage() {
                   <div className="p-5">
                     <h2 className="text-lg font-black text-soil-900">{product.name}</h2>
                     <p className="mt-2 text-xs leading-6 text-soil-700/70">{product.material}</p>
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {product.tags.slice(0, 2).map((entry) => (
+                        <span key={entry.tag.id} className="rounded-full bg-dust-100 px-2 py-1 text-[10px] font-bold text-soil-700">
+                          {entry.tag.name}
+                        </span>
+                      ))}
+                    </div>
                     <div className="mt-4 flex items-end justify-between gap-3">
                       <div>
                         <div className="text-xl font-black text-flora-900">

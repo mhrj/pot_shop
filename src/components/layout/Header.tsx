@@ -5,6 +5,8 @@ import LogoutButton from '@/components/layout/LogoutButton';
 export default async function Header() {
   const user = await getCurrentUser();
   const isAdmin = user?.role === 'ADMIN';
+  const dashboardHref = user ? (isAdmin ? '/admin' : '/dashboard') : '/login';
+  const accountLabel = user ? (isAdmin ? 'داشبورد مدیریت' : user.fullName ? 'حساب من' : 'پروفایل') : 'ورود';
 
   return (
     <header className="sticky top-0 z-40 border-b border-soil-900/10 bg-dust-50/90 backdrop-blur supports-[backdrop-filter]:bg-dust-50/75">
@@ -17,7 +19,7 @@ export default async function Header() {
             <Link href="/products" className="transition hover:text-flora-700">محصولات</Link>
             <Link href="/cart" className="transition hover:text-flora-700">سبد خرید</Link>
             {user ? (
-              <Link href={isAdmin ? '/admin' : '/dashboard'} className="transition hover:text-flora-700">
+              <Link href={dashboardHref} className="transition hover:text-flora-700">
                 {isAdmin ? 'داشبورد مدیریت' : 'داشبورد'}
               </Link>
             ) : null}
@@ -28,10 +30,11 @@ export default async function Header() {
           {user ? (
             <>
               <Link
-                href={isAdmin ? '/admin' : '/dashboard'}
+                href={dashboardHref}
+                aria-label={accountLabel}
                 className="rounded-full bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700"
               >
-                {user.fullName ? `حساب من` : 'پروفایل'}
+                {accountLabel}
               </Link>
               <LogoutButton />
             </>
@@ -39,12 +42,14 @@ export default async function Header() {
             <>
               <Link
                 href="/register"
+                aria-label="ثبت نام"
                 className="rounded-full border border-soil-900/15 bg-white px-4 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700"
               >
                 ثبت‌نام
               </Link>
               <Link
                 href="/login"
+                aria-label="ورود"
                 className="rounded-full bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700"
               >
                 ورود

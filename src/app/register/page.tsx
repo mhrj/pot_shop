@@ -19,6 +19,26 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
 
+    if (!form.phone.trim()) {
+      setError('شماره موبایل الزامی است.');
+      return;
+    }
+
+    if (!/^09\d{9}$/.test(form.phone.trim())) {
+      setError('شماره موبایل نامعتبر است.');
+      return;
+    }
+
+    if (!form.email.trim()) {
+      setError('ایمیل الزامی است.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setError('ایمیل معتبر نیست.');
+      return;
+    }
+
     if (form.password !== form.confirmPassword) {
       setError('تأیید رمز عبور با رمز عبور هم‌خوانی ندارد.');
       return;
@@ -75,10 +95,12 @@ export default function RegisterPage() {
           </label>
 
           <label className="block">
-            <span className="text-xs font-bold text-soil-900">شماره موبایل</span>
+            <span className="text-xs font-bold text-soil-900">
+              شماره موبایل <span className="text-red-600">*</span>
+            </span>
             <input
               value={form.phone}
-              onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+              onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value.trim() }))}
               required
               dir="ltr"
               autoComplete="tel"
@@ -88,11 +110,14 @@ export default function RegisterPage() {
           </label>
 
           <label className="block">
-            <span className="text-xs font-bold text-soil-900">ایمیل (اختیاری)</span>
+            <span className="text-xs font-bold text-soil-900">
+              ایمیل <span className="text-red-600">*</span>
+            </span>
             <input
               type="email"
               value={form.email}
-              onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+              onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value.trim() }))}
+              required
               autoComplete="email"
               dir="ltr"
               placeholder="name@example.com"

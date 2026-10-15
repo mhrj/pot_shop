@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { formatToman, toFa } from '@/lib/format';
 import { resolveTier } from '@/lib/pricing';
+import { getContentMap } from '@/lib/content';
 import DustToFlora from '@/components/landing/DustToFlora';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
@@ -29,7 +30,7 @@ async function getLandingImage(key: string) {
 }
 
 export default async function HomePage() {
-  const [products, heroImage] = await Promise.all([getFeatured(), getLandingImage('hero')]);
+  const [products, heroImage, content] = await Promise.all([getFeatured(), getLandingImage('hero'), getContentMap()]);
 
   const hero = (
     <section className="relative flex min-h-[92dvh] items-center overflow-hidden pt-24 pb-16">
@@ -41,29 +42,11 @@ export default async function HomePage() {
           </span>
 
           <h1 className="mt-6 text-4xl leading-[1.25] font-black text-soil-900 sm:text-5xl lg:text-6xl">
-            به فضاهای خالی،
-            <span className="relative mx-2 inline-block text-dust-400">
-              جان
-              <svg
-                className="absolute -bottom-2 right-0 w-full text-dust-300"
-                viewBox="0 0 120 12"
-                fill="none"
-                aria-hidden
-              >
-                <path
-                  d="M2 9C25 3 55 2 118 6"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            بدهیم.
+            {content.home_hero_title.body}
           </h1>
 
           <p className="mt-7 max-w-xl text-base leading-8 text-soil-700/85 sm:text-lg">
-            گلدان‌های سفالی، سرامیکی و بتنی دست‌ساز — برای خانه، اداره و پروژه‌های بزرگ.
-            از یک عدد تا سفارش عمده، همه در یک سبد. با قیمت پله‌ای شفاف و ارسال سراسر ایران.
+            {content.home_hero_subtitle.body}
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -115,11 +98,10 @@ export default async function HomePage() {
     <section className="py-24">
       <Container className="max-w-3xl text-center">
         <h2 className="text-3xl font-black text-soil-900 sm:text-4xl">
-          هر گلدان، یک شروع تازه
+          {content.about_title.body}
         </h2>
         <p className="mt-5 leading-8 text-soil-700/85">
-          خاک خشک را تصور کن؛ بی‌رنگ، بی‌جان. حالا همان خاک را در گلدانی درست، با گیاهی
-          مناسب — و همه چیز تغییر می‌کند. ما فقط گلدان نمی‌فروشیم؛ ابزار زندگی می‌فروشیم.
+          {content.about_body.body}
         </p>
       </Container>
 

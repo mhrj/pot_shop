@@ -63,10 +63,11 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  addresses    Address[]
-  cartItems    CartItem[]
-  orders       Order[]
-  chatMessages ChatMessage[]
+  addresses          Address[]
+  cartItems          CartItem[]
+  orders             Order[]
+  chatMessages       ChatMessage[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([role])
 }
@@ -122,6 +123,7 @@ model Product {
 
   images        ProductImage[]
   tiers         PriceTier[]
+  tags          ProductTag[]
   cartItems     CartItem[]
   orderItems    OrderItem[]
 
@@ -129,6 +131,29 @@ model Product {
   updatedAt     DateTime @updatedAt
 
   @@index([isActive, isFeatured])
+}
+
+model Tag {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  slug      String      @unique
+  products  ProductTag[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([slug])
+}
+
+model ProductTag {
+  productId String
+  tagId     String
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([productId, tagId])
+  @@index([productId])
+  @@index([tagId])
 }
 
 model ProductImage {
@@ -149,6 +174,18 @@ model LandingImage {
   alt       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
+model StaticContent {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  title       String
+  body        String
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([key])
 }
@@ -271,6 +308,19 @@ model OrderItem {
 // ---------------------------------------------------------------
 // Chatbot
 // ---------------------------------------------------------------
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
 
 model ChatMessage {
   id        String   @id @default(cuid())

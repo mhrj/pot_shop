@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
+import { persistedImageUrlSchema } from '@/lib/image-validation';
 
 export const runtime = 'nodejs';
 
@@ -30,7 +31,8 @@ const schema = z.object({
   basePriceToman: z.number().int().min(1000),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
-  images: z.array(z.string().url()).max(10),
+  images: z.array(persistedImageUrlSchema).max(10),
+  tagIds: z.array(z.string().cuid()).max(20).optional().default([]),
   tiers: z.array(tierSchema).min(1).max(5),
 });
 
@@ -70,6 +72,7 @@ export async function PATCH(req: Request, { params }: Params) {
   const updated = await prisma.$transaction(async (tx) => {
     await tx.productImage.deleteMany({ where: { productId: id } });
     await tx.priceTier.deleteMany({ where: { productId: id } });
+    await tx.productTag.deleteMany({ where: { productId: id } });
 
     return tx.product.update({
       where: { id },
@@ -99,6 +102,9 @@ export async function PATCH(req: Request, { params }: Params) {
             unitPriceToman: t.unitPriceToman,
             label: t.label || null,
           })),
+        },
+        tags: {
+          create: data.tagIds.map((tagId) => ({ tagId })),
         },
       },
     });

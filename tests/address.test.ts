@@ -29,7 +29,7 @@ describe('Address normalization', () => {
     assert.equal(result.isDefault, true);
   });
 
-  it('rejects invalid phone numbers and blank required fields', () => {
+  it('rejects invalid phone numbers and blank required fields with Persian validation text', () => {
     const input = {
       label: 'HOME',
       fullName: '',
@@ -42,6 +42,6 @@ describe('Address normalization', () => {
       isDefault: false,
     };
 
-    assert.throws(() => normalizeAddressInput(input), /fullName|phone|city|line1/);
+    assert.throws(() => normalizeAddressInput(input), /نام|شماره|شهر|آدرس|کد پستی|فقط عدد/i);
   });
 });

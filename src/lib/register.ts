@@ -5,14 +5,15 @@ export const registrationSchema = z.object({
   phone: z
     .string()
     .trim()
+    .min(1, 'شماره موبایل الزامی است')
     .regex(/^09\d{9}$/, 'شماره موبایل نامعتبر است')
     .transform((value) => value.replace(/\s+/g, '')),
   email: z
     .string()
     .trim()
-    .optional()
-    .or(z.literal(''))
-    .transform((value) => (value ? value.toLowerCase() : null)),
+    .min(1, 'ایمیل الزامی است')
+    .email('ایمیل معتبر نیست')
+    .transform((value) => value.toLowerCase()),
   password: z
     .string()
     .min(8, 'رمز عبور باید حداقل ۸ نویسه باشد')
@@ -26,6 +27,17 @@ export const registrationSchema = z.object({
 export type RegistrationInput = z.infer<typeof registrationSchema> & {
   role: 'CUSTOMER';
 };
+
+export function getRegistrationConflict(
+  phone: string,
+  email: string,
+  existing: { phone?: string | null; email?: string | null } | null,
+) {
+  if (!existing) return null;
+  if (existing.phone === phone) return 'phone' as const;
+  if (existing.email === email) return 'email' as const;
+  return null;
+}
 
 export function normalizeRegistrationInput(input: unknown): RegistrationInput {
   const parsed = registrationSchema.safeParse(input);

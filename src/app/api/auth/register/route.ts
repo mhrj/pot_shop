@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createSessionCookie, hashPassword } from '@/lib/auth';
-import { normalizeRegistrationInput } from '@/lib/register';
+import { getRegistrationConflict, normalizeRegistrationInput } from '@/lib/register';
 
 export const runtime = 'nodejs';
 
@@ -12,18 +12,16 @@ export async function POST(req: Request) {
 
     const existing = await prisma.user.findFirst({
       where: {
-        OR: [
-          { phone: userInput.phone },
-          ...(userInput.email ? [{ email: userInput.email }] : []),
-        ],
+        OR: [{ phone: userInput.phone }, { email: userInput.email }],
       },
     });
 
-    if (existing) {
-      return NextResponse.json(
-        { message: 'این شماره موبایل یا ایمیل قبلاً ثبت‌نام شده است.' },
-        { status: 409 },
-      );
+    const conflict = getRegistrationConflict(userInput.phone, userInput.email, existing);
+    if (conflict === 'phone') {
+      return NextResponse.json({ message: 'این شماره موبایل قبلاً ثبت‌نام شده است.' }, { status: 409 });
+    }
+    if (conflict === 'email') {
+      return NextResponse.json({ message: 'این ایمیل قبلاً ثبت‌نام شده است.' }, { status: 409 });
     }
 
     const user = await prisma.user.create({
@@ -52,7 +50,22 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
+    const prismaError = error as { code?: string; meta?: { target?: string[] } };
+    const target = prismaError.meta?.target ?? [];
+
+    if (prismaError.code === 'P2002') {
+      if (target.includes('email')) {
+        return NextResponse.json({ message: 'این ایمیل قبلاً ثبت‌نام شده است.' }, { status: 409 });
+      }
+      if (target.includes('phone')) {
+        return NextResponse.json({ message: 'این شماره موبایل قبلاً ثبت‌نام شده است.' }, { status: 409 });
+      }
+    }
+
     const message = error instanceof Error ? error.message : 'ثبت‌نام ناموفق بود';
-    return NextResponse.json({ message }, { status: /رمز عبور|شماره موبایل|نام کامل|ایمیل|اطلاعات نامعتبر/i.test(message) ? 400 : 500 });
+    return NextResponse.json(
+      { message },
+      { status: /رمز عبور|شماره موبایل|نام کامل|ایمیل|اطلاعات نامعتبر/i.test(message) ? 400 : 500 },
+    );
   }
 }
