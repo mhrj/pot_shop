@@ -8,7 +8,13 @@ import { hashPassword } from '@/lib/auth';
 export const runtime = 'nodejs';
 
 const schema = z.object({
-  token: z.string().min(16).max(200),
+  // Without an explicit message these fall through to Zod's English defaults and
+  // are returned verbatim by `issues[0]?.message` below, so a customer opening a
+  // truncated reset link would read "String must contain at least 16 character(s)".
+  token: z
+    .string()
+    .min(16, 'لینک بازیابی نامعتبر است')
+    .max(200, 'لینک بازیابی نامعتبر است'),
   // Same rule as registration — a reset must not be able to install a weaker
   // password than the policy requires.
   password: passwordSchema,

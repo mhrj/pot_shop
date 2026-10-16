@@ -84,6 +84,7 @@ async function main() {
       unitsPerCarton: 6,
       basePriceToman: 150000,
       isFeatured: true,
+      features: [{ label: 'سوراخ زهکشی دارد', enabled: true }],
     },
     {
       slug: 'ceramic-glazed-white-large',
@@ -100,6 +101,7 @@ async function main() {
       unitsPerCarton: 4,
       basePriceToman: 220000,
       isFeatured: true,
+      features: [{ label: 'سوراخ زهکشی دارد', enabled: true }],
     },
     {
       slug: 'concrete-pot-minimalist',
@@ -115,8 +117,11 @@ async function main() {
       stock: 45,
       unitsPerCarton: 2,
       basePriceToman: 380000,
-      frostProof: true,
       isFeatured: true,
+      features: [
+        { label: 'سوراخ زهکشی دارد', enabled: true },
+        { label: 'مقاوم به سرما', enabled: true },
+      ],
     },
   ];
 
@@ -145,6 +150,35 @@ async function main() {
       },
     });
     console.log('[seed] product:', created.name);
+  }
+
+  // -------------------------------------------------------------
+  // Editable site copy (about page + contact details)
+  //
+  // `update: {}` on purpose, matching the upserts above. Seeding must never
+  // overwrite copy an admin has already edited through /admin/content — it only
+  // fills in keys that do not exist yet.
+  // -------------------------------------------------------------
+  const CONTENT = [
+    { key: 'about_title', title: 'عنوان صفحه درباره ما', body: 'درباره پات شاپ' },
+    {
+      key: 'about_body',
+      title: 'متن صفحه درباره ما',
+      body: 'کار ما با خاک شروع می‌شود. سفال را روی چرخ می‌آوریم، سرامیک را لعاب می‌زنیم و بتن را در قالب می‌ریزیم — هر کدام با دست، و هیچ‌کدام دقیقاً مثل دیگری از کار درنمی‌آید. همین تفاوت‌های کوچک است که یک گلدان را از یک محصول کارخانه‌ای جدا می‌کند.\n\nسال‌هاست گلدان می‌سازیم و در این سال‌ها یک چیز را یاد گرفته‌ایم: گلدان خوب آن است که گیاه در آن راحت باشد. به همین دلیل روی زهکشی، حجم خاک و نفس‌کش بودن جنس وسواس داریم. اگر گلدانی برای گیاه شما مناسب نباشد، ترجیح می‌دهیم همان را بگوییم تا اینکه بفروشیم.\n\nاز یک عدد برای طاقچه خانه تا سفارش چند صد عددی برای یک پروژه، همه را خودمان بسته‌بندی و ارسال می‌کنیم. اگر درباره انتخاب گلدان مناسب سؤالی داشتید، تماس بگیرید؛ پاسخ دادن به همین سؤال‌ها بخش موردعلاقه ماست.',
+    },
+    { key: 'address', title: 'نشانی', body: 'تهران، خیابان ولیعصر، پلاک ۱۰۰' },
+    { key: 'phone', title: 'تلفن', body: '۰۲۱-۹۱۰۰۰۰۰۰' },
+    { key: 'email', title: 'ایمیل', body: 'info@potshop.ir' },
+    { key: 'hours', title: 'ساعات کاری', body: 'شنبه تا پنجشنبه، ۹ صبح تا ۶ عصر' },
+  ];
+
+  for (const block of CONTENT) {
+    await prisma.staticContent.upsert({
+      where: { key: block.key },
+      update: {},
+      create: { key: block.key, title: block.title, body: block.body, isPublished: true },
+    });
+    console.log('[seed] content:', block.key);
   }
 
   console.log('\n[seed] done.');

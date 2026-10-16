@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { toFa } from '@/lib/format';
+import { parseFeatures } from '@/lib/product-features';
 import TieredPricing from '@/components/product/TieredPricing';
 import ProductGallery from '@/components/product/ProductGallery';
 import Container from '@/components/ui/Container';
@@ -84,14 +85,16 @@ export default async function ProductPage({ params }: Params) {
 
   if (!product) notFound();
 
+  // `include` above pulls in every scalar, so `features` needs no change to the
+  // query. Only the ones the admin left switched on are shown.
+  const enabledFeatures = parseFeatures(product.features).filter((f) => f.enabled);
+
   const specs = [
     { k: 'متریال', v: product.material },
     { k: 'رنگ', v: product.color ?? '—' },
     { k: 'قطر دهانه', v: `${toFa(product.diameterCm)} سانتی‌متر` },
     { k: 'ارتفاع', v: `${toFa(product.heightCm)} سانتی‌متر` },
     { k: 'وزن خالی', v: `${toFa(product.weightGrams)} گرم` },
-    { k: 'سوراخ زهکشی', v: product.drainageHole ? 'دارد' : 'ندارد' },
-    { k: 'مقاوم به سرما', v: product.frostProof ? 'بله' : 'خیر' },
     { k: 'تعداد در کارتن', v: `${toFa(product.unitsPerCarton)} عدد` },
   ];
 
@@ -152,11 +155,6 @@ export default async function ProductPage({ params }: Params) {
                 {entry.tag.name}
               </span>
             ))}
-            {product.drainageHole && (
-              <span className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700">
-                سوراخ زهکشی
-              </span>
-            )}
             <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
               موجودی: {toFa(product.stock)} عدد
             </span>
@@ -192,6 +190,20 @@ export default async function ProductPage({ params }: Params) {
               ))}
             </dl>
           </section>
+
+          {enabledFeatures.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-lg font-black text-soil-900">ویژگی‌ها</h2>
+              <ul className="mt-4 space-y-2">
+                {enabledFeatures.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-flora-500" />
+                    <span className="text-soil-700/85">{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           <section className="mt-10">
             <h2 className="text-lg font-black text-soil-900">درباره این گلدان</h2>

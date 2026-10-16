@@ -82,7 +82,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
     <div className="space-y-6">
       <div className="overflow-hidden rounded-2xl border border-soil-900/10 bg-white">
         <table className="w-full text-sm">
-          <caption className="sr-only">Tiered pricing matrix based on quantity</caption>
+          <caption className="sr-only">ماتریس قیمت بر اساس تعداد</caption>
           <thead className="bg-dust-50">
             <tr className="text-soil-700/70">
               <th scope="col" className="px-4 py-3 text-start font-medium">تعداد</th>

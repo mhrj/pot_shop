@@ -73,13 +73,24 @@ export default function OrderStatusForm({
 
         <label className="block">
           <span className="text-xs font-bold text-soil-900">کد رهگیری مرسوله</span>
+          {/* `readOnly`, not `disabled`: the code is minted by the server the
+              first time an order moves to SHIPPED. `disabled` would drop the
+              value out of the form's own reading of the field, and a greyed-out
+              field that still submits its value is clearer than one that looks
+              present but is not sent. */}
           <input
             value={tracking}
             onChange={(e) => setTracking(e.target.value)}
+            readOnly
             dir="ltr"
-            placeholder="optional"
-            className="mt-1.5 w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm outline-none focus:border-flora-500"
+            placeholder="خودکار پر می‌شود"
+            aria-describedby="tracking-hint"
+            className="mt-1.5 w-full cursor-not-allowed rounded-xl border border-soil-900/15 bg-dust-50 px-3 py-2.5 text-sm text-soil-700 outline-none"
           />
+          {/* A `<span>`, not a `<p>` — `<label>` only accepts phrasing content. */}
+          <span id="tracking-hint" className="mt-1.5 block text-[11px] text-soil-700/60">
+            به صورت خودکار هنگام ثبت ارسال ایجاد می‌شود
+          </span>
         </label>
       </div>
 

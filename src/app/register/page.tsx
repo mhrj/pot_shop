@@ -120,7 +120,7 @@ export default function RegisterPage() {
               required
               autoComplete="email"
               dir="ltr"
-              placeholder="name@example.com"
+              placeholder="example@mail.com"
               className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
             />
           </label>

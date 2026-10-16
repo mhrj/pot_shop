@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import type { ProductFeature } from '@/lib/product-features';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
 
@@ -16,13 +17,12 @@ export type ProductFormData = {
   diameterCm: number;
   heightCm: number;
   weightGrams: number;
-  drainageHole: boolean;
-  frostProof: boolean;
   stock: number;
   unitsPerCarton: number;
   basePriceToman: number;
   isActive: boolean;
   isFeatured: boolean;
+  features: ProductFeature[];
   images: string[];
   tagIds: string[];
   tiers: Tier[];
@@ -32,12 +32,19 @@ const inputCls =
   'mt-1.5 w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20';
 const labelCls = 'text-xs font-bold text-soil-900';
 
-export default function ProductForm({ initial }: { initial: ProductFormData }) {
+export default function ProductForm({
+  initial,
+  knownLabels,
+}: {
+  initial: ProductFormData;
+  knownLabels: string[];
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
+  const [featureInput, setFeatureInput] = useState('');
   const [form, setForm] = useState<ProductFormData>(initial);
 
   useEffect(() => {
@@ -64,6 +71,24 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
       next[i] = { ...next[i], ...patch };
       return { ...f, tiers: next };
     });
+  }
+
+  // One-click add: every feature arrives already enabled. There is no per-row
+  // toggle any more, so a duplicate label is silently ignored rather than
+  // flipping an existing chip's state.
+  function addFeatureFromInput() {
+    const label = featureInput.trim();
+    if (!label) return;
+    if (form.features.some((f) => f.label === label)) {
+      setFeatureInput('');
+      return;
+    }
+    update('features', [...form.features, { label, enabled: true }]);
+    setFeatureInput('');
+  }
+
+  function removeFeature(i: number) {
+    update('features', form.features.filter((_, j) => j !== i));
   }
 
   function submit(e: React.FormEvent) {
@@ -256,24 +281,6 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={form.drainageHole}
-              onChange={(e) => update('drainageHole', e.target.checked)}
-              className="accent-flora-700"
-            />
-            سوراخ زهکشی دارد
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={form.frostProof}
-              onChange={(e) => update('frostProof', e.target.checked)}
-              className="accent-flora-700"
-            />
-            مقاوم به سرما
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
               checked={form.isActive}
               onChange={(e) => update('isActive', e.target.checked)}
               className="accent-flora-700"
@@ -290,6 +297,74 @@ export default function ProductForm({ initial }: { initial: ProductFormData }) {
             نمایش در صفحه اصلی
           </label>
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
+        <h2 className="mb-2 text-sm font-black text-soil-900">ویژگی‌های نمایشی</h2>
+        <p className="mb-4 text-xs text-soil-700/60">
+          این ویژگی‌ها فقط برای نمایش در صفحه محصول هستند و روی عملکرد سیستم اثر ندارند.
+        </p>
+
+        <div className="flex gap-2">
+          <input
+            list="known-feature-labels"
+            value={featureInput}
+            onChange={(e) => setFeatureInput(e.target.value)}
+            onKeyDown={(e) => {
+              // Enter would otherwise submit the whole product form — adding a
+              // feature is the intent, not saving the product.
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                addFeatureFromInput();
+              }
+            }}
+            placeholder="نام ویژگی جدید یا انتخاب از فهرست..."
+            className={inputCls}
+          />
+          {/* Native autocomplete over the labels every other product already
+              uses, so the shopkeeper does not invent a near-duplicate wording. */}
+          <datalist id="known-feature-labels">
+            {knownLabels.map((label) => (
+              <option key={label} value={label} />
+            ))}
+          </datalist>
+          <button
+            type="button"
+            onClick={addFeatureFromInput}
+            disabled={!featureInput.trim()}
+            className="mt-1.5 shrink-0 rounded-xl bg-flora-900 px-4 text-xs font-black text-white transition hover:bg-flora-700 disabled:opacity-40"
+          >
+            افزودن
+          </button>
+        </div>
+
+        {form.features.length > 0 && (
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {form.features.map((f, i) => (
+              <li
+                key={`${f.label}-${i}`}
+                className="flex items-center gap-2 rounded-full border border-flora-500/30 bg-flora-100/50 px-3 py-1.5 text-xs font-bold text-soil-900"
+              >
+                <span className="size-1.5 rounded-full bg-flora-500" />
+                <span>{f.label}</span>
+                <button
+                  type="button"
+                  onClick={() => removeFeature(i)}
+                  aria-label={`حذف ${f.label}`}
+                  className="ms-1 rounded-full text-soil-700/50 transition hover:text-red-600"
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {form.features.length === 0 && (
+          <p className="mt-3 text-xs text-soil-700/50">
+            هنوز ویژگی‌ای اضافه نشده است.
+          </p>
+        )}
       </section>
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { formatToman, toFa } from '@/lib/format';
+import { parseFeatures } from '@/lib/product-features';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -114,8 +115,7 @@ async function buildCatalogContext() {
       diameterCm: true,
       heightCm: true,
       weightGrams: true,
-      drainageHole: true,
-      frostProof: true,
+      features: true,
       stock: true,
       basePriceToman: true,
       unitsPerCarton: true,
@@ -137,10 +137,16 @@ async function buildCatalogContext() {
       const tiers = p.tiers
         .map((t) => `${toFa(t.minQuantity)}+ عدد: ${formatToman(t.unitPriceToman)} هر عدد`)
         .join(' | ');
+      // The customer-facing labels, so the assistant answers "does this pot have
+      // a drainage hole?" from the same source the product page renders.
+      const enabled = parseFeatures(p.features)
+        .filter((f) => f.enabled)
+        .map((f) => f.label)
+        .join('، ');
       return [
         `- ${p.name} (slug: ${p.slug})`,
         `  material: ${p.material} | diameter ${toFa(p.diameterCm)}cm | height ${toFa(p.heightCm)}cm | weight ${toFa(p.weightGrams)}g`,
-        `  drainage: ${p.drainageHole ? 'yes' : 'no'} | frost-proof: ${p.frostProof ? 'yes' : 'no'} | stock: ${toFa(p.stock)}`,
+        `  features: ${enabled || 'none'} | stock: ${toFa(p.stock)}`,
         `  base price: ${formatToman(p.basePriceToman)} | pack size: ${toFa(p.unitsPerCarton)} per carton`,
         `  tiers: ${tiers || 'none'}`,
       ].join('\n');

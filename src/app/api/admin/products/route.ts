@@ -34,13 +34,17 @@ const schema = z.object({
   diameterCm: z.number().min(0).max(500),
   heightCm: z.number().min(0).max(500),
   weightGrams: z.number().int().min(0).max(100000),
-  drainageHole: z.boolean(),
-  frostProof: z.boolean(),
   stock: z.number().int().min(0).max(100000),
   unitsPerCarton: z.number().int().min(1).max(200),
   basePriceToman: z.number().int().min(1000),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
+  // Display-only extras the admin names themselves; the semantic flags above
+  // are separate columns because pricing and catalogue queries read them.
+  features: z
+    .array(z.object({ label: z.string().min(1).max(80), enabled: z.boolean() }))
+    .max(20)
+    .default([]),
   images: z.array(persistedImageUrlSchema).max(10),
   tagIds: z.array(z.string().cuid()).max(20).optional().default([]),
   tiers: tiersSchema,
@@ -82,13 +86,12 @@ export async function POST(req: Request) {
       diameterCm: data.diameterCm,
       heightCm: data.heightCm,
       weightGrams: data.weightGrams,
-      drainageHole: data.drainageHole,
-      frostProof: data.frostProof,
       stock: data.stock,
       unitsPerCarton: data.unitsPerCarton,
       basePriceToman: data.basePriceToman,
       isActive: data.isActive,
       isFeatured: data.isFeatured,
+      features: data.features,
       images: {
         create: data.images.map((url, i) => ({ url, sortOrder: i, alt: data.name })),
       },

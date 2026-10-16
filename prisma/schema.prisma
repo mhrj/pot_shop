@@ -111,13 +111,18 @@ model Product {
   diameterCm    Float
   heightCm      Float
   weightGrams   Int
-  drainageHole  Boolean  @default(true)
-  frostProof    Boolean  @default(false)
 
   stock         Int      @default(0)
   unitsPerCarton Int     @default(6)
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)
+
+  // Admin-defined display-only features, stored as [{ label, enabled }].
+  // JSON rather than a table because the shopkeeper owns the whole list: it is
+  // never queried, filtered or priced against, only rendered on the product
+  // page. The two flags above (isActive, isFeatured) stay real columns because
+  // catalogue queries and ordering read them.
+  features      Json?
 
   basePriceToman Int
 
