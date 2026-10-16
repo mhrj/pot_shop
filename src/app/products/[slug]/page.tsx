@@ -11,6 +11,21 @@ export const revalidate = 600;
 
 type Params = { params: Promise<{ slug: string }> };
 
+/**
+ * Trims a long description down to roughly what a search result shows. The cut
+ * is taken at the last space so a word is not severed in half — Persian words
+ * are joined, and slicing mid-word looks like corrupted text.
+ */
+function excerpt(text: string, max: number): string {
+  const collapsed = text.replace(/\s+/g, ' ').trim();
+  if (collapsed.length <= max) return collapsed;
+
+  const cut = collapsed.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  const body = lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut;
+  return `${body.trimEnd()}…`;
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const product = await prisma.product.findUnique({
@@ -18,14 +33,28 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     select: {
       name: true,
       shortDesc: true,
+      description: true,
       images: { take: 1, orderBy: { sortOrder: 'asc' } },
     },
   });
   if (!product) return { title: 'محصول یافت نشد' };
+
+  // The curated one-liner wins; the full description is the fallback.
+  const description =
+    product.shortDesc?.trim() ||
+    (product.description ? excerpt(product.description, 160) : undefined);
+
   return {
+    // Rendered through the layout's template as "«نام» | پات شاپ".
     title: product.name,
-    description: product.shortDesc ?? undefined,
-    openGraph: { images: product.images[0]?.url ? [product.images[0].url] : [] },
+    description,
+    alternates: { canonical: `/products/${slug}` },
+    openGraph: {
+      title: `${product.name} | پات شاپ`,
+      description,
+      type: 'website',
+      images: product.images[0]?.url ? [product.images[0].url] : [],
+    },
   };
 }
 

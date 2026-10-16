@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { formatToman, toFa } from '@/lib/format';
 import { resolveTier } from '@/lib/pricing';
@@ -9,6 +10,25 @@ import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
 
 export const revalidate = 300; // ISR: 5 minutes
+
+// The home page previously inherited the layout's default title, leaving its
+// Open Graph card with no title or description of its own. `absolute` keeps the
+// brand line intact rather than running it through the layout's "%s | پات شاپ"
+// template, which would print the shop name twice.
+export const metadata: Metadata = {
+  title: {
+    absolute: 'پات شاپ | گلدان و فلاورباکس سفالی و سرامیکی',
+  },
+  description:
+    'خرید گلدان و فلاورباکس سفالی، سرامیکی و بتنی — خرده و عمده. ارسال به سراسر ایران، پرداخت امن با زرین‌پال و قیمت پله‌ای روی هر محصول.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'پات شاپ | گلدان و فلاورباکس سفالی و سرامیکی',
+    description:
+      'خرید گلدان و فلاورباکس سفالی، سرامیکی و بتنی — خرده و عمده با ارسال به سراسر ایران.',
+    type: 'website',
+  },
+};
 
 async function getFeatured() {
   return prisma.product.findMany({

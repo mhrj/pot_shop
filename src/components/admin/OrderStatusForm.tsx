@@ -43,6 +43,11 @@ export default function OrderStatusForm({
         setError(data?.message ?? 'ذخیره ناموفق بود');
         return;
       }
+      // The server mints a tracking code when an order first moves to SHIPPED,
+      // so the input has to take whatever it actually stored. `useState` reads
+      // its initialiser only on mount, so `router.refresh()` alone can never
+      // bring a generated code into this field.
+      setTracking(data?.order?.trackingCode ?? tracking);
       setSaved(true);
       router.refresh();
     });

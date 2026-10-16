@@ -13,6 +13,9 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata: Metadata = {
+  // Required for the relative canonical URLs and Open Graph image paths set by
+  // the pages below to resolve into absolute ones.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
   title: {
     default: 'پات شاپ | گلدان و فلاورباکس سفالی و سرامیکی',
     template: '%s | پات شاپ',
