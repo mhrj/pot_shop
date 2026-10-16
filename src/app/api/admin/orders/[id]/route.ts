@@ -1,45 +1,113 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/auth';
+import { getActiveAdmin } from '@/lib/auth';
+import {
+  ORDER_STATUSES,
+  checkStatusTransition,
+  isOrderStatus,
+  isPaymentStatus,
+  paymentStatusAfterCancel,
+  shouldRestoreStockOnCancel,
+} from '@/lib/orders';
 
 export const runtime = 'nodejs';
 
 type Params = { params: Promise<{ id: string }> };
 
 const schema = z.object({
-  status: z.enum(['PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELED']),
-  trackingCode: z.string().max(60).nullable().optional(),
+  status: z.enum(ORDER_STATUSES),
+  trackingCode: z.string().trim().max(60).nullable().optional(),
 });
 
 export async function PATCH(req: Request, { params }: Params) {
-  const session = await getSession();
-  if (!session || session.role !== 'ADMIN') {
+  const session = await getActiveAdmin();
+  if (!session) {
     return NextResponse.json({ message: 'دسترسی ندارید' }, { status: 403 });
   }
   const { id } = await params;
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({ message: 'اطلاعات نامعتبر' }, { status: 400 });
+    return NextResponse.json(
+      { message: parsed.error.issues[0]?.message ?? 'اطلاعات نامعتبر' },
+      { status: 400 },
+    );
   }
 
-  const existing = await prisma.order.findUnique({ where: { id } });
-  if (!existing) {
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { items: true },
+  });
+  if (!order) {
     return NextResponse.json({ message: 'سفارش یافت نشد' }, { status: 404 });
   }
 
-  const data: Record<string, unknown> = {
-    status: parsed.data.status,
-    trackingCode: parsed.data.trackingCode || null,
-  };
-  if (parsed.data.status === 'SHIPPED' && !existing.shippedAt) {
-    data.shippedAt = new Date();
-  }
-  if (parsed.data.status === 'DELIVERED' && !existing.deliveredAt) {
-    data.deliveredAt = new Date();
+  const from = isOrderStatus(order.status) ? order.status : 'PENDING';
+  const paymentStatus = isPaymentStatus(order.paymentStatus)
+    ? order.paymentStatus
+    : 'PENDING';
+  const to = parsed.data.status;
+
+  const check = checkStatusTransition({ from, to, paymentStatus });
+  if (!check.ok) {
+    return NextResponse.json({ message: check.message }, { status: 409 });
   }
 
-  const updated = await prisma.order.update({ where: { id }, data });
-  return NextResponse.json({ ok: true, order: updated });
+  const isCancelling = to === 'CANCELED' && from !== 'CANCELED';
+  // Guarded on paymentStatus === 'PAID', and the same transaction moves it to
+  // REFUNDED, so a replayed cancellation cannot decrement stock twice.
+  const restoreStock = isCancelling && shouldRestoreStockOnCancel(paymentStatus);
+
+  const data: Record<string, unknown> = {
+    status: to,
+    trackingCode: parsed.data.trackingCode?.trim() || null,
+  };
+  if (to === 'SHIPPED' && !order.shippedAt) data.shippedAt = new Date();
+  if (to === 'DELIVERED' && !order.deliveredAt) data.deliveredAt = new Date();
+  if (isCancelling) {
+    data.paymentStatus = paymentStatusAfterCancel(paymentStatus);
+  }
+
+  const updated = await prisma.$transaction(async (tx) => {
+    // Claim the transition by pinning the state this request read. `restoreStock`
+    // was decided from a read taken *before* the transaction, so without this
+    // two concurrent cancel requests would both see PAID and both put the stock
+    // back. Pinning makes the transition itself the lock: exactly one request
+    // matches, and the loser is reported as a conflict instead of double-crediting.
+    const claim = await tx.order.updateMany({
+      where: { id, status: from, paymentStatus },
+      data,
+    });
+
+    if (claim.count === 0) return null;
+
+    if (restoreStock) {
+      for (const item of order.items) {
+        if (!item.productId) continue;
+        await tx.product.updateMany({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+    }
+
+    return tx.order.findUnique({ where: { id } });
+  });
+
+  if (!updated) {
+    return NextResponse.json(
+      {
+        message:
+          'وضعیت این سفارش هم‌زمان توسط درخواست دیگری تغییر کرده است. صفحه را بازخوانی کنید.',
+      },
+      { status: 409 },
+    );
+  }
+
+  return NextResponse.json({
+    ok: true,
+    order: updated,
+    stockRestored: restoreStock,
+  });
 }

@@ -22,15 +22,25 @@ async function getFeatured() {
   });
 }
 
-async function getLandingImage(key: string) {
-  return prisma.landingImage.findUnique({
-    where: { key },
-    select: { url: true, alt: true },
+async function getLandingImages() {
+  const rows = await prisma.landingImage.findMany({
+    select: { key: true, url: true, alt: true },
   });
+  return Object.fromEntries(rows.map((r) => [r.key, r])) as Record<
+    string,
+    { key: string; url: string; alt: string | null } | undefined
+  >;
 }
 
 export default async function HomePage() {
-  const [products, heroImage, content] = await Promise.all([getFeatured(), getLandingImage('hero'), getContentMap()]);
+  const [products, landing, content] = await Promise.all([
+    getFeatured(),
+    getLandingImages(),
+    getContentMap(),
+  ]);
+  const heroImage = landing.hero;
+  const journeyImage = landing.journey;
+  const ctaImage = landing.cta;
 
   const hero = (
     <section className="relative flex min-h-[92dvh] items-center overflow-hidden pt-24 pb-16">
@@ -81,7 +91,7 @@ export default async function HomePage() {
         <div className="lg:col-span-5">
           <div className="relative aspect-4/5 overflow-hidden rounded-pot bg-dust-200 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
             <Image
-              src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723?text=Pot+Shop'}
+              src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723'}
               alt={heroImage?.alt ?? 'گلدان سفالی دست‌ساز با گیاه سبز'}
               fill
               priority
@@ -105,19 +115,64 @@ export default async function HomePage() {
         </p>
       </Container>
 
+      {journeyImage && (
+        <Container className="mt-16">
+          <div className="relative aspect-21/9 overflow-hidden rounded-pot bg-dust-200 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
+            <Image
+              src={journeyImage.url}
+              alt={journeyImage.alt ?? 'مسیر ساخت گلدان از خاک تا رویش'}
+              fill
+              sizes="(max-width: 1024px) 100vw, 80vw"
+              className="object-cover"
+            />
+          </div>
+        </Container>
+      )}
+
+      {/* Three equal cards on one baseline. The previous version pushed the
+          middle card down with an inline `marginTop`, which read as a mistake
+          rather than a design choice, and left the three boxes at visibly
+          different heights. The grid stretches its items, so the cards match
+          without any offset, and `flex-col` keeps each card's content flowing
+          from the top so the headings stay aligned across the row. */}
       <Container className="mt-16 grid gap-6 md:grid-cols-3">
         {[
-          { t: 'خاک', d: 'انتخاب متریال درست: سفال نفس‌کش، سرامیک لعاب‌دار، بتن مقاوم.', c: 'bg-dust-200' },
-          { t: 'ریشه', d: 'زهکشی اصولی و حجم کافی خاک، ریشه را از پوسیدگی حفظ می‌کند.', c: 'bg-flora-100' },
-          { t: 'رویش', d: 'بعد از آن، فقط تماشا کن. فضای خالی‌ات زنده شده است.', c: 'bg-flora-300/50' },
+          {
+            t: 'خاک',
+            d: 'انتخاب متریال درست: سفال نفس‌کش، سرامیک لعاب‌دار، بتن مقاوم.',
+            icon: '🏺',
+            card: 'bg-dust-200',
+            accent: 'border-t-dust-400',
+          },
+          {
+            t: 'ریشه',
+            d: 'زهکشی اصولی و حجم کافی خاک، ریشه را از پوسیدگی حفظ می‌کند.',
+            icon: '🪴',
+            card: 'bg-flora-100',
+            accent: 'border-t-flora-300',
+          },
+          {
+            t: 'رویش',
+            d: 'بعد از آن، فقط تماشا کن. فضای خالی‌ات زنده شده است.',
+            icon: '🌸',
+            card: 'bg-flora-300/50',
+            accent: 'border-t-flora-500',
+          },
         ].map((s, i) => (
           <div
             key={s.t}
-            className={`rounded-pot ${s.c} p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]`}
-            style={{ marginTop: i === 1 ? '1.5rem' : 0 }}
+            className={`flex flex-col rounded-pot border-t-4 ${s.accent} ${s.card} p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_44px_-16px_rgba(62,39,35,0.32)]`}
           >
-            <span className="text-xs font-bold text-soil-700/60">{toFa(i + 1)}</span>
-            <h3 className="mt-3 text-xl font-black text-soil-900">{s.t}</h3>
+            <div className="flex items-center justify-between">
+              <span
+                aria-hidden
+                className="grid size-12 place-items-center rounded-2xl bg-white/60 text-2xl"
+              >
+                {s.icon}
+              </span>
+              <span className="text-xs font-bold text-soil-700/60">{toFa(i + 1)}</span>
+            </div>
+            <h3 className="mt-5 text-xl font-black text-soil-900">{s.t}</h3>
             <p className="mt-3 text-sm leading-7 text-soil-700/80">{s.d}</p>
           </div>
         ))}
@@ -199,8 +254,26 @@ export default async function HomePage() {
   const trust = (
     <section id="wholesale" className="scroll-mt-24 py-24">
       <Container>
-        <div className="overflow-hidden rounded-pot bg-flora-900 p-10 text-flora-100 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] sm:p-14">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div className="relative overflow-hidden rounded-pot bg-flora-900 p-10 text-flora-100 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] sm:p-14">
+          {ctaImage && (
+            <>
+              <Image
+                src={ctaImage.url}
+                alt=""
+                aria-hidden
+                fill
+                sizes="100vw"
+                className="object-cover opacity-25"
+              />
+              {/* Scrim keeps body text readable over whatever the admin uploads. */}
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-l from-flora-950/95 via-flora-950/85 to-flora-900/70"
+              />
+            </>
+          )}
+
+          <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <h2 className="text-3xl font-black text-white sm:text-4xl">
                 سفارش عمده، بدون دردسر
@@ -226,7 +299,7 @@ export default async function HomePage() {
 
             <div className="rounded-pot bg-flora-950/60 p-6 backdrop-blur">
               <table className="w-full text-sm">
-                <caption className="sr-only">Sample tiered pricing matrix</caption>
+                <caption className="sr-only">ماتریس نمونه قیمت پله‌ای</caption>
                 <thead>
                   <tr className="text-flora-100/60">
                     <th scope="col" className="pb-3 text-start font-medium">

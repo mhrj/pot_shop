@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/auth';
+import { getActiveAdmin } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
@@ -20,9 +20,9 @@ const schema = z.object({
 });
 
 async function ensureAdmin() {
-  const session = await getSession();
-  if (!session || session.role !== 'ADMIN') return null;
-  return session;
+  // Re-reads the account so a demoted or deactivated admin loses API access
+  // immediately rather than when their 30-day session cookie expires.
+  return getActiveAdmin();
 }
 
 export async function PATCH(req: Request, { params }: Params) {

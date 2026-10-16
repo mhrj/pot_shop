@@ -43,9 +43,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       dir="rtl"
       className={`${vazirmatn.variable} scroll-smooth antialiased`}
     >
-      <body className="min-h-dvh bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950">
+      {/* `min-h-dvh` + `flex-col` and a `flex-1` wrapper around the page content
+          keep the footer pinned to the bottom of the viewport. Without the
+          growing wrapper, a short page (`/checkout/success`, an empty `/cart`,
+          `/login`) leaves the footer floating mid-screen with dead space below
+          it, because the body is only as tall as its content. */}
+      <body className="flex min-h-dvh flex-col bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950">
         <Header />
-        {children}
+        <div className="flex flex-1 flex-col">{children}</div>
         <footer className="border-t border-soil-900/10 bg-white/80">
           <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-soil-700/80 md:flex-row md:items-center md:justify-between md:px-8">
             <p>{content.footer_text.body}</p>

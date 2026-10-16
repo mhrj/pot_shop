@@ -1,10 +1,40 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { isPaymentAlreadyProcessed } from '@/lib/cart';
 import { zarinpalVerify, ZARINPAL_ERRORS } from '@/lib/zarinpal';
+import { isRetryableGatewayFailure } from '@/lib/orders';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+/**
+ * Thrown inside the settlement transaction when a line cannot be filled. It is
+ * distinguished from every other error so that a genuine stock shortage — the
+ * customer's payment cannot be honoured — is not confused with an
+ * infrastructure failure, which must stay retryable.
+ */
+class StockShortageError extends Error {
+  constructor(readonly productName: string) {
+    super(`insufficient stock for ${productName}`);
+    this.name = 'StockShortageError';
+  }
+}
+
+/**
+ * Purges the cached server output that renders the cart.
+ *
+ * Clearing `cartItem` in the database is not enough on its own: the cart page
+ * and the header's cart badge are server-rendered, and Next serves them from the
+ * client Router Cache, so a customer who paid could still be shown the basket
+ * they had just bought. `revalidatePath('/cart')` handles the cart page, and the
+ * layout-scoped call covers the header badge, which lives in the root layout and
+ * therefore appears on every route.
+ */
+function clearCartCaches() {
+  revalidatePath('/cart');
+  revalidatePath('/', 'layout');
+}
 
 /**
  * Zarinpal redirects the user back here with ?Authority=...&Status=OK|NOK.
@@ -33,18 +63,27 @@ export async function GET(req: Request) {
 
   if (!order) return fail('order_not_found');
 
-  // 2) Already paid — skip verification and go straight to success.
+  // 2) Already paid — the settlement below has already run for this order.
+  //    The basket is still cleared here before returning: this branch is taken
+  //    on a repeated delivery of the callback (a browser refresh on this URL, a
+  //    gateway retry, or the customer pressing back), and any of those must not
+  //    leave a bought basket sitting in the cart.
   if (isPaymentAlreadyProcessed(order)) {
+    await prisma.cartItem.deleteMany({ where: { userId: order.userId } });
+    clearCartCaches();
+
     return NextResponse.redirect(
       `${appUrl}/checkout/success?ref_id=${order.refId}&order=${order.orderNumber}`,
       { status: 303 },
     );
   }
 
-  // 3) User canceled or the gateway reported a failure.
+  // 3) User canceled or the gateway reported a failure. Guarded on the order
+  //    still being unsettled, so a late NOK delivery cannot cancel an order a
+  //    concurrent OK delivery has already paid.
   if (status !== 'OK') {
-    await prisma.order.update({
-      where: { id: order.id },
+    await prisma.order.updateMany({
+      where: { id: order.id, paymentStatus: { not: 'PAID' } },
       data: {
         paymentStatus: 'CANCELED',
         status: 'CANCELED',
@@ -61,8 +100,17 @@ export async function GET(req: Request) {
   });
 
   if (!verification.ok) {
-    await prisma.order.update({
-      where: { id: order.id },
+    // A gateway that could not be reached is not a declined payment. The
+    // customer may well have paid, so the order is left unsettled for a retry
+    // rather than recorded as FAILED.
+    if (isRetryableGatewayFailure(verification.code)) {
+      return fail('verify_unavailable', order.orderNumber);
+    }
+
+    // Guarded the same way as the cancel branch above: a decline must never
+    // overwrite a settlement another delivery has already recorded.
+    await prisma.order.updateMany({
+      where: { id: order.id, paymentStatus: { not: 'PAID' } },
       data: {
         paymentStatus: 'FAILED',
         status: 'CANCELED',
@@ -72,33 +120,17 @@ export async function GET(req: Request) {
     return fail('verify_failed', order.orderNumber);
   }
 
-  // 5) Atomic update: mark paid once, check stock before decrementing, and clear cart.
+  // 5) Settle the order exactly once. Zarinpal may deliver this callback more
+  //    than once, and two deliveries can arrive at the same time, so the
+  //    settlement is a *conditional* update: whichever request flips the order
+  //    off its unsettled state wins, and every other one is a no-op. That is
+  //    what keeps stock from being decremented twice for one payment.
+  let claimed = false;
+
   try {
     await prisma.$transaction(async (tx) => {
-      const lockedOrder = await tx.order.findUnique({
-        where: { id: order.id },
-        include: { items: true },
-      });
-
-      if (!lockedOrder || isPaymentAlreadyProcessed(lockedOrder)) {
-        return;
-      }
-
-      for (const item of lockedOrder.items) {
-        if (!item.productId) continue;
-
-        const product = await tx.product.findUnique({
-          where: { id: item.productId },
-          select: { id: true, stock: true, name: true },
-        });
-
-        if (!product || product.stock < item.quantity) {
-          throw new Error(`موجودی ${product?.name ?? 'محصول'} کافی نیست`);
-        }
-      }
-
-      await tx.order.update({
-        where: { id: lockedOrder.id },
+      const claim = await tx.order.updateMany({
+        where: { id: order.id, paymentStatus: { not: 'PAID' } },
         data: {
           paymentStatus: 'PAID',
           status: 'PAID',
@@ -109,29 +141,85 @@ export async function GET(req: Request) {
         },
       });
 
-      for (const item of lockedOrder.items) {
+      // Lost the race: another delivery already settled this order.
+      if (claim.count === 0) return;
+      claimed = true;
+
+      // Each decrement is guarded by the stock it is allowed to consume, so the
+      // check and the write cannot be interleaved by a concurrent order. A
+      // failing line throws and rolls the whole settlement back, including the
+      // PAID claim made above.
+      for (const item of order.items) {
         if (!item.productId) continue;
-        await tx.product.update({
-          where: { id: item.productId },
+
+        const decremented = await tx.product.updateMany({
+          where: { id: item.productId, stock: { gte: item.quantity } },
           data: { stock: { decrement: item.quantity } },
         });
+
+        if (decremented.count === 0) {
+          throw new StockShortageError(item.productName);
+        }
       }
 
-      await tx.cartItem.deleteMany({ where: { userId: lockedOrder.userId } });
+      await tx.cartItem.deleteMany({ where: { userId: order.userId } });
     });
-  } catch {
-    await prisma.order.update({
-      where: { id: order.id },
-      data: {
-        paymentStatus: 'FAILED',
-        status: 'CANCELED',
-        failureReason: 'موجودی محصول برای تکمیل سفارش کافی نبود',
-      },
-    });
-    return fail('stock_shortage', order.orderNumber);
+  } catch (error) {
+    if (error instanceof StockShortageError) {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          paymentStatus: 'FAILED',
+          status: 'CANCELED',
+          failureReason: `موجودی ${error.productName} برای تکمیل سفارش کافی نبود`,
+        },
+      });
+      return fail('stock_shortage', order.orderNumber);
+    }
+
+    // Anything else is our failure, not the customer's, and the gateway has
+    // already taken the money — so this is not reported as a declined payment.
+    // The error is logged for reconciliation, and the customer is sent to the
+    // success page. That page re-reads the order from the database before it
+    // claims anything, so it shows «پرداخت هنوز تکمیل نشده است» rather than a
+    // false confirmation. The order is left unsettled, so a retried callback can
+    // still settle it.
+    console.error(
+      '[payment/verify] settlement failed:',
+      error instanceof Error ? error.message : error,
+    );
+
+    const retry = new URL('/checkout/success', appUrl);
+    retry.searchParams.set('ref_id', verification.refId);
+    retry.searchParams.set('order', order.orderNumber);
+    return NextResponse.redirect(retry.toString(), { status: 303 });
   }
 
-  // 6) Send the user to the success page with the Shaparak reference.
+  if (!claimed) {
+    const settled = await prisma.order.findUnique({
+      where: { id: order.id },
+      select: { paymentStatus: true, refId: true },
+    });
+
+    if (isPaymentAlreadyProcessed(settled) && settled?.refId) {
+      // Another delivery won the claim and cleared the cart; purge the caches so
+      // this browser is not still showing the basket either.
+      clearCartCaches();
+
+      const already = new URL('/checkout/success', appUrl);
+      already.searchParams.set('ref_id', settled.refId);
+      already.searchParams.set('order', order.orderNumber);
+      return NextResponse.redirect(already.toString(), { status: 303 });
+    }
+
+    return fail('verify_failed', order.orderNumber);
+  }
+
+  // 6) The settlement committed, so the basket is now empty in the database.
+  //    Purge the cached rendering of it before sending the customer onward.
+  clearCartCaches();
+
+  // 7) Send the user to the success page with the Shaparak reference.
   const success = new URL('/checkout/success', appUrl);
   success.searchParams.set('ref_id', verification.refId);
   success.searchParams.set('order', order.orderNumber);

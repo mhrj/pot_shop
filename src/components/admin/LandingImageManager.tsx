@@ -21,9 +21,27 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
     () => Object.fromEntries(initial.map((item) => [item.key, item.url])),
     [initial],
   );
+  const altMap = useMemo(
+    () => Object.fromEntries(initial.map((item) => [item.key, item.alt ?? ''])),
+    [initial],
+  );
   const [state, setState] = useState<Record<string, string>>(map);
+  const [alts, setAlts] = useState<Record<string, string>>(altMap);
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
+  const [savingAlt, setSavingAlt] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
+
+  const persist = async (slotKey: string, url: string, alt?: string) => {
+    const res = await fetch('/api/admin/landing-images', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(alt ? { key: slotKey, url, alt } : { key: slotKey, url }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.message ?? 'ذخیره تصویر ناموفق بود');
+    setState((prev) => ({ ...prev, [slotKey]: url }));
+    router.refresh();
+  };
 
   async function handleUpload(slotKey: string, file: File | null) {
     if (!file) return;
@@ -46,21 +64,44 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
         throw new Error(uploadData?.message ?? 'آپلود تصویر ناموفق بود');
       }
 
-      const saveRes = await fetch('/api/admin/landing-images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: slotKey, url: uploadData.url }),
-      });
-
-      const saveData = await saveRes.json().catch(() => ({}));
-      if (!saveRes.ok) {
-        throw new Error(saveData?.message ?? 'ذخیره تصویر ناموفق بود');
-      }
-
-      setState((prev) => ({ ...prev, [slotKey]: uploadData.url }));
-      router.refresh();
+      await persist(slotKey, uploadData.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'عملیات ناموفق بود');
+    } finally {
+      setUploading((prev) => ({ ...prev, [slotKey]: false }));
+    }
+  }
+
+  async function saveAlt(slotKey: string) {
+    const url = state[slotKey];
+    if (!url) return;
+    setError(null);
+    setSavingAlt((prev) => ({ ...prev, [slotKey]: true }));
+    try {
+      await persist(slotKey, url, alts[slotKey] ?? '');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'ذخیره توضیح ناموفق بود');
+    } finally {
+      setSavingAlt((prev) => ({ ...prev, [slotKey]: false }));
+    }
+  }
+
+  async function clearSlot(slotKey: string) {
+    if (!confirm('این تصویر حذف شود؟ بخش مربوطه به حالت پیش‌فرض برمی‌گردد.')) return;
+    setError(null);
+    setUploading((prev) => ({ ...prev, [slotKey]: true }));
+    try {
+      const res = await fetch('/api/admin/landing-images', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: slotKey }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message ?? 'حذف تصویر ناموفق بود');
+      setState((prev) => ({ ...prev, [slotKey]: '' }));
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'حذف تصویر ناموفق بود');
     } finally {
       setUploading((prev) => ({ ...prev, [slotKey]: false }));
     }
@@ -81,7 +122,7 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
 
             {currentUrl ? (
               <div className="mt-4 overflow-hidden rounded-xl border border-soil-900/10 bg-white">
-                <img src={currentUrl} alt={slot.label} className="h-40 w-full object-cover" />
+                <img src={currentUrl} alt={alts[slot.key] || slot.label} className="h-40 w-full object-cover" />
               </div>
             ) : (
               <div className="mt-4 flex h-40 items-center justify-center rounded-xl border border-dashed border-soil-900/15 bg-white text-[11px] text-soil-700/60">
@@ -98,6 +139,36 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
               />
               {uploading[slot.key] ? 'در حال آپلود…' : 'انتخاب فایل'}
             </label>
+
+            {currentUrl && (
+              <>
+                {/* Alt text is what a screen reader announces and what shows if
+                    the image fails to load, so it is editable rather than
+                    derived from the slot key. */}
+                <label className="mt-3 block text-[11px] font-bold text-soil-700/80">
+                  توضیح تصویر (alt)
+                  <input
+                    value={alts[slot.key] ?? ''}
+                    onChange={(e) =>
+                      setAlts((prev) => ({ ...prev, [slot.key]: e.target.value }))
+                    }
+                    onBlur={() => saveAlt(slot.key)}
+                    disabled={savingAlt[slot.key]}
+                    placeholder="مثلاً: گلدان سفالی با گیاه آپارتمانی"
+                    className="mt-1.5 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-xs font-normal text-soil-900 outline-none transition focus:border-flora-500"
+                  />
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => clearSlot(slot.key)}
+                  disabled={uploading[slot.key]}
+                  className="mt-3 w-full rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+                >
+                  {uploading[slot.key] ? 'در حال حذف…' : 'حذف تصویر'}
+                </button>
+              </>
+            )}
           </div>
         );
       })}

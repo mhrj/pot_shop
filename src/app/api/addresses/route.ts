@@ -6,6 +6,21 @@ import { prisma } from '@/lib/prisma';
 
 export const runtime = 'nodejs';
 
+/** The signed-in customer's own addresses, default first. */
+export async function GET() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ message: 'ابتدا وارد شوید' }, { status: 401 });
+  }
+
+  const addresses = await prisma.address.findMany({
+    where: { userId: session.sub },
+    orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }],
+  });
+
+  return NextResponse.json({ ok: true, addresses });
+}
+
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) {

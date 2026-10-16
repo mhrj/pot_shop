@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getActiveAdmin } from '@/lib/auth';
 import { saveUploadedImage } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
-  const session = await getSession();
-  if (!session || session.role !== 'ADMIN') {
+  const session = await getActiveAdmin();
+  if (!session) {
     return NextResponse.json({ message: 'دسترسی ندارید' }, { status: 403 });
   }
 

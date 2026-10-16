@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
+import TagDeleteButton from '@/components/admin/TagDeleteButton';
 
 async function createTag(formData: FormData) {
   'use server';
@@ -56,11 +57,7 @@ export default async function AdminTagsPage() {
               <p className="font-bold text-soil-900">{tag.name}</p>
               <p className="mt-1 text-xs text-soil-700/60">{tag._count.products} محصول مرتبط</p>
             </div>
-            <form action={async () => { 'use server'; await prisma.tag.delete({ where: { id: tag.id } }).catch(() => undefined); }}>
-              <button type="submit" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[11px] font-bold text-red-700">
-                حذف
-              </button>
-            </form>
+            <TagDeleteButton tagId={tag.id} tagName={tag.name} />
           </div>
         ))}
       </div>

@@ -6,6 +6,51 @@ export { getZarinpalConfig };
 // Zarinpal expects amounts in Rials, not Toman.
 export const tomanToRial = (toman: number) => Math.round(toman) * 10;
 
+/** The envelope both v4 endpoints answer with. */
+type ZarinpalResponse = {
+  data?: {
+    authority?: string;
+    code?: number;
+    ref_id?: string | number;
+    card_pan?: string;
+  };
+  errors?: { code?: number; message?: string };
+};
+
+/**
+ * A timeout or a DNS/TLS failure *rejects* the fetch rather than returning a
+ * status. Both callers treat "not ok" as a handled gateway failure, so a
+ * rejection has to be converted into one here: otherwise the request path would
+ * 500 and strand the PENDING order it had just created, and the verify path
+ * would 500 on a payment that may well have succeeded.
+ */
+const GATEWAY_UNREACHABLE =
+  'ارتباط با درگاه پرداخت برقرار نشد. لطفاً چند لحظه بعد دوباره تلاش کنید.';
+const GATEWAY_TIMEOUT_MS = 15_000;
+
+type GatewayAttempt =
+  | { reached: true; res: Response; json: ZarinpalResponse | null }
+  | { reached: false };
+
+async function postZarinpal(url: string, body: unknown): Promise<GatewayAttempt> {
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(body),
+      cache: 'no-store',
+      signal: AbortSignal.timeout(GATEWAY_TIMEOUT_MS),
+    });
+    const json = (await res.json().catch(() => null)) as ZarinpalResponse | null;
+    return { reached: true, res, json };
+  } catch {
+    return { reached: false };
+  }
+}
+
+const NOT_ENABLED =
+  'درگاه پرداخت در این محیط فعال نیست. لطفاً تنظیمات زرین‌پال را بررسی کنید.';
+
 export type ZarinpalRequestResult =
   | { ok: true; authority: string; redirectUrl: string; code: number }
   | { ok: false; code: number; message: string };
@@ -21,14 +66,10 @@ export async function zarinpalRequest(params: {
   const { enabled, host, merchantId } = getZarinpalConfig();
 
   if (!enabled || !merchantId) {
-    return {
-      ok: false,
-      code: 503,
-      message: 'درگاه پرداخت در این محیط فعال نیست. لطفاً تنظیمات زرین‌پال را بررسی کنید.',
-    };
+    return { ok: false, code: 503, message: NOT_ENABLED };
   }
 
-  const body = {
+  const attempt = await postZarinpal(`${host}/pg/v4/payment/request.json`, {
     merchant_id: merchantId,
     amount: tomanToRial(params.amountToman),
     callback_url: params.callbackUrl,
@@ -38,19 +79,16 @@ export async function zarinpalRequest(params: {
       email: params.email,
       order_id: params.orderId,
     },
-  };
-
-  const res = await fetch(`${host}/pg/v4/payment/request.json`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify(body),
-    cache: 'no-store',
-    signal: AbortSignal.timeout(15_000),
   });
 
-  const json = await res.json().catch(() => null);
+  if (!attempt.reached) {
+    return { ok: false, code: 502, message: GATEWAY_UNREACHABLE };
+  }
 
-  if (!res.ok || !json?.data?.authority) {
+  const { res, json } = attempt;
+  const data = json?.data;
+
+  if (!res.ok || !data?.authority) {
     return {
       ok: false,
       code: json?.errors?.code ?? res.status,
@@ -60,9 +98,9 @@ export async function zarinpalRequest(params: {
 
   return {
     ok: true,
-    authority: json.data.authority as string,
-    code: json.data.code as number,
-    redirectUrl: `${host}/pg/StartPay/${json.data.authority}`,
+    authority: data.authority,
+    code: data.code ?? 100,
+    redirectUrl: `${host}/pg/StartPay/${data.authority}`,
   };
 }
 
@@ -77,34 +115,32 @@ export async function zarinpalVerify(params: {
   const { enabled, host, merchantId } = getZarinpalConfig();
 
   if (!enabled || !merchantId) {
-    return {
-      ok: false,
-      code: 503,
-      message: 'درگاه پرداخت در این محیط فعال نیست. لطفاً تنظیمات زرین‌پال را بررسی کنید.',
-    };
+    return { ok: false, code: 503, message: NOT_ENABLED };
   }
 
-  const res = await fetch(`${host}/pg/v4/payment/verify.json`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({
-      merchant_id: merchantId,
-      amount: tomanToRial(params.amountToman),
-      authority: params.authority,
-    }),
-    cache: 'no-store',
-    signal: AbortSignal.timeout(15_000),
+  const attempt = await postZarinpal(`${host}/pg/v4/payment/verify.json`, {
+    merchant_id: merchantId,
+    amount: tomanToRial(params.amountToman),
+    authority: params.authority,
   });
 
-  const json = await res.json().catch(() => null);
-  const code = json?.data?.code ?? json?.errors?.code ?? res.status;
+  if (!attempt.reached) {
+    return { ok: false, code: 502, message: GATEWAY_UNREACHABLE };
+  }
 
-  if (code === 100 || code === 101) {
+  const { res, json } = attempt;
+  const data = json?.data;
+  const code = data?.code ?? json?.errors?.code ?? res.status;
+
+  // A ref_id is required, not merely a success code: the verify route treats a
+  // stored refId as its marker that the order is already settled, so recording a
+  // PAID order without one would leave the callback replayable.
+  if ((code === 100 || code === 101) && data?.ref_id != null) {
     return {
       ok: true,
       code,
-      refId: String(json.data.ref_id),
-      cardPan: json.data.card_pan ?? undefined,
+      refId: String(data.ref_id),
+      cardPan: data.card_pan ?? undefined,
     };
   }
 

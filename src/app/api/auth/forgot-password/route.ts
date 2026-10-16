@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { hashToken, createResetToken, sendPasswordResetEmail, getRecoverySupportMessage } from '@/lib/password-reset';
+import {
+  hashToken,
+  createResetToken,
+  sendPasswordResetEmail,
+  getRecoverySupportMessage,
+  isEmailDeliveryConfigured,
+} from '@/lib/password-reset';
 import { getEnv } from '@/lib/env';
 
 export const runtime = 'nodejs';
@@ -17,6 +23,16 @@ export async function POST(req: Request) {
       { message: parsed.error.issues[0]?.message ?? 'اطلاعات نامعتبر' },
       { status: 400 },
     );
+  }
+
+  // Checked before the account lookup so the reply is identical whether or not
+  // the address is registered: returning the "email is unavailable" notice only
+  // for accounts that exist would turn this endpoint into an enumeration oracle.
+  if (!isEmailDeliveryConfigured()) {
+    return NextResponse.json({
+      ok: true,
+      message: `ارسال ایمیل بازیابی در این محیط فعال نیست. ${getRecoverySupportMessage()}`,
+    });
   }
 
   const email = parsed.data.email.toLowerCase();

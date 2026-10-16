@@ -70,7 +70,7 @@ export async function getSession(): Promise<SessionPayload | null> {
 export async function getCurrentUser() {
   const session = await getSession();
   if (!session) return null;
-  return prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: session.sub },
     select: {
       id: true,
@@ -81,6 +81,35 @@ export async function getCurrentUser() {
       isActive: true,
     },
   });
+
+  // A deactivated account must lose access at once, not whenever its 30-day
+  // cookie happens to expire.
+  if (!user || !user.isActive) return null;
+
+  return user;
+}
+
+/**
+ * Session and admin role *re-read from the database*, for API routes.
+ *
+ * The session cookie carries a role that stays valid for 30 days, so checking
+ * the cookie alone would let an administrator who has since been demoted or
+ * deactivated keep calling the admin API until it expired. Route handlers use
+ * this; page components keep using `requireAdmin`, which redirects instead of
+ * returning 403.
+ */
+export async function getActiveAdmin() {
+  const session = await getSession();
+  if (!session || session.role !== 'ADMIN') return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.sub },
+    select: { role: true, isActive: true },
+  });
+
+  if (!user || !user.isActive || user.role !== 'ADMIN') return null;
+
+  return session;
 }
 
 export async function requireUser() {

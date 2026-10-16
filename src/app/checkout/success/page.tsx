@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { getSession } from '@/lib/auth';
 import { formatToman, toFa, formatDateFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
 
@@ -8,7 +9,10 @@ type Props = {
 };
 
 export default async function SuccessPage({ searchParams }: Props) {
-  const { ref_id, order: orderNumber } = await searchParams;
+  const [{ ref_id, order: orderNumber }, session] = await Promise.all([
+    searchParams,
+    getSession(),
+  ]);
 
   const order = orderNumber
     ? await prisma.order.findUnique({
@@ -17,7 +21,15 @@ export default async function SuccessPage({ searchParams }: Props) {
       })
     : null;
 
-  const isPaid = order?.paymentStatus === 'PAID' && !!order.refId && (!ref_id || order.refId === ref_id);
+  const isPaid =
+    order?.paymentStatus === 'PAID' && !!order.refId && (!ref_id || order.refId === ref_id);
+
+  // The gateway return is a top-level navigation, so the customer's own session
+  // cookie is normally present. Without it the order still confirms, but its
+  // figures are withheld: the order number alone should not disclose what
+  // someone else paid.
+  const isOwner =
+    !!session && !!order && (session.sub === order.userId || session.role === 'ADMIN');
 
   if (!isPaid) {
     return (
@@ -72,14 +84,14 @@ export default async function SuccessPage({ searchParams }: Props) {
             <dt className="text-soil-700/70">شماره سفارش</dt>
             <dd className="font-bold text-soil-900">{toFa(orderNumber ?? '—')}</dd>
           </div>
-          <div className="flex justify-between gap-4 px-5 py-4">
-            <dt className="text-soil-700/70">کد پیگیری پرداخت (شاپرک)</dt>
-            <dd className="font-mono font-bold text-flora-900" dir="ltr">
-              {toFa(ref_id ?? order?.refId ?? '—')}
-            </dd>
-          </div>
-          {order && (
+          {isOwner && order && (
             <>
+              <div className="flex justify-between gap-4 px-5 py-4">
+                <dt className="text-soil-700/70">کد پیگیری پرداخت (شاپرک)</dt>
+                <dd className="font-mono font-bold text-flora-900" dir="ltr">
+                  {toFa(order.refId ?? ref_id ?? '—')}
+                </dd>
+              </div>
               <div className="flex justify-between gap-4 px-5 py-4">
                 <dt className="text-soil-700/70">مبلغ پرداخت‌شده</dt>
                 <dd className="font-bold text-soil-900">{formatToman(order.totalToman)}</dd>
@@ -97,6 +109,15 @@ export default async function SuccessPage({ searchParams }: Props) {
             </>
           )}
         </dl>
+
+        {!isOwner && (
+          <p className="mt-4 text-[11px] leading-6 text-soil-700/60">
+            جزئیات این سفارش فقط برای صاحب حساب نمایش داده می‌شود.{' '}
+            <Link href="/login" className="font-bold text-flora-700 underline">
+              ورود به حساب
+            </Link>
+          </p>
+        )}
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link

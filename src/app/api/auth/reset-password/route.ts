@@ -2,13 +2,16 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { hashToken, isPasswordResetTokenValid } from '@/lib/password-reset';
+import { passwordSchema } from '@/lib/password-policy';
 import { hashPassword } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
 const schema = z.object({
   token: z.string().min(16).max(200),
-  password: z.string().min(8, 'رمز عبور حداقل ۸ کاراکتر است'),
+  // Same rule as registration — a reset must not be able to install a weaker
+  // password than the policy requires.
+  password: passwordSchema,
 });
 
 export async function POST(req: Request) {

@@ -91,6 +91,19 @@ function limited(key: string, max = 20, windowMs = 60_000) {
   return rec.count > max;
 }
 
+/**
+ * Provider chat histories must open with a user turn — Gemini rejects a
+ * history whose first entry is the model's. The widget seeds its thread with
+ * the assistant greeting, so leading model turns are dropped here rather than
+ * trusting every caller to strip them.
+ */
+function toProviderHistory(
+  messages: Array<{ role: 'user' | 'model'; content: string }>,
+) {
+  const firstUser = messages.findIndex((m) => m.role === 'user');
+  return firstUser === -1 ? [] : messages.slice(firstUser);
+}
+
 async function buildCatalogContext() {
   const products = await prisma.product.findMany({
     where: { isActive: true },
@@ -186,8 +199,9 @@ ${catalog}
 `.trim();
 
   try {
-    const history = messages.slice(0, -1);
-    const last = messages[messages.length - 1].content;
+    const thread = toProviderHistory(messages);
+    const last = thread[thread.length - 1]?.content ?? messages[messages.length - 1].content;
+    const history = thread.slice(0, -1);
 
     const raw =
       provider === 'groq'
@@ -221,7 +235,12 @@ ${catalog}
 
     return NextResponse.json({ ok: true, reply, escalated });
   } catch (err) {
-    console.error('[chat] Gemini error:', err);
+    // Only the message is logged: provider SDK errors can embed the request URL,
+    // which carries the API key as a query parameter.
+    console.error(
+      `[chat] ${provider} request failed:`,
+      err instanceof Error ? err.message : 'unknown error',
+    );
     return NextResponse.json(
       { message: 'دستیار الان در دسترس نیست. لطفاً با پشتیبانی تماس بگیرید.' },
       { status: 502 },

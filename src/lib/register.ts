@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { passwordSchema } from '@/lib/password-policy';
 
 export const registrationSchema = z.object({
   fullName: z.string().trim().min(2, 'نام کامل باید حداقل ۲ کاراکتر باشد').max(80, 'نام کامل بیش از حد مجاز است'),
@@ -14,14 +15,7 @@ export const registrationSchema = z.object({
     .min(1, 'ایمیل الزامی است')
     .email('ایمیل معتبر نیست')
     .transform((value) => value.toLowerCase()),
-  password: z
-    .string()
-    .min(8, 'رمز عبور باید حداقل ۸ نویسه باشد')
-    .max(128, 'رمز عبور بیش از حد مجاز است')
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/,
-      'رمز عبور باید شامل حرف بزرگ، حرف کوچک، عدد و نماد باشد',
-    ),
+  password: passwordSchema,
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema> & {

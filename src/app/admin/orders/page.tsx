@@ -3,13 +3,15 @@ import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 const FILTERS = [
   { key: 'all', label: 'همه' },
+  { key: 'PENDING', label: 'در انتظار' },
   { key: 'PAID', label: 'پرداخت‌شده' },
   { key: 'PROCESSING', label: 'در حال آماده‌سازی' },
   { key: 'SHIPPED', label: 'ارسال‌شده' },
-  { key: 'PENDING', label: 'در انتظار' },
+  { key: 'DELIVERED', label: 'تحویل‌شده' },
   { key: 'CANCELED', label: 'لغو‌شده' },
 ];
 
@@ -77,6 +79,7 @@ export default async function AdminOrdersPage({
                   <th className="px-4 py-3 text-start font-medium">مشتری</th>
                   <th className="px-4 py-3 text-start font-medium">اقلام</th>
                   <th className="px-4 py-3 text-start font-medium">مبلغ</th>
+                  <th className="px-4 py-3 text-start font-medium">پرداخت</th>
                   <th className="px-4 py-3 text-start font-medium">وضعیت</th>
                   <th className="px-4 py-3 text-start font-medium">تاریخ</th>
                   <th className="px-4 py-3 text-start font-medium"></th>
@@ -93,6 +96,9 @@ export default async function AdminOrdersPage({
                       {toFa(o._count.items)} قلم
                     </td>
                     <td className="px-4 py-3.5 font-bold">{formatToman(o.totalToman)}</td>
+                    <td className="px-4 py-3.5">
+                      <StatusBadge kind="payment" value={o.paymentStatus} />
+                    </td>
                     <td className="px-4 py-3.5">
                       <OrderStatusBadge status={o.status} />
                     </td>

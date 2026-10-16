@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/auth';
+import { getActiveAdmin } from '@/lib/auth';
 import { persistedImageUrlSchema } from '@/lib/image-validation';
 
 export const runtime = 'nodejs';
@@ -13,6 +13,18 @@ const tierSchema = z.object({
   unitPriceToman: z.number().int().min(0),
   label: z.string().max(50).optional().default(''),
 });
+
+const tiersSchema = z
+  .array(tierSchema)
+  .min(1)
+  .max(5)
+  // The pricing engine falls back to the *lowest* tier when a quantity is below
+  // every threshold, so a catalogue whose first tier starts at 5 would sell
+  // single units at the 5-unit price — silently under the product's own base
+  // price. A tier at 1 is what makes a single unit's price explicit.
+  .refine((tiers) => tiers.some((t) => t.minQuantity === 1), {
+    message: 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود',
+  });
 
 const schema = z.object({
   slug: z.string().min(2).max(120).regex(/^[a-z0-9-]+$/),
@@ -33,13 +45,13 @@ const schema = z.object({
   isFeatured: z.boolean(),
   images: z.array(persistedImageUrlSchema).max(10),
   tagIds: z.array(z.string().cuid()).max(20).optional().default([]),
-  tiers: z.array(tierSchema).min(1).max(5),
+  tiers: tiersSchema,
 });
 
 async function ensureAdmin() {
-  const session = await getSession();
-  if (!session || session.role !== 'ADMIN') return null;
-  return session;
+  // Re-reads the account so a demoted or deactivated admin loses API access
+  // immediately rather than when their 30-day session cookie expires.
+  return getActiveAdmin();
 }
 
 export async function PATCH(req: Request, { params }: Params) {

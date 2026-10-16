@@ -64,12 +64,29 @@ export async function addToCart(
     select: { id: true, stock: true },
   });
   if (!product) throw new Error('محصول یافت نشد');
-  if (product.stock < quantity) throw new Error('موجودی کافی نیست');
+
+  // Validate the resulting line, not just this increment: adding 10 to a cart
+  // that already holds 10 must fail against a stock of 15. Checkout re-checks
+  // stock before creating an order, so this only spares the customer a trip to
+  // the gateway for a basket that cannot be filled — it is not the authority.
+  const existing = await prisma.cartItem.findUnique({
+    where: { userId_productId: { userId, productId } },
+    select: { quantity: true },
+  });
+  const target = (existing?.quantity ?? 0) + quantity;
+
+  if (product.stock < target) {
+    throw new Error(
+      existing
+        ? `موجودی کافی نیست — ${existing.quantity} عدد در سبد شماست و حداکثر موجودی ${product.stock} عدد است`
+        : 'موجودی کافی نیست',
+    );
+  }
 
   return prisma.cartItem.upsert({
     where: { userId_productId: { userId, productId } },
-    update: { quantity: { increment: quantity } },
-    create: { userId, productId, quantity },
+    update: { quantity: target },
+    create: { userId, productId, quantity: target },
   });
 }
 

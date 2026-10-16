@@ -32,10 +32,15 @@ export async function POST(req: Request) {
 
   const userId = session.sub;
 
-  // 1) Address must belong to the authenticated user.
-  const address = await prisma.address.findFirst({
-    where: { id: parsed.data.addressId, userId },
-  });
+  // 1) The address must belong to the authenticated user. The account email is
+  //    sent to the gateway as optional metadata; the session cookie carries no
+  //    email, so it is read from the account rather than forwarded as undefined.
+  const [address, account] = await Promise.all([
+    prisma.address.findFirst({
+      where: { id: parsed.data.addressId, userId },
+    }),
+    prisma.user.findUnique({ where: { id: userId }, select: { email: true } }),
+  ]);
   if (!address) {
     return NextResponse.json({ message: 'آدرس یافت نشد' }, { status: 404 });
   }
@@ -159,7 +164,7 @@ export async function POST(req: Request) {
     description: `سفارش ${order.orderNumber} — پات شاپ`,
     callbackUrl,
     mobile: address.phone,
-    email: session.email as string | undefined,
+    email: account?.email ?? undefined,
     orderId: order.id,
   });
 

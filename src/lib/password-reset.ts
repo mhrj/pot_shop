@@ -36,6 +36,10 @@ export function getRecoverySupportMessage() {
   return 'برای بازیابی رمز عبور، لطفاً با پشتیبانی فروشگاه تماس بگیرید.';
 }
 
+export function isEmailDeliveryConfigured() {
+  return !!getEnv('RESEND_API_KEY');
+}
+
 export async function sendPasswordResetEmail(payload: ResetEmailPayload) {
   const apiKey = getEnv('RESEND_API_KEY');
   const from = getEnv('EMAIL_FROM', 'no-reply@localhost');

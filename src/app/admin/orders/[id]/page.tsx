@@ -4,6 +4,7 @@ import { requireAdmin } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import OrderStatusForm from '@/components/admin/OrderStatusForm';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -70,7 +71,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           <dl className="mt-3 space-y-2 text-sm">
             <div className="flex justify-between gap-3">
               <dt className="text-soil-700/70">وضعیت پرداخت</dt>
-              <dd className="font-bold text-soil-900">{order.paymentStatus}</dd>
+              <dd><StatusBadge kind="payment" value={order.paymentStatus} /></dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-soil-700/70">مبلغ کل</dt>

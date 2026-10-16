@@ -1,10 +1,10 @@
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { toFa } from '@/lib/format';
 import TieredPricing from '@/components/product/TieredPricing';
+import ProductGallery from '@/components/product/ProductGallery';
 import Container from '@/components/ui/Container';
 
 export const revalidate = 600;
@@ -97,36 +97,15 @@ export default async function ProductPage({ params }: Params) {
 
       <div className="grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-6">
-          <div className="relative aspect-square overflow-hidden rounded-pot bg-dust-100 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
-            {product.images[0] && (
-              <Image
-                src={product.images[0].url}
-                alt={product.images[0].alt ?? product.name}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            )}
-          </div>
-          {product.images.length > 1 && (
-            <ul className="mt-4 grid grid-cols-4 gap-3">
-              {product.images.slice(1, 5).map((img) => (
-                <li
-                  key={img.id}
-                  className="relative aspect-square overflow-hidden rounded-xl bg-dust-100"
-                >
-                  <Image
-                    src={img.url}
-                    alt={img.alt ?? product.name}
-                    fill
-                    sizes="120px"
-                    className="object-cover"
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
+          <ProductGallery
+            images={product.images.map((img) => ({
+              id: img.id,
+              url: img.url,
+              alt: img.alt,
+            }))}
+            productName={product.name}
+            soldOut={product.stock <= 0}
+          />
         </div>
 
         <div className="lg:col-span-6">

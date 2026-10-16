@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { getEnv } from '@/lib/env';
+import { IMAGE_EXTENSION_BY_TYPE, sniffImageType } from '@/lib/image-validation';
 
 export type UploadKind = 'product' | 'landing';
 
@@ -15,30 +16,14 @@ function slugify(value: string) {
     .slice(0, 80) || 'upload';
 }
 
-function inferMimeType(file: File) {
+/**
+ * The type the client claimed, or '' when it declined to say. Kept only so a
+ * claim that contradicts the real content can be rejected; it never decides how
+ * the file is stored.
+ */
+function declaredMimeType(file: File) {
   const type = file.type && file.type !== 'application/octet-stream' ? file.type : '';
-  if (allowedMimeTypes.has(type)) return type;
-
-  const ext = path.extname(file.name || '').toLowerCase();
-  const byExt: Record<string, string> = {
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.png': 'image/png',
-    '.webp': 'image/webp',
-    '.avif': 'image/avif',
-    '.gif': 'image/gif',
-  };
-
-  return byExt[ext] ?? type;
-}
-
-function getExtension(file: File, mimeType: string) {
-  if (mimeType === 'image/jpeg') return '.jpg';
-  if (mimeType === 'image/png') return '.png';
-  if (mimeType === 'image/webp') return '.webp';
-  if (mimeType === 'image/avif') return '.avif';
-  if (mimeType === 'image/gif') return '.gif';
-  return path.extname(file.name || '').toLowerCase() || '.png';
+  return allowedMimeTypes.has(type) ? type : '';
 }
 
 export async function saveUploadedImage(file: File, kind: UploadKind = 'product') {
@@ -46,14 +31,28 @@ export async function saveUploadedImage(file: File, kind: UploadKind = 'product'
     throw new Error('فایل نامعتبر است');
   }
 
-  const mimeType = inferMimeType(file);
-  if (!allowedMimeTypes.has(mimeType)) {
-    throw new Error('فقط فایل‌های تصویری با فرمت JPG، PNG، WebP، AVIF یا GIF مجاز هستند');
+  const bytes = new Uint8Array(await file.arrayBuffer());
+
+  if (bytes.byteLength === 0) {
+    throw new Error('فایل ارسال‌شده خالی است');
   }
 
-  const bytes = new Uint8Array(await file.arrayBuffer());
   if (bytes.byteLength > maxBytes) {
     throw new Error('حجم تصویر بیش از ۵ مگابایت است');
+  }
+
+  // Decide the format from the bytes themselves. The filename extension and the
+  // client's Content-Type are both attacker-controlled and are not trusted.
+  const detected = sniffImageType(bytes);
+  if (!detected) {
+    throw new Error(
+      'محتوای فایل یک تصویر معتبر نیست. فقط JPG، PNG، WebP، AVIF یا GIF پذیرفته می‌شود.',
+    );
+  }
+
+  const declared = declaredMimeType(file);
+  if (declared && declared !== detected) {
+    throw new Error('نوع اعلام‌شده فایل با محتوای واقعی آن مطابقت ندارد');
   }
 
   const provider = getEnv('IMAGE_STORAGE_PROVIDER', 'local').toLowerCase();
@@ -67,7 +66,7 @@ export async function saveUploadedImage(file: File, kind: UploadKind = 'product'
   await mkdir(uploadDir, { recursive: true });
 
   const baseName = `${Date.now()}-${slugify(file.name || 'image')}`;
-  const fileName = `${baseName}${getExtension(file, mimeType)}`;
+  const fileName = `${baseName}${IMAGE_EXTENSION_BY_TYPE[detected]}`;
   const finalPath = path.join(uploadDir, fileName);
 
   await writeFile(finalPath, Buffer.from(bytes));
