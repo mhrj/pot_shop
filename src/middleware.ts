@@ -5,14 +5,21 @@ const PROTECTED = ['/dashboard', '/checkout', '/admin'];
 const ADMIN_ONLY = ['/admin'];
 const AUTH_PAGES = ['/login', '/register'];
 
+// Carved out of the /checkout prefix. The gateway returns the customer here as
+// a top-level navigation, and the ref_id it appends is itself the proof of
+// payment — sending them to /login on the way out of a finished purchase means
+// they never see the confirmation. `/checkout` itself, and any other child of
+// it, stays protected.
+const PUBLIC_CHECKOUT = ['/checkout/success', '/checkout/failed'];
+
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const session = token ? await verifySessionToken(token) : null;
 
-  const isProtected = PROTECTED.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
-  );
+  const isProtected =
+    PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`)) &&
+    !PUBLIC_CHECKOUT.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   const isAdminOnly = ADMIN_ONLY.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   );

@@ -29,7 +29,10 @@ export default function PersianChatbot() {
   useEffect(() => {
     let sid = sessionStorage.getItem('ps_chat_sid');
     if (!sid) {
-      sid = crypto.randomUUID();
+      sid =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `sid-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
       sessionStorage.setItem('ps_chat_sid', sid);
     }
     sessionIdRef.current = sid;
@@ -150,11 +153,10 @@ export default function PersianChatbot() {
                   className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13px] leading-7 whitespace-pre-line ${
-                      m.role === 'user'
+                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13px] leading-7 whitespace-pre-line ${m.role === 'user'
                         ? 'bg-flora-900 text-white'
                         : 'bg-white text-soil-900 shadow-sm'
-                    }`}
+                      }`}
                   >
                     {m.content}
 

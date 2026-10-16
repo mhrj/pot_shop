@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PasswordInput from '@/components/ui/PasswordInput';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -127,27 +128,23 @@ export default function RegisterPage() {
 
           <label className="block">
             <span className="text-xs font-bold text-soil-900">رمز عبور</span>
-            <input
-              type="password"
+            <PasswordInput
               value={form.password}
               onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
               required
               autoComplete="new-password"
-              dir="ltr"
-              className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+              className="mt-2"
             />
           </label>
 
           <label className="block">
             <span className="text-xs font-bold text-soil-900">تأیید رمز عبور</span>
-            <input
-              type="password"
+            <PasswordInput
               value={form.confirmPassword}
               onChange={(e) => setForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}
               required
               autoComplete="new-password"
-              dir="ltr"
-              className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+              className="mt-2"
             />
           </label>
         </div>

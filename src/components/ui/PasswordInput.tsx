@@ -1,0 +1,88 @@
+'use client';
+
+import { forwardRef, useState } from 'react';
+
+type Props = React.InputHTMLAttributes<HTMLInputElement>;
+
+/**
+ * A password field with a reveal toggle.
+ *
+ * The sides are spelled physically (`pl-11`, `left-2`) on purpose. The input is
+ * pinned to `dir="ltr"` because passwords are typed in Latin, but the button is
+ * a sibling of that input, so its `end-*` resolves against the page's direction
+ * — RTL, where the inline end is the left edge. Mixing the two conventions puts
+ * the icon on the left while padding the right edge, and a long password then
+ * runs underneath the icon. Physical values stay correct whichever direction the
+ * surrounding page uses.
+ */
+const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput(
+  { className, ...props },
+  ref,
+) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className="relative">
+      <input
+        {...props}
+        ref={ref}
+        type={visible ? 'text' : 'password'}
+        dir="ltr"
+        className={
+          'w-full rounded-xl border border-soil-900/15 py-3 pr-4 pl-11 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 ' +
+          (className ?? '')
+        }
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((v) => !v)}
+        aria-label={visible ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}
+        aria-pressed={visible}
+        tabIndex={-1}
+        className="absolute top-1/2 left-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-soil-700/60 transition hover:bg-dust-100 hover:text-soil-900"
+      >
+        {visible ? <EyeOffIcon /> : <EyeIcon />}
+      </button>
+    </div>
+  );
+});
+
+function EyeIcon() {
+  return (
+    <svg
+      className="size-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg
+      className="size-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+      <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c6.5 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+      <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3.5 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+      <line x1="2" y1="2" x2="22" y2="22" />
+    </svg>
+  );
+}
+
+export default PasswordInput;
