@@ -14,9 +14,10 @@ type Props = {
     weightGrams: number;
     unitsPerCarton?: number;
     stock: number;
-    bundleSize: number;
-    bundleLabel: string | null;
+    bundleSize?: number;
+    bundleLabel?: string | null;
     bundleItems?: { title: string; description: string }[] | null;
+    minOrderQuantity?: number;
     allowBatchDiscount?: boolean;
   };
   tiers: Tier[];
@@ -31,7 +32,11 @@ export default function TieredPricing({
   allowBatchDiscount,
 }: Props) {
   const allowBatch = allowBatchDiscount ?? product.allowBatchDiscount ?? true;
-  const [qty, setQty] = useState(product.bundleSize > 1 ? product.bundleSize : 1);
+  const isBundle = Boolean(product.bundleLabel) && (product.bundleSize || 1) > 1;
+  const step = isBundle ? (product.bundleSize || 1) : 1;
+  const minQty = product.minOrderQuantity || product.bundleSize || 1;
+
+  const [qty, setQty] = useState(minQty);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
@@ -71,13 +76,12 @@ export default function TieredPricing({
   }, [allowBatch, qty, sorted, product.basePriceToman]);
 
   const clamp = (n: number) => {
-    const step = product.bundleSize > 1 ? product.bundleSize : 1;
-    const raw = Math.floor(n) || step;
-    const units = Math.max(1, Math.round(raw / step));
-    const multiple = units * step;
-    const maxUnits = Math.max(1, Math.floor(product.stock / step));
-    const maxQty = maxUnits * step;
-    return Math.max(step, Math.min(maxQty, multiple));
+    let val = Math.max(minQty, Math.floor(n));
+    if (step > 1) {
+      val = Math.round(val / step) * step;
+      if (val < minQty) val = Math.ceil(minQty / step) * step;
+    }
+    return Math.min(product.stock, val);
   };
 
   const handleAdd = () => {
@@ -105,7 +109,7 @@ export default function TieredPricing({
     });
   };
 
-  const outOfStock = product.stock <= 0 || product.stock < (product.bundleSize > 1 ? product.bundleSize : 1);
+  const outOfStock = product.stock <= 0 || product.stock < minQty;
 
   return (
     <div className="space-y-6">
@@ -162,17 +166,17 @@ export default function TieredPricing({
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-soil-900">تعداد</span>
-            {product.bundleSize > 1 && (
+            {isBundle && (
               <span className="text-xs text-soil-700/70">
-                ({toFa(Math.round(qty / product.bundleSize))} {product.bundleLabel || 'بسته'})
+                ({toFa(Math.round(qty / (product.bundleSize || 1)))} {product.bundleLabel || 'بسته'})
               </span>
             )}
           </div>
           <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-1">
             <button
               type="button"
-              onClick={() => setQty((q) => clamp(q - product.bundleSize))}
-              disabled={qty <= product.bundleSize}
+              onClick={() => setQty((q) => clamp(q - step))}
+              disabled={qty <= minQty}
               aria-label="کاهش تعداد"
               className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
             >
@@ -181,8 +185,8 @@ export default function TieredPricing({
             <input
               type="number"
               inputMode="numeric"
-              step={product.bundleSize}
-              min={product.bundleSize}
+              step={step}
+              min={minQty}
               max={product.stock}
               value={qty}
               onChange={(e) => setQty(clamp(Number(e.target.value)))}
@@ -191,8 +195,8 @@ export default function TieredPricing({
             />
             <button
               type="button"
-              onClick={() => setQty((q) => clamp(q + product.bundleSize))}
-              disabled={qty + product.bundleSize > product.stock}
+              onClick={() => setQty((q) => clamp(q + step))}
+              disabled={qty + step > product.stock}
               aria-label="افزایش تعداد"
               className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
             >
@@ -263,19 +267,21 @@ export default function TieredPricing({
           </div>
           <div>
             <dt className="text-soil-700/70">وزن تقریبی</dt>
-            <dd className="mt-1 font-bold text-soil-900">
-              {formatWeight(product.weightGrams * qty)}
-            </dd>
+            <dd className="mt-1 font-bold text-soil-900">{formatWeight(product.weightGrams * qty)}</dd>
           </div>
           <div>
             <dt className="text-soil-700/70">تعداد کل</dt>
             <dd className="mt-1 font-bold text-soil-900">
               {toFa(qty)} عدد
-              {product.bundleSize > 1 && (
+              {isBundle ? (
                 <span className="block text-xs text-soil-700/60 mt-1">
-                  (معادل {toFa(qty / product.bundleSize)} {product.bundleLabel || 'بسته'})
+                  (معادل {toFa(qty / (product.bundleSize || 1))} {product.bundleLabel})
                 </span>
-              )}
+              ) : (product.minOrderQuantity && product.minOrderQuantity > 1) ? (
+                <span className="block text-xs text-soil-700/60 mt-1">
+                  (حداقل سفارش: {toFa(product.minOrderQuantity)} عدد)
+                </span>
+              ) : null}
             </dd>
           </div>
         </dl>

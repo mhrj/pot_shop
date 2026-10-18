@@ -156,6 +156,11 @@ export default async function ProductPage({ params }: Params) {
             <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
               {product.material}
             </span>
+            {product.bundleSize > 1 && (
+              <span className="rounded-full bg-flora-900 px-3 py-1 text-xs font-bold text-white">
+                {product.bundleLabel || `بسته ${toFa(product.bundleSize)} عددی`}
+              </span>
+            )}
             {product.tags.map((entry) => (
               <Link
                 key={entry.tag.id}
@@ -181,6 +186,7 @@ export default async function ProductPage({ params }: Params) {
                 stock: product.stock,
                 bundleSize: product.bundleSize,
                 bundleLabel: product.bundleLabel,
+                minOrderQuantity: (product as any).minOrderQuantity,
               }}
               tiers={product.tiers.map((t) => ({
                 minQuantity: t.minQuantity,
