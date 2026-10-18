@@ -46,7 +46,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const authority = url.searchParams.get('Authority');
   const status = url.searchParams.get('Status');
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? url.origin;
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || url.origin).replace(/\/$/, '');
 
   const fail = (reason: string, orderNumber?: string) => {
     const target = new URL('/checkout/failed', appUrl);
@@ -74,10 +74,10 @@ export async function GET(req: Request) {
     await prisma.cartItem.deleteMany({ where: { userId: order.userId } });
     clearCartCaches();
 
-    return NextResponse.redirect(
-      `${appUrl}/checkout/success?ref_id=${order.refId}&order=${order.orderNumber}`,
-      { status: 303 },
-    );
+    const success = new URL('/checkout/success', appUrl);
+    if (order.refId) success.searchParams.set('ref_id', order.refId);
+    success.searchParams.set('order', order.orderNumber);
+    return NextResponse.redirect(success.toString(), { status: 303 });
   }
 
   // 3) User canceled or the gateway reported a failure. Guarded on the order

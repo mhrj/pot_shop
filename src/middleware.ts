@@ -2,18 +2,18 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/auth-edge';
 
 const PROTECTED = ['/dashboard', '/checkout', '/admin'];
-const ADMIN_ONLY = ['/admin'];
-const AUTH_PAGES = ['/login', '/register'];
-
-// Carved out of the /checkout prefix. The gateway returns the customer here as
-// a top-level navigation, and the ref_id it appends is itself the proof of
-// payment — sending them to /login on the way out of a finished purchase means
-// they never see the confirmation. `/checkout` itself, and any other child of
-// it, stays protected.
 const PUBLIC_CHECKOUT = ['/checkout/success', '/checkout/failed'];
+const ADMIN_ONLY = ['/admin'];
+const AUTH_PAGES = ['/login'];
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
+
+  // Never intercept API routes with UI auth redirects
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const session = token ? await verifySessionToken(token) : null;
 
@@ -27,7 +27,8 @@ export async function middleware(req: NextRequest) {
   if (isProtected && !session) {
     const url = req.nextUrl.clone();
     url.pathname = '/login';
-    url.search = `?next=${encodeURIComponent(pathname + search)}`;
+    url.search = ''; // Clear existing search params
+    url.searchParams.set('next', pathname + search);
     return NextResponse.redirect(url);
   }
 
@@ -53,6 +54,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|images|fonts).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|images|fonts).*)',
   ],
 };

@@ -26,6 +26,7 @@ export async function sendTelegramNotification(message: string): Promise<boolean
         text: message,
         parse_mode: 'HTML',
       }),
+      signal: AbortSignal.timeout(4000),
     });
 
     if (!response.ok) {
