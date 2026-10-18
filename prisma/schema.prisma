@@ -117,7 +117,9 @@ model Product {
 
   stock         Int      @default(0)
   unitsPerCarton Int     @default(6)
-  packSize      Int      @default(1)
+  bundleSize    Int      @default(1)
+  bundleLabel   String?
+  bundleItems   Json?
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)
   allowBatchDiscount Boolean @default(true)

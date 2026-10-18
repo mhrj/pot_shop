@@ -12,15 +12,16 @@ type Props = {
     name: string;
     basePriceToman: number;
     weightGrams: number;
-    unitsPerCarton: number;
+    unitsPerCarton?: number;
     stock: number;
-    packSize?: number;
+    bundleSize: number;
+    bundleLabel: string | null;
+    bundleItems?: { title: string; description: string }[] | null;
     allowBatchDiscount?: boolean;
   };
   tiers: Tier[];
   isAuthed: boolean;
   allowBatchDiscount?: boolean;
-  packSize?: number;
 };
 
 export default function TieredPricing({
@@ -28,11 +29,9 @@ export default function TieredPricing({
   tiers,
   isAuthed,
   allowBatchDiscount,
-  packSize: packSizeProp,
 }: Props) {
   const allowBatch = allowBatchDiscount ?? product.allowBatchDiscount ?? true;
-  const packSize = Math.max(1, packSizeProp ?? product.packSize ?? 1);
-  const [qty, setQty] = useState(packSize);
+  const [qty, setQty] = useState(product.bundleSize > 1 ? product.bundleSize : 1);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
@@ -43,7 +42,7 @@ export default function TieredPricing({
     [tiers],
   );
 
-  const { unit, total, savings, percent, tierLabel, cartons, hint } = useMemo(() => {
+  const { unit, total, savings, percent, tierLabel, hint } = useMemo(() => {
     if (!allowBatch) {
       return {
         unit: product.basePriceToman,
@@ -51,7 +50,6 @@ export default function TieredPricing({
         savings: 0,
         percent: 0,
         tierLabel: 'خرده',
-        cartons: Math.ceil(qty / Math.max(1, product.unitsPerCarton)),
         hint: null,
       };
     }
@@ -68,18 +66,18 @@ export default function TieredPricing({
         ? Math.round(((product.basePriceToman - unitPrice) / product.basePriceToman) * 100)
         : 0,
       tierLabel: t.label ?? 'خرده',
-      cartons: Math.ceil(qty / Math.max(1, product.unitsPerCarton)),
       hint: nextTierHint(sorted, qty),
     };
-  }, [allowBatch, qty, sorted, product.basePriceToman, product.unitsPerCarton]);
+  }, [allowBatch, qty, sorted, product.basePriceToman]);
 
   const clamp = (n: number) => {
-    const raw = Math.floor(n) || packSize;
-    const units = Math.max(1, Math.round(raw / packSize));
-    const multiple = units * packSize;
-    const maxUnits = Math.max(1, Math.floor(product.stock / packSize));
-    const maxQty = maxUnits * packSize;
-    return Math.max(packSize, Math.min(maxQty, multiple));
+    const step = product.bundleSize > 1 ? product.bundleSize : 1;
+    const raw = Math.floor(n) || step;
+    const units = Math.max(1, Math.round(raw / step));
+    const multiple = units * step;
+    const maxUnits = Math.max(1, Math.floor(product.stock / step));
+    const maxQty = maxUnits * step;
+    return Math.max(step, Math.min(maxQty, multiple));
   };
 
   const handleAdd = () => {
@@ -107,7 +105,7 @@ export default function TieredPricing({
     });
   };
 
-  const outOfStock = product.stock <= 0 || product.stock < packSize;
+  const outOfStock = product.stock <= 0 || product.stock < (product.bundleSize > 1 ? product.bundleSize : 1);
 
   return (
     <div className="space-y-6">
@@ -164,15 +162,17 @@ export default function TieredPricing({
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-soil-900">تعداد</span>
-            <span className="text-xs text-soil-700/70">
-              ({toFa(Math.round(qty / packSize))} بسته)
-            </span>
+            {product.bundleSize > 1 && (
+              <span className="text-xs text-soil-700/70">
+                ({toFa(Math.round(qty / product.bundleSize))} {product.bundleLabel || 'بسته'})
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-1">
             <button
               type="button"
-              onClick={() => setQty((q) => clamp(q - packSize))}
-              disabled={qty <= packSize}
+              onClick={() => setQty((q) => clamp(q - product.bundleSize))}
+              disabled={qty <= product.bundleSize}
               aria-label="کاهش تعداد"
               className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
             >
@@ -181,8 +181,8 @@ export default function TieredPricing({
             <input
               type="number"
               inputMode="numeric"
-              min={packSize}
-              step={packSize}
+              step={product.bundleSize}
+              min={product.bundleSize}
               max={product.stock}
               value={qty}
               onChange={(e) => setQty(clamp(Number(e.target.value)))}
@@ -191,8 +191,8 @@ export default function TieredPricing({
             />
             <button
               type="button"
-              onClick={() => setQty((q) => clamp(q + packSize))}
-              disabled={qty + packSize > product.stock}
+              onClick={() => setQty((q) => clamp(q + product.bundleSize))}
+              disabled={qty + product.bundleSize > product.stock}
               aria-label="افزایش تعداد"
               className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
             >
@@ -268,9 +268,14 @@ export default function TieredPricing({
             </dd>
           </div>
           <div>
-            <dt className="text-soil-700/70">بسته‌بندی</dt>
+            <dt className="text-soil-700/70">تعداد کل</dt>
             <dd className="mt-1 font-bold text-soil-900">
-              {toFa(cartons)} کارتن × {toFa(product.unitsPerCarton)}
+              {toFa(qty)} عدد
+              {product.bundleSize > 1 && (
+                <span className="block text-xs text-soil-700/60 mt-1">
+                  (معادل {toFa(qty / product.bundleSize)} {product.bundleLabel || 'بسته'})
+                </span>
+              )}
             </dd>
           </div>
         </dl>

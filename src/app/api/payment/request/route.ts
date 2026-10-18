@@ -96,7 +96,11 @@ export async function POST(req: Request) {
         basePriceToman: i.product.basePriceToman,
         weightGrams: i.product.weightGrams,
         unitsPerCarton: i.product.unitsPerCarton,
-        packSize: i.product.packSize,
+        bundleSize: i.product.bundleSize,
+        bundleLabel: i.product.bundleLabel,
+        bundleItems: Array.isArray(i.product.bundleItems)
+          ? (i.product.bundleItems as { title: string; description: string }[])
+          : null,
         images: i.product.images,
         allowBatchDiscount: i.product.allowBatchDiscount,
       },

@@ -102,6 +102,12 @@ async function main() {
       weightGrams: 1400,
       stock: 120,
       unitsPerCarton: 6,
+      bundleSize: 2,
+      bundleLabel: 'ست ۲ عددی سفالی',
+      bundleItems: [
+        { title: 'گلدان سفالی تراکوتا ۲۰cm', description: 'قطر ۲۰، ارتفاع ۱۸ مناسب گیاهان آپارتمانی' },
+        { title: 'گلدان سفالی تراکوتا ۱۵cm', description: 'قطر ۱۵، ارتفاع ۱۴ مناسب گیاهان رومیزی' },
+      ],
       basePriceToman: 150000,
       isFeatured: true,
       features: [{ label: 'سوراخ زهکشی دارد', enabled: true }],
@@ -119,6 +125,9 @@ async function main() {
       weightGrams: 1900,
       stock: 80,
       unitsPerCarton: 4,
+      bundleSize: 1,
+      bundleLabel: null,
+      bundleItems: null,
       basePriceToman: 220000,
       isFeatured: true,
       features: [{ label: 'سوراخ زهکشی دارد', enabled: true }],
@@ -136,6 +145,9 @@ async function main() {
       weightGrams: 4500,
       stock: 45,
       unitsPerCarton: 2,
+      bundleSize: 1,
+      bundleLabel: null,
+      bundleItems: null,
       basePriceToman: 380000,
       isFeatured: true,
       features: [
@@ -151,11 +163,17 @@ async function main() {
       where: { slug: p.slug },
       update: {
         categoryId,
+        bundleSize: p.bundleSize ?? 1,
+        bundleLabel: p.bundleLabel ?? null,
+        bundleItems: p.bundleItems ?? undefined,
         allowBatchDiscount: true,
       },
       create: {
         ...p,
         categoryId,
+        bundleSize: p.bundleSize ?? 1,
+        bundleLabel: p.bundleLabel ?? null,
+        bundleItems: p.bundleItems ?? undefined,
         allowBatchDiscount: true,
         images: {
           create: [

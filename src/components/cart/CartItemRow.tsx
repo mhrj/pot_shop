@@ -12,14 +12,14 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
   const [qty, setQty] = useState(line.quantity);
   const [error, setError] = useState<string | null>(null);
 
-  const packSize = Math.max(1, line.packSize || 1);
   const clamp = (n: number) => {
-    const raw = Math.floor(n) || packSize;
-    const units = Math.max(1, Math.round(raw / packSize));
-    const multiple = units * packSize;
-    const maxUnits = Math.max(1, Math.floor(stock / packSize));
-    const maxQty = maxUnits * packSize;
-    return Math.max(packSize, Math.min(maxQty, multiple));
+    const step = line.bundleSize > 1 ? line.bundleSize : 1;
+    const raw = Math.floor(n) || step;
+    const units = Math.max(1, Math.round(raw / step));
+    const multiple = units * step;
+    const maxUnits = Math.max(1, Math.floor(stock / step));
+    const maxQty = maxUnits * step;
+    return Math.max(step, Math.min(maxQty, multiple));
   };
 
   const update = (next: number) => {
@@ -69,7 +69,7 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
           <div>
             <h2 className="font-bold text-soil-900">{line.name}</h2>
             <p className="mt-1 text-xs text-soil-700/70">
-              {formatToman(line.unitToman)} × {toFa(qty)} عدد (شامل {toFa(Math.round(qty / packSize))} بسته) — {line.tierLabel}
+              {formatToman(line.unitToman)} × {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} ${line.bundleLabel || 'بسته'})`} — {line.tierLabel}
             </p>
           </div>
           <button
@@ -97,8 +97,8 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
             <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-0.5">
               <button
                 type="button"
-                onClick={() => update(qty - packSize)}
-                disabled={pending || qty <= packSize}
+                onClick={() => update(qty - line.bundleSize)}
+                disabled={pending || qty <= line.bundleSize}
                 aria-label="کاهش تعداد"
                 className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
               >
@@ -107,8 +107,8 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
               <span className="w-8 text-center text-sm font-black text-soil-900">{toFa(qty)}</span>
               <button
                 type="button"
-                onClick={() => update(qty + packSize)}
-                disabled={pending || qty + packSize > stock}
+                onClick={() => update(qty + line.bundleSize)}
+                disabled={pending || qty + line.bundleSize > stock}
                 aria-label="افزایش تعداد"
                 className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
               >
@@ -116,7 +116,7 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
               </button>
             </div>
             <span className="text-xs text-soil-700/80">
-              {toFa(qty)} عدد (شامل {toFa(Math.round(qty / packSize))} بسته)
+              {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} ${line.bundleLabel || 'بسته'})`}
             </span>
           </div>
 

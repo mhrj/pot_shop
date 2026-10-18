@@ -26,6 +26,11 @@ const tiersSchema = z
     message: 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود',
   });
 
+const bundleItemSchema = z.object({
+  title: z.string().min(1).max(150),
+  description: z.string().max(300).optional().default(''),
+});
+
 const schema = z.object({
   slug: z.string().min(2).max(120).regex(/^[a-z0-9-]+$/),
   name: z.string().min(2).max(150),
@@ -39,7 +44,9 @@ const schema = z.object({
   weightGrams: z.number().int().min(0).max(100000),
   stock: z.number().int().min(0).max(100000),
   unitsPerCarton: z.number().int().min(1).max(200),
-  packSize: z.number().int().min(1).default(1),
+  bundleSize: z.number().int().min(1).default(1),
+  bundleLabel: z.string().max(100).optional().nullable(),
+  bundleItems: z.array(bundleItemSchema).max(50).optional().nullable(),
   basePriceToman: z.number().int().min(1000),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
@@ -108,7 +115,9 @@ export async function PATCH(req: Request, { params }: Params) {
         weightGrams: data.weightGrams,
         stock: data.stock,
         unitsPerCarton: data.unitsPerCarton,
-        packSize: data.packSize ?? 1,
+        bundleSize: data.bundleSize ?? 1,
+        bundleLabel: data.bundleLabel || null,
+        bundleItems: data.bundleItems && data.bundleItems.length > 0 ? (data.bundleItems as any) : null,
         basePriceToman: data.basePriceToman,
         isActive: data.isActive,
         isFeatured: data.isFeatured,

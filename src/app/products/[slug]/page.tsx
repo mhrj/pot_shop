@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { toFa } from '@/lib/format';
-import { parseFeatures } from '@/lib/product-features';
+import { parseFeatures, parseBundleItems } from '@/lib/product-features';
 import TieredPricing from '@/components/product/TieredPricing';
 import ProductGallery from '@/components/product/ProductGallery';
 import Container from '@/components/ui/Container';
@@ -96,7 +96,12 @@ export default async function ProductPage({ params }: Params) {
     { k: 'قطر دهانه', v: `${toFa(product.diameterCm)} سانتی‌متر` },
     { k: 'ارتفاع', v: `${toFa(product.heightCm)} سانتی‌متر` },
     { k: 'وزن خالی', v: `${toFa(product.weightGrams)} گرم` },
-    { k: 'تعداد در کارتن', v: `${toFa(product.unitsPerCarton)} عدد` },
+    product.bundleSize > 1
+      ? {
+          k: 'تعداد در هر بسته',
+          v: `${toFa(product.bundleSize)} عدد${product.bundleLabel ? ` (${product.bundleLabel})` : ''}`,
+        }
+      : { k: 'واحد فروش', v: 'تک عددی' },
   ];
 
   const jsonLd = {
@@ -174,11 +179,9 @@ export default async function ProductPage({ params }: Params) {
                 weightGrams: product.weightGrams,
                 unitsPerCarton: product.unitsPerCarton,
                 stock: product.stock,
-                packSize: product.packSize,
-                allowBatchDiscount: product.allowBatchDiscount,
+                bundleSize: product.bundleSize,
+                bundleLabel: product.bundleLabel,
               }}
-              packSize={product.packSize}
-              allowBatchDiscount={product.allowBatchDiscount}
               tiers={product.tiers.map((t) => ({
                 minQuantity: t.minQuantity,
                 unitPriceToman: t.unitPriceToman,
@@ -186,6 +189,25 @@ export default async function ProductPage({ params }: Params) {
               }))}
               isAuthed={Boolean(session)}
             />
+
+            {product.bundleSize > 1 && Array.isArray(product.bundleItems) && product.bundleItems.length > 0 && (
+              <details className="group mt-6 rounded-2xl border border-soil-900/10 bg-white">
+                <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 [&::-webkit-details-marker]:hidden">
+                  <span>مشاهده محتویات این بسته ({toFa(product.bundleSize)} عدد)</span>
+                  <span className="transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div className="border-t border-soil-900/10 p-4">
+                  <ul className="space-y-4">
+                    {(product.bundleItems as any[]).map((item, i) => (
+                      <li key={i} className="flex flex-col gap-1 text-sm">
+                        <span className="font-bold text-soil-900">{item.title}</span>
+                        <span className="text-xs text-soil-700/70">{item.description}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </details>
+            )}
           </div>
 
           <section className="mt-10">

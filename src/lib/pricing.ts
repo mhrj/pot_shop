@@ -15,7 +15,9 @@ export type PricedLine = {
   name: string;
   imageUrl?: string | null;
   quantity: number;
-  packSize: number;
+  bundleSize: number;
+  bundleLabel?: string | null;
+  bundleItems?: { title: string; description: string }[] | null;
 
   listUnitToman: number;
   unitToman: number;
@@ -99,8 +101,10 @@ type PriceInput = {
     name: string;
     basePriceToman: number;
     weightGrams: number;
-    unitsPerCarton: number;
-    packSize?: number;
+    unitsPerCarton?: number;
+    bundleSize?: number;
+    bundleLabel?: string | null;
+    bundleItems?: { title: string; description: string }[] | null;
     images?: { url: string }[];
     allowBatchDiscount?: boolean;
   };
@@ -109,8 +113,8 @@ type PriceInput = {
 };
 
 export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine {
-  const packSize = Math.max(1, product.packSize ?? 1);
-  const qty = Math.max(packSize, Math.floor(quantity));
+  const bundleSize = Math.max(1, product.bundleSize ?? 1);
+  const qty = Math.max(bundleSize, Math.floor(quantity));
   const allowBatch = product.allowBatchDiscount !== false;
 
   const listUnitToman = product.basePriceToman;
@@ -129,7 +133,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
       : 0;
 
   const lineWeightGrams = product.weightGrams * qty;
-  const cartons = Math.ceil(qty / Math.max(1, product.unitsPerCarton));
+  const cartons = Math.ceil(qty / Math.max(1, product.unitsPerCarton ?? 1));
 
   return {
     productId: product.id,
@@ -137,7 +141,9 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
     name: product.name,
     imageUrl: product.images?.[0]?.url ?? null,
     quantity: qty,
-    packSize,
+    bundleSize,
+    bundleLabel: product.bundleLabel ?? null,
+    bundleItems: product.bundleItems ?? null,
     listUnitToman,
     unitToman,
     lineTotalToman,
@@ -145,7 +151,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
     savingsPercent,
     weightGrams: product.weightGrams,
     lineWeightGrams,
-    unitsPerCarton: product.unitsPerCarton,
+    unitsPerCarton: product.unitsPerCarton ?? 1,
     cartons,
     tierLabel: allowBatch ? (tier.label ?? CHANNEL_LABEL[resolveChannel(qty)]) : 'خرده',
     nextTier: allowBatch ? nextTierHint(tiers, qty) : null,

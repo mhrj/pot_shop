@@ -18,3 +18,21 @@ export function parseFeatures(raw: unknown): ProductFeature[] {
       typeof (f as ProductFeature).enabled === 'boolean'
   );
 }
+
+export type BundleItem = { title: string; description: string };
+
+export function parseBundleItems(raw: unknown): BundleItem[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(
+      (it): it is BundleItem =>
+        typeof it === 'object' &&
+        it !== null &&
+        typeof (it as BundleItem).title === 'string'
+    )
+    .map((it) => ({
+      title: it.title,
+      description: typeof it.description === 'string' ? it.description : '',
+    }));
+}
+

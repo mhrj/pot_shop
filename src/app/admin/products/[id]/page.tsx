@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
-import { parseFeatures } from '@/lib/product-features';
+import { parseFeatures, parseBundleItems } from '@/lib/product-features';
 import ProductForm from '@/components/admin/ProductForm';
 
 type Props = { params: Promise<{ id: string }> };
@@ -50,8 +50,12 @@ export default async function EditProductPage({ params }: Props) {
             heightCm: product.heightCm,
             weightGrams: product.weightGrams,
             stock: product.stock,
-            unitsPerCarton: product.unitsPerCarton,
-            packSize: product.packSize ?? 1,
+            unitsPerCarton: 1,
+            bundleSize: product.bundleSize,
+            bundleLabel: product.bundleLabel,
+            bundleItems: Array.isArray(product.bundleItems)
+              ? (product.bundleItems as { title: string; description: string }[])
+              : null,
             basePriceToman: product.basePriceToman,
             isActive: product.isActive,
             isFeatured: product.isFeatured,

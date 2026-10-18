@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import type { ProductFeature } from '@/lib/product-features';
+import type { ProductFeature, BundleItem } from '@/lib/product-features';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
 
@@ -19,8 +19,10 @@ export type ProductFormData = {
   heightCm: number;
   weightGrams: number;
   stock: number;
-  unitsPerCarton: number;
-  packSize?: number;
+  unitsPerCarton?: number;
+  bundleSize: number;
+  bundleLabel: string | null;
+  bundleItems: { title: string; description: string }[] | null;
   basePriceToman: number;
   isActive: boolean;
   isFeatured: boolean;
@@ -53,7 +55,10 @@ export default function ProductForm({
   const [form, setForm] = useState<ProductFormData>({
     ...initial,
     categoryId: initial.categoryId ?? '',
-    packSize: initial.packSize ?? 1,
+    unitsPerCarton: 1,
+    bundleSize: initial.bundleSize ?? 1,
+    bundleLabel: initial.bundleLabel ?? '',
+    bundleItems: initial.bundleItems ?? [],
     allowBatchDiscount: initial.allowBatchDiscount ?? true,
   });
 
@@ -121,7 +126,13 @@ export default function ProductForm({
       const payload = {
         ...form,
         categoryId: form.categoryId || null,
-        packSize: form.packSize ?? 1,
+        unitsPerCarton: 1,
+        bundleSize: form.bundleSize ?? 1,
+        bundleLabel: form.bundleLabel?.trim() || null,
+        bundleItems:
+          (form.bundleSize ?? 1) > 1
+            ? (form.bundleItems?.filter((it) => it.title.trim()) ?? [])
+            : null,
         allowBatchDiscount: form.allowBatchDiscount ?? true,
         tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
@@ -315,21 +326,24 @@ export default function ProductForm({
             />
           </label>
           <label className="block">
-            <span className={labelCls}>تعداد در کارتن</span>
+            <span className={labelCls}>تعداد در بسته فروش (اگر تکفروشی است ۱ بگذارید)</span>
             <input
               type="number"
-              value={form.unitsPerCarton}
-              onChange={(e) => update('unitsPerCarton', Number(e.target.value))}
+              min={1}
+              value={form.bundleSize ?? 1}
+              onChange={(e) => update('bundleSize', Number(e.target.value) || 1)}
               className={inputCls}
             />
           </label>
           <label className="block">
-            <span className={labelCls}>تعداد در بسته (حداقل سفارش)</span>
+            <span className={labelCls}>
+              نام بسته (مثلاً ست ۲ عددی) — فقط اگر تعداد بیشتر از ۱ است
+            </span>
             <input
-              type="number"
-              min={1}
-              value={form.packSize ?? 1}
-              onChange={(e) => update('packSize', Number(e.target.value) || 1)}
+              type="text"
+              value={form.bundleLabel ?? ''}
+              onChange={(e) => update('bundleLabel', e.target.value)}
+              placeholder="مثلاً ست ۲ عددی"
               className={inputCls}
             />
           </label>
@@ -355,6 +369,77 @@ export default function ProductForm({
           </label>
         </div>
       </section>
+
+      {(form.bundleSize ?? 1) > 1 && (
+        <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-black text-soil-900">محتویات بسته</h2>
+              <p className="mt-1 text-xs text-soil-700/60">
+                مشخصات گلدان‌ها و اقلام موجود در این بسته را مشخص کنید.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const current = form.bundleItems ?? [];
+                update('bundleItems', [...current, { title: '', description: '' }]);
+              }}
+              className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-black text-white transition hover:bg-flora-700"
+            >
+              + افزودن آیتم
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {(form.bundleItems ?? []).map((item, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col sm:flex-row gap-3 items-start sm:items-center rounded-xl border border-soil-900/10 bg-dust-50 p-3"
+              >
+                <input
+                  type="text"
+                  placeholder="عنوان آیتم (مثلاً گلدان سفالی ۲۰cm)"
+                  value={item.title}
+                  onChange={(e) => {
+                    const next = [...(form.bundleItems ?? [])];
+                    next[idx] = { ...next[idx], title: e.target.value };
+                    update('bundleItems', next);
+                  }}
+                  className="flex-1 rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                />
+                <input
+                  type="text"
+                  placeholder="توضیحات (مثلاً قطر ۲۰، ارتفاع ۱۸)"
+                  value={item.description}
+                  onChange={(e) => {
+                    const next = [...(form.bundleItems ?? [])];
+                    next[idx] = { ...next[idx], description: e.target.value };
+                    update('bundleItems', next);
+                  }}
+                  className="flex-1 rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = (form.bundleItems ?? []).filter((_, i) => i !== idx);
+                    update('bundleItems', next);
+                  }}
+                  className="shrink-0 rounded-xl px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition"
+                >
+                  حذف
+                </button>
+              </div>
+            ))}
+
+            {(form.bundleItems ?? []).length === 0 && (
+              <p className="text-xs text-soil-700/50">
+                هنوز آیتمی به محتویات بسته اضافه نشده است. برای تعریف اقلام دکمه «+ افزودن آیتم به بسته» را بزنید.
+              </p>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <h2 className="mb-2 text-sm font-black text-soil-900">ویژگی‌های نمایشی</h2>
