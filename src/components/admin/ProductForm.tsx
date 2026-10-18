@@ -22,7 +22,7 @@ export type ProductFormData = {
   unitsPerCarton?: number;
   bundleSize: number;
   bundleLabel: string | null;
-  bundleItems: { title: string; description: string }[] | null;
+  bundleItems: BundleItem[] | null;
   basePriceToman: number;
   isActive: boolean;
   isFeatured: boolean;
@@ -383,7 +383,16 @@ export default function ProductForm({
               type="button"
               onClick={() => {
                 const current = form.bundleItems ?? [];
-                update('bundleItems', [...current, { title: '', description: '' }]);
+                update('bundleItems', [
+                  ...current,
+                  {
+                    title: '',
+                    material: '',
+                    diameterCm: 0,
+                    heightCm: 0,
+                    weightGrams: 0,
+                  },
+                ]);
               }}
               className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-black text-white transition hover:bg-flora-700"
             >
@@ -391,50 +400,123 @@ export default function ProductForm({
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {(form.bundleItems ?? []).map((item, idx) => (
               <div
                 key={idx}
-                className="flex flex-col sm:flex-row gap-3 items-start sm:items-center rounded-xl border border-soil-900/10 bg-dust-50 p-3"
+                className="rounded-xl border border-soil-900/10 bg-dust-50 p-4 space-y-3"
               >
-                <input
-                  type="text"
-                  placeholder="عنوان آیتم (مثلاً گلدان سفالی ۲۰cm)"
-                  value={item.title}
-                  onChange={(e) => {
-                    const next = [...(form.bundleItems ?? [])];
-                    next[idx] = { ...next[idx], title: e.target.value };
-                    update('bundleItems', next);
-                  }}
-                  className="flex-1 rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                />
-                <input
-                  type="text"
-                  placeholder="توضیحات (مثلاً قطر ۲۰، ارتفاع ۱۸)"
-                  value={item.description}
-                  onChange={(e) => {
-                    const next = [...(form.bundleItems ?? [])];
-                    next[idx] = { ...next[idx], description: e.target.value };
-                    update('bundleItems', next);
-                  }}
-                  className="flex-1 rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = (form.bundleItems ?? []).filter((_, i) => i !== idx);
-                    update('bundleItems', next);
-                  }}
-                  className="shrink-0 rounded-xl px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition"
-                >
-                  حذف
-                </button>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-soil-900">آیتم شماره {idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = (form.bundleItems ?? []).filter((_, i) => i !== idx);
+                      update('bundleItems', next);
+                    }}
+                    className="rounded-lg px-2.5 py-1 text-xs font-bold text-red-600 hover:bg-red-50 transition"
+                  >
+                    حذف
+                  </button>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                  <label className="block sm:col-span-2 lg:col-span-2">
+                    <span className="text-xs font-medium text-soil-700/80">نام گلدان</span>
+                    <input
+                      type="text"
+                      placeholder="مثلاً گلدان استوانه‌ای سایز ۱"
+                      value={item.title}
+                      onChange={(e) => {
+                        const next = [...(form.bundleItems ?? [])];
+                        next[idx] = { ...next[idx], title: e.target.value };
+                        update('bundleItems', next);
+                      }}
+                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-xs font-medium text-soil-700/80">متریال</span>
+                    <input
+                      type="text"
+                      placeholder="مثلاً سفال"
+                      value={item.material ?? ''}
+                      onChange={(e) => {
+                        const next = [...(form.bundleItems ?? [])];
+                        next[idx] = { ...next[idx], material: e.target.value };
+                        update('bundleItems', next);
+                      }}
+                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-xs font-medium text-soil-700/80">قطر (cm)</span>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="0"
+                      placeholder="قطر"
+                      value={item.diameterCm || ''}
+                      onChange={(e) => {
+                        const next = [...(form.bundleItems ?? [])];
+                        next[idx] = {
+                          ...next[idx],
+                          diameterCm: Math.max(0, Number(e.target.value) || 0),
+                        };
+                        update('bundleItems', next);
+                      }}
+                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-xs font-medium text-soil-700/80">ارتفاع (cm)</span>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="0"
+                      placeholder="ارتفاع"
+                      value={item.heightCm || ''}
+                      onChange={(e) => {
+                        const next = [...(form.bundleItems ?? [])];
+                        next[idx] = {
+                          ...next[idx],
+                          heightCm: Math.max(0, Number(e.target.value) || 0),
+                        };
+                        update('bundleItems', next);
+                      }}
+                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-xs font-medium text-soil-700/80">وزن (گرم)</span>
+                    <input
+                      type="number"
+                      step="1"
+                      min="0"
+                      placeholder="وزن"
+                      value={item.weightGrams || ''}
+                      onChange={(e) => {
+                        const next = [...(form.bundleItems ?? [])];
+                        next[idx] = {
+                          ...next[idx],
+                          weightGrams: Math.max(0, Math.floor(Number(e.target.value) || 0)),
+                        };
+                        update('bundleItems', next);
+                      }}
+                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                    />
+                  </label>
+                </div>
               </div>
             ))}
 
             {(form.bundleItems ?? []).length === 0 && (
               <p className="text-xs text-soil-700/50">
-                هنوز آیتمی به محتویات بسته اضافه نشده است. برای تعریف اقلام دکمه «+ افزودن آیتم به بسته» را بزنید.
+                هنوز آیتمی به محتویات بسته اضافه نشده است. برای تعریف اقلام دکمه «+ افزودن آیتم» را بزنید.
               </p>
             )}
           </div>

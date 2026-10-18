@@ -89,6 +89,7 @@ export default async function ProductPage({ params }: Params) {
   // `include` above pulls in every scalar, so `features` needs no change to the
   // query. Only the ones the admin left switched on are shown.
   const enabledFeatures = parseFeatures(product.features).filter((f) => f.enabled);
+  const bundleItems = parseBundleItems(product.bundleItems);
 
   const specs = [
     { k: 'متریال', v: product.material },
@@ -196,21 +197,62 @@ export default async function ProductPage({ params }: Params) {
               isAuthed={Boolean(session)}
             />
 
-            {product.bundleSize > 1 && Array.isArray(product.bundleItems) && product.bundleItems.length > 0 && (
+            {product.bundleSize > 1 && bundleItems.length > 0 && (
               <details className="group mt-6 rounded-2xl border border-soil-900/10 bg-white">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 [&::-webkit-details-marker]:hidden">
-                  <span>مشاهده محتویات این بسته ({toFa(product.bundleSize)} عدد)</span>
+                  <span>مشاهده محتویات این بسته ({toFa(bundleItems.length)} آیتم)</span>
                   <span className="transition-transform group-open:rotate-180">▼</span>
                 </summary>
-                <div className="border-t border-soil-900/10 p-4">
-                  <ul className="space-y-4">
-                    {(product.bundleItems as any[]).map((item, i) => (
-                      <li key={i} className="flex flex-col gap-1 text-sm">
-                        <span className="font-bold text-soil-900">{item.title}</span>
-                        <span className="text-xs text-soil-700/70">{item.description}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="border-t border-soil-900/10 p-4 space-y-2">
+                  {bundleItems.map((item, i) => (
+                    <details
+                      key={i}
+                      className="group/item rounded-xl border border-soil-900/10 bg-dust-50/60 px-3.5 py-1 transition-colors hover:bg-dust-50"
+                    >
+                      <summary className="flex cursor-pointer list-none items-center justify-between py-2.5 text-sm font-bold text-soil-900 [&::-webkit-details-marker]:hidden">
+                        <span>{item.title}</span>
+                        <span className="text-xs text-soil-700/50 transition-transform group-open/item:rotate-180">
+                          ▼
+                        </span>
+                      </summary>
+
+                      {/* The Specs Table inside the nested accordion */}
+                      <div className="border-t border-soil-900/5 pb-3 pt-2">
+                        <dl className="grid grid-cols-2 gap-2 text-xs text-soil-700/80">
+                          {item.material && (
+                            <div className="flex gap-2">
+                              <dt className="text-soil-700/50">متریال:</dt>
+                              <dd className="font-bold text-soil-900">{item.material}</dd>
+                            </div>
+                          )}
+                          {item.diameterCm > 0 && (
+                            <div className="flex gap-2">
+                              <dt className="text-soil-700/50">قطر:</dt>
+                              <dd className="font-bold text-soil-900">
+                                {toFa(item.diameterCm)} سانتیمتر
+                              </dd>
+                            </div>
+                          )}
+                          {item.heightCm > 0 && (
+                            <div className="flex gap-2">
+                              <dt className="text-soil-700/50">ارتفاع:</dt>
+                              <dd className="font-bold text-soil-900">
+                                {toFa(item.heightCm)} سانتیمتر
+                              </dd>
+                            </div>
+                          )}
+                          {item.weightGrams > 0 && (
+                            <div className="flex gap-2">
+                              <dt className="text-soil-700/50">وزن:</dt>
+                              <dd className="font-bold text-soil-900">
+                                {toFa(item.weightGrams)} گرم
+                              </dd>
+                            </div>
+                          )}
+                        </dl>
+                      </div>
+                    </details>
+                  ))}
                 </div>
               </details>
             )}

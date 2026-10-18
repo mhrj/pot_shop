@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { priceCart, type CartTotals, type Tier } from '@/lib/pricing';
+import { parseBundleItems } from '@/lib/product-features';
 
 export function getStockShortages(
   items: Array<{ name: string; quantity: number; stock: number }>,
@@ -42,9 +43,7 @@ export async function getCartTotals(userId: string): Promise<CartTotals> {
           unitsPerCarton: i.product.unitsPerCarton,
           bundleSize: i.product.bundleSize,
           bundleLabel: i.product.bundleLabel,
-          bundleItems: Array.isArray(i.product.bundleItems)
-            ? (i.product.bundleItems as { title: string; description: string }[])
-            : null,
+          bundleItems: parseBundleItems(i.product.bundleItems),
           images: i.product.images,
           allowBatchDiscount: i.product.allowBatchDiscount,
         },

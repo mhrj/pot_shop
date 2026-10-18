@@ -28,7 +28,10 @@ const tiersSchema = z
 
 const bundleItemSchema = z.object({
   title: z.string().min(1).max(150),
-  description: z.string().max(300).optional().default(''),
+  material: z.string().max(60).optional().default(''),
+  diameterCm: z.number().min(0).max(500).optional().default(0),
+  heightCm: z.number().min(0).max(500).optional().default(0),
+  weightGrams: z.number().int().min(0).max(100000).optional().default(0),
 });
 
 const schema = z.object({

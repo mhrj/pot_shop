@@ -19,20 +19,38 @@ export function parseFeatures(raw: unknown): ProductFeature[] {
   );
 }
 
-export type BundleItem = { title: string; description: string };
+export type BundleItem = {
+  title: string;
+  material: string;
+  diameterCm: number;
+  heightCm: number;
+  weightGrams: number;
+};
 
 export function parseBundleItems(raw: unknown): BundleItem[] {
   if (!Array.isArray(raw)) return [];
   return raw
     .filter(
-      (it): it is BundleItem =>
+      (it): it is Record<string, unknown> =>
         typeof it === 'object' &&
         it !== null &&
-        typeof (it as BundleItem).title === 'string'
+        typeof (it as Record<string, unknown>).title === 'string'
     )
     .map((it) => ({
-      title: it.title,
-      description: typeof it.description === 'string' ? it.description : '',
+      title: String(it.title),
+      material: typeof it.material === 'string' ? it.material : '',
+      diameterCm:
+        typeof it.diameterCm === 'number' && Number.isFinite(it.diameterCm)
+          ? it.diameterCm
+          : 0,
+      heightCm:
+        typeof it.heightCm === 'number' && Number.isFinite(it.heightCm)
+          ? it.heightCm
+          : 0,
+      weightGrams:
+        typeof it.weightGrams === 'number' && Number.isFinite(it.weightGrams)
+          ? Math.floor(it.weightGrams)
+          : 0,
     }));
 }
 

@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { getStockShortages } from '@/lib/cart';
 import { calcShippingToman, priceCart, type Tier } from '@/lib/pricing';
+import { parseBundleItems } from '@/lib/product-features';
 import { zarinpalRequest, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 
 export const runtime = 'nodejs';
@@ -98,9 +99,7 @@ export async function POST(req: Request) {
         unitsPerCarton: i.product.unitsPerCarton,
         bundleSize: i.product.bundleSize,
         bundleLabel: i.product.bundleLabel,
-        bundleItems: Array.isArray(i.product.bundleItems)
-          ? (i.product.bundleItems as { title: string; description: string }[])
-          : null,
+        bundleItems: parseBundleItems(i.product.bundleItems),
         images: i.product.images,
         allowBatchDiscount: i.product.allowBatchDiscount,
       },

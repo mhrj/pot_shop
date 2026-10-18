@@ -53,9 +53,7 @@ export default async function EditProductPage({ params }: Props) {
             unitsPerCarton: 1,
             bundleSize: product.bundleSize,
             bundleLabel: product.bundleLabel,
-            bundleItems: Array.isArray(product.bundleItems)
-              ? (product.bundleItems as { title: string; description: string }[])
-              : null,
+            bundleItems: parseBundleItems(product.bundleItems),
             basePriceToman: product.basePriceToman,
             isActive: product.isActive,
             isFeatured: product.isFeatured,

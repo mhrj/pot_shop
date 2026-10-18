@@ -105,8 +105,20 @@ async function main() {
       bundleSize: 2,
       bundleLabel: 'ست ۲ عددی سفالی',
       bundleItems: [
-        { title: 'گلدان سفالی تراکوتا ۲۰cm', description: 'قطر ۲۰، ارتفاع ۱۸ مناسب گیاهان آپارتمانی' },
-        { title: 'گلدان سفالی تراکوتا ۱۵cm', description: 'قطر ۱۵، ارتفاع ۱۴ مناسب گیاهان رومیزی' },
+        {
+          title: 'گلدان سفالی تراکوتا ۲۰cm',
+          material: 'سفال',
+          diameterCm: 20,
+          heightCm: 18,
+          weightGrams: 800,
+        },
+        {
+          title: 'گلدان سفالی تراکوتا ۱۵cm',
+          material: 'سفال',
+          diameterCm: 15,
+          heightCm: 14,
+          weightGrams: 600,
+        },
       ],
       basePriceToman: 150000,
       isFeatured: true,

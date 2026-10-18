@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { formatToman, formatWeight, toFa } from '@/lib/format';
 import { nextTierHint, resolveTier, type Tier } from '@/lib/pricing';
+import type { BundleItem } from '@/lib/product-features';
 
 type Props = {
   product: {
@@ -16,7 +17,7 @@ type Props = {
     stock: number;
     bundleSize?: number;
     bundleLabel?: string | null;
-    bundleItems?: { title: string; description: string }[] | null;
+    bundleItems?: BundleItem[] | null;
     minOrderQuantity?: number;
     allowBatchDiscount?: boolean;
   };

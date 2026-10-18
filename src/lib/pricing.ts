@@ -1,3 +1,5 @@
+import type { BundleItem } from './product-features';
+
 /**
  * Tiered pricing engine -- the single source of truth for price.
  * Never trust a price sent from the client.
@@ -17,7 +19,7 @@ export type PricedLine = {
   quantity: number;
   bundleSize: number;
   bundleLabel?: string | null;
-  bundleItems?: { title: string; description: string }[] | null;
+  bundleItems?: BundleItem[] | null;
 
   listUnitToman: number;
   unitToman: number;
@@ -104,7 +106,7 @@ type PriceInput = {
     unitsPerCarton?: number;
     bundleSize?: number;
     bundleLabel?: string | null;
-    bundleItems?: { title: string; description: string }[] | null;
+    bundleItems?: BundleItem[] | null;
     images?: { url: string }[];
     allowBatchDiscount?: boolean;
   };
