@@ -52,9 +52,9 @@ export default function RegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fullName: form.fullName,
-          phone: form.phone,
-          email: form.email || undefined,
+          fullName: form.fullName.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim(),
           password: form.password,
         }),
       });
@@ -86,7 +86,9 @@ export default function RegisterPage() {
 
         <div className="mt-7 space-y-4">
           <label className="block">
-            <span className="text-xs font-bold text-soil-900">نام کامل</span>
+            <span className="text-xs font-bold text-soil-900">
+              نام کامل <span className="text-red-600">*</span>
+            </span>
             <input
               value={form.fullName}
               onChange={(e) => setForm((prev) => ({ ...prev, fullName: e.target.value }))}
@@ -127,7 +129,9 @@ export default function RegisterPage() {
           </label>
 
           <label className="block">
-            <span className="text-xs font-bold text-soil-900">رمز عبور</span>
+            <span className="text-xs font-bold text-soil-900">
+              رمز عبور <span className="text-red-600">*</span>
+            </span>
             <PasswordInput
               value={form.password}
               onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
@@ -135,10 +139,15 @@ export default function RegisterPage() {
               autoComplete="new-password"
               className="mt-2"
             />
+            <span className="mt-1.5 block text-[11px] text-soil-700/60">
+              حداقل ۸ نویسه، شامل حرف بزرگ، حرف کوچک، عدد و نماد
+            </span>
           </label>
 
           <label className="block">
-            <span className="text-xs font-bold text-soil-900">تأیید رمز عبور</span>
+            <span className="text-xs font-bold text-soil-900">
+              تأیید رمز عبور <span className="text-red-600">*</span>
+            </span>
             <PasswordInput
               value={form.confirmPassword}
               onChange={(e) => setForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}

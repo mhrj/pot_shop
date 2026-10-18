@@ -43,15 +43,8 @@ export async function POST(req: Request) {
     message: 'اگر حسابی با این ایمیل ثبت شده باشد، لینک بازیابی ارسال شد.',
   });
 
-  if (!user) {
+  if (!user || !user.email) {
     return genericResponse;
-  }
-
-  if (!user.email) {
-    return NextResponse.json({
-      ok: true,
-      message: `برای این حساب، بازیابی از طریق ایمیل در دسترس نیست. ${getRecoverySupportMessage()}`,
-    });
   }
 
   const token = await createResetToken();
@@ -71,12 +64,10 @@ export async function POST(req: Request) {
 
   try {
     await sendPasswordResetEmail({ to: user.email, resetUrl });
-    return NextResponse.json({
-      ok: true,
-      message: 'اگر حسابی با این ایمیل ثبت شده باشد، لینک بازیابی ارسال شد.',
-    });
+    return genericResponse;
   } catch (error) {
     console.error('[password-reset] email delivery failed:', error);
+    await prisma.passwordResetToken.deleteMany({ where: { tokenHash } }).catch(() => {});
     return NextResponse.json({
       ok: true,
       message: `در حال حاضر ارسال لینک بازیابی ممکن نیست. ${getRecoverySupportMessage()}`,

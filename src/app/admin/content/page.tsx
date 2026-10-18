@@ -1,71 +1,136 @@
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
+import { DEFAULT_CONTENT } from '@/lib/content';
+import ContentBlockEditor from '@/components/admin/ContentBlockEditor';
 
-const BLOCKS = [
-  { key: 'home_hero_title', title: 'عنوان اصلی صفحه اصلی', placeholder: 'به فضاهای خالی، جان بدهیم.' },
-  { key: 'home_hero_subtitle', title: 'متن معرفی اصلی', placeholder: 'متن کوتاه درباره فروشگاه و ارزش پیشنهادی.' },
-  { key: 'about_title', title: 'عنوان بخش معرفی', placeholder: 'هر گلدان، یک شروع تازه' },
-  { key: 'about_body', title: 'متن بخش معرفی', placeholder: 'توضیح کوتاه و خوانا برای مشتریان.' },
-  { key: 'footer_text', title: 'متن فوتر', placeholder: 'پات شاپ؛ گلدان و فلاورباکس برای فضاهای زنده و آرام.' },
-] as const;
+export const dynamic = 'force-dynamic';
 
-async function saveBlock(formData: FormData) {
-  'use server';
-
-  await requireAdmin();
-  const key = String(formData.get('key') ?? '');
-  const body = String(formData.get('body') ?? '').trim();
-
-  if (!key || !body) return;
-
-  const existing = await prisma.staticContent.findUnique({ where: { key }, select: { title: true } });
-
-  await prisma.staticContent.upsert({
-    where: { key },
-    update: { title: existing?.title ?? key, body, isPublished: true },
-    create: { key, title: key, body, isPublished: true },
-  });
-}
+const CONTENT_SECTIONS = [
+  {
+    title: 'بخش اصلی صفحه نخست (Hero)',
+    description: 'عنوان بزرگ و متن معرفی اولیه که در بالای صفحه اول وب‌سایت نمایش داده می‌شود.',
+    blocks: [
+      {
+        key: 'home_hero_title' as const,
+        label: 'عنوان اصلی صفحه نخست',
+        multiline: false,
+      },
+      {
+        key: 'home_hero_subtitle' as const,
+        label: 'متن معرفی و زیرعنوان صفحه نخست',
+        multiline: true,
+        rows: 3,
+      },
+    ],
+  },
+  {
+    title: 'بخش سفارش عمده و همکاری (Promotional & Wholesale)',
+    description: 'عنوان و توضیحات بخش سفارش عمده برای کافه‌ها، پروژه‌ها و خریداران سازمانی.',
+    blocks: [
+      {
+        key: 'promo_title' as const,
+        label: 'عنوان بخش سفارش عمده',
+        multiline: false,
+      },
+      {
+        key: 'promo_subtitle' as const,
+        label: 'توضیحات بخش سفارش عمده و شرایط همکاری',
+        multiline: true,
+        rows: 3,
+      },
+    ],
+  },
+  {
+    title: 'بخش درباره ما و داستان فروشگاه (About Us)',
+    description: 'روایت دست‌ساز بودن گلدان‌ها و ارزش‌های پات شاپ که در صفحه اول و صفحه «درباره ما» قرار دارد.',
+    blocks: [
+      {
+        key: 'about_title' as const,
+        label: 'عنوان بخش درباره ما',
+        multiline: false,
+      },
+      {
+        key: 'about_body' as const,
+        label: 'متن کامل داستان و معرفی فروشگاه',
+        multiline: true,
+        rows: 6,
+      },
+    ],
+  },
+  {
+    title: 'اطلاعات تماس و فوتر (Footer & Contact Information)',
+    description: 'متن معرفی کوتاه فوتر و مشخصات رسمی تماس که در پاورقی تمام صفحات وب‌سایت نمایش داده می‌شوند.',
+    blocks: [
+      {
+        key: 'footer_text' as const,
+        label: 'متن توضیحی فوتر',
+        multiline: true,
+        rows: 2,
+      },
+      {
+        key: 'address' as const,
+        label: 'نشانی فیزیکی فروشگاه',
+        multiline: false,
+      },
+      {
+        key: 'phone' as const,
+        label: 'شماره تلفن تماس',
+        multiline: false,
+      },
+      {
+        key: 'email' as const,
+        label: 'آدرس ایمیل پشتیبانی',
+        multiline: false,
+      },
+      {
+        key: 'hours' as const,
+        label: 'ساعات کاری و پاسخ‌گویی',
+        multiline: false,
+      },
+    ],
+  },
+];
 
 export default async function AdminContentPage() {
   await requireAdmin();
 
   const existing = await prisma.staticContent.findMany({
-    orderBy: { key: 'asc' },
-    select: { key: true, title: true, body: true, isPublished: true },
+    select: { key: true, body: true },
   });
-  const map = new Map(existing.map((item) => [item.key, item]));
+  const map = new Map(existing.map((item) => [item.key, item.body]));
 
   return (
-    <div>
-      <h1 className="text-2xl font-black text-soil-900">محتوای فروشگاه</h1>
-      <p className="mt-2 text-sm text-soil-700/70">متن‌های کسب‌وکار قابل ویرایش هستند؛ برچسب‌ها و فیلدهای فنی به‌صورت ثابت باقی می‌مانند.</p>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-black text-soil-900">محتوای متنی فروشگاه</h1>
+        <p className="mt-2 text-sm text-soil-700/70">
+          متن‌های تجاری و کسب‌وکار فروشگاه را در این صفحه ویرایش و منتشر کنید. برچسب‌ها و ساختار بخش‌ها ثابت باقی می‌مانند.
+        </p>
+      </div>
 
-      <div className="mt-6 space-y-5">
-        {BLOCKS.map((block) => {
-          const item = map.get(block.key) ?? { title: block.title, body: '', isPublished: true };
-          return (
-            <form key={block.key} action={saveBlock} className="rounded-2xl border border-soil-900/10 bg-white p-5">
-              <input type="hidden" name="key" value={block.key} />
-              <div className="mb-3">
-                <span className="text-xs font-bold text-soil-900">{block.title}</span>
-              </div>
-              <label className="mt-4 block">
-                <span className="text-xs font-bold text-soil-900">متن</span>
-                <textarea
-                  name="body"
-                  defaultValue={item.body}
-                  rows={4}
-                  className="mt-2 w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                  placeholder={block.placeholder}
+      <div className="space-y-8">
+        {CONTENT_SECTIONS.map((section) => (
+          <section key={section.title} className="space-y-4">
+            <div className="border-b border-soil-900/10 pb-2">
+              <h2 className="text-base font-black text-soil-900">{section.title}</h2>
+              <p className="mt-1 text-xs text-soil-700/60">{section.description}</p>
+            </div>
+
+            <div className="grid gap-4">
+              {section.blocks.map((b) => (
+                <ContentBlockEditor
+                  key={b.key}
+                  blockKey={b.key}
+                  fieldLabel={b.label}
+                  initialValue={map.get(b.key) ?? ''}
+                  defaultValue={DEFAULT_CONTENT[b.key]}
+                  multiline={b.multiline}
+                  rows={b.rows}
                 />
-              </label>
-              <button type="submit" className="mt-4 rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white">
-                ذخیره تغییرات
-              </button>
-            </form>
-          );
-        })}
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </div>
   );

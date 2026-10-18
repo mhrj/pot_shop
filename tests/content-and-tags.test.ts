@@ -1,0 +1,43 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
+import { DEFAULT_CONTENT } from '../src/lib/content';
+
+test('DEFAULT_CONTENT has required business fields with Persian defaults', () => {
+  const expectedKeys = [
+    'home_hero_title',
+    'home_hero_subtitle',
+    'promo_title',
+    'promo_subtitle',
+    'about_title',
+    'about_body',
+    'footer_text',
+    'address',
+    'phone',
+    'email',
+    'hours',
+  ] as const;
+
+  for (const key of expectedKeys) {
+    assert.ok(key in DEFAULT_CONTENT, `Missing expected key in DEFAULT_CONTENT: ${key}`);
+    assert.ok(
+      typeof DEFAULT_CONTENT[key] === 'string' && DEFAULT_CONTENT[key].length > 0,
+      `Key ${key} must have non-empty default content`,
+    );
+  }
+});
+
+test('tag slug generation preserves Persian letters and numbers', () => {
+  const slugify = (value: string) =>
+    value
+      .trim()
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60) || 'tag';
+
+  assert.equal(slugify('گلدان سفالی'), 'گلدان-سفالی');
+  assert.equal(slugify('سایز بزرگ ۲۰'), 'سایز-بزرگ-۲۰');
+  assert.equal(slugify('  مقاوم در برابر سرما! '), 'مقاوم-در-برابر-سرما');
+  assert.equal(slugify(''), 'tag');
+});

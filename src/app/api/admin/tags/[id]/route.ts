@@ -72,13 +72,9 @@ export async function DELETE(_req: Request, { params }: Params) {
     return NextResponse.json({ message: 'برچسب یافت نشد' }, { status: 404 });
   }
 
-  if (tag._count.products > 0) {
-    return NextResponse.json(
-      { message: 'برچسب دارای محصول مرتبط است و حذف آن ممکن نیست؛ ابتدا وابستگی‌ها را حذف کنید.' },
-      { status: 409 },
-    );
-  }
-
+  // In schema.prisma, ProductTag has `tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)`.
+  // Deleting the tag cleanly removes only the tag and its product association links,
+  // without any data loss to products or orders.
   await prisma.tag.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

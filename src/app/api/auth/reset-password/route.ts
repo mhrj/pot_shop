@@ -45,16 +45,26 @@ export async function POST(req: Request) {
 
   const passwordHash = await hashPassword(parsed.data.password);
 
-  await prisma.$transaction([
-    prisma.user.update({
-      where: { id: tokenEntry.userId },
-      data: { passwordHash },
-    }),
-    prisma.passwordResetToken.update({
-      where: { id: tokenEntry.id },
-      data: { usedAt: new Date() },
-    }),
-  ]);
+  try {
+    await prisma.$transaction(async (tx) => {
+      const claim = await tx.passwordResetToken.updateMany({
+        where: { id: tokenEntry.id, usedAt: null },
+        data: { usedAt: new Date() },
+      });
+      if (claim.count === 0) {
+        throw new Error('TOKEN_ALREADY_USED');
+      }
+      await tx.user.update({
+        where: { id: tokenEntry.userId },
+        data: { passwordHash },
+      });
+    });
+  } catch (err) {
+    if (err instanceof Error && err.message === 'TOKEN_ALREADY_USED') {
+      return NextResponse.json({ message: 'لینک بازیابی قبلاً استفاده شده است یا منقضی شده است' }, { status: 400 });
+    }
+    throw err;
+  }
 
   return NextResponse.json({ ok: true, message: 'رمز عبور با موفقیت تغییر کرد.' });
 }

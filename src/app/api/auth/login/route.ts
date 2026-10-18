@@ -59,7 +59,7 @@ export async function POST(req: Request) {
   // Same error message on both branches to avoid leaking whether a user exists.
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
     return NextResponse.json(
-      { message: 'شماره موبایل یا رمز عبور اشتباه است' },
+      { message: 'شماره موبایل، ایمیل یا رمز عبور اشتباه است' },
       { status: 401 },
     );
   }

@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
-import TagDeleteButton from '@/components/admin/TagDeleteButton';
+import TagRow from '@/components/admin/TagRow';
 
 async function createTag(formData: FormData) {
   'use server';
@@ -33,11 +33,11 @@ export default async function AdminTagsPage() {
   return (
     <div>
       <h1 className="text-2xl font-black text-soil-900">برچسب‌ها</h1>
-      <p className="mt-2 text-sm text-soil-700/70">مدیریت دسته‌بندی‌های محصولات</p>
+      <p className="mt-2 text-sm text-soil-700/70">مدیریت، ویرایش نام و دسته‌بندی‌های محصولات</p>
 
       <form action={createTag} className="mt-6 rounded-2xl border border-soil-900/10 bg-white p-5">
         <label className="block">
-          <span className="text-xs font-bold text-soil-900">نام برچسب</span>
+          <span className="text-xs font-bold text-soil-900">نام برچسب جدید</span>
           <input
             name="name"
             required
@@ -45,20 +45,14 @@ export default async function AdminTagsPage() {
             placeholder="مثلاً: گیاهان آپارتمانی"
           />
         </label>
-        <button type="submit" className="mt-4 rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white">
+        <button type="submit" className="mt-4 rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700">
           افزودن برچسب
         </button>
       </form>
 
       <div className="mt-6 grid gap-3">
         {tags.map((tag) => (
-          <div key={tag.id} className="flex items-center justify-between gap-3 rounded-2xl border border-soil-900/10 bg-white p-4">
-            <div>
-              <p className="font-bold text-soil-900">{tag.name}</p>
-              <p className="mt-1 text-xs text-soil-700/60">{tag._count.products} محصول مرتبط</p>
-            </div>
-            <TagDeleteButton tagId={tag.id} tagName={tag.name} />
-          </div>
+          <TagRow key={tag.id} tag={tag} />
         ))}
       </div>
     </div>

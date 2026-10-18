@@ -296,11 +296,10 @@ export default async function HomePage() {
           <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <h2 className="text-3xl font-black text-white sm:text-4xl">
-                سفارش عمده، بدون دردسر
+                {content.promo_title.body}
               </h2>
               <p className="mt-5 leading-8 text-flora-100/85">
-                برای کافه‌ها، هتل‌ها، اداره‌ها و فروشگاه‌های گیاه. تخفیف پله‌ای خودکار روی
-                همان صفحه محصول اعمال می‌شود — بدون نیاز به تماس یا مذاکره.
+                {content.promo_subtitle.body}
               </p>
               <ul className="mt-8 space-y-4 text-sm">
                 {[

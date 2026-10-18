@@ -43,6 +43,7 @@ export default function ProductForm({
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
   const [featureInput, setFeatureInput] = useState('');
   const [form, setForm] = useState<ProductFormData>(initial);
@@ -368,8 +369,13 @@ export default function ProductForm({
       </section>
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-black text-soil-900">تصاویر محصول</h2>
+        <div className="mb-2 flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-black text-soil-900">تصاویر محصول</h2>
+            <p className="mt-1 text-xs text-soil-700/60">
+              تصاویر در فضای محلی سرور ذخیره می‌شوند (<code className="font-mono text-soil-900">/public/uploads</code>). نسبت ابعاد با بزرگنمایی مناسب حفظ می‌شود.
+            </p>
+          </div>
           <button
             type="button"
             onClick={() => update('images', [...form.images, ''])}
@@ -378,47 +384,102 @@ export default function ProductForm({
             + افزودن تصویر
           </button>
         </div>
-        <div className="space-y-3">
-          {form.images.map((url, i) => (
-            <div key={i} className="rounded-xl border border-soil-900/10 bg-dust-50 p-3">
-              {url && (
-                <div className="mb-3 overflow-hidden rounded-lg border border-soil-900/10 bg-white">
-                  <img src={url} alt={`پیش‌نمایش تصویر ${i + 1}`} className="h-72 w-full object-contain" />
+
+        <div className="mt-4 space-y-4">
+          {form.images.map((url, i) => {
+            const hasError = imageErrors[i];
+            const isUploading = uploading[i];
+
+            return (
+              <div key={i} className="rounded-xl border border-soil-900/10 bg-dust-50 p-4">
+                {/* Image preview area with comfortable height and aspect ratio preservation */}
+                <div className="relative mb-3 flex min-h-60 h-80 w-full items-center justify-center overflow-hidden rounded-xl border border-soil-900/10 bg-white p-2">
+                  {url && !hasError && (
+                    <img
+                      src={url}
+                      alt={`پیش‌نمایش تصویر ${i + 1}`}
+                      className="h-full w-full object-contain"
+                      onError={() => setImageErrors((prev) => ({ ...prev, [i]: true }))}
+                      onLoad={() => setImageErrors((prev) => ({ ...prev, [i]: false }))}
+                    />
+                  )}
+
+                  {url && hasError && (
+                    <div className="flex flex-col items-center justify-center p-6 text-center text-xs text-red-600">
+                      <span className="text-3xl mb-2">⚠️</span>
+                      <p className="font-bold">تصویر در این مسیر یافت نشد یا قابل نمایش نیست</p>
+                      <p className="mt-1 text-[11px] text-soil-700/60 dir-ltr font-mono">{url}</p>
+                    </div>
+                  )}
+
+                  {!url && !isUploading && (
+                    <div className="flex flex-col items-center justify-center text-xs text-soil-700/50">
+                      <span className="text-3xl mb-2">🖼️</span>
+                      <span>هنوز تصویری انتخاب یا آپلود نشده است</span>
+                    </div>
+                  )}
+
+                  {isUploading && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/85 backdrop-blur-sm text-xs font-bold text-soil-900">
+                      <div className="mb-2 size-8 animate-spin rounded-full border-3 border-flora-700 border-t-transparent" />
+                      <span>در حال اعتبارسنجی و آپلود تصویر…</span>
+                    </div>
+                  )}
+
+                  {url && !isUploading && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = [...form.images];
+                        next[i] = '';
+                        update('images', next);
+                        setImageErrors((prev) => ({ ...prev, [i]: false }));
+                      }}
+                      className="absolute top-3 end-3 rounded-lg bg-soil-900/70 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur transition hover:bg-red-700"
+                    >
+                      پاک کردن تصویر
+                    </button>
+                  )}
                 </div>
-              )}
-              <div className="flex flex-col gap-2 md:flex-row md:items-center">
-                <input
-                  value={url}
-                  onChange={(e) => {
-                    const next = [...form.images];
-                    next[i] = e.target.value;
-                    update('images', next);
-                  }}
-                  dir="ltr"
-                  placeholder="/uploads/product/example.jpg"
-                  className={`${inputCls} flex-1`}
-                />
-                <label className="cursor-pointer rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700">
+
+                <div className="flex flex-col gap-2 md:flex-row md:items-center">
                   <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => uploadImage(i, e.target.files?.[0] ?? null)}
+                    value={url}
+                    onChange={(e) => {
+                      const next = [...form.images];
+                      next[i] = e.target.value;
+                      update('images', next);
+                      setImageErrors((prev) => ({ ...prev, [i]: false }));
+                    }}
+                    dir="ltr"
+                    placeholder="/uploads/product/example.jpg"
+                    className={`${inputCls} flex-1`}
                   />
-                  {uploading[i] ? 'در حال آپلود…' : 'آپلود فایل'}
-                </label>
-                {form.images.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => update('images', form.images.filter((_, j) => j !== i))}
-                    className="shrink-0 rounded-xl border border-soil-900/15 px-3 py-2 text-xs text-soil-700 transition hover:bg-dust-50"
-                  >
-                    حذف
-                  </button>
-                )}
+                  <label className="cursor-pointer rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+                      className="hidden"
+                      onChange={(e) => {
+                        setImageErrors((prev) => ({ ...prev, [i]: false }));
+                        uploadImage(i, e.target.files?.[0] ?? null);
+                      }}
+                    />
+                    {isUploading ? 'در حال آپلود…' : 'آپلود فایل جدید'}
+                  </label>
+                  {form.images.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => update('images', form.images.filter((_, j) => j !== i))}
+                      className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-bold text-red-700 transition hover:bg-red-100"
+                    >
+                      حذف ردیف
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

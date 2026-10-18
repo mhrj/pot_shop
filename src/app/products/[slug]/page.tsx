@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
@@ -151,9 +152,13 @@ export default async function ProductPage({ params }: Params) {
               {product.material}
             </span>
             {product.tags.map((entry) => (
-              <span key={entry.tag.id} className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700">
+              <Link
+                key={entry.tag.id}
+                href={`/products?tag=${encodeURIComponent(entry.tag.slug)}`}
+                className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700 transition hover:bg-flora-200"
+              >
                 {entry.tag.name}
-              </span>
+              </Link>
             ))}
             <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
               موجودی: {toFa(product.stock)} عدد
