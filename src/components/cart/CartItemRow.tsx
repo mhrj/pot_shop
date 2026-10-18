@@ -12,7 +12,15 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
   const [qty, setQty] = useState(line.quantity);
   const [error, setError] = useState<string | null>(null);
 
-  const clamp = (n: number) => Math.max(1, Math.min(stock, Math.floor(n) || 1));
+  const packSize = Math.max(1, line.packSize || 1);
+  const clamp = (n: number) => {
+    const raw = Math.floor(n) || packSize;
+    const units = Math.max(1, Math.round(raw / packSize));
+    const multiple = units * packSize;
+    const maxUnits = Math.max(1, Math.floor(stock / packSize));
+    const maxQty = maxUnits * packSize;
+    return Math.max(packSize, Math.min(maxQty, multiple));
+  };
 
   const update = (next: number) => {
     const clamped = clamp(next);
@@ -61,7 +69,7 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
           <div>
             <h2 className="font-bold text-soil-900">{line.name}</h2>
             <p className="mt-1 text-xs text-soil-700/70">
-              {formatToman(line.unitToman)} × {toFa(qty)} — {line.tierLabel}
+              {formatToman(line.unitToman)} × {toFa(qty)} عدد (شامل {toFa(Math.round(qty / packSize))} بسته) — {line.tierLabel}
             </p>
           </div>
           <button
@@ -84,27 +92,32 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
           </button>
         </div>
 
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-0.5">
-            <button
-              type="button"
-              onClick={() => update(qty - 1)}
-              disabled={pending || qty <= 1}
-              aria-label="کاهش تعداد"
-              className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
-            >
-              −
-            </button>
-            <span className="w-8 text-center text-sm font-black text-soil-900">{toFa(qty)}</span>
-            <button
-              type="button"
-              onClick={() => update(qty + 1)}
-              disabled={pending || qty >= stock}
-              aria-label="افزایش تعداد"
-              className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
-            >
-              +
-            </button>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-0.5">
+              <button
+                type="button"
+                onClick={() => update(qty - packSize)}
+                disabled={pending || qty <= packSize}
+                aria-label="کاهش تعداد"
+                className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
+              >
+                −
+              </button>
+              <span className="w-8 text-center text-sm font-black text-soil-900">{toFa(qty)}</span>
+              <button
+                type="button"
+                onClick={() => update(qty + packSize)}
+                disabled={pending || qty + packSize > stock}
+                aria-label="افزایش تعداد"
+                className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
+              >
+                +
+              </button>
+            </div>
+            <span className="text-xs text-soil-700/80">
+              {toFa(qty)} عدد (شامل {toFa(Math.round(qty / packSize))} بسته)
+            </span>
           </div>
 
           <p className="text-sm font-black text-flora-900">

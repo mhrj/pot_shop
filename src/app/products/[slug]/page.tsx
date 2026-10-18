@@ -174,8 +174,10 @@ export default async function ProductPage({ params }: Params) {
                 weightGrams: product.weightGrams,
                 unitsPerCarton: product.unitsPerCarton,
                 stock: product.stock,
+                packSize: product.packSize,
                 allowBatchDiscount: product.allowBatchDiscount,
               }}
+              packSize={product.packSize}
               allowBatchDiscount={product.allowBatchDiscount}
               tiers={product.tiers.map((t) => ({
                 minQuantity: t.minQuantity,

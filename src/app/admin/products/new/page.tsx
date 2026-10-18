@@ -39,6 +39,7 @@ export default async function NewProductPage() {
             weightGrams: 1000,
             stock: 0,
             unitsPerCarton: 6,
+            packSize: 1,
             basePriceToman: 150000,
             isActive: true,
             isFeatured: false,

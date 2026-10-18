@@ -117,6 +117,7 @@ model Product {
 
   stock         Int      @default(0)
   unitsPerCarton Int     @default(6)
+  packSize      Int      @default(1)
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)
   allowBatchDiscount Boolean @default(true)

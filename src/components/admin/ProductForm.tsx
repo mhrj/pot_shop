@@ -20,6 +20,7 @@ export type ProductFormData = {
   weightGrams: number;
   stock: number;
   unitsPerCarton: number;
+  packSize?: number;
   basePriceToman: number;
   isActive: boolean;
   isFeatured: boolean;
@@ -52,6 +53,7 @@ export default function ProductForm({
   const [form, setForm] = useState<ProductFormData>({
     ...initial,
     categoryId: initial.categoryId ?? '',
+    packSize: initial.packSize ?? 1,
     allowBatchDiscount: initial.allowBatchDiscount ?? true,
   });
 
@@ -119,6 +121,7 @@ export default function ProductForm({
       const payload = {
         ...form,
         categoryId: form.categoryId || null,
+        packSize: form.packSize ?? 1,
         allowBatchDiscount: form.allowBatchDiscount ?? true,
         tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
@@ -317,6 +320,16 @@ export default function ProductForm({
               type="number"
               value={form.unitsPerCarton}
               onChange={(e) => update('unitsPerCarton', Number(e.target.value))}
+              className={inputCls}
+            />
+          </label>
+          <label className="block">
+            <span className={labelCls}>تعداد در بسته (حداقل سفارش)</span>
+            <input
+              type="number"
+              min={1}
+              value={form.packSize ?? 1}
+              onChange={(e) => update('packSize', Number(e.target.value) || 1)}
               className={inputCls}
             />
           </label>

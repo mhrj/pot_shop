@@ -15,6 +15,7 @@ export type PricedLine = {
   name: string;
   imageUrl?: string | null;
   quantity: number;
+  packSize: number;
 
   listUnitToman: number;
   unitToman: number;
@@ -99,6 +100,7 @@ type PriceInput = {
     basePriceToman: number;
     weightGrams: number;
     unitsPerCarton: number;
+    packSize?: number;
     images?: { url: string }[];
     allowBatchDiscount?: boolean;
   };
@@ -107,7 +109,8 @@ type PriceInput = {
 };
 
 export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine {
-  const qty = Math.max(1, Math.floor(quantity));
+  const packSize = Math.max(1, product.packSize ?? 1);
+  const qty = Math.max(packSize, Math.floor(quantity));
   const allowBatch = product.allowBatchDiscount !== false;
 
   const listUnitToman = product.basePriceToman;
@@ -134,6 +137,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
     name: product.name,
     imageUrl: product.images?.[0]?.url ?? null,
     quantity: qty,
+    packSize,
     listUnitToman,
     unitToman,
     lineTotalToman,

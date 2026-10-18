@@ -51,6 +51,7 @@ export default async function EditProductPage({ params }: Props) {
             weightGrams: product.weightGrams,
             stock: product.stock,
             unitsPerCarton: product.unitsPerCarton,
+            packSize: product.packSize ?? 1,
             basePriceToman: product.basePriceToman,
             isActive: product.isActive,
             isFeatured: product.isFeatured,

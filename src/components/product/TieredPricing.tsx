@@ -14,11 +14,13 @@ type Props = {
     weightGrams: number;
     unitsPerCarton: number;
     stock: number;
+    packSize?: number;
     allowBatchDiscount?: boolean;
   };
   tiers: Tier[];
   isAuthed: boolean;
   allowBatchDiscount?: boolean;
+  packSize?: number;
 };
 
 export default function TieredPricing({
@@ -26,9 +28,11 @@ export default function TieredPricing({
   tiers,
   isAuthed,
   allowBatchDiscount,
+  packSize: packSizeProp,
 }: Props) {
   const allowBatch = allowBatchDiscount ?? product.allowBatchDiscount ?? true;
-  const [qty, setQty] = useState(1);
+  const packSize = Math.max(1, packSizeProp ?? product.packSize ?? 1);
+  const [qty, setQty] = useState(packSize);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
@@ -69,7 +73,14 @@ export default function TieredPricing({
     };
   }, [allowBatch, qty, sorted, product.basePriceToman, product.unitsPerCarton]);
 
-  const clamp = (n: number) => Math.max(1, Math.min(product.stock || 1, Math.floor(n) || 1));
+  const clamp = (n: number) => {
+    const raw = Math.floor(n) || packSize;
+    const units = Math.max(1, Math.round(raw / packSize));
+    const multiple = units * packSize;
+    const maxUnits = Math.max(1, Math.floor(product.stock / packSize));
+    const maxQty = maxUnits * packSize;
+    return Math.max(packSize, Math.min(maxQty, multiple));
+  };
 
   const handleAdd = () => {
     setError(null);
@@ -96,7 +107,7 @@ export default function TieredPricing({
     });
   };
 
-  const outOfStock = product.stock <= 0;
+  const outOfStock = product.stock <= 0 || product.stock < packSize;
 
   return (
     <div className="space-y-6">
@@ -151,12 +162,17 @@ export default function TieredPricing({
 
       <div className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <div className="flex items-center justify-between gap-4">
-          <span className="text-sm font-bold text-soil-900">تعداد</span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-soil-900">تعداد</span>
+            <span className="text-xs text-soil-700/70">
+              ({toFa(Math.round(qty / packSize))} بسته)
+            </span>
+          </div>
           <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-1">
             <button
               type="button"
-              onClick={() => setQty((q) => clamp(q - 1))}
-              disabled={qty <= 1}
+              onClick={() => setQty((q) => clamp(q - packSize))}
+              disabled={qty <= packSize}
               aria-label="کاهش تعداد"
               className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
             >
@@ -165,7 +181,8 @@ export default function TieredPricing({
             <input
               type="number"
               inputMode="numeric"
-              min={1}
+              min={packSize}
+              step={packSize}
               max={product.stock}
               value={qty}
               onChange={(e) => setQty(clamp(Number(e.target.value)))}
@@ -174,8 +191,8 @@ export default function TieredPricing({
             />
             <button
               type="button"
-              onClick={() => setQty((q) => clamp(q + 1))}
-              disabled={qty >= product.stock}
+              onClick={() => setQty((q) => clamp(q + packSize))}
+              disabled={qty + packSize > product.stock}
               aria-label="افزایش تعداد"
               className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
             >
