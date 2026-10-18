@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ProductFeature, BundleItem } from '@/lib/product-features';
+import { FormError } from '@/components/ui/FormError';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
 
@@ -37,6 +38,14 @@ const inputCls =
   'mt-1.5 w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20';
 const labelCls = 'text-xs font-bold text-soil-900';
 
+function fieldCls(errorMsg?: string) {
+  return `mt-1.5 w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition ${
+    errorMsg
+      ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+      : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+  }`;
+}
+
 export default function ProductForm({
   initial,
   knownLabels,
@@ -47,6 +56,7 @@ export default function ProductForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
@@ -89,6 +99,9 @@ export default function ProductForm({
 
   function update<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+    if (fieldErrors[key as string]) {
+      setFieldErrors((prev) => ({ ...prev, [key as string]: '' }));
+    }
   }
 
   function updateTier(i: number, patch: Partial<Tier>) {
@@ -97,6 +110,9 @@ export default function ProductForm({
       next[i] = { ...next[i], ...patch };
       return { ...f, tiers: next };
     });
+    if (fieldErrors.tiers) {
+      setFieldErrors((prev) => ({ ...prev, tiers: '' }));
+    }
   }
 
   // One-click add: every feature arrives already enabled. There is no per-row
@@ -120,6 +136,56 @@ export default function ProductForm({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    const newErrors: Record<string, string> = {};
+
+    if (!form.name.trim()) {
+      newErrors.name = 'نام محصول الزامی است';
+    } else if (form.name.trim().length < 2) {
+      newErrors.name = 'نام محصول باید حداقل ۲ حرف باشد';
+    }
+
+    if (!form.slug.trim()) {
+      newErrors.slug = 'اسلاگ الزامی است';
+    } else if (form.slug.trim().length < 2) {
+      newErrors.slug = 'اسلاگ باید حداقل ۲ کاراکتر باشد';
+    } else if (!/^[a-z0-9-]+$/.test(form.slug.trim())) {
+      newErrors.slug = 'اسلاگ فقط شامل حروف کوچک انگلیسی، عدد و خط تیره باشد';
+    }
+
+    if (!form.material.trim()) {
+      newErrors.material = 'متریال/جنس الزامی است';
+    }
+
+    if (!form.description.trim()) {
+      newErrors.description = 'توضیحات کامل الزامی است';
+    }
+
+    if (!form.basePriceToman || form.basePriceToman < 1000) {
+      newErrors.basePriceToman = 'قیمت پایه باید حداقل ۱,۰۰۰ تومان باشد';
+    }
+
+    if (form.stock < 0) {
+      newErrors.stock = 'موجودی نمی‌تواند منفی باشد';
+    }
+
+    const validImages = form.images.filter((u) => u.trim().length > 0);
+    if (validImages.length === 0) {
+      newErrors.images = 'حداقل یک تصویر برای محصول الزامی است';
+    }
+
+    if (!form.tiers.some((t) => t.minQuantity === 1)) {
+      newErrors.tiers = 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
+      setError('لطفاً خطاهای مشخص‌شده در فرم را بررسی کنید.');
+      return;
+    }
+
+    setFieldErrors({});
+
     startTransition(async () => {
       const isNew = !initial.id;
       const url = isNew ? '/api/admin/products' : '/api/admin/products/' + initial.id;
@@ -145,6 +211,9 @@ export default function ProductForm({
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(data?.message ?? 'ذخیره ناموفق بود');
+        if (data?.message?.includes('اسلاگ')) {
+          setFieldErrors({ slug: data.message });
+        }
         return;
       }
       router.push('/admin/products');
@@ -196,7 +265,7 @@ export default function ProductForm({
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6">
+    <form noValidate onSubmit={submit} className="space-y-6">
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <h2 className="mb-4 text-sm font-black text-soil-900">اطلاعات پایه</h2>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -205,9 +274,9 @@ export default function ProductForm({
             <input
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
-              required
-              className={inputCls}
+              className={fieldCls(fieldErrors.name)}
             />
+            <FormError message={fieldErrors.name} />
           </label>
 
           <label className="block">
@@ -215,11 +284,11 @@ export default function ProductForm({
             <input
               value={form.slug}
               onChange={(e) => update('slug', e.target.value)}
-              required
               dir="ltr"
               placeholder="clay-pot-terracotta-medium"
-              className={inputCls}
+              className={fieldCls(fieldErrors.slug)}
             />
+            <FormError message={fieldErrors.slug} />
           </label>
 
           <label className="block">
@@ -250,9 +319,9 @@ export default function ProductForm({
             <input
               value={form.material}
               onChange={(e) => update('material', e.target.value)}
-              required
-              className={inputCls}
+              className={fieldCls(fieldErrors.material)}
             />
+            <FormError message={fieldErrors.material} />
           </label>
 
           <label className="block sm:col-span-2">
@@ -265,13 +334,14 @@ export default function ProductForm({
           </label>
 
           <label className="block sm:col-span-2">
-            <span className={labelCls}>توضیحات کامل</span>
+            <span className={labelCls}>توضیحات کامل *</span>
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
               rows={5}
-              className={inputCls}
+              className={fieldCls(fieldErrors.description)}
             />
+            <FormError message={fieldErrors.description} />
           </label>
         </div>
       </section>
@@ -322,8 +392,9 @@ export default function ProductForm({
               type="number"
               value={form.stock}
               onChange={(e) => update('stock', Number(e.target.value))}
-              className={inputCls}
+              className={fieldCls(fieldErrors.stock)}
             />
+            <FormError message={fieldErrors.stock} />
           </label>
           <label className="block">
             <span className={labelCls}>تعداد در بسته فروش (اگر تکفروشی است ۱ بگذارید)</span>
@@ -607,6 +678,7 @@ export default function ProductForm({
             + افزودن تصویر
           </button>
         </div>
+        <FormError message={fieldErrors.images} />
 
         <div className="mt-4 space-y-4">
           {form.images.map((url, i) => {
@@ -757,10 +829,10 @@ export default function ProductForm({
             type="number"
             value={form.basePriceToman}
             onChange={(e) => update('basePriceToman', Number(e.target.value))}
-            required
             min={1000}
-            className={inputCls}
+            className={fieldCls(fieldErrors.basePriceToman)}
           />
+          <FormError message={fieldErrors.basePriceToman} />
         </label>
 
         <div className="mt-4 space-y-3">
@@ -795,6 +867,7 @@ export default function ProductForm({
             </div>
           ))}
         </div>
+        <FormError message={fieldErrors.tiers} />
       </section>
 
       {error && (

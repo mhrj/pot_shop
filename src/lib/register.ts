@@ -2,15 +2,19 @@ import { z } from 'zod';
 import { passwordSchema } from '@/lib/password-policy';
 
 export const registrationSchema = z.object({
-  fullName: z.string().trim().min(2, 'نام کامل باید حداقل ۲ کاراکتر باشد').max(80, 'نام کامل بیش از حد مجاز است'),
+  fullName: z
+    .string({ required_error: 'نام کامل الزامی است' })
+    .trim()
+    .min(2, 'نام کامل باید حداقل ۲ کاراکتر باشد')
+    .max(80, 'نام کامل بیش از حد مجاز است'),
   phone: z
-    .string()
+    .string({ required_error: 'شماره موبایل الزامی است' })
     .trim()
     .min(1, 'شماره موبایل الزامی است')
-    .regex(/^09\d{9}$/, 'شماره موبایل نامعتبر است')
+    .regex(/^09\d{9}$/, 'شماره موبایل نامعتبر است (باید ۱۱ رقم و با ۰۹ شروع شود)')
     .transform((value) => value.replace(/\s+/g, '')),
   email: z
-    .string()
+    .string({ required_error: 'ایمیل الزامی است' })
     .trim()
     .min(1, 'ایمیل الزامی است')
     .email('ایمیل معتبر نیست')

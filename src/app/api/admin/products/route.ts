@@ -7,15 +7,15 @@ import { persistedImageUrlSchema } from '@/lib/image-validation';
 export const runtime = 'nodejs';
 
 const tierSchema = z.object({
-  minQuantity: z.number().int().min(1),
-  unitPriceToman: z.number().int().min(0),
-  label: z.string().max(50).optional().default(''),
+  minQuantity: z.number({ invalid_type_error: 'تعداد پله باید عدد باشد' }).int('تعداد پله باید عدد صحیح باشد').min(1, 'تعداد پله باید حداقل ۱ باشد'),
+  unitPriceToman: z.number({ invalid_type_error: 'قیمت پله باید عدد باشد' }).int('قیمت پله باید عدد صحیح باشد').min(0, 'قیمت پله نمی‌تواند منفی باشد'),
+  label: z.string().max(50, 'برچسب پله حداکثر ۵۰ کاراکتر است').optional().default(''),
 });
 
 const tiersSchema = z
   .array(tierSchema)
-  .min(1)
-  .max(5)
+  .min(1, 'حداقل یک پله قیمت الزامی است')
+  .max(5, 'حداکثر ۵ پله قیمت مجاز است')
   // The pricing engine falls back to the *lowest* tier when a quantity is below
   // every threshold, so a catalogue whose first tier starts at 5 would sell
   // single units at the 5-unit price — silently under the product's own base
@@ -25,41 +25,41 @@ const tiersSchema = z
   });
 
 const bundleItemSchema = z.object({
-  title: z.string().min(1).max(150),
-  material: z.string().max(60).optional().default(''),
-  diameterCm: z.number().min(0).max(500).optional().default(0),
-  heightCm: z.number().min(0).max(500).optional().default(0),
-  weightGrams: z.number().int().min(0).max(100000).optional().default(0),
+  title: z.string({ required_error: 'نام آیتم بسته الزامی است' }).min(1, 'نام آیتم بسته الزامی است').max(150, 'نام آیتم بسته حداکثر ۱۵۰ کاراکتر است'),
+  material: z.string().max(60, 'متریال حداکثر ۶۰ کاراکتر است').optional().default(''),
+  diameterCm: z.number({ invalid_type_error: 'قطر باید عدد باشد' }).min(0, 'قطر نمی‌تواند منفی باشد').max(500, 'قطر حداکثر ۵۰۰ سانتی‌متر است').optional().default(0),
+  heightCm: z.number({ invalid_type_error: 'ارتفاع باید عدد باشد' }).min(0, 'ارتفاع نمی‌تواند منفی باشد').max(500, 'ارتفاع حداکثر ۵۰۰ سانتی‌متر است').optional().default(0),
+  weightGrams: z.number({ invalid_type_error: 'وزن باید عدد باشد' }).int('وزن باید عدد صحیح باشد').min(0, 'وزن نمی‌تواند منفی باشد').max(100000, 'وزن حداکثر ۱۰۰ کیلوگرم است').optional().default(0),
 });
 
 const schema = z.object({
-  slug: z.string().min(2).max(120).regex(/^[a-z0-9-]+$/, 'اسلاگ فقط حروف کوچک، عدد و خط تیره'),
-  name: z.string().min(2).max(150),
-  shortDesc: z.string().max(300).optional().default(''),
-  description: z.string().min(1).max(5000),
-  categoryId: z.string().cuid().optional().nullable().or(z.literal('')),
-  material: z.string().min(2).max(60),
-  color: z.string().max(60).optional().default(''),
-  diameterCm: z.number().min(0).max(500),
-  heightCm: z.number().min(0).max(500),
-  weightGrams: z.number().int().min(0).max(100000),
-  stock: z.number().int().min(0).max(100000),
+  slug: z.string({ required_error: 'اسلاگ الزامی است' }).min(2, 'اسلاگ باید حداقل ۲ کاراکتر باشد').max(120, 'اسلاگ حداکثر ۱۲۰ کاراکتر است').regex(/^[a-z0-9-]+$/, 'اسلاگ فقط حروف کوچک، عدد و خط تیره'),
+  name: z.string({ required_error: 'نام محصول الزامی است' }).min(2, 'نام کالا باید حداقل ۲ حرف باشد').max(150, 'نام کالا حداکثر ۱۵۰ حرف است'),
+  shortDesc: z.string().max(300, 'توضیح کوتاه حداکثر ۳۰۰ کاراکتر است').optional().default(''),
+  description: z.string({ required_error: 'توضیحات کامل الزامی است' }).min(1, 'توضیحات کامل الزامی است').max(5000, 'توضیحات حداکثر ۵۰۰۰ کاراکتر است'),
+  categoryId: z.string().cuid('شناسه دسته‌بندی نامعتبر است').optional().nullable().or(z.literal('')),
+  material: z.string({ required_error: 'متریال الزامی است' }).min(2, 'متریال باید حداقل ۲ حرف باشد').max(60, 'متریال حداکثر ۶۰ حرف است'),
+  color: z.string().max(60, 'رنگ حداکثر ۶۰ حرف است').optional().default(''),
+  diameterCm: z.number({ invalid_type_error: 'قطر باید عدد باشد' }).min(0, 'قطر نمی‌تواند منفی باشد').max(500, 'قطر حداکثر ۵۰۰ سانتی‌متر است'),
+  heightCm: z.number({ invalid_type_error: 'ارتفاع باید عدد باشد' }).min(0, 'ارتفاع نمی‌تواند منفی باشد').max(500, 'ارتفاع حداکثر ۵۰۰ سانتی‌متر است'),
+  weightGrams: z.number({ invalid_type_error: 'وزن باید عدد باشد' }).int('وزن باید عدد صحیح باشد').min(0, 'وزن نمی‌تواند منفی باشد').max(100000, 'وزن حداکثر ۱۰۰ کیلوگرم است'),
+  stock: z.number({ invalid_type_error: 'موجودی انبار باید عدد باشد' }).int('موجودی انبار باید عدد صحیح باشد').min(0, 'موجودی انبار نمی‌تواند منفی باشد').max(100000, 'موجودی بیش از حد مجاز است'),
   unitsPerCarton: z.number().int().min(1).max(200),
-  bundleSize: z.number().int().min(1).default(1),
-  bundleLabel: z.string().max(100).optional().nullable(),
-  bundleItems: z.array(bundleItemSchema).max(50).optional().nullable(),
-  basePriceToman: z.number().int().min(1000),
+  bundleSize: z.number({ invalid_type_error: 'تعداد در بسته باید عدد باشد' }).int('تعداد در بسته باید عدد صحیح باشد').min(1, 'تعداد در بسته حداقل ۱ است').default(1),
+  bundleLabel: z.string().max(100, 'عنوان بسته حداکثر ۱۰۰ کاراکتر است').optional().nullable(),
+  bundleItems: z.array(bundleItemSchema).max(50, 'حداکثر ۵۰ آیتم در بسته مجاز است').optional().nullable(),
+  basePriceToman: z.number({ invalid_type_error: 'قیمت پایه باید عدد باشد' }).int('قیمت پایه باید عدد صحیح باشد').min(1000, 'قیمت پایه باید حداقل ۱,۰۰۰ تومان باشد'),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
   allowBatchDiscount: z.boolean().optional().default(true),
   // Display-only extras the admin names themselves; the semantic flags above
   // are separate columns because pricing and catalogue queries read them.
   features: z
-    .array(z.object({ label: z.string().min(1).max(80), enabled: z.boolean() }))
-    .max(20)
+    .array(z.object({ label: z.string().min(1, 'عنوان ویژگی الزامی است').max(80, 'عنوان ویژگی حداکثر ۸۰ کاراکتر است'), enabled: z.boolean() }))
+    .max(20, 'حداکثر ۲۰ ویژگی مجاز است')
     .default([]),
-  images: z.array(persistedImageUrlSchema).max(10),
-  tagIds: z.array(z.string().cuid()).max(20).optional().default([]),
+  images: z.array(persistedImageUrlSchema, { required_error: 'حداقل یک تصویر الزامی است' }).min(1, 'حداقل یک تصویر الزامی است').max(10, 'حداکثر ۱۰ تصویر مجاز است'),
+  tagIds: z.array(z.string().cuid('شناسه برچسب نامعتبر است')).max(20, 'حداکثر ۲۰ برچسب مجاز است').optional().default([]),
   tiers: tiersSchema,
 });
 

@@ -16,6 +16,17 @@ function ResetPasswordForm() {
     e.preventDefault();
     setError(null);
     setMessage(null);
+
+    if (!password) {
+      setError('لطفاً رمز عبور جدید را وارد کنید');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('رمز عبور باید حداقل ۸ نویسه باشد');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -40,7 +51,7 @@ function ResetPasswordForm() {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-7xl items-center justify-center px-4 py-16 md:px-8">
-      <form onSubmit={submit} className="w-full max-w-md rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
+      <form noValidate onSubmit={submit} className="w-full max-w-md rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
         <h1 className="text-2xl font-black text-soil-900">تنظیم رمز جدید</h1>
         <p className="mt-2 text-sm text-soil-700/70">رمز عبور جدید خود را وارد کنید.</p>
 

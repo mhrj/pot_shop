@@ -2,7 +2,9 @@
 
 import { forwardRef, useState } from 'react';
 
-type Props = React.InputHTMLAttributes<HTMLInputElement>;
+type Props = React.InputHTMLAttributes<HTMLInputElement> & {
+  error?: boolean;
+};
 
 /**
  * A password field with a reveal toggle.
@@ -16,7 +18,7 @@ type Props = React.InputHTMLAttributes<HTMLInputElement>;
  * surrounding page uses.
  */
 const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput(
-  { className, ...props },
+  { className, error, ...props },
   ref,
 ) {
   const [visible, setVisible] = useState(false);
@@ -29,8 +31,11 @@ const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput
         type={visible ? 'text' : 'password'}
         dir="ltr"
         className={
-          'w-full rounded-xl border border-soil-900/15 py-3 pr-4 pl-11 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 ' +
-          (className ?? '')
+          `w-full rounded-xl border py-3 pr-4 pl-11 text-sm outline-none transition ${
+            error
+              ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+          } ` + (className ?? '')
         }
       />
       <button

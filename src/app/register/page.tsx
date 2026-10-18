@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PasswordInput from '@/components/ui/PasswordInput';
+import { FormError } from '@/components/ui/FormError';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,31 +22,48 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
 
-    if (!form.phone.trim()) {
-      setError('شماره موبایل الزامی است.');
-      return;
+    const newErrors: Record<string, string> = {};
+
+    if (!form.fullName.trim()) {
+      newErrors.fullName = 'نام کامل الزامی است.';
+    } else if (form.fullName.trim().length < 2) {
+      newErrors.fullName = 'نام کامل باید حداقل ۲ کاراکتر باشد.';
     }
 
-    if (!/^09\d{9}$/.test(form.phone.trim())) {
-      setError('شماره موبایل نامعتبر است.');
-      return;
+    if (!form.phone.trim()) {
+      newErrors.phone = 'شماره موبایل الزامی است.';
+    } else if (!/^09\d{9}$/.test(form.phone.trim())) {
+      newErrors.phone = 'شماره موبایل نامعتبر است (باید ۱۱ رقم و با ۰۹ شروع شود).';
     }
 
     if (!form.email.trim()) {
-      setError('ایمیل الزامی است.');
+      newErrors.email = 'ایمیل الزامی است.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      newErrors.email = 'ایمیل معتبر نیست.';
+    }
+
+    if (!form.password) {
+      newErrors.password = 'رمز عبور الزامی است.';
+    } else if (form.password.length < 8) {
+      newErrors.password = 'رمز عبور باید حداقل ۸ نویسه باشد.';
+    } else if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/.test(form.password)
+    ) {
+      newErrors.password = 'رمز عبور باید شامل حرف بزرگ، حرف کوچک، عدد و نماد باشد.';
+    }
+
+    if (!form.confirmPassword) {
+      newErrors.confirmPassword = 'تأیید رمز عبور الزامی است.';
+    } else if (form.password !== form.confirmPassword) {
+      newErrors.confirmPassword = 'تأیید رمز عبور با رمز عبور هم‌خوانی ندارد.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      setError('ایمیل معتبر نیست.');
-      return;
-    }
-
-    if (form.password !== form.confirmPassword) {
-      setError('تأیید رمز عبور با رمز عبور هم‌خوانی ندارد.');
-      return;
-    }
-
+    setErrors({});
     setLoading(true);
 
     try {
@@ -61,7 +80,15 @@ export default function RegisterPage() {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data?.message ?? 'ثبت‌نام ناموفق بود');
+        const msg = data?.message ?? 'ثبت‌نام ناموفق بود';
+        if (msg.includes('ایمیل')) {
+          setErrors({ email: msg });
+        } else if (msg.includes('موبایل') || msg.includes('تلفن')) {
+          setErrors({ phone: msg });
+        } else {
+          setError(msg);
+        }
+        return;
       }
 
       router.replace(data.redirectTo || '/dashboard');
@@ -76,6 +103,7 @@ export default function RegisterPage() {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-7xl items-center justify-center px-4 py-16 md:px-8">
       <form
+        noValidate
         onSubmit={handleSubmit}
         className="w-full max-w-lg rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]"
       >
@@ -91,10 +119,17 @@ export default function RegisterPage() {
             </span>
             <input
               value={form.fullName}
-              onChange={(e) => setForm((prev) => ({ ...prev, fullName: e.target.value }))}
-              required
-              className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+              onChange={(e) => {
+                setForm((prev) => ({ ...prev, fullName: e.target.value }));
+                if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: '' }));
+              }}
+              className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none transition ${
+                errors.fullName
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+              }`}
             />
+            <FormError message={errors.fullName} />
           </label>
 
           <label className="block">
@@ -103,13 +138,20 @@ export default function RegisterPage() {
             </span>
             <input
               value={form.phone}
-              onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value.trim() }))}
-              required
+              onChange={(e) => {
+                setForm((prev) => ({ ...prev, phone: e.target.value.trim() }));
+                if (errors.phone) setErrors((prev) => ({ ...prev, phone: '' }));
+              }}
               dir="ltr"
               autoComplete="tel"
               placeholder="09121234567"
-              className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+              className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none transition ${
+                errors.phone
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+              }`}
             />
+            <FormError message={errors.phone} />
           </label>
 
           <label className="block">
@@ -119,13 +161,20 @@ export default function RegisterPage() {
             <input
               type="email"
               value={form.email}
-              onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value.trim() }))}
-              required
+              onChange={(e) => {
+                setForm((prev) => ({ ...prev, email: e.target.value.trim() }));
+                if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+              }}
               autoComplete="email"
               dir="ltr"
               placeholder="example@mail.com"
-              className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+              className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none transition ${
+                errors.email
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+              }`}
             />
+            <FormError message={errors.email} />
           </label>
 
           <label className="block">
@@ -134,11 +183,15 @@ export default function RegisterPage() {
             </span>
             <PasswordInput
               value={form.password}
-              onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
-              required
+              onChange={(e) => {
+                setForm((prev) => ({ ...prev, password: e.target.value }));
+                if (errors.password) setErrors((prev) => ({ ...prev, password: '' }));
+              }}
+              error={Boolean(errors.password)}
               autoComplete="new-password"
               className="mt-2"
             />
+            <FormError message={errors.password} />
             <span className="mt-1.5 block text-[11px] text-soil-700/60">
               حداقل ۸ نویسه، شامل حرف بزرگ، حرف کوچک، عدد و نماد
             </span>
@@ -150,11 +203,15 @@ export default function RegisterPage() {
             </span>
             <PasswordInput
               value={form.confirmPassword}
-              onChange={(e) => setForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}
-              required
+              onChange={(e) => {
+                setForm((prev) => ({ ...prev, confirmPassword: e.target.value }));
+                if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+              }}
+              error={Boolean(errors.confirmPassword)}
               autoComplete="new-password"
               className="mt-2"
             />
+            <FormError message={errors.confirmPassword} />
           </label>
         </div>
 

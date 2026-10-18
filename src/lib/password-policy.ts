@@ -12,7 +12,7 @@ import { z } from 'zod';
  * predates the policy, so it only enforces a length floor.
  */
 export const passwordSchema = z
-  .string()
+  .string({ required_error: 'رمز عبور الزامی است' })
   .min(8, 'رمز عبور باید حداقل ۸ نویسه باشد')
   .max(128, 'رمز عبور بیش از حد مجاز است')
   .regex(

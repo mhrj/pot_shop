@@ -1,6 +1,5 @@
-'use client';
-
 import { useState } from 'react';
+import { FormError } from '@/components/ui/FormError';
 
 export type AddressRecord = {
   id: string;
@@ -47,8 +46,7 @@ function toFormState(address?: AddressRecord): FormState {
 /**
  * Persian (۰-۹) and Arabic-Indic (٠-٩) digits are the ones a Persian keyboard
  * actually produces, so they are translated to ASCII before everything that is
- * not a digit is dropped. Without the translation «۰۹۱۲…» would be stripped to
- * an empty string; without the strip, letters and symbols would survive.
+ * not a digit is dropped.
  */
 const DIGIT_TRANSLATIONS: Record<string, string> = {
   '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4',
@@ -64,39 +62,7 @@ export function toDigitsOnly(value: string): string {
 }
 
 /**
- * Replaces the browser's English constraint-validation messages with Persian.
- *
- * The native `required` / `pattern` behaviour is deliberately kept — the form is
- * *not* marked `noValidate` — so only the wording is overridden, through
- * `setCustomValidity`. The message must be cleared again on every keystroke:
- * a custom error makes a field permanently invalid otherwise, and the user would
- * be unable to submit even after correcting it.
- */
-function persianValidity(messages: { required: string; pattern?: string }) {
-  return {
-    onInvalid: (event: React.FormEvent<HTMLInputElement>) => {
-      const field = event.currentTarget;
-
-      if (field.validity.valueMissing) {
-        field.setCustomValidity(messages.required);
-      } else if (field.validity.patternMismatch && messages.pattern) {
-        field.setCustomValidity(messages.pattern);
-      } else {
-        field.setCustomValidity('مقدار وارد شده صحیح نیست');
-      }
-    },
-    onInput: (event: React.FormEvent<HTMLInputElement>) => {
-      event.currentTarget.setCustomValidity('');
-    },
-  };
-}
-
-/**
  * Create/edit form for a shipping address.
- *
- * One component covers both modes so checkout and the customer dashboard share
- * the same fields and validation surface; `address` switches it to editing and
- * the request goes to the per-address endpoint instead of the collection.
  */
 export default function AddressForm({
   address,
@@ -109,6 +75,7 @@ export default function AddressForm({
 }) {
   const editing = Boolean(address);
   const [form, setForm] = useState<FormState>(() => toFormState(address));
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -120,9 +87,6 @@ export default function AddressForm({
     let value: string | boolean =
       target.type === 'checkbox' ? target.checked : target.value;
 
-    // Phone and postal code accept digits only: letters and symbols are dropped
-    // as they are typed or pasted, rather than being left in place to fail the
-    // pattern check afterwards.
     if (typeof value === 'string' && (name === 'phone' || name === 'postalCode')) {
       value = toDigitsOnly(value);
     }
@@ -131,12 +95,57 @@ export default function AddressForm({
       ...current,
       [name]: value,
     }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
     setError(null);
+
+    const newErrors: Record<string, string> = {};
+
+    if (!form.fullName.trim()) {
+      newErrors.fullName = 'نام و نام خانوادگی الزامی است';
+    } else if (form.fullName.trim().length < 2) {
+      newErrors.fullName = 'نام و نام خانوادگی باید حداقل ۲ کاراکتر باشد';
+    }
+
+    if (!form.phone.trim()) {
+      newErrors.phone = 'شماره همراه الزامی است';
+    } else if (!/^09\d{9}$/.test(form.phone.trim())) {
+      newErrors.phone = 'شماره همراه باید ۱۱ رقم و با ۰۹ شروع شود';
+    }
+
+    if (!form.province.trim()) {
+      newErrors.province = 'نام استان الزامی است';
+    }
+
+    if (!form.city.trim()) {
+      newErrors.city = 'نام شهر الزامی است';
+    }
+
+    if (!form.postalCode.trim()) {
+      newErrors.postalCode = 'کد پستی الزامی است';
+    } else if (!/^\d{10}$/.test(form.postalCode.trim())) {
+      newErrors.postalCode = 'کد پستی باید ۱۰ رقم و فقط شامل اعداد باشد';
+    }
+
+    if (!form.line1.trim()) {
+      newErrors.line1 = 'آدرس دقیق الزامی است';
+    } else if (form.line1.trim().length < 3) {
+      newErrors.line1 = 'آدرس دقیق باید حداقل ۳ کاراکتر باشد';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
 
     try {
       const res = await fetch(
@@ -164,7 +173,11 @@ export default function AddressForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-soil-900/10 bg-white p-5">
+    <form
+      noValidate
+      onSubmit={handleSubmit}
+      className="space-y-4 rounded-2xl border border-soil-900/10 bg-white p-5"
+    >
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-black text-soil-900">
           {editing ? 'ویرایش آدرس' : 'افزودن آدرس جدید'}
@@ -179,11 +192,14 @@ export default function AddressForm({
             name="fullName"
             value={form.fullName}
             onChange={handleChange}
-            className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+              errors.fullName
+                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                : 'border-soil-900/10 focus:border-flora-500'
+            }`}
             placeholder="مثلاً مریم رضایی"
-            required
-            {...persianValidity({ required: 'نام و نام خانوادگی الزامی است' })}
           />
+          <FormError message={errors.fullName} />
         </label>
 
         <label className="text-xs font-bold text-soil-700/80">
@@ -196,16 +212,14 @@ export default function AddressForm({
             dir="ltr"
             type="tel"
             inputMode="numeric"
-            pattern="09[0-9]{9}"
-            title="شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود"
-            className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+              errors.phone
+                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                : 'border-soil-900/10 focus:border-flora-500'
+            }`}
             placeholder="09121234567"
-            required
-            {...persianValidity({
-              required: 'شماره موبایل الزامی است',
-              pattern: 'شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود',
-            })}
           />
+          <FormError message={errors.phone} />
         </label>
 
         <label className="text-xs font-bold text-soil-700/80">
@@ -215,11 +229,14 @@ export default function AddressForm({
             name="province"
             value={form.province}
             onChange={handleChange}
-            className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+              errors.province
+                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                : 'border-soil-900/10 focus:border-flora-500'
+            }`}
             placeholder="تهران"
-            required
-            {...persianValidity({ required: 'استان را انتخاب کنید' })}
           />
+          <FormError message={errors.province} />
         </label>
 
         <label className="text-xs font-bold text-soil-700/80">
@@ -229,11 +246,14 @@ export default function AddressForm({
             name="city"
             value={form.city}
             onChange={handleChange}
-            className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+              errors.city
+                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                : 'border-soil-900/10 focus:border-flora-500'
+            }`}
             placeholder="تهران"
-            required
-            {...persianValidity({ required: 'شهر الزامی است' })}
           />
+          <FormError message={errors.city} />
         </label>
 
         <label className="text-xs font-bold text-soil-700/80">
@@ -245,16 +265,14 @@ export default function AddressForm({
             onChange={handleChange}
             dir="ltr"
             inputMode="numeric"
-            pattern="[0-9]{10}"
-            title="کد پستی باید ۱۰ رقم باشد"
-            className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+              errors.postalCode
+                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                : 'border-soil-900/10 focus:border-flora-500'
+            }`}
             placeholder="1234567890"
-            required
-            {...persianValidity({
-              required: 'کد پستی الزامی است',
-              pattern: 'کد پستی باید ۱۰ رقم باشد',
-            })}
           />
+          <FormError message={errors.postalCode} />
         </label>
 
         <label className="text-xs font-bold text-soil-700/80">
@@ -279,11 +297,14 @@ export default function AddressForm({
           name="line1"
           value={form.line1}
           onChange={handleChange}
-          className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+          className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+            errors.line1
+              ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              : 'border-soil-900/10 focus:border-flora-500'
+          }`}
           placeholder="خیابان ولیعصر، کوچه ..."
-          required
-          {...persianValidity({ required: 'نشانی الزامی است' })}
         />
+        <FormError message={errors.line1} />
       </label>
 
       <label className="block text-xs font-bold text-soil-700/80">
