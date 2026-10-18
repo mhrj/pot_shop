@@ -40,18 +40,20 @@ export async function PATCH(req: Request, { params }: Params) {
 
   const bundleSize = product.bundleSize || 1;
   const isBundle = Boolean(product.bundleLabel) && bundleSize > 1;
-  const minQty = product.minOrderQuantity || 1;
+  const minQty = isBundle
+    ? Math.max(product.minOrderQuantity || 1, bundleSize)
+    : (product.minOrderQuantity || 1);
 
   if (parsed.data.quantity < minQty) {
     return NextResponse.json(
-      { message: `حداقل تعداد سفارش این کالا ${minQty} عدد است` },
+      { message: `حداقل تعداد سفارش برای این محصول ${minQty} عدد است` },
       { status: 400 },
     );
   }
 
   if (isBundle && parsed.data.quantity % bundleSize !== 0) {
     return NextResponse.json(
-      { message: `تعداد این کالا باید مضربی از ${bundleSize} باشد` },
+      { message: `تعداد سفارش باید مضربی از ${bundleSize} باشد` },
       { status: 400 },
     );
   }

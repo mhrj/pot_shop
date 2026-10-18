@@ -78,14 +78,16 @@ export async function addToCart(
 
   const bundleSize = product.bundleSize || 1;
   const isBundle = Boolean(product.bundleLabel) && bundleSize > 1;
-  const minQty = product.minOrderQuantity || 1;
+  const minQty = isBundle
+    ? Math.max(product.minOrderQuantity || 1, bundleSize)
+    : (product.minOrderQuantity || 1);
 
   if (quantity < minQty) {
-    throw new Error(`حداقل تعداد سفارش این کالا ${minQty} عدد است`);
+    throw new Error(`حداقل تعداد سفارش برای این محصول ${minQty} عدد است`);
   }
 
   if (isBundle && quantity % bundleSize !== 0) {
-    throw new Error(`تعداد این کالا باید مضربی از ${bundleSize} باشد`);
+    throw new Error(`تعداد سفارش باید مضربی از ${bundleSize} باشد`);
   }
 
   // Validate the resulting line, not just this increment: adding 10 to a cart

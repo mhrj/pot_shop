@@ -33,9 +33,11 @@ export default function TieredPricing({
   allowBatchDiscount,
 }: Props) {
   const allowBatch = allowBatchDiscount ?? product.allowBatchDiscount ?? true;
-  const isBundle = Boolean(product.bundleLabel) && (product.bundleSize || 1) > 1;
-  const step = isBundle ? (product.bundleSize || 1) : 1;
-  const minQty = product.minOrderQuantity || product.bundleSize || 1;
+  const bundleSize = product.bundleSize || 1;
+  const isBundle = Boolean(product.bundleLabel) && bundleSize > 1;
+  const step = isBundle ? bundleSize : 1;
+  const baseMin = product.minOrderQuantity || 1;
+  const minQty = isBundle ? Math.max(baseMin, step) : baseMin;
 
   const [qty, setQty] = useState(minQty);
   const [pending, startTransition] = useTransition();
@@ -82,7 +84,7 @@ export default function TieredPricing({
       val = Math.round(val / step) * step;
       if (val < minQty) val = Math.ceil(minQty / step) * step;
     }
-    return Math.min(product.stock, val);
+    return Math.max(minQty, Math.min(product.stock, val));
   };
 
   const handleAdd = () => {
@@ -208,21 +210,27 @@ export default function TieredPricing({
 
         {allowBatch && (
           <div className="mt-4 flex flex-wrap gap-2">
-            {sorted.map((t) => (
-              <button
-                key={t.minQuantity}
-                type="button"
-                onClick={() => setQty(clamp(t.minQuantity))}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-                  qty >= t.minQuantity &&
-                  resolveTier(sorted, qty).minQuantity === t.minQuantity
-                    ? 'bg-flora-900 text-white'
-                    : 'bg-dust-100 text-soil-700 hover:bg-dust-200'
-                }`}
-              >
-                {t.label ?? 'پله'} · {toFa(t.minQuantity)}+
-              </button>
-            ))}
+            {sorted.map((t) => {
+              const validQty = isBundle
+                ? Math.ceil(t.minQuantity / bundleSize) * bundleSize
+                : t.minQuantity;
+
+              return (
+                <button
+                  key={t.minQuantity}
+                  type="button"
+                  onClick={() => setQty(clamp(validQty))}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+                    qty >= validQty &&
+                    resolveTier(sorted, qty).minQuantity === t.minQuantity
+                      ? 'bg-flora-900 text-white'
+                      : 'bg-dust-100 text-soil-700 hover:bg-dust-200'
+                  }`}
+                >
+                  {t.label ?? 'پله'} · {toFa(validQty)}+
+                </button>
+              );
+            })}
           </div>
         )}
 
