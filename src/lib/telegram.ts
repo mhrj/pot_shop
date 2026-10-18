@@ -15,7 +15,8 @@ export async function sendTelegramNotification(message: string): Promise<boolean
   }
 
   try {
-    const url = `https://api.telegram.org/bot${token}/sendMessage`;
+    const baseUrl = (process.env.TELEGRAM_PROXY_URL || 'https://api.telegram.org').replace(/\/$/, '');
+    const url = `${baseUrl}/bot${token}/sendMessage`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {

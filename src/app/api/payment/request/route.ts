@@ -161,7 +161,8 @@ export async function POST(req: Request) {
   });
 
   // 6) Ask Zarinpal for an authority token.
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin;
+  const origin = req.headers.get('origin') || new URL(req.url).origin;
+  const appUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_APP_URL! : origin;
   const callbackUrl = `${appUrl}/api/payment/verify?order=${order.id}`;
 
   const result = await zarinpalRequest({

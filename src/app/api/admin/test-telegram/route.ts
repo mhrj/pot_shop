@@ -8,8 +8,13 @@ export async function POST() {
     return NextResponse.json({ error: 'دسترسی غیرمجاز است.' }, { status: 401 });
   }
 
-  const success = await sendTelegramNotification('تست موفقیت‌آمیز بود!');
-  return NextResponse.json({ ok: true, sent: success });
+  const success = await sendTelegramNotification('تست ارسال پیام به تلگرام از طریق پروکسی پات شاپ با موفقیت انجام شد! 🎉');
+  return NextResponse.json({
+    ok: true,
+    sent: success,
+    usingProxy: Boolean(process.env.TELEGRAM_PROXY_URL),
+    proxyUrl: process.env.TELEGRAM_PROXY_URL ? 'تنظیم شده' : 'خالی (مستقیم)',
+  });
 }
 
 export async function GET() {
@@ -18,6 +23,11 @@ export async function GET() {
     return NextResponse.json({ error: 'دسترسی غیرمجاز است.' }, { status: 401 });
   }
 
-  const success = await sendTelegramNotification('تست موفقیت‌آمیز بود!');
-  return NextResponse.json({ ok: true, sent: success });
+  const success = await sendTelegramNotification('تست ارسال پیام به تلگرام از طریق پروکسی پات شاپ با موفقیت انجام شد! 🎉');
+  return NextResponse.json({
+    ok: true,
+    sent: success,
+    usingProxy: Boolean(process.env.TELEGRAM_PROXY_URL),
+    proxyUrl: process.env.TELEGRAM_PROXY_URL ? 'تنظیم شده' : 'خالی (مستقیم)',
+  });
 }

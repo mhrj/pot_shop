@@ -60,4 +60,28 @@ test('Telegram notifications', async (t) => {
       globalThis.fetch = originalFetch;
     }
   });
+
+  await t.test('uses TELEGRAM_PROXY_URL when defined', async () => {
+    process.env.TELEGRAM_BOT_TOKEN = 'mock-token';
+    process.env.TELEGRAM_CHAT_ID = 'mock-chat-id';
+    process.env.TELEGRAM_PROXY_URL = 'https://tg-proxy.my-worker.workers.dev';
+
+    let calledUrl = '';
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async (url: string | URL | Request) => {
+      calledUrl = String(url);
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    }) as typeof fetch;
+
+    try {
+      const result = await sendTelegramNotification('تست پروکسی');
+      assert.equal(result, true);
+      assert.equal(
+        calledUrl,
+        'https://tg-proxy.my-worker.workers.dev/botmock-token/sendMessage',
+      );
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
 });

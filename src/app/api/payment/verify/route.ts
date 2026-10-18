@@ -46,7 +46,8 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const authority = url.searchParams.get('Authority');
   const status = url.searchParams.get('Status');
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || url.origin).replace(/\/$/, '');
+  const origin = req.headers.get('origin') || url.origin;
+  const appUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_APP_URL! : origin;
 
   const fail = (reason: string, orderNumber?: string) => {
     const target = new URL('/checkout/failed', appUrl);
