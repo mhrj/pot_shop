@@ -97,6 +97,7 @@ export async function POST(req: Request) {
         weightGrams: i.product.weightGrams,
         unitsPerCarton: i.product.unitsPerCarton,
         images: i.product.images,
+        allowBatchDiscount: i.product.allowBatchDiscount,
       },
       tiers: i.product.tiers.map(
         (t): Tier => ({

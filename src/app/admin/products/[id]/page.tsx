@@ -43,6 +43,7 @@ export default async function EditProductPage({ params }: Props) {
             name: product.name,
             shortDesc: product.shortDesc ?? '',
             description: product.description,
+            categoryId: product.categoryId ?? '',
             material: product.material,
             color: product.color ?? '',
             diameterCm: product.diameterCm,
@@ -53,6 +54,7 @@ export default async function EditProductPage({ params }: Props) {
             basePriceToman: product.basePriceToman,
             isActive: product.isActive,
             isFeatured: product.isFeatured,
+            allowBatchDiscount: product.allowBatchDiscount,
             // The column is untyped JSON, so it is normalised on the way in as
             // well as on the way out — a malformed row must not break the form.
             features: parseFeatures(product.features),

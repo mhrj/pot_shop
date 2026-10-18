@@ -100,6 +100,7 @@ type PriceInput = {
     weightGrams: number;
     unitsPerCarton: number;
     images?: { url: string }[];
+    allowBatchDiscount?: boolean;
   };
   tiers: Tier[];
   quantity: number;
@@ -107,18 +108,20 @@ type PriceInput = {
 
 export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine {
   const qty = Math.max(1, Math.floor(quantity));
+  const allowBatch = product.allowBatchDiscount !== false;
+
+  const listUnitToman = product.basePriceToman;
   const tier = resolveTier(
     tiers.length ? tiers : [{ minQuantity: 1, unitPriceToman: product.basePriceToman }],
     qty,
   );
 
-  const unitToman = tier.unitPriceToman;
-  const listUnitToman = product.basePriceToman;
+  const unitToman = allowBatch ? tier.unitPriceToman : listUnitToman;
 
   const lineTotalToman = unitToman * qty;
-  const lineSavingsToman = Math.max(0, (listUnitToman - unitToman) * qty);
+  const lineSavingsToman = allowBatch ? Math.max(0, (listUnitToman - unitToman) * qty) : 0;
   const savingsPercent =
-    listUnitToman > 0
+    allowBatch && listUnitToman > 0
       ? Math.round(((listUnitToman - unitToman) / listUnitToman) * 100)
       : 0;
 
@@ -140,8 +143,8 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
     lineWeightGrams,
     unitsPerCarton: product.unitsPerCarton,
     cartons,
-    tierLabel: tier.label ?? CHANNEL_LABEL[resolveChannel(qty)],
-    nextTier: nextTierHint(tiers, qty),
+    tierLabel: allowBatch ? (tier.label ?? CHANNEL_LABEL[resolveChannel(qty)]) : 'خرده',
+    nextTier: allowBatch ? nextTierHint(tiers, qty) : null,
   };
 }
 

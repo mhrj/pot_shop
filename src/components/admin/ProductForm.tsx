@@ -12,6 +12,7 @@ export type ProductFormData = {
   name: string;
   shortDesc: string;
   description: string;
+  categoryId?: string | null;
   material: string;
   color: string;
   diameterCm: number;
@@ -22,6 +23,7 @@ export type ProductFormData = {
   basePriceToman: number;
   isActive: boolean;
   isFeatured: boolean;
+  allowBatchDiscount?: boolean;
   features: ProductFeature[];
   images: string[];
   tagIds: string[];
@@ -45,8 +47,13 @@ export default function ProductForm({
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
+  const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>([]);
   const [featureInput, setFeatureInput] = useState('');
-  const [form, setForm] = useState<ProductFormData>(initial);
+  const [form, setForm] = useState<ProductFormData>({
+    ...initial,
+    categoryId: initial.categoryId ?? '',
+    allowBatchDiscount: initial.allowBatchDiscount ?? true,
+  });
 
   useEffect(() => {
     async function loadTags() {
@@ -59,7 +66,18 @@ export default function ProductForm({
         setAllTags([]);
       }
     }
+    async function loadCategories() {
+      try {
+        const res = await fetch('/api/admin/categories');
+        if (!res.ok) return;
+        const data = await res.json().catch(() => ({ categories: [] }));
+        setAllCategories(data.categories ?? []);
+      } catch {
+        setAllCategories([]);
+      }
+    }
     loadTags();
+    loadCategories();
   }, []);
 
   function update<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
@@ -100,6 +118,8 @@ export default function ProductForm({
       const url = isNew ? '/api/admin/products' : '/api/admin/products/' + initial.id;
       const payload = {
         ...form,
+        categoryId: form.categoryId || null,
+        allowBatchDiscount: form.allowBatchDiscount ?? true,
         tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
       };
@@ -186,6 +206,29 @@ export default function ProductForm({
               placeholder="clay-pot-terracotta-medium"
               className={inputCls}
             />
+          </label>
+
+          <label className="block">
+            <span className={labelCls}>دسته‌بندی</span>
+            <select
+              value={form.categoryId ?? ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                update('categoryId', val);
+                const matched = allCategories.find((c) => c.id === val);
+                if (matched && !form.material) {
+                  update('material', matched.name);
+                }
+              }}
+              className={inputCls}
+            >
+              <option value="">انتخاب دسته‌بندی…</option>
+              {allCategories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label className="block">
@@ -514,9 +557,20 @@ export default function ProductForm({
       </section>
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-        <h2 className="mb-4 text-sm font-black text-soil-900">
-          قیمت‌گذاری پله‌ای (تومان)
-        </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+          <h2 className="text-sm font-black text-soil-900">
+            قیمت‌گذاری پله‌ای (تومان)
+          </h2>
+          <label className="flex items-center gap-2 text-xs font-bold text-soil-900 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.allowBatchDiscount ?? true}
+              onChange={(e) => update('allowBatchDiscount', e.target.checked)}
+              className="accent-flora-700"
+            />
+            فعالسازی تخفیف پلهای (عمده)
+          </label>
+        </div>
         <label className="block max-w-xs">
           <span className={labelCls}>قیمت پایه (خرده) *</span>
           <input

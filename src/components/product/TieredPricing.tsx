@@ -14,12 +14,20 @@ type Props = {
     weightGrams: number;
     unitsPerCarton: number;
     stock: number;
+    allowBatchDiscount?: boolean;
   };
   tiers: Tier[];
   isAuthed: boolean;
+  allowBatchDiscount?: boolean;
 };
 
-export default function TieredPricing({ product, tiers, isAuthed }: Props) {
+export default function TieredPricing({
+  product,
+  tiers,
+  isAuthed,
+  allowBatchDiscount,
+}: Props) {
+  const allowBatch = allowBatchDiscount ?? product.allowBatchDiscount ?? true;
   const [qty, setQty] = useState(1);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -32,6 +40,18 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
   );
 
   const { unit, total, savings, percent, tierLabel, cartons, hint } = useMemo(() => {
+    if (!allowBatch) {
+      return {
+        unit: product.basePriceToman,
+        total: product.basePriceToman * qty,
+        savings: 0,
+        percent: 0,
+        tierLabel: 'خرده',
+        cartons: Math.ceil(qty / Math.max(1, product.unitsPerCarton)),
+        hint: null,
+      };
+    }
+
     const t = resolveTier(sorted, qty);
     const unitPrice = t.unitPriceToman;
     const totalPrice = unitPrice * qty;
@@ -47,7 +67,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
       cartons: Math.ceil(qty / Math.max(1, product.unitsPerCarton)),
       hint: nextTierHint(sorted, qty),
     };
-  }, [qty, sorted, product.basePriceToman, product.unitsPerCarton]);
+  }, [allowBatch, qty, sorted, product.basePriceToman, product.unitsPerCarton]);
 
   const clamp = (n: number) => Math.max(1, Math.min(product.stock || 1, Math.floor(n) || 1));
 
@@ -80,52 +100,54 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-2xl border border-soil-900/10 bg-white">
-        <table className="w-full text-sm">
-          <caption className="sr-only">ماتریس قیمت بر اساس تعداد</caption>
-          <thead className="bg-dust-50">
-            <tr className="text-soil-700/70">
-              <th scope="col" className="px-4 py-3 text-start font-medium">تعداد</th>
-              <th scope="col" className="px-4 py-3 text-start font-medium">قیمت هر عدد</th>
-              <th scope="col" className="px-4 py-3 text-start font-medium">تخفیف</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-soil-900/5">
-            {sorted.map((t, i) => {
-              const isActive =
-                qty >= t.minQuantity &&
-                (i === sorted.length - 1 || qty < sorted[i + 1].minQuantity);
-              const off = product.basePriceToman
-                ? Math.round(
-                    ((product.basePriceToman - t.unitPriceToman) /
-                      product.basePriceToman) *
-                      100,
-                  )
-                : 0;
-              const rangeEnd = sorted[i + 1] ? sorted[i + 1].minQuantity - 1 : null;
-              return (
-                <tr
-                  key={t.minQuantity}
-                  className={isActive ? 'bg-flora-100/60' : undefined}
-                  aria-current={isActive ? 'true' : undefined}
-                >
-                  <td className="px-4 py-3.5 font-medium text-soil-900">
-                    {rangeEnd
-                      ? `${toFa(t.minQuantity)} تا ${toFa(rangeEnd)}`
-                      : `${toFa(t.minQuantity)} به بالا`}
-                  </td>
-                  <td className="px-4 py-3.5 font-bold text-flora-900">
-                    {formatToman(t.unitPriceToman)}
-                  </td>
-                  <td className="px-4 py-3.5 text-dust-500">
-                    {off > 0 ? `${toFa(off)}٪` : '—'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      {allowBatch && (
+        <div className="overflow-hidden rounded-2xl border border-soil-900/10 bg-white">
+          <table className="w-full text-sm">
+            <caption className="sr-only">ماتریس قیمت بر اساس تعداد</caption>
+            <thead className="bg-dust-50">
+              <tr className="text-soil-700/70">
+                <th scope="col" className="px-4 py-3 text-start font-medium">تعداد</th>
+                <th scope="col" className="px-4 py-3 text-start font-medium">قیمت هر عدد</th>
+                <th scope="col" className="px-4 py-3 text-start font-medium">تخفیف</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-soil-900/5">
+              {sorted.map((t, i) => {
+                const isActive =
+                  qty >= t.minQuantity &&
+                  (i === sorted.length - 1 || qty < sorted[i + 1].minQuantity);
+                const off = product.basePriceToman
+                  ? Math.round(
+                      ((product.basePriceToman - t.unitPriceToman) /
+                        product.basePriceToman) *
+                        100,
+                    )
+                  : 0;
+                const rangeEnd = sorted[i + 1] ? sorted[i + 1].minQuantity - 1 : null;
+                return (
+                  <tr
+                    key={t.minQuantity}
+                    className={isActive ? 'bg-flora-100/60' : undefined}
+                    aria-current={isActive ? 'true' : undefined}
+                  >
+                    <td className="px-4 py-3.5 font-medium text-soil-900">
+                      {rangeEnd
+                        ? `${toFa(t.minQuantity)} تا ${toFa(rangeEnd)}`
+                        : `${toFa(t.minQuantity)} به بالا`}
+                    </td>
+                    <td className="px-4 py-3.5 font-bold text-flora-900">
+                      {formatToman(t.unitPriceToman)}
+                    </td>
+                    <td className="px-4 py-3.5 text-dust-500">
+                      {off > 0 ? `${toFa(off)}٪` : '—'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <div className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <div className="flex items-center justify-between gap-4">
@@ -162,26 +184,28 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {sorted.map((t) => (
-            <button
-              key={t.minQuantity}
-              type="button"
-              onClick={() => setQty(clamp(t.minQuantity))}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-                qty >= t.minQuantity &&
-                resolveTier(sorted, qty).minQuantity === t.minQuantity
-                  ? 'bg-flora-900 text-white'
-                  : 'bg-dust-100 text-soil-700 hover:bg-dust-200'
-              }`}
-            >
-              {t.label ?? 'پله'} · {toFa(t.minQuantity)}+
-            </button>
-          ))}
-        </div>
+        {allowBatch && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {sorted.map((t) => (
+              <button
+                key={t.minQuantity}
+                type="button"
+                onClick={() => setQty(clamp(t.minQuantity))}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+                  qty >= t.minQuantity &&
+                  resolveTier(sorted, qty).minQuantity === t.minQuantity
+                    ? 'bg-flora-900 text-white'
+                    : 'bg-dust-100 text-soil-700 hover:bg-dust-200'
+                }`}
+              >
+                {t.label ?? 'پله'} · {toFa(t.minQuantity)}+
+              </button>
+            ))}
+          </div>
+        )}
 
         <AnimatePresence>
-          {hint && (
+          {allowBatch && hint && (
             <motion.button
               type="button"
               initial={{ opacity: 0, height: 0 }}
@@ -234,7 +258,7 @@ export default function TieredPricing({ product, tiers, isAuthed }: Props) {
           </div>
         </dl>
 
-        {savings > 0 && (
+        {allowBatch && savings > 0 && (
           <motion.p
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}

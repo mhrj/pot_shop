@@ -68,7 +68,7 @@ function pageWindow(current: number, count: number): (number | 'gap')[] {
 }
 
 type Props = {
-  searchParams: Promise<{ q?: string; tag?: string; sort?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; tag?: string; category?: string; sort?: string; page?: string }>;
 };
 
 /**
@@ -81,6 +81,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   const sp = await searchParams;
   const q = (sp.q ?? '').trim().slice(0, 80);
   const tagSlug = (sp.tag ?? '').trim();
+  const categorySlug = (sp.category ?? '').trim();
   const sort = parseSort(sp.sort);
   const page = parsePage(sp.page);
 
@@ -97,9 +98,10 @@ export default async function ProductsPage({ searchParams }: Props) {
         }
       : {}),
     ...(tagSlug ? { tags: { some: { tag: { slug: tagSlug } } } } : {}),
+    ...(categorySlug ? { category: { slug: categorySlug } } : {}),
   };
 
-  const [total, products, tags] = await Promise.all([
+  const [total, products, tags, categories] = await Promise.all([
     prisma.product.count({ where }),
     prisma.product.findMany({
       where,
@@ -107,22 +109,29 @@ export default async function ProductsPage({ searchParams }: Props) {
         images: { orderBy: { sortOrder: 'asc' }, take: 1 },
         tiers: { orderBy: { minQuantity: 'asc' } },
         tags: { include: { tag: true } },
+        category: true,
       },
       orderBy: SORTS[sort].orderBy,
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
     prisma.tag.findMany({ orderBy: { name: 'asc' }, select: { name: true, slug: true } }),
+    prisma.category.findMany({
+      where: { isActive: true },
+      orderBy: { name: 'asc' },
+      select: { id: true, name: true, slug: true },
+    }),
   ]);
 
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   // Preserve the active filters when building links.
-  const buildHref = (next: Partial<{ q: string; tag: string; sort: SortKey; page: number }>) => {
+  const buildHref = (next: Partial<{ q: string; tag: string; category: string; sort: SortKey; page: number }>) => {
     const params = new URLSearchParams();
-    const merged = { q, tag: tagSlug, sort, page, ...next };
+    const merged = { q, tag: tagSlug, category: categorySlug, sort, page, ...next };
     if (merged.q) params.set('q', merged.q);
     if (merged.tag) params.set('tag', merged.tag);
+    if (merged.category) params.set('category', merged.category);
     if (merged.sort !== 'newest') params.set('sort', merged.sort);
     if (merged.page > 1) params.set('page', String(merged.page));
     const qs = params.toString();
@@ -141,8 +150,9 @@ export default async function ProductsPage({ searchParams }: Props) {
 
   if (pageOutOfRange) redirect(buildHref({ page: 1 }));
 
-  const filtered = Boolean(q || tagSlug || sort !== 'newest');
+  const filtered = Boolean(q || tagSlug || categorySlug || sort !== 'newest');
   const activeTag = tags.find((t) => t.slug === tagSlug);
+  const activeCategory = categories.find((c) => c.slug === categorySlug);
   const firstShown = (page - 1) * PAGE_SIZE + 1;
   const lastShown = Math.min(page * PAGE_SIZE, total);
 
@@ -162,7 +172,72 @@ export default async function ProductsPage({ searchParams }: Props) {
           <p className="text-sm text-soil-700/70">{toFa(total)} محصول در دسترس</p>
         </header>
 
-        <search className="mt-8 block">
+        {/* Categories and Tags Pill Filters */}
+        <div className="mt-8 space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-soil-700/80">دسته‌بندی:</span>
+            <Link
+              href={buildHref({ category: '', page: 1 })}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+                !categorySlug
+                  ? 'bg-flora-900 text-white shadow-sm'
+                  : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+              }`}
+            >
+              همه
+            </Link>
+            {categories.map((c) => {
+              const active = categorySlug === c.slug;
+              return (
+                <Link
+                  key={c.slug}
+                  href={buildHref({ category: active ? '' : c.slug, page: 1 })}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+                    active
+                      ? 'bg-flora-900 text-white shadow-sm'
+                      : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+                  }`}
+                >
+                  {c.name}
+                </Link>
+              );
+            })}
+          </div>
+
+          {tags.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-soil-700/80">برچسب‌ها:</span>
+              <Link
+                href={buildHref({ tag: '', page: 1 })}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+                  !tagSlug
+                    ? 'bg-flora-900 text-white shadow-sm'
+                    : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+                }`}
+              >
+                همه
+              </Link>
+              {tags.map((t) => {
+                const active = tagSlug === t.slug;
+                return (
+                  <Link
+                    key={t.slug}
+                    href={buildHref({ tag: active ? '' : t.slug, page: 1 })}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+                      active
+                        ? 'bg-flora-900 text-white shadow-sm'
+                        : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+                    }`}
+                  >
+                    {t.name}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <search className="mt-6 block">
           {/* Filters and sort are two separate groups. On narrow screens they
               stack into two rows divided by a rule; from `lg` they share one row,
               with the sort cluster pushed to the far side and marked off by a
@@ -175,6 +250,7 @@ export default async function ProductsPage({ searchParams }: Props) {
             action="/products"
             className="flex flex-col gap-4 lg:flex-row lg:items-end"
           >
+            {categorySlug && <input type="hidden" name="category" value={categorySlug} />}
             <div className="flex flex-wrap items-end gap-4">
               <label className="min-w-[14rem] flex-1 text-xs font-bold text-soil-700/80">
                 جست‌وجو
@@ -188,7 +264,7 @@ export default async function ProductsPage({ searchParams }: Props) {
               </label>
 
               <label className="text-xs font-bold text-soil-700/80">
-                دسته‌بندی
+                برچسب
                 <select
                   name="tag"
                   defaultValue={tagSlug}
@@ -245,7 +321,8 @@ export default async function ProductsPage({ searchParams }: Props) {
               <>
                 محصولی با این فیلترها پیدا نشد
                 {q ? ` برای «${q}»` : ''}
-                {activeTag ? ` در دسته «${activeTag.name}»` : ''}.
+                {activeCategory ? ` در دسته «${activeCategory.name}»` : ''}
+                {activeTag ? ` با برچسب «${activeTag.name}»` : ''}.
                 <div className="mt-4">
                   <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900">
                     نمایش همه محصولات

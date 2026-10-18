@@ -66,6 +66,26 @@ async function main() {
   }
 
   // -------------------------------------------------------------
+  // Categories
+  // -------------------------------------------------------------
+  const categories = [
+    { name: 'سفال', slug: 'clay' },
+    { name: 'سرامیک', slug: 'ceramic' },
+    { name: 'بتن', slug: 'concrete' },
+  ];
+
+  const categoryMap = new Map<string, string>();
+  for (const cat of categories) {
+    const createdCat = await prisma.category.upsert({
+      where: { slug: cat.slug },
+      update: { name: cat.name },
+      create: { name: cat.name, slug: cat.slug, isActive: true },
+    });
+    categoryMap.set(cat.name, createdCat.id);
+    console.log('[seed] category:', createdCat.name);
+  }
+
+  // -------------------------------------------------------------
   // Products
   // -------------------------------------------------------------
   const products = [
@@ -126,11 +146,17 @@ async function main() {
   ];
 
   for (const p of products) {
+    const categoryId = categoryMap.get(p.material);
     const created = await prisma.product.upsert({
       where: { slug: p.slug },
-      update: {},
+      update: {
+        categoryId,
+        allowBatchDiscount: true,
+      },
       create: {
         ...p,
+        categoryId,
+        allowBatchDiscount: true,
         images: {
           create: [
             {

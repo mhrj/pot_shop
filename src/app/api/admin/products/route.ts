@@ -29,6 +29,7 @@ const schema = z.object({
   name: z.string().min(2).max(150),
   shortDesc: z.string().max(300).optional().default(''),
   description: z.string().min(1).max(5000),
+  categoryId: z.string().cuid().optional().nullable().or(z.literal('')),
   material: z.string().min(2).max(60),
   color: z.string().max(60).optional().default(''),
   diameterCm: z.number().min(0).max(500),
@@ -39,6 +40,7 @@ const schema = z.object({
   basePriceToman: z.number().int().min(1000),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
+  allowBatchDiscount: z.boolean().optional().default(true),
   // Display-only extras the admin names themselves; the semantic flags above
   // are separate columns because pricing and catalogue queries read them.
   features: z
@@ -81,6 +83,7 @@ export async function POST(req: Request) {
       name: data.name,
       shortDesc: data.shortDesc || null,
       description: data.description,
+      categoryId: data.categoryId ? data.categoryId : null,
       material: data.material,
       color: data.color || null,
       diameterCm: data.diameterCm,
@@ -91,6 +94,7 @@ export async function POST(req: Request) {
       basePriceToman: data.basePriceToman,
       isActive: data.isActive,
       isFeatured: data.isFeatured,
+      allowBatchDiscount: data.allowBatchDiscount,
       features: data.features,
       images: {
         create: data.images.map((url, i) => ({ url, sortOrder: i, alt: data.name })),
