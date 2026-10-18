@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { isPaymentAlreadyProcessed } from '@/lib/cart';
 import { zarinpalVerify, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 import { isRetryableGatewayFailure } from '@/lib/orders';
+import { formatToman } from '@/lib/format';
+import { sendTelegramNotification } from '@/lib/telegram';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -215,11 +217,31 @@ export async function GET(req: Request) {
     return fail('verify_failed', order.orderNumber);
   }
 
-  // 6) The settlement committed, so the basket is now empty in the database.
+  // 6) Send Telegram notification to admin if claimed
+  if (claimed) {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? appUrl;
+      const message = `🎉 <b>سفارش جدید ثبت شد!</b>
+
+📦 شماره سفارش: <code>${order.orderNumber}</code>
+👤 مشتری: ${order.shipFullName}
+📞 تلفن: <code>${order.shipPhone}</code>
+💰 مبلغ کل: ${formatToman(order.totalToman)}
+🛒 تعداد اقلام: ${order.items.length} قلم
+
+👉 <a href="${baseUrl}/admin/orders/${order.id}">مشاهده در پنل مدیریت</a>`;
+
+      await sendTelegramNotification(message);
+    } catch (err) {
+      console.error('[payment/verify] Telegram notification failed:', err);
+    }
+  }
+
+  // 7) The settlement committed, so the basket is now empty in the database.
   //    Purge the cached rendering of it before sending the customer onward.
   clearCartCaches();
 
-  // 7) Send the user to the success page with the Shaparak reference.
+  // 8) Send the user to the success page with the Shaparak reference.
   const success = new URL('/checkout/success', appUrl);
   success.searchParams.set('ref_id', verification.refId);
   success.searchParams.set('order', order.orderNumber);

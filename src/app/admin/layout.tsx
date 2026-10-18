@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import GlobalSearch from '@/components/admin/GlobalSearch';
 
 const NAV = [
   { href: '/admin', label: 'داشبورد' },
@@ -6,6 +7,7 @@ const NAV = [
   { href: '/admin/tags', label: 'برچسب‌ها' },
   { href: '/admin/content', label: 'محتوای فروشگاه' },
   { href: '/admin/orders', label: 'سفارش‌ها' },
+  { href: '/admin/users', label: 'کاربران' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -17,6 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <p className="px-3 pb-3 text-[11px] font-bold uppercase tracking-wider text-soil-700/50">
               پنل مدیریت
             </p>
+            <GlobalSearch />
             <ul className="space-y-1">
               {NAV.map((n) => (
                 <li key={n.href}>
