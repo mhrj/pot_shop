@@ -79,16 +79,19 @@ export default function CheckoutForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ addressId: selectedId }),
+        signal: AbortSignal.timeout(18_000),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.redirectUrl) {
-        setError(data?.message ?? 'اتصال به درگاه پرداخت ناموفق بود');
+        setError(
+          data?.message || 'ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.',
+        );
+        setLoading(false);
         return;
       }
       window.location.href = data.redirectUrl;
     } catch {
-      setError('خطای شبکه — دوباره تلاش کنید');
-    } finally {
+      setError('ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.');
       setLoading(false);
     }
   };
