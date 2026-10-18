@@ -26,11 +26,36 @@ export async function PATCH(req: Request, { params }: Params) {
 
   const product = await prisma.product.findUnique({
     where: { id: productId },
-    select: { stock: true, isActive: true },
+    select: {
+      stock: true,
+      isActive: true,
+      bundleSize: true,
+      bundleLabel: true,
+      minOrderQuantity: true,
+    },
   });
   if (!product || !product.isActive) {
     return NextResponse.json({ message: 'محصول یافت نشد' }, { status: 404 });
   }
+
+  const bundleSize = product.bundleSize || 1;
+  const isBundle = Boolean(product.bundleLabel) && bundleSize > 1;
+  const minQty = product.minOrderQuantity || 1;
+
+  if (parsed.data.quantity < minQty) {
+    return NextResponse.json(
+      { message: `حداقل تعداد سفارش این کالا ${minQty} عدد است` },
+      { status: 400 },
+    );
+  }
+
+  if (isBundle && parsed.data.quantity % bundleSize !== 0) {
+    return NextResponse.json(
+      { message: `تعداد این کالا باید مضربی از ${bundleSize} باشد` },
+      { status: 400 },
+    );
+  }
+
   if (product.stock < parsed.data.quantity) {
     return NextResponse.json(
       { message: 'حداکثر موجودی: ' + product.stock + ' عدد' },

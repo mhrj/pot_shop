@@ -66,9 +66,27 @@ export async function addToCart(
 ) {
   const product = await prisma.product.findFirst({
     where: { id: productId, isActive: true },
-    select: { id: true, stock: true },
+    select: {
+      id: true,
+      stock: true,
+      bundleSize: true,
+      bundleLabel: true,
+      minOrderQuantity: true,
+    },
   });
   if (!product) throw new Error('محصول یافت نشد');
+
+  const bundleSize = product.bundleSize || 1;
+  const isBundle = Boolean(product.bundleLabel) && bundleSize > 1;
+  const minQty = product.minOrderQuantity || 1;
+
+  if (quantity < minQty) {
+    throw new Error(`حداقل تعداد سفارش این کالا ${minQty} عدد است`);
+  }
+
+  if (isBundle && quantity % bundleSize !== 0) {
+    throw new Error(`تعداد این کالا باید مضربی از ${bundleSize} باشد`);
+  }
 
   // Validate the resulting line, not just this increment: adding 10 to a cart
   // that already holds 10 must fail against a stock of 15. Checkout re-checks

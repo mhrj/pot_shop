@@ -44,3 +44,31 @@ test('payment success is resolved only from the stored paid state', () => {
   assert.equal(isPaymentAlreadyProcessed({ paymentStatus: 'PENDING', refId: 'ABC123' }), false);
   assert.equal(isPaymentAlreadyProcessed({ paymentStatus: 'PAID', refId: null }), false);
 });
+
+test('priceCart enforces allowBatchDiscount=false so bulk orders do not get discounts', () => {
+  const totals = priceCart([
+    {
+      product: {
+        id: 'p2',
+        slug: 'no-discount-pot',
+        name: 'گلدان بدون تخفیف',
+        basePriceToman: 100000,
+        weightGrams: 500,
+        unitsPerCarton: 1,
+        allowBatchDiscount: false,
+      },
+      tiers: [
+        { minQuantity: 1, unitPriceToman: 100000, label: 'خرده' },
+        { minQuantity: 5, unitPriceToman: 80000, label: 'بسته‌ای' },
+      ],
+      quantity: 10,
+    },
+  ]);
+
+  // Even with 10 units, unit price stays 100,000 and discount is 0
+  assert.equal(totals.lines[0].unitToman, 100000);
+  assert.equal(totals.lines[0].lineSavingsToman, 0);
+  assert.equal(totals.lines[0].lineTotalToman, 1000000);
+  assert.equal(totals.payableToman, 1000000);
+  assert.equal(totals.discountToman, 0);
+});

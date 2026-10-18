@@ -187,7 +187,7 @@ export default async function ProductPage({ params }: Params) {
                 stock: product.stock,
                 bundleSize: product.bundleSize,
                 bundleLabel: product.bundleLabel,
-                minOrderQuantity: (product as any).minOrderQuantity,
+                minOrderQuantity: product.minOrderQuantity,
               }}
               tiers={product.tiers.map((t) => ({
                 minQuantity: t.minQuantity,

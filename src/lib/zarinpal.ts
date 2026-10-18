@@ -26,7 +26,7 @@ type ZarinpalResponse = {
  */
 const GATEWAY_UNREACHABLE =
   'ارتباط با درگاه پرداخت برقرار نشد. لطفاً چند لحظه بعد دوباره تلاش کنید.';
-const GATEWAY_TIMEOUT_MS = 15_000;
+const GATEWAY_TIMEOUT_MS = 10_000;
 
 type GatewayAttempt =
   | { reached: true; res: Response; json: ZarinpalResponse | null }

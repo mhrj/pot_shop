@@ -22,6 +22,7 @@ export type ProductFormData = {
   stock: number;
   unitsPerCarton?: number;
   bundleSize: number;
+  minOrderQuantity?: number;
   bundleLabel: string | null;
   bundleItems: BundleItem[] | null;
   basePriceToman: number;
@@ -194,6 +195,7 @@ export default function ProductForm({
         categoryId: form.categoryId || null,
         unitsPerCarton: 1,
         bundleSize: form.bundleSize ?? 1,
+        minOrderQuantity: form.minOrderQuantity ?? 1,
         bundleLabel: form.bundleLabel?.trim() || null,
         bundleItems:
           (form.bundleSize ?? 1) > 1
@@ -403,6 +405,16 @@ export default function ProductForm({
               min={1}
               value={form.bundleSize ?? 1}
               onChange={(e) => update('bundleSize', Number(e.target.value) || 1)}
+              className={inputCls}
+            />
+          </label>
+          <label className="block">
+            <span className={labelCls}>حداقل تعداد سفارش (MOQ)</span>
+            <input
+              type="number"
+              min={1}
+              value={form.minOrderQuantity ?? 1}
+              onChange={(e) => update('minOrderQuantity', Number(e.target.value) || 1)}
               className={inputCls}
             />
           </label>

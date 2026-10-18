@@ -40,6 +40,7 @@ export default async function NewProductPage() {
             stock: 0,
             unitsPerCarton: 1,
             bundleSize: 1,
+            minOrderQuantity: 1,
             bundleLabel: null,
             bundleItems: null,
             basePriceToman: 150000,
