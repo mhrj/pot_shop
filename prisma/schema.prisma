@@ -68,6 +68,7 @@ model User {
   orders             Order[]
   chatMessages       ChatMessage[]
   passwordResetTokens PasswordResetToken[]
+  verificationCodes  VerificationCode[]
 
   @@index([role])
 }
@@ -345,6 +346,28 @@ model PasswordResetToken {
   createdAt DateTime  @default(now())
 
   @@index([userId])
+  @@index([expiresAt])
+}
+
+enum VerificationType {
+  PASSWORD_RESET
+  REGISTER
+  PHONE_CHANGE
+}
+
+model VerificationCode {
+  id        String           @id @default(cuid())
+  phone     String
+  codeHash  String
+  type      VerificationType @default(PASSWORD_RESET)
+  attempts  Int              @default(0)
+  expiresAt DateTime
+  usedAt    DateTime?
+  userId    String?
+  user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+
+  @@index([phone, type])
   @@index([expiresAt])
 }
 

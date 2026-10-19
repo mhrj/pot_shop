@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { getRegistrationConflict, normalizeRegistrationInput } from '../src/lib/register';
-import { hashToken, isPasswordResetTokenValid } from '../src/lib/password-reset';
+import { hashToken, isPasswordResetTokenValid, isEmailDeliveryConfigured } from '../src/lib/password-reset';
 
 test('normalizeRegistrationInput accepts valid Persian customer data', () => {
   const result = normalizeRegistrationInput({
@@ -98,4 +98,24 @@ test('password reset tokens are single-use and expire correctly', () => {
   assert.equal(isPasswordResetTokenValid(expired), false);
   assert.equal(isPasswordResetTokenValid(used), false);
   assert.equal(hashToken('abc123').length > 0, true);
+});
+
+test('isEmailDeliveryConfigured checks SMTP configuration', () => {
+  const origHost = process.env.SMTP_HOST;
+  const origUser = process.env.SMTP_USER;
+  const origPass = process.env.SMTP_PASS;
+
+  delete process.env.SMTP_HOST;
+  delete process.env.SMTP_USER;
+  delete process.env.SMTP_PASS;
+  assert.equal(isEmailDeliveryConfigured(), false);
+
+  process.env.SMTP_HOST = 'smtp.c1.liara.email';
+  process.env.SMTP_USER = 'info@domain.ir';
+  process.env.SMTP_PASS = 'secret';
+  assert.equal(isEmailDeliveryConfigured(), true);
+
+  if (origHost) process.env.SMTP_HOST = origHost; else delete process.env.SMTP_HOST;
+  if (origUser) process.env.SMTP_USER = origUser; else delete process.env.SMTP_USER;
+  if (origPass) process.env.SMTP_PASS = origPass; else delete process.env.SMTP_PASS;
 });
