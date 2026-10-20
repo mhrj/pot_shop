@@ -119,7 +119,7 @@ export default function TieredPricing({
       const items = product.bundleItems ?? [];
       const itemsNeedingColor = items
         .map((it, idx) => ({ it, idx }))
-        .filter(({ it }) => (it.colorOptions && it.colorOptions.length > 0) || singleColors.length > 0);
+        .filter(({ it }) => it.colorOptions && it.colorOptions.length > 0);
 
       if (itemsNeedingColor.length > 0) {
         for (const { it, idx } of itemsNeedingColor) {
@@ -509,7 +509,95 @@ export default function TieredPricing({
         );
       })()}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
+        {/* For bundles: Swatches for each bundle item before adding to cart */}
+        {isBundle &&
+          product.bundleItems &&
+          product.bundleItems.some((it) => (it.colorOptions ?? []).length > 0) && (
+            <div className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-4">
+              <div>
+                <h3 className="text-sm font-black text-soil-900">
+                  انتخاب رنگ برای اقلام بسته
+                </h3>
+                <p className="mt-0.5 text-xs text-soil-700/60">
+                  برای هر گلدان موجود در این پکیج، رنگ مورد نظر خود را مشخص کنید:
+                </p>
+              </div>
+
+              <div className="space-y-4 divide-y divide-soil-900/5">
+                {product.bundleItems.map((item, idx) => {
+                  const itemColors = item.colorOptions ?? [];
+                  if (itemColors.length === 0) return null;
+
+                  const selectedHex = colorCtx?.selectedBundleColors[idx] ?? null;
+
+                  return (
+                    <div key={idx} className={idx > 0 ? 'pt-3.5 space-y-2' : 'space-y-2'}>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-soil-900">
+                          رنگ {item.title || `گلدان ${toFa(idx + 1)}`}
+                        </span>
+                        {selectedHex ? (
+                          <div className="flex items-center gap-1.5 text-soil-700/80 font-mono text-[11px] dir-ltr">
+                            <span
+                              className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
+                              style={{ backgroundColor: selectedHex }}
+                            />
+                            <span>{selectedHex}</span>
+                          </div>
+                        ) : (
+                          <span className="text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
+                            انتخاب الزامی
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 overflow-x-auto py-1 px-0.5">
+                        {itemColors.map((hex) => {
+                          const isSelected = selectedHex?.toUpperCase() === hex.toUpperCase();
+                          const isLight = (() => {
+                            const clean = hex.replace('#', '');
+                            const r = parseInt(clean.substring(0, 2), 16) || 0;
+                            const g = parseInt(clean.substring(2, 4), 16) || 0;
+                            const b = parseInt(clean.substring(4, 6), 16) || 0;
+                            return (r * 299 + g * 587 + b * 114) / 1000 > 180;
+                          })();
+
+                          return (
+                            <button
+                              key={hex}
+                              type="button"
+                              onClick={() => colorCtx?.setSelectedBundleColor(idx, hex)}
+                              title={hex}
+                              className={`group relative size-9 shrink-0 rounded-full transition-all focus:outline-none cursor-pointer ${
+                                isSelected
+                                  ? 'ring-2 ring-flora-700 ring-offset-2 scale-105 shadow-md'
+                                  : 'hover:scale-105 border border-soil-900/20 shadow-xs'
+                              }`}
+                              style={{ backgroundColor: hex }}
+                            >
+                              {isLight && !isSelected && (
+                                <span className="absolute inset-0 rounded-full border border-soil-900/25 pointer-events-none" />
+                              )}
+                              {isSelected && (
+                                <span
+                                  className={`absolute inset-0 flex items-center justify-center font-bold text-xs ${
+                                    isLight ? 'text-soil-900' : 'text-white'
+                                  }`}
+                                >
+                                  ✓
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         {/* Selected color summary preview */}
         {!isBundle && colorCtx?.selectedColor && (
           <div className="flex items-center gap-2 rounded-xl bg-dust-50 px-3.5 py-2 text-xs border border-soil-900/10">

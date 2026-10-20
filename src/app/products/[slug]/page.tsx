@@ -175,16 +175,17 @@ export default async function ProductPage({ params }: Params) {
               productName={product.name}
               soldOut={product.stock <= 0}
             />
-            {/* Color swatches below product image */}
-            <ColorPicker
-              product={{
-                id: product.id,
-                name: product.name,
-                colorOptions: parseColorOptions(product.colorOptions),
-                bundleSize: product.bundleSize,
-              }}
-              bundleItems={bundleItems}
-            />
+            {/* Color swatches below product image for single product */}
+            {product.bundleSize <= 1 && (
+              <ColorPicker
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  colorOptions: parseColorOptions(product.colorOptions),
+                  bundleSize: product.bundleSize,
+                }}
+              />
+            )}
           </div>
 
           <div className="lg:col-span-6">

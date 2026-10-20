@@ -86,6 +86,29 @@ async function main() {
   }
 
   // -------------------------------------------------------------
+  // Global Colors
+  // -------------------------------------------------------------
+  const globalColors = [
+    { name: 'سفید مات', hexCode: '#FFFFFF' },
+    { name: 'مشکی مات', hexCode: '#1F1F1F' },
+    { name: 'تراکوتا', hexCode: '#C86A4B' },
+    { name: 'طوسی روشن', hexCode: '#D3D3D3' },
+    { name: 'طوسی تیره', hexCode: '#808080' },
+    { name: 'خاکی / کرم', hexCode: '#E8D8C8' },
+    { name: 'سبز صدری', hexCode: '#7A8B7B' },
+    { name: 'قهوه‌ای سوخته', hexCode: '#4A3525' },
+  ];
+
+  for (const c of globalColors) {
+    await prisma.globalColor.upsert({
+      where: { name: c.name },
+      update: { hexCode: c.hexCode },
+      create: c,
+    });
+    console.log('[seed] global color:', c.name);
+  }
+
+  // -------------------------------------------------------------
   // Products
   // -------------------------------------------------------------
   const products = [

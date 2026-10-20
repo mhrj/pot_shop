@@ -54,10 +54,16 @@ export default async function EditProductPage({ params }: Props) {
       basePriceToman: p.basePriceToman,
     }));
 
-  const categories = await prisma.category.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: 'asc' },
-  });
+  const [categories, globalColors] = await Promise.all([
+    prisma.category.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.globalColor.findMany({
+      select: { id: true, name: true, hexCode: true },
+      orderBy: { createdAt: 'asc' },
+    }),
+  ]);
 
   return (
     <div>
@@ -68,6 +74,7 @@ export default async function EditProductPage({ params }: Props) {
           knownLabels={knownLabels}
           catalogProducts={catalogProducts}
           categories={categories}
+          globalColors={globalColors}
           initial={{
             id: product.id,
             slug: product.slug,

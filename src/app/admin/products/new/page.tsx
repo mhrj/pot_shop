@@ -39,10 +39,16 @@ export default async function NewProductPage() {
     basePriceToman: p.basePriceToman,
   }));
 
-  const categories = await prisma.category.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: 'asc' },
-  });
+  const [categories, globalColors] = await Promise.all([
+    prisma.category.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.globalColor.findMany({
+      select: { id: true, name: true, hexCode: true },
+      orderBy: { createdAt: 'asc' },
+    }),
+  ]);
 
   return (
     <div>
@@ -55,6 +61,7 @@ export default async function NewProductPage() {
           knownLabels={knownLabels}
           catalogProducts={catalogProducts}
           categories={categories}
+          globalColors={globalColors}
           initial={{
             slug: '',
             name: '',

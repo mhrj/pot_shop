@@ -6,6 +6,7 @@ import type { ProductFeature, BundleItem } from '@/lib/product-features';
 import { formatToman, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import { FormError } from '@/components/ui/FormError';
+import GlobalColorPicker, { type GlobalColorOption } from '@/components/admin/GlobalColorPicker';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
 
@@ -49,94 +50,7 @@ function fieldCls(errorMsg?: string) {
   }`;
 }
 
-function normalizeHex(input: string): string | null {
-  let val = input.trim().toUpperCase();
-  if (!val) return null;
-  if (!val.startsWith('#')) val = `#${val}`;
-  if (/^#([0-9A-F]{3})$/i.test(val)) {
-    val = `#${val[1]}${val[1]}${val[2]}${val[2]}${val[3]}${val[3]}`;
-  }
-  if (!/^#[0-9A-F]{6}$/i.test(val)) return null;
-  return val;
-}
 
-function ColorInputControl({
-  onAddColor,
-  placeholder = '#8B8B8B',
-  buttonText = '+ افزودن رنگ',
-  compact = false,
-}: {
-  onAddColor: (hex: string) => void;
-  placeholder?: string;
-  buttonText?: string;
-  compact?: boolean;
-}) {
-  const [typedHex, setTypedHex] = useState('');
-  const [pickerHex, setPickerHex] = useState('#8B8B8B');
-
-  const handleAdd = () => {
-    const val = typedHex.trim() || pickerHex;
-    if (!val) return;
-    onAddColor(val);
-    setTypedHex('');
-  };
-
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <input
-        type="color"
-        value={pickerHex}
-        onChange={(e) => {
-          const up = e.target.value.toUpperCase();
-          setPickerHex(up);
-          setTypedHex(up);
-        }}
-        className={
-          compact
-            ? 'size-8 cursor-pointer rounded-lg border border-soil-900/15 p-0.5 bg-white'
-            : 'size-10 cursor-pointer rounded-xl border border-soil-900/15 p-1 bg-white'
-        }
-        title="انتخاب رنگ از جعبه رنگ"
-      />
-      <input
-        type="text"
-        value={typedHex}
-        onChange={(e) => {
-          const raw = e.target.value;
-          setTypedHex(raw);
-          const formatted = raw.trim().startsWith('#') ? raw.trim() : `#${raw.trim()}`;
-          if (/^#[0-9A-Fa-f]{6}$/.test(formatted)) {
-            setPickerHex(formatted.toUpperCase());
-          }
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            handleAdd();
-          }
-        }}
-        placeholder={placeholder}
-        dir="ltr"
-        className={
-          compact
-            ? 'w-24 rounded-lg border border-soil-900/15 px-2 py-1 text-xs font-mono outline-none focus:border-flora-500 bg-white'
-            : 'w-28 rounded-xl border border-soil-900/15 px-3 py-2 text-sm font-mono outline-none focus:border-flora-500 bg-white'
-        }
-      />
-      <button
-        type="button"
-        onClick={handleAdd}
-        className={
-          compact
-            ? 'rounded-lg bg-flora-900 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-flora-700 transition'
-            : 'rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700'
-        }
-      >
-        {buttonText}
-      </button>
-    </div>
-  );
-}
 
 export type CatalogProductOption = {
   id: string;
@@ -153,11 +67,13 @@ export default function ProductForm({
   knownLabels,
   catalogProducts = [],
   categories: initialCategories,
+  globalColors: initialGlobalColors = [],
 }: {
   initial: ProductFormData;
   knownLabels: string[];
   catalogProducts?: CatalogProductOption[];
   categories?: Array<{ id: string; name: string }>;
+  globalColors?: GlobalColorOption[];
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -168,6 +84,9 @@ export default function ProductForm({
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
   const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>(
     initialCategories ?? [],
+  );
+  const [allGlobalColors, setAllGlobalColors] = useState<GlobalColorOption[]>(
+    initialGlobalColors ?? [],
   );
   const [featureInput, setFeatureInput] = useState('');
   const [form, setForm] = useState<ProductFormData>({
@@ -267,8 +186,21 @@ export default function ProductForm({
         setAllCategories([]);
       }
     }
+    async function loadGlobalColors() {
+      try {
+        const res = await fetch('/api/admin/colors');
+        if (!res.ok) return;
+        const data = await res.json().catch(() => ({ colors: [] }));
+        if (data.colors && data.colors.length > 0) {
+          setAllGlobalColors(data.colors);
+        }
+      } catch {
+        // fallback to initial
+      }
+    }
     loadTags();
     loadCategories();
+    loadGlobalColors();
   }, []);
 
   function update<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
@@ -307,47 +239,55 @@ export default function ProductForm({
     update('features', form.features.filter((_, j) => j !== i));
   }
 
-  function handleAddColor(rawHex: string) {
-    const formatted = normalizeHex(rawHex);
-    if (!formatted) return;
+  function handleToggleColor(hex: string) {
+    const normalized = hex.toUpperCase();
     setForm((prev) => {
       const current = prev.colorOptions ?? [];
-      if (current.includes(formatted)) return prev;
-      return {
-        ...prev,
-        colorOptions: [...current, formatted],
-      };
+      const exists = current.some((c) => c.toUpperCase() === normalized);
+      const next = exists
+        ? current.filter((c) => c.toUpperCase() !== normalized)
+        : [...current, normalized];
+      return { ...prev, colorOptions: next };
     });
   }
 
-  function handleRemoveColor(index: number) {
+  function handleRemoveColorByHex(hex: string) {
+    const normalized = hex.toUpperCase();
     setForm((prev) => ({
       ...prev,
-      colorOptions: (prev.colorOptions ?? []).filter((_, i) => i !== index),
+      colorOptions: (prev.colorOptions ?? []).filter(
+        (c) => c.toUpperCase() !== normalized,
+      ),
     }));
   }
 
-  function handleAddBundleItemColor(itemIdx: number, rawHex: string) {
-    const formatted = normalizeHex(rawHex);
-    if (!formatted) return;
+  function handleToggleBundleItemColor(itemIdx: number, hex: string) {
+    const normalized = hex.toUpperCase();
     setForm((prev) => {
       const items = [...(prev.bundleItems ?? [])];
       const item = items[itemIdx];
       if (!item) return prev;
       const current = item.colorOptions ?? [];
-      if (current.includes(formatted)) return prev;
-      items[itemIdx] = { ...item, colorOptions: [...current, formatted] };
+      const exists = current.some((c) => c.toUpperCase() === normalized);
+      const next = exists
+        ? current.filter((c) => c.toUpperCase() !== normalized)
+        : [...current, normalized];
+      items[itemIdx] = { ...item, colorOptions: next };
       return { ...prev, bundleItems: items };
     });
   }
 
-  function handleRemoveBundleItemColor(itemIdx: number, colorIdx: number) {
+  function handleRemoveBundleItemColorByHex(itemIdx: number, hex: string) {
+    const normalized = hex.toUpperCase();
     setForm((prev) => {
       const items = [...(prev.bundleItems ?? [])];
       const item = items[itemIdx];
       if (!item) return prev;
       const current = item.colorOptions ?? [];
-      items[itemIdx] = { ...item, colorOptions: current.filter((_, i) => i !== colorIdx) };
+      items[itemIdx] = {
+        ...item,
+        colorOptions: current.filter((c) => c.toUpperCase() !== normalized),
+      };
       return { ...prev, bundleItems: items };
     });
   }
@@ -681,43 +621,23 @@ export default function ProductForm({
           </label>
         </div>
 
-        {/* Color Options Repeater for single product */}
-        <div className="mt-6 border-t border-soil-900/10 pt-4">
-          <label className="block">
-            <span className={labelCls}>گزینه‌های رنگ (کدهای رنگی انتخابی مشتری)</span>
-            <span className="block mt-0.5 text-xs text-soil-700/60">
-              اگر این محصول در رنگ‌های متنوع عرضه می‌شود، کدهای رنگ (Hex) را اضافه کنید تا مشتری هنگام خرید بتواند رنگ را انتخاب کند.
-            </span>
-          </label>
-          <div className="mt-3">
-            <ColorInputControl onAddColor={handleAddColor} />
+        {/* Color Options for single product (HIDDEN when bundle is active) */}
+        {!isBundleActive && (
+          <div className="mt-6 border-t border-soil-900/10 pt-4">
+            <label className="block mb-2">
+              <span className={labelCls}>گزینه‌های رنگ (انتخاب از پالت رنگ فروشگاه)</span>
+              <span className="block mt-0.5 text-xs text-soil-700/60">
+                رنگ‌های مجاز این محصول را از پالت انتخاب کنید تا مشتری بتواند در صفحه خرید رنگ دلخواه را برگزیند.
+              </span>
+            </label>
+            <GlobalColorPicker
+              globalColors={allGlobalColors}
+              selectedHexes={form.colorOptions ?? []}
+              onToggleColor={handleToggleColor}
+              onRemoveColor={handleRemoveColorByHex}
+            />
           </div>
-
-          {(form.colorOptions ?? []).length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {(form.colorOptions ?? []).map((hex, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-2 rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-1.5 text-xs shadow-2xs"
-                >
-                  <span
-                    className="size-5 rounded-full border border-soil-900/20 shadow-xs"
-                    style={{ backgroundColor: hex }}
-                  />
-                  <span className="font-mono text-soil-900 dir-ltr font-medium">{hex}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveColor(i)}
-                    className="text-red-500 hover:text-red-700 text-base font-bold leading-none px-1"
-                    title="حذف رنگ"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        )}
       </section>
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-5">
@@ -1038,7 +958,7 @@ export default function ProductForm({
 
                     {/* Bundle Item Color Options */}
                     <div className="col-span-full border-t border-soil-900/10 pt-3">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                         <span className="text-xs font-bold text-soil-900">
                           رنگ‌های این آیتم ({toFa((item.colorOptions ?? []).length)} رنگ)
                         </span>
@@ -1046,37 +966,13 @@ export default function ProductForm({
                           مشتری در صفحه محصول می‌تواند برای این آیتم از بین این رنگ‌ها انتخاب کند.
                         </span>
                       </div>
-                      <div className="mt-2">
-                        <ColorInputControl
-                          compact
-                          buttonText="+ افزودن رنگ به این آیتم"
-                          onAddColor={(hex) => handleAddBundleItemColor(idx, hex)}
-                        />
-                      </div>
-                      {(item.colorOptions ?? []).length > 0 && (
-                        <div className="mt-2.5 flex flex-wrap gap-2">
-                          {(item.colorOptions ?? []).map((cHex, cIdx) => (
-                            <div
-                              key={cIdx}
-                              className="flex items-center gap-1.5 rounded-lg border border-soil-900/10 bg-white px-2 py-1 text-[11px]"
-                            >
-                              <span
-                                className="size-4 rounded-full border border-soil-900/20 shadow-xs"
-                                style={{ backgroundColor: cHex }}
-                              />
-                              <span className="font-mono text-soil-900 dir-ltr">{cHex}</span>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveBundleItemColor(idx, cIdx)}
-                                className="text-red-500 hover:text-red-700 font-bold px-0.5 text-xs"
-                                title="حذف"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      <GlobalColorPicker
+                        compact
+                        globalColors={allGlobalColors}
+                        selectedHexes={item.colorOptions ?? []}
+                        onToggleColor={(hex) => handleToggleBundleItemColor(idx, hex)}
+                        onRemoveColor={(hex) => handleRemoveBundleItemColorByHex(idx, hex)}
+                      />
                     </div>
                   </div>
                 </div>
