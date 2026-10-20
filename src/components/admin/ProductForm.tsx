@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ProductFeature, BundleItem } from '@/lib/product-features';
+import { formatToman, toFa } from '@/lib/format';
 import { FormError } from '@/components/ui/FormError';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
@@ -47,12 +48,24 @@ function fieldCls(errorMsg?: string) {
   }`;
 }
 
+export type CatalogProductOption = {
+  id: string;
+  name: string;
+  material: string;
+  diameterCm: number;
+  heightCm: number;
+  weightGrams: number;
+  basePriceToman: number;
+};
+
 export default function ProductForm({
   initial,
   knownLabels,
+  catalogProducts = [],
 }: {
   initial: ProductFormData;
   knownLabels: string[];
+  catalogProducts?: CatalogProductOption[];
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -459,7 +472,7 @@ export default function ProductForm({
             <div>
               <h2 className="text-sm font-black text-soil-900">محتویات بسته</h2>
               <p className="mt-1 text-xs text-soil-700/60">
-                مشخصات گلدان‌ها و اقلام موجود در این بسته را مشخص کنید.
+                مشخصات گلدان‌ها، اقلام و قیمت خرید تکی هر آیتم را برای محاسبه شفاف تخفیف مشخص کنید.
               </p>
             </div>
             <button
@@ -474,6 +487,7 @@ export default function ProductForm({
                     diameterCm: 0,
                     heightCm: 0,
                     weightGrams: 0,
+                    priceToman: 0,
                   },
                 ]);
               }}
@@ -483,14 +497,125 @@ export default function ProductForm({
             </button>
           </div>
 
+          {/* Real-Time Live Bundle Calculator */}
+          {(form.bundleItems ?? []).length > 0 && (
+            <div className="mb-5 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-5 flex-wrap">
+                  <div>
+                    <span className="text-soil-700/70">مجموع ارزش تکی اقلام:</span>{' '}
+                    <strong className="text-soil-900 font-black">
+                      {formatToman(
+                        (form.bundleItems ?? []).reduce(
+                          (acc, it) => acc + (it.priceToman ?? 0),
+                          0,
+                        ),
+                      )}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-soil-700/70">قیمت فعلی پکیج:</span>{' '}
+                    <strong className="text-flora-900 font-black">
+                      {formatToman(form.basePriceToman || 0)}
+                    </strong>
+                  </div>
+                </div>
+
+                {(() => {
+                  const sum = (form.bundleItems ?? []).reduce(
+                    (acc, it) => acc + (it.priceToman ?? 0),
+                    0,
+                  );
+                  const pkgPrice = form.basePriceToman || 0;
+                  const diff = sum - pkgPrice;
+                  const pct = sum > 0 ? Math.max(0, Math.round((diff / sum) * 100)) : 0;
+
+                  if (sum === 0) {
+                    return (
+                      <span className="text-xs text-soil-700/60">
+                        برای محاسبه سود، قیمت تکی اقلام را وارد کنید.
+                      </span>
+                    );
+                  }
+
+                  if (diff > 0) {
+                    return (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-bold text-emerald-800">
+                        <span>🌱</span>
+                        <span>سود مشتری: {formatToman(diff)} ({toFa(pct)}٪ تخفیف)</span>
+                      </span>
+                    );
+                  }
+
+                  if (diff === 0) {
+                    return (
+                      <span className="inline-flex items-center rounded-full bg-soil-100 px-3 py-1 text-xs font-medium text-soil-800">
+                        قیمت بسته دقیقاً برابر با مجموع قیمت تکی است
+                      </span>
+                    );
+                  }
+
+                  return (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
+                      <span>⚠️</span>
+                      <span>توجه: قیمت بسته {formatToman(Math.abs(diff))} از مجموع تکی گران‌تر است!</span>
+                    </span>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             {(form.bundleItems ?? []).map((item, idx) => (
               <div
                 key={idx}
                 className="rounded-xl border border-soil-900/10 bg-dust-50 p-4 space-y-3"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-soil-900">آیتم شماره {idx + 1}</span>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-xs font-bold text-soil-900">آیتم شماره {toFa(idx + 1)}</span>
+                    {catalogProducts.length > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <label className="text-[11px] text-soil-700/70">تکمیل از محصولات:</label>
+                        <select
+                          value={item.productId ?? ''}
+                          onChange={(e) => {
+                            const selectedId = e.target.value;
+                            const prod = catalogProducts.find((p) => p.id === selectedId);
+                            const next = [...(form.bundleItems ?? [])];
+                            if (prod) {
+                              next[idx] = {
+                                ...next[idx],
+                                productId: prod.id,
+                                title: prod.name,
+                                material: prod.material,
+                                diameterCm: prod.diameterCm,
+                                heightCm: prod.heightCm,
+                                weightGrams: prod.weightGrams,
+                                priceToman: prod.basePriceToman,
+                              };
+                            } else {
+                              next[idx] = {
+                                ...next[idx],
+                                productId: undefined,
+                              };
+                            }
+                            update('bundleItems', next);
+                          }}
+                          className="rounded-lg border border-soil-900/15 bg-white px-2 py-1 text-xs text-soil-900 outline-none focus:border-flora-500"
+                        >
+                          <option value="">-- انتخاب گلدان از فروشگاه --</option>
+                          {catalogProducts.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} ({formatToman(p.basePriceToman)})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => {
@@ -499,11 +624,11 @@ export default function ProductForm({
                     }}
                     className="rounded-lg px-2.5 py-1 text-xs font-bold text-red-600 hover:bg-red-50 transition"
                   >
-                    حذف
+                    حذف آیتم
                   </button>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
                   <label className="block sm:col-span-2 lg:col-span-2">
                     <span className="text-xs font-medium text-soil-700/80">نام گلدان</span>
                     <input
@@ -513,6 +638,26 @@ export default function ProductForm({
                       onChange={(e) => {
                         const next = [...(form.bundleItems ?? [])];
                         next[idx] = { ...next[idx], title: e.target.value };
+                        update('bundleItems', next);
+                      }}
+                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-xs font-medium text-soil-700/80">قیمت خرید تکی (تومان)</span>
+                    <input
+                      type="number"
+                      step="1000"
+                      min="0"
+                      placeholder="مثلاً ۱۲۰۰۰۰"
+                      value={item.priceToman || ''}
+                      onChange={(e) => {
+                        const next = [...(form.bundleItems ?? [])];
+                        next[idx] = {
+                          ...next[idx],
+                          priceToman: Math.max(0, Math.floor(Number(e.target.value) || 0)),
+                        };
                         update('bundleItems', next);
                       }}
                       className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"

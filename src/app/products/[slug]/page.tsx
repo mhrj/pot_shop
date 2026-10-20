@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
-import { toFa } from '@/lib/format';
+import { toFa, formatToman } from '@/lib/format';
 import { parseFeatures, parseBundleItems } from '@/lib/product-features';
 import TieredPricing from '@/components/product/TieredPricing';
 import ProductGallery from '@/components/product/ProductGallery';
@@ -90,6 +90,15 @@ export default async function ProductPage({ params }: Params) {
   // query. Only the ones the admin left switched on are shown.
   const enabledFeatures = parseFeatures(product.features).filter((f) => f.enabled);
   const bundleItems = parseBundleItems(product.bundleItems);
+
+  const hasAllPrices = bundleItems.length > 0 && bundleItems.every((it) => (it.priceToman ?? 0) > 0);
+  const standaloneTotalToman = bundleItems.reduce((acc, it) => acc + (it.priceToman ?? 0), 0);
+  const bundlePriceToman = product.basePriceToman;
+  const savingsToman = standaloneTotalToman - bundlePriceToman;
+  const savingsPercent =
+    standaloneTotalToman > 0
+      ? Math.max(0, Math.round((savingsToman / standaloneTotalToman) * 100))
+      : 0;
 
   const specs = [
     { k: 'متریال', v: product.material },
@@ -200,8 +209,15 @@ export default async function ProductPage({ params }: Params) {
             {product.bundleSize > 1 && bundleItems.length > 0 && (
               <details className="group mt-6 rounded-2xl border border-soil-900/10 bg-white">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 [&::-webkit-details-marker]:hidden">
-                  <span>مشاهده محتویات این بسته ({toFa(bundleItems.length)} آیتم)</span>
-                  <span className="transition-transform group-open:rotate-180">▼</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span>مشاهده محتویات این بسته ({toFa(bundleItems.length)} آیتم)</span>
+                    {hasAllPrices && savingsToman > 0 && (
+                      <span className="rounded-full bg-flora-100 px-2.5 py-0.5 text-xs font-bold text-flora-800">
+                        {toFa(savingsPercent)}٪ ارزان‌تر از خرید تکی
+                      </span>
+                    )}
+                  </div>
+                  <span className="transition-transform group-open:rotate-180 text-soil-700/60">▼</span>
                 </summary>
                 <div className="border-t border-soil-900/10 p-4 space-y-2">
                   {bundleItems.map((item, i) => (
@@ -211,14 +227,27 @@ export default async function ProductPage({ params }: Params) {
                     >
                       <summary className="flex cursor-pointer list-none items-center justify-between py-2.5 text-sm font-bold text-soil-900 [&::-webkit-details-marker]:hidden">
                         <span>{item.title}</span>
-                        <span className="text-xs text-soil-700/50 transition-transform group-open/item:rotate-180">
-                          ▼
-                        </span>
+                        <div className="flex items-center gap-3">
+                          {item.priceToman && item.priceToman > 0 && (
+                            <span className="text-xs font-bold text-flora-800">
+                              {formatToman(item.priceToman)}
+                            </span>
+                          )}
+                          <span className="text-xs text-soil-700/50 transition-transform group-open/item:rotate-180">
+                            ▼
+                          </span>
+                        </div>
                       </summary>
 
                       {/* The Specs Table inside the nested accordion */}
                       <div className="border-t border-soil-900/5 pb-3 pt-2">
                         <dl className="grid grid-cols-2 gap-2 text-xs text-soil-700/80">
+                          {item.priceToman && item.priceToman > 0 && (
+                            <div className="flex gap-2">
+                              <dt className="text-soil-700/50">قیمت خرید تکی:</dt>
+                              <dd className="font-bold text-flora-900">{formatToman(item.priceToman)}</dd>
+                            </div>
+                          )}
                           {item.material && (
                             <div className="flex gap-2">
                               <dt className="text-soil-700/50">متریال:</dt>
@@ -253,6 +282,35 @@ export default async function ProductPage({ params }: Params) {
                       </div>
                     </details>
                   ))}
+
+                  {/* Bundle Savings & Price Breakdown Card */}
+                  {hasAllPrices && (
+                    <div className="mt-4 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4 space-y-2.5 text-xs">
+                      <div className="flex items-center justify-between text-soil-700/80">
+                        <span>مجموع ارزش خرید جداگانه:</span>
+                        <span className="font-bold line-through text-soil-700/60">
+                          {formatToman(standaloneTotalToman)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-soil-900">
+                        <span>قیمت پکیج کامل ({toFa(product.bundleSize)} عدد):</span>
+                        <span className="text-sm font-black text-flora-900">
+                          {formatToman(bundlePriceToman)}
+                        </span>
+                      </div>
+                      {savingsToman > 0 && (
+                        <div className="flex items-center justify-between rounded-lg bg-flora-100/90 p-2.5 font-bold text-flora-900">
+                          <span className="flex items-center gap-1.5">
+                            <span>🌱</span>
+                            <span>سود شما از خرید پکیج:</span>
+                          </span>
+                          <span>
+                            {formatToman(savingsToman)} ({toFa(savingsPercent)}٪ تخفیف)
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </details>
             )}

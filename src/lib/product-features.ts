@@ -25,6 +25,8 @@ export type BundleItem = {
   diameterCm: number;
   heightCm: number;
   weightGrams: number;
+  priceToman?: number;
+  productId?: string;
 };
 
 export function parseBundleItems(raw: unknown): BundleItem[] {
@@ -51,6 +53,11 @@ export function parseBundleItems(raw: unknown): BundleItem[] {
         typeof it.weightGrams === 'number' && Number.isFinite(it.weightGrams)
           ? Math.floor(it.weightGrams)
           : 0,
+      priceToman:
+        typeof it.priceToman === 'number' && Number.isFinite(it.priceToman) && it.priceToman > 0
+          ? Math.floor(it.priceToman)
+          : undefined,
+      productId: typeof it.productId === 'string' && it.productId.trim() ? it.productId.trim() : undefined,
     }));
 }
 

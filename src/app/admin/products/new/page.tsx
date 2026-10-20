@@ -10,12 +10,34 @@ export default async function NewProductPage() {
   // autocomplete suggestions. Read here rather than in the client component:
   // this is a server component already, and the form has no other reason to
   // touch the database.
-  const allProducts = await prisma.product.findMany({ select: { features: true } });
+  const allProducts = await prisma.product.findMany({
+    select: {
+      id: true,
+      name: true,
+      material: true,
+      diameterCm: true,
+      heightCm: true,
+      weightGrams: true,
+      basePriceToman: true,
+      features: true,
+    },
+    orderBy: { name: 'asc' },
+  });
   const labelSet = new Set<string>();
   for (const p of allProducts) {
     for (const f of parseFeatures(p.features)) labelSet.add(f.label);
   }
   const knownLabels = Array.from(labelSet).sort((a, b) => a.localeCompare(b, 'fa'));
+
+  const catalogProducts = allProducts.map((p) => ({
+    id: p.id,
+    name: p.name,
+    material: p.material,
+    diameterCm: p.diameterCm,
+    heightCm: p.heightCm,
+    weightGrams: p.weightGrams,
+    basePriceToman: p.basePriceToman,
+  }));
 
   return (
     <div>
@@ -26,6 +48,7 @@ export default async function NewProductPage() {
       <div className="mt-6">
         <ProductForm
           knownLabels={knownLabels}
+          catalogProducts={catalogProducts}
           initial={{
             slug: '',
             name: '',

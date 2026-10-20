@@ -23,12 +23,36 @@ export default async function EditProductPage({ params }: Props) {
   // Every label any product already uses, so the form can offer them as
   // autocomplete suggestions — including this product's own, which is harmless
   // and keeps the list complete when editing the only product that has one.
-  const allProducts = await prisma.product.findMany({ select: { features: true } });
+  const allProducts = await prisma.product.findMany({
+    select: {
+      id: true,
+      name: true,
+      material: true,
+      diameterCm: true,
+      heightCm: true,
+      weightGrams: true,
+      basePriceToman: true,
+      features: true,
+    },
+    orderBy: { name: 'asc' },
+  });
   const labelSet = new Set<string>();
   for (const p of allProducts) {
     for (const f of parseFeatures(p.features)) labelSet.add(f.label);
   }
   const knownLabels = Array.from(labelSet).sort((a, b) => a.localeCompare(b, 'fa'));
+
+  const catalogProducts = allProducts
+    .filter((p) => p.id !== product.id)
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      material: p.material,
+      diameterCm: p.diameterCm,
+      heightCm: p.heightCm,
+      weightGrams: p.weightGrams,
+      basePriceToman: p.basePriceToman,
+    }));
 
   return (
     <div>
@@ -37,6 +61,7 @@ export default async function EditProductPage({ params }: Props) {
       <div className="mt-6">
         <ProductForm
           knownLabels={knownLabels}
+          catalogProducts={catalogProducts}
           initial={{
             id: product.id,
             slug: product.slug,
