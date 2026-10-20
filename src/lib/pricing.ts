@@ -120,22 +120,48 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
   const allowBatch = product.allowBatchDiscount !== false;
 
   const listUnitToman = product.basePriceToman;
+  const lineWeightGrams = product.weightGrams * qty;
+  const cartons = Math.ceil(qty / Math.max(1, product.unitsPerCarton ?? 1));
+
+  // If allowBatchDiscount is false, the unit price MUST ALWAYS be product.basePriceToman
+  // regardless of quantity. resolveTier is not used.
+  if (!allowBatch) {
+    const lineTotalToman = listUnitToman * qty;
+    return {
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      imageUrl: product.images?.[0]?.url ?? null,
+      quantity: qty,
+      bundleSize,
+      bundleLabel: product.bundleLabel ?? null,
+      bundleItems: product.bundleItems ?? null,
+      listUnitToman,
+      unitToman: listUnitToman,
+      lineTotalToman,
+      lineSavingsToman: 0,
+      savingsPercent: 0,
+      weightGrams: product.weightGrams,
+      lineWeightGrams,
+      unitsPerCarton: product.unitsPerCarton ?? 1,
+      cartons,
+      tierLabel: 'خرده',
+      nextTier: null,
+    };
+  }
+
   const tier = resolveTier(
     tiers.length ? tiers : [{ minQuantity: 1, unitPriceToman: product.basePriceToman }],
     qty,
   );
 
-  const unitToman = allowBatch ? tier.unitPriceToman : listUnitToman;
-
+  const unitToman = tier.unitPriceToman;
   const lineTotalToman = unitToman * qty;
-  const lineSavingsToman = allowBatch ? Math.max(0, (listUnitToman - unitToman) * qty) : 0;
+  const lineSavingsToman = Math.max(0, (listUnitToman - unitToman) * qty);
   const savingsPercent =
-    allowBatch && listUnitToman > 0
+    listUnitToman > 0
       ? Math.round(((listUnitToman - unitToman) / listUnitToman) * 100)
       : 0;
-
-  const lineWeightGrams = product.weightGrams * qty;
-  const cartons = Math.ceil(qty / Math.max(1, product.unitsPerCarton ?? 1));
 
   return {
     productId: product.id,
@@ -155,8 +181,8 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
     lineWeightGrams,
     unitsPerCarton: product.unitsPerCarton ?? 1,
     cartons,
-    tierLabel: allowBatch ? (tier.label ?? CHANNEL_LABEL[resolveChannel(qty)]) : 'خرده',
-    nextTier: allowBatch ? nextTierHint(tiers, qty) : null,
+    tierLabel: tier.label ?? CHANNEL_LABEL[resolveChannel(qty)],
+    nextTier: nextTierHint(tiers, qty),
   };
 }
 

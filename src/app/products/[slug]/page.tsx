@@ -91,14 +91,7 @@ export default async function ProductPage({ params }: Params) {
   const enabledFeatures = parseFeatures(product.features).filter((f) => f.enabled);
   const bundleItems = parseBundleItems(product.bundleItems);
 
-  const bundleSize = Math.max(1, product.bundleSize ?? 1);
-  const packagePriceToman = product.basePriceToman * bundleSize;
-  const standaloneTotalToman = bundleItems.reduce((acc, it) => acc + (it.priceToman ?? 0), 0);
-  const hasValidStandalone = standaloneTotalToman > packagePriceToman;
-  const savingsToman = hasValidStandalone ? standaloneTotalToman - packagePriceToman : 0;
-  const savingsPercent = hasValidStandalone
-    ? Math.round((savingsToman / standaloneTotalToman) * 100)
-    : 0;
+
 
   const specs = [
     { k: 'متریال', v: product.material },
@@ -197,6 +190,7 @@ export default async function ProductPage({ params }: Params) {
                 bundleSize: product.bundleSize,
                 bundleLabel: product.bundleLabel,
                 minOrderQuantity: product.minOrderQuantity,
+                allowBatchDiscount: product.allowBatchDiscount,
               }}
               tiers={product.tiers.map((t) => ({
                 minQuantity: t.minQuantity,
@@ -206,84 +200,93 @@ export default async function ProductPage({ params }: Params) {
               isAuthed={Boolean(session)}
             />
 
-            {product.bundleSize > 1 && bundleItems.length > 0 && (
-              <details className="group mt-6 rounded-2xl border border-soil-900/10 bg-white">
-                <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 [&::-webkit-details-marker]:hidden">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span>مشاهده محتویات این بسته ({toFa(bundleItems.length)} آیتم)</span>
-                    {hasValidStandalone && savingsToman > 0 && (
-                      <span className="rounded-full bg-flora-100 px-2.5 py-0.5 text-xs font-bold text-flora-800">
-                        {toFa(savingsPercent)}٪ تخفیف نسبت به خرید جداگانه
-                      </span>
-                    )}
-                  </div>
-                  <span className="transition-transform group-open:rotate-180 text-soil-700/60">▼</span>
-                </summary>
-                <div className="border-t border-soil-900/10 p-4 space-y-3">
-                  <div className="space-y-2">
-                    {bundleItems.map((item, i) => (
-                      <div
-                        key={i}
-                        className="rounded-xl border border-soil-900/10 bg-dust-50/60 p-3.5 transition-colors hover:bg-dust-50"
-                      >
-                        <p className="text-sm font-bold text-soil-900">{item.title}</p>
-                        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-soil-700/70">
-                          {item.material && (
-                            <span>
-                              جنس: <strong className="text-soil-900">{item.material}</strong>
-                            </span>
-                          )}
-                          {item.diameterCm > 0 && (
-                            <span>
-                              قطر: <strong className="text-soil-900">{toFa(item.diameterCm)} سانتی‌متر</strong>
-                            </span>
-                          )}
-                          {item.heightCm > 0 && (
-                            <span>
-                              ارتفاع: <strong className="text-soil-900">{toFa(item.heightCm)} سانتی‌متر</strong>
-                            </span>
-                          )}
-                          {item.weightGrams > 0 && (
-                            <span>
-                              وزن: <strong className="text-soil-900">{toFa(item.weightGrams)} گرم</strong>
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            {bundleItems.length > 0 && (() => {
+              const bundleSize = product.bundleSize || 1;
+              const sumOfItemPrices = bundleItems.reduce(
+                (acc, it) => acc + (it.priceToman ?? it.price ?? 0),
+                0,
+              );
+              const packagePrice = product.basePriceToman * bundleSize;
+              const bundleSavings = sumOfItemPrices - packagePrice;
 
-                  {/* Summary Box */}
-                  <div className="mt-4 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4 space-y-2.5 text-xs">
-                    {hasValidStandalone && (
-                      <div className="flex items-center justify-between text-soil-700/80">
-                        <span>ارزش کل اقلام:</span>
-                        <span className="font-bold line-through text-soil-700/60">
-                          {formatToman(standaloneTotalToman)}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between text-soil-900">
-                      <span>قیمت پکیج ({toFa(product.bundleSize)} عدد):</span>
-                      <span className="text-sm font-black text-flora-900">
-                        {formatToman(packagePriceToman)}
-                      </span>
+              return (
+                <details className="group mt-6 rounded-2xl border border-soil-900/10 bg-white">
+                  <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 [&::-webkit-details-marker]:hidden">
+                    <span>مشاهده محتویات این بسته ({toFa(bundleItems.length)} آیتم)</span>
+                    <span className="transition-transform group-open:rotate-180 text-soil-700/60">▼</span>
+                  </summary>
+                  <div className="border-t border-soil-900/10 p-4">
+                    <div className="space-y-2">
+                      {bundleItems.map((item, i) => {
+                        const itemPrice = item.priceToman ?? item.price;
+                        return (
+                          <div
+                            key={i}
+                            className="rounded-xl border border-soil-900/10 bg-dust-50/60 p-3.5 transition-colors hover:bg-dust-50"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-sm font-bold text-soil-900">{item.title}</p>
+                              {itemPrice && itemPrice > 0 ? (
+                                <span className="text-xs font-bold text-flora-800 shrink-0">
+                                  {formatToman(itemPrice)}
+                                </span>
+                              ) : null}
+                            </div>
+                            <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-soil-700/70">
+                              {item.material && (
+                                <span>
+                                  جنس: <strong className="text-soil-900">{item.material}</strong>
+                                </span>
+                              )}
+                              {item.diameterCm > 0 && (
+                                <span>
+                                  قطر: <strong className="text-soil-900">{toFa(item.diameterCm)} سانتی‌متر</strong>
+                                </span>
+                              )}
+                              {item.heightCm > 0 && (
+                                <span>
+                                  ارتفاع: <strong className="text-soil-900">{toFa(item.heightCm)} سانتی‌متر</strong>
+                                </span>
+                              )}
+                              {item.weightGrams > 0 && (
+                                <span>
+                                  وزن: <strong className="text-soil-900">{toFa(item.weightGrams)} گرم</strong>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                    {hasValidStandalone && savingsToman > 0 && (
-                      <div className="flex items-center justify-between rounded-lg bg-flora-100/90 p-2.5 font-bold text-flora-900">
-                        <span className="flex items-center gap-1.5">
-                          <span>🌱</span>
-                          <span>سود شما:</span>
-                        </span>
-                        <span>
-                          {formatToman(savingsToman)} ({toFa(savingsPercent)}٪ تخفیف)
+
+                    {/* Summary Box */}
+                    <div className="mt-4 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4 space-y-2 text-xs">
+                      {sumOfItemPrices > 0 && (
+                        <div className="flex items-center justify-between text-soil-700/80">
+                          <span>مجموع ارزش اقلام:</span>
+                          <span className="font-bold text-soil-900">{formatToman(sumOfItemPrices)}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between text-soil-900">
+                        <span>قیمت این پکیج:</span>
+                        <span className="text-sm font-black text-flora-900">
+                          {formatToman(packagePrice)}
                         </span>
                       </div>
-                    )}
+                      {bundleSavings > 0 && (
+                        <div className="flex items-center justify-between rounded-lg bg-flora-100/90 p-2.5 font-bold text-flora-900">
+                          <span className="flex items-center gap-1.5">
+                            <span>🌱</span>
+                            <span>صرفه‌جویی شما:</span>
+                          </span>
+                          <span>{formatToman(bundleSavings)}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </details>
-            )}
+                </details>
+              );
+            })()}
           </div>
 
           <section className="mt-10">

@@ -31,6 +31,7 @@ const bundleItemSchema = z.object({
   heightCm: z.number({ invalid_type_error: 'ارتفاع باید عدد باشد' }).min(0, 'ارتفاع نمی‌تواند منفی باشد').max(500, 'ارتفاع حداکثر ۵۰۰ سانتی‌متر است').optional().default(0),
   weightGrams: z.number({ invalid_type_error: 'وزن باید عدد باشد' }).int('وزن باید عدد صحیح باشد').min(0, 'وزن نمی‌تواند منفی باشد').max(100000, 'وزن حداکثر ۱۰۰ کیلوگرم است').optional().default(0),
   priceToman: z.number().int().min(0).max(100000000).optional().nullable(),
+  price: z.number().int().min(0).max(100000000).optional().nullable(),
   productId: z.string().optional().nullable(),
 });
 

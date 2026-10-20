@@ -211,8 +211,12 @@ export default function ProductForm({
         minOrderQuantity: form.minOrderQuantity ?? 1,
         bundleLabel: form.bundleLabel?.trim() || null,
         bundleItems:
-          (form.bundleSize ?? 1) > 1
-            ? (form.bundleItems?.filter((it) => it.title.trim()) ?? [])
+          (form.bundleSize ?? 1) > 1 || ((form.bundleItems ?? []).length > 0)
+            ? (form.bundleItems?.filter((it) => it.title.trim()).map((it) => ({
+                ...it,
+                price: it.priceToman ?? it.price ?? 0,
+                priceToman: it.priceToman ?? it.price ?? 0,
+              })) ?? [])
             : null,
         allowBatchDiscount: form.allowBatchDiscount ?? true,
         tagIds: [...new Set(form.tagIds)],
@@ -466,13 +470,13 @@ export default function ProductForm({
         </div>
       </section>
 
-      {(form.bundleSize ?? 1) > 1 && (
+      {((form.bundleSize ?? 1) > 1 || (form.bundleItems ?? []).length > 0) && (
         <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-black text-soil-900">محتویات بسته</h2>
+              <h2 className="text-sm font-black text-soil-900">تنظیمات بسته (Bundle)</h2>
               <p className="mt-1 text-xs text-soil-700/60">
-                مشخصات گلدان‌ها، اقلام و قیمت خرید تکی هر آیتم را برای محاسبه شفاف تخفیف مشخص کنید.
+                مشخصات اقلام داخل بسته و قیمت تک‌فروشی هر آیتم را برای شفافیت و محاسبه سود خریدار مشخص کنید.
               </p>
             </div>
             <button
@@ -488,6 +492,7 @@ export default function ProductForm({
                     heightCm: 0,
                     weightGrams: 0,
                     priceToman: 0,
+                    price: 0,
                   },
                 ]);
               }}
@@ -497,74 +502,46 @@ export default function ProductForm({
             </button>
           </div>
 
-          {/* Real-Time Live Bundle Calculator */}
-          {(form.bundleItems ?? []).length > 0 && (
-            <div className="mb-5 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-5 flex-wrap">
-                  <div>
-                    <span className="text-soil-700/70">مجموع ارزش تکی اقلام:</span>{' '}
-                    <strong className="text-soil-900 font-black">
-                      {formatToman(
-                        (form.bundleItems ?? []).reduce(
-                          (acc, it) => acc + (it.priceToman ?? 0),
-                          0,
-                        ),
-                      )}
-                    </strong>
-                  </div>
-                  <div>
-                    <span className="text-soil-700/70">قیمت فعلی پکیج:</span>{' '}
-                    <strong className="text-flora-900 font-black">
-                      {formatToman(form.basePriceToman || 0)}
-                    </strong>
-                  </div>
-                </div>
-
-                {(() => {
-                  const sum = (form.bundleItems ?? []).reduce(
-                    (acc, it) => acc + (it.priceToman ?? 0),
-                    0,
-                  );
-                  const pkgPrice = form.basePriceToman || 0;
-                  const diff = sum - pkgPrice;
-                  const pct = sum > 0 ? Math.max(0, Math.round((diff / sum) * 100)) : 0;
-
-                  if (sum === 0) {
-                    return (
-                      <span className="text-xs text-soil-700/60">
-                        برای محاسبه سود، قیمت تکی اقلام را وارد کنید.
-                      </span>
-                    );
-                  }
-
-                  if (diff > 0) {
-                    return (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-bold text-emerald-800">
-                        <span>🌱</span>
-                        <span>سود مشتری: {formatToman(diff)} ({toFa(pct)}٪ تخفیف)</span>
-                      </span>
-                    );
-                  }
-
-                  if (diff === 0) {
-                    return (
-                      <span className="inline-flex items-center rounded-full bg-soil-100 px-3 py-1 text-xs font-medium text-soil-800">
-                        قیمت بسته دقیقاً برابر با مجموع قیمت تکی است
-                      </span>
-                    );
-                  }
-
-                  return (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
-                      <span>⚠️</span>
-                      <span>توجه: قیمت بسته {formatToman(Math.abs(diff))} از مجموع تکی گران‌تر است!</span>
-                    </span>
-                  );
-                })()}
+          {/* Bundle Summary Box */}
+          <div className="mb-5 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4">
+            <div className="grid gap-3 sm:grid-cols-2 text-xs">
+              <div className="rounded-lg bg-white p-3 border border-soil-900/5">
+                <span className="text-soil-700/70 block mb-1">مجموع قیمت تک‌فروشی اقلام:</span>
+                <strong className="text-sm font-black text-soil-900">
+                  {formatToman(
+                    (form.bundleItems ?? []).reduce(
+                      (acc, it) => acc + (it.priceToman ?? it.price ?? 0),
+                      0,
+                    ),
+                  )}
+                </strong>
+              </div>
+              <div className="rounded-lg bg-white p-3 border border-soil-900/5">
+                <span className="text-soil-700/70 block mb-1">قیمت فروش کل بسته (قیمت پایه شما):</span>
+                <strong className="text-sm font-black text-flora-900">
+                  {formatToman((form.basePriceToman || 0) * (form.bundleSize || 1))}
+                </strong>
               </div>
             </div>
-          )}
+            {(() => {
+              const sum = (form.bundleItems ?? []).reduce(
+                (acc, it) => acc + (it.priceToman ?? it.price ?? 0),
+                0,
+              );
+              const pkgPrice = (form.basePriceToman || 0) * (form.bundleSize || 1);
+              const diff = sum - pkgPrice;
+              if (sum > 0 && diff > 0) {
+                const pct = Math.round((diff / sum) * 100);
+                return (
+                  <div className="mt-2.5 flex items-center gap-1.5 rounded-lg bg-emerald-100/80 px-3 py-1.5 text-xs font-bold text-emerald-800">
+                    <span>🌱</span>
+                    <span>صرفه‌جویی مشتری: {formatToman(diff)} ({toFa(pct)}٪ تخفیف روی کل بسته)</span>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+          </div>
 
           <div className="space-y-4">
             {(form.bundleItems ?? []).map((item, idx) => (
@@ -594,6 +571,7 @@ export default function ProductForm({
                                 heightCm: prod.heightCm,
                                 weightGrams: prod.weightGrams,
                                 priceToman: prod.basePriceToman,
+                                price: prod.basePriceToman,
                               };
                             } else {
                               next[idx] = {
@@ -651,12 +629,14 @@ export default function ProductForm({
                       step="1000"
                       min="0"
                       placeholder="مثلاً ۱۲۰۰۰۰"
-                      value={item.priceToman || ''}
+                      value={item.priceToman || item.price || ''}
                       onChange={(e) => {
                         const next = [...(form.bundleItems ?? [])];
+                        const p = Math.max(0, Math.floor(Number(e.target.value) || 0));
                         next[idx] = {
                           ...next[idx],
-                          priceToman: Math.max(0, Math.floor(Number(e.target.value) || 0)),
+                          priceToman: p,
+                          price: p,
                         };
                         update('bundleItems', next);
                       }}
@@ -965,23 +945,29 @@ export default function ProductForm({
         )}
       </section>
 
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-sm font-black text-soil-900">
-            قیمت‌گذاری پله‌ای (تومان)
-          </h2>
-          <label className="flex items-center gap-2 text-xs font-bold text-soil-900 cursor-pointer">
+      <section className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-soil-900/10 pb-4">
+          <div>
+            <h2 className="text-sm font-black text-soil-900">
+              قیمت‌گذاری محصول
+            </h2>
+            <p className="mt-1 text-xs text-soil-700/60">
+              تعیین قیمت پایه و در صورت نیاز، فعال‌سازی تخفیف‌های پله‌ای برای خریدهای تعداد بالا
+            </p>
+          </div>
+          <label className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
             <input
               type="checkbox"
               checked={form.allowBatchDiscount ?? true}
               onChange={(e) => update('allowBatchDiscount', e.target.checked)}
-              className="accent-flora-700"
+              className="accent-flora-700 size-4"
             />
             فعالسازی تخفیف پلهای (عمده)
           </label>
         </div>
+
         <label className="block max-w-xs">
-          <span className={labelCls}>قیمت پایه (خرده) *</span>
+          <span className={labelCls}>قیمت پایه (تومان) *</span>
           <input
             type="number"
             value={form.basePriceToman}
@@ -992,39 +978,51 @@ export default function ProductForm({
           <FormError message={fieldErrors.basePriceToman} />
         </label>
 
-        <div className="mt-4 space-y-3">
-          {form.tiers.map((t, i) => (
-            <div key={i} className="grid gap-3 sm:grid-cols-3">
-              <label className="block">
-                <span className={labelCls}>حداقل تعداد</span>
-                <input
-                  type="number"
-                  value={t.minQuantity}
-                  onChange={(e) => updateTier(i, { minQuantity: Number(e.target.value) })}
-                  className={inputCls}
-                />
-              </label>
-              <label className="block">
-                <span className={labelCls}>قیمت هر عدد</span>
-                <input
-                  type="number"
-                  value={t.unitPriceToman}
-                  onChange={(e) => updateTier(i, { unitPriceToman: Number(e.target.value) })}
-                  className={inputCls}
-                />
-              </label>
-              <label className="block">
-                <span className={labelCls}>برچسب</span>
-                <input
-                  value={t.label}
-                  onChange={(e) => updateTier(i, { label: e.target.value })}
-                  className={inputCls}
-                />
-              </label>
+        {(form.allowBatchDiscount ?? true) && (
+          <div className="pt-2">
+            <div className="mb-3">
+              <h3 className="text-xs font-bold text-soil-900">
+                پله‌های قیمت عمده و بسته‌ای (تومان)
+              </h3>
+              <p className="mt-0.5 text-[11px] text-soil-700/60">
+                تعیین حداقل تعداد و قیمت واحد برای هر سطح خرید
+              </p>
             </div>
-          ))}
-        </div>
-        <FormError message={fieldErrors.tiers} />
+            <div className="space-y-3">
+              {form.tiers.map((t, i) => (
+                <div key={i} className="grid gap-3 sm:grid-cols-3">
+                  <label className="block">
+                    <span className={labelCls}>حداقل تعداد</span>
+                    <input
+                      type="number"
+                      value={t.minQuantity}
+                      onChange={(e) => updateTier(i, { minQuantity: Number(e.target.value) })}
+                      className={inputCls}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={labelCls}>قیمت هر عدد</span>
+                    <input
+                      type="number"
+                      value={t.unitPriceToman}
+                      onChange={(e) => updateTier(i, { unitPriceToman: Number(e.target.value) })}
+                      className={inputCls}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={labelCls}>برچسب</span>
+                    <input
+                      value={t.label}
+                      onChange={(e) => updateTier(i, { label: e.target.value })}
+                      className={inputCls}
+                    />
+                  </label>
+                </div>
+              ))}
+            </div>
+            <FormError message={fieldErrors.tiers} />
+          </div>
+        )}
       </section>
 
       {error && (
