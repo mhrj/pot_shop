@@ -129,7 +129,7 @@ function ColorSwatchRow({
         {/* Scrollable Swatches Container */}
         <div
           ref={scrollRef}
-          className="flex flex-1 items-center gap-3 overflow-x-auto py-1.5 px-1 scroll-smooth no-scrollbar"
+          className="flex flex-1 items-center gap-2 overflow-x-auto py-1.5 px-1 scroll-smooth no-scrollbar"
         >
           {colors.map((hex) => {
             const isSelected = selectedColor?.toUpperCase() === hex.toUpperCase();
