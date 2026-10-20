@@ -3,6 +3,7 @@ import { requireUser } from '@/lib/auth';
 import { getCartTotals } from '@/lib/cart';
 import { prisma } from '@/lib/prisma';
 import { formatToman, formatWeight } from '@/lib/format';
+import { numberToWordsFa } from '@/lib/number-to-words';
 import Container from '@/components/ui/Container';
 import CartItemRow from '@/components/cart/CartItemRow';
 
@@ -58,7 +59,14 @@ export default async function CartPage() {
               </div>
               <div className="flex justify-between border-t pt-3 text-base font-black">
                 <dt>قابل پرداخت</dt>
-                <dd>{formatToman(totals.payableToman)}</dd>
+                <dd className="text-end">
+                  <div>{formatToman(totals.payableToman)}</div>
+                  {totals.payableToman >= 1000 && (
+                    <div className="text-[11px] font-normal text-soil-700/70 mt-0.5">
+                      ({numberToWordsFa(totals.payableToman)} تومان)
+                    </div>
+                  )}
+                </dd>
               </div>
             </dl>
             <Link

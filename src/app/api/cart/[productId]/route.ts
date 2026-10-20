@@ -30,7 +30,6 @@ export async function PATCH(req: Request, { params }: Params) {
       stock: true,
       isActive: true,
       bundleSize: true,
-      bundleLabel: true,
       minOrderQuantity: true,
     },
   });
@@ -39,7 +38,7 @@ export async function PATCH(req: Request, { params }: Params) {
   }
 
   const bundleSize = product.bundleSize || 1;
-  const isBundle = Boolean(product.bundleLabel) && bundleSize > 1;
+  const isBundle = bundleSize > 1;
   const minQty = isBundle
     ? Math.max(product.minOrderQuantity || 1, bundleSize)
     : (product.minOrderQuantity || 1);

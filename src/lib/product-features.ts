@@ -21,6 +21,7 @@ export function parseFeatures(raw: unknown): ProductFeature[] {
 
 export type BundleItem = {
   title: string;
+  description?: string;
   material: string;
   diameterCm: number;
   heightCm: number;
@@ -48,6 +49,7 @@ export function parseBundleItems(raw: unknown): BundleItem[] {
 
       return {
         title: String(it.title),
+        description: typeof it.description === 'string' ? it.description : '',
         material: typeof it.material === 'string' ? it.material : '',
         diameterCm:
           typeof it.diameterCm === 'number' && Number.isFinite(it.diameterCm)

@@ -42,7 +42,6 @@ export async function getCartTotals(userId: string): Promise<CartTotals> {
           weightGrams: i.product.weightGrams,
           unitsPerCarton: i.product.unitsPerCarton,
           bundleSize: i.product.bundleSize,
-          bundleLabel: i.product.bundleLabel,
           bundleItems: parseBundleItems(i.product.bundleItems),
           images: i.product.images,
           allowBatchDiscount: i.product.allowBatchDiscount,
@@ -70,14 +69,13 @@ export async function addToCart(
       id: true,
       stock: true,
       bundleSize: true,
-      bundleLabel: true,
       minOrderQuantity: true,
     },
   });
   if (!product) throw new Error('محصول یافت نشد');
 
   const bundleSize = product.bundleSize || 1;
-  const isBundle = Boolean(product.bundleLabel) && bundleSize > 1;
+  const isBundle = bundleSize > 1;
   const minQty = isBundle
     ? Math.max(product.minOrderQuantity || 1, bundleSize)
     : (product.minOrderQuantity || 1);

@@ -93,6 +93,8 @@ export default async function ProductPage({ params }: Params) {
 
 
 
+  const displayLabel = product.bundleSize > 1 ? `ست ${toFa(product.bundleSize)} عددی` : 'تک‌عدد';
+
   const specs = [
     { k: 'متریال', v: product.material },
     { k: 'رنگ', v: product.color ?? '—' },
@@ -102,9 +104,9 @@ export default async function ProductPage({ params }: Params) {
     product.bundleSize > 1
       ? {
           k: 'تعداد در هر بسته',
-          v: `${toFa(product.bundleSize)} عدد${product.bundleLabel ? ` (${product.bundleLabel})` : ''}`,
+          v: `${toFa(product.bundleSize)} عدد (${displayLabel})`,
         }
-      : { k: 'واحد فروش', v: 'تک عددی' },
+      : { k: 'واحد فروش', v: 'تک‌عددی' },
   ];
 
   const jsonLd = {
@@ -161,7 +163,7 @@ export default async function ProductPage({ params }: Params) {
             </span>
             {product.bundleSize > 1 && (
               <span className="rounded-full bg-flora-900 px-3 py-1 text-xs font-bold text-white">
-                {product.bundleLabel || `بسته ${toFa(product.bundleSize)} عددی`}
+                {displayLabel}
               </span>
             )}
             {product.tags.map((entry) => (
@@ -188,7 +190,7 @@ export default async function ProductPage({ params }: Params) {
                 unitsPerCarton: product.unitsPerCarton,
                 stock: product.stock,
                 bundleSize: product.bundleSize,
-                bundleLabel: product.bundleLabel,
+                bundleItems: bundleItems,
                 minOrderQuantity: product.minOrderQuantity,
                 allowBatchDiscount: product.allowBatchDiscount,
               }}
@@ -199,94 +201,6 @@ export default async function ProductPage({ params }: Params) {
               }))}
               isAuthed={Boolean(session)}
             />
-
-            {bundleItems.length > 0 && (() => {
-              const bundleSize = product.bundleSize || 1;
-              const sumOfItemPrices = bundleItems.reduce(
-                (acc, it) => acc + (it.priceToman ?? it.price ?? 0),
-                0,
-              );
-              const packagePrice = product.basePriceToman * bundleSize;
-              const bundleSavings = sumOfItemPrices - packagePrice;
-
-              return (
-                <details className="group mt-6 rounded-2xl border border-soil-900/10 bg-white">
-                  <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 [&::-webkit-details-marker]:hidden">
-                    <span>مشاهده محتویات این بسته ({toFa(bundleItems.length)} آیتم)</span>
-                    <span className="transition-transform group-open:rotate-180 text-soil-700/60">▼</span>
-                  </summary>
-                  <div className="border-t border-soil-900/10 p-4">
-                    <div className="space-y-2">
-                      {bundleItems.map((item, i) => {
-                        const itemPrice = item.priceToman ?? item.price;
-                        return (
-                          <div
-                            key={i}
-                            className="rounded-xl border border-soil-900/10 bg-dust-50/60 p-3.5 transition-colors hover:bg-dust-50"
-                          >
-                            <div className="flex items-center justify-between gap-2">
-                              <p className="text-sm font-bold text-soil-900">{item.title}</p>
-                              {itemPrice && itemPrice > 0 ? (
-                                <span className="text-xs font-bold text-flora-800 shrink-0">
-                                  {formatToman(itemPrice)}
-                                </span>
-                              ) : null}
-                            </div>
-                            <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-soil-700/70">
-                              {item.material && (
-                                <span>
-                                  جنس: <strong className="text-soil-900">{item.material}</strong>
-                                </span>
-                              )}
-                              {item.diameterCm > 0 && (
-                                <span>
-                                  قطر: <strong className="text-soil-900">{toFa(item.diameterCm)} سانتی‌متر</strong>
-                                </span>
-                              )}
-                              {item.heightCm > 0 && (
-                                <span>
-                                  ارتفاع: <strong className="text-soil-900">{toFa(item.heightCm)} سانتی‌متر</strong>
-                                </span>
-                              )}
-                              {item.weightGrams > 0 && (
-                                <span>
-                                  وزن: <strong className="text-soil-900">{toFa(item.weightGrams)} گرم</strong>
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Summary Box */}
-                    <div className="mt-4 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4 space-y-2 text-xs">
-                      {sumOfItemPrices > 0 && (
-                        <div className="flex items-center justify-between text-soil-700/80">
-                          <span>مجموع ارزش اقلام:</span>
-                          <span className="font-bold text-soil-900">{formatToman(sumOfItemPrices)}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center justify-between text-soil-900">
-                        <span>قیمت این پکیج:</span>
-                        <span className="text-sm font-black text-flora-900">
-                          {formatToman(packagePrice)}
-                        </span>
-                      </div>
-                      {bundleSavings > 0 && (
-                        <div className="flex items-center justify-between rounded-lg bg-flora-100/90 p-2.5 font-bold text-flora-900">
-                          <span className="flex items-center gap-1.5">
-                            <span>🌱</span>
-                            <span>صرفه‌جویی شما:</span>
-                          </span>
-                          <span>{formatToman(bundleSavings)}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </details>
-              );
-            })()}
           </div>
 
           <section className="mt-10">

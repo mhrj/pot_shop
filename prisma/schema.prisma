@@ -120,7 +120,6 @@ model Product {
   unitsPerCarton Int     @default(6)
   bundleSize    Int      @default(1)
   minOrderQuantity Int   @default(1)
-  bundleLabel   String?
   bundleItems   Json?
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)

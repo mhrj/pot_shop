@@ -28,6 +28,7 @@ const tiersSchema = z
 
 const bundleItemSchema = z.object({
   title: z.string({ required_error: 'نام آیتم بسته الزامی است' }).min(1, 'نام آیتم بسته الزامی است').max(150, 'نام آیتم بسته حداکثر ۱۵۰ کاراکتر است'),
+  description: z.string().max(500, 'توضیحات آیتم حداکثر ۵۰۰ کاراکتر است').optional().default(''),
   material: z.string().max(60, 'متریال حداکثر ۶۰ کاراکتر است').optional().default(''),
   diameterCm: z.number({ invalid_type_error: 'قطر باید عدد باشد' }).min(0, 'قطر نمی‌تواند منفی باشد').max(500, 'قطر حداکثر ۵۰۰ سانتی‌متر است').optional().default(0),
   heightCm: z.number({ invalid_type_error: 'ارتفاع باید عدد باشد' }).min(0, 'ارتفاع نمی‌تواند منفی باشد').max(500, 'ارتفاع حداکثر ۵۰۰ سانتی‌متر است').optional().default(0),
@@ -52,7 +53,6 @@ const schema = z.object({
   unitsPerCarton: z.number().int().min(1).max(200),
   bundleSize: z.number({ invalid_type_error: 'تعداد در بسته باید عدد باشد' }).int('تعداد در بسته باید عدد صحیح باشد').min(1, 'تعداد در بسته حداقل ۱ است').default(1),
   minOrderQuantity: z.number({ invalid_type_error: 'حداقل سفارش باید عدد باشد' }).int('حداقل سفارش باید عدد صحیح باشد').min(1, 'حداقل سفارش باید حداقل ۱ باشد').default(1),
-  bundleLabel: z.string().max(100, 'عنوان بسته حداکثر ۱۰۰ کاراکتر است').optional().nullable(),
   bundleItems: z.array(bundleItemSchema).max(50, 'حداکثر ۵۰ آیتم در بسته مجاز است').optional().nullable(),
   basePriceToman: z.number({ invalid_type_error: 'قیمت پایه باید عدد باشد' }).int('قیمت پایه باید عدد صحیح باشد').min(1000, 'قیمت پایه باید حداقل ۱,۰۰۰ تومان باشد'),
   isActive: z.boolean(),
@@ -124,7 +124,6 @@ export async function PATCH(req: Request, { params }: Params) {
         unitsPerCarton: data.unitsPerCarton,
         bundleSize: data.bundleSize ?? 1,
         minOrderQuantity: data.minOrderQuantity ?? 1,
-        bundleLabel: data.bundleLabel || null,
         bundleItems: data.bundleItems && data.bundleItems.length > 0 ? (data.bundleItems as any) : null,
         basePriceToman: data.basePriceToman,
         isActive: data.isActive,

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { toFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
 
 export default async function FailedPage({
@@ -37,7 +38,7 @@ export default async function FailedPage({
         </p>
         {order && (
           <p className="mt-4 text-xs text-soil-700/60">
-            شماره سفارش: <span className="font-mono font-bold">{order}</span>
+            شماره سفارش: <span className="font-mono font-bold">{toFa(order)}</span>
           </p>
         )}
         <div className="mt-8 flex justify-center gap-3">

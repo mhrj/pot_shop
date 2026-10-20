@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import AddressForm from '@/components/cart/AddressForm';
 import { calcShippingToman, type CartTotals } from '@/lib/pricing';
 import { formatToman, formatWeight, toFa } from '@/lib/format';
+import { numberToWordsFa } from '@/lib/number-to-words';
 
 type Address = {
   id: string;
@@ -195,7 +196,7 @@ export default function CheckoutForm({
             {totals.lines.map((l) => (
               <li key={l.productId} className="flex justify-between gap-4">
                 <span className="truncate">
-                  {l.name} × {toFa(l.quantity)}
+                  {l.name} × {toFa(l.quantity)} {l.bundleSize > 1 ? `(معادل ${toFa(Math.round(l.quantity / l.bundleSize))} بسته)` : ''}
                 </span>
                 <span className="shrink-0 font-bold text-soil-900">
                   {formatToman(l.lineTotalToman)}
@@ -223,7 +224,14 @@ export default function CheckoutForm({
             </div>
             <div className="flex justify-between border-t border-soil-900/10 pt-3 text-base font-black">
               <dt>قابل پرداخت</dt>
-              <dd>{formatToman(totals.payableToman + shippingToman)}</dd>
+              <dd className="text-end">
+                <div>{formatToman(totals.payableToman + shippingToman)}</div>
+                {totals.payableToman + shippingToman >= 1000 && (
+                  <div className="text-[11px] font-normal text-soil-700/70 mt-0.5">
+                    ({numberToWordsFa(totals.payableToman + shippingToman)} تومان)
+                  </div>
+                )}
+              </dd>
             </div>
           </dl>
         </div>

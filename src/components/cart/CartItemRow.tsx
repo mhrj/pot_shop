@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState, useTransition } from 'react';
 import { formatToman, toFa } from '@/lib/format';
+import { numberToWordsFa } from '@/lib/number-to-words';
 import type { PricedLine } from '@/lib/pricing';
 
 export default function CartItemRow({ line, stock }: { line: PricedLine; stock: number }) {
@@ -69,7 +70,7 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
           <div>
             <h2 className="font-bold text-soil-900">{line.name}</h2>
             <p className="mt-1 text-xs text-soil-700/70">
-              {formatToman(line.unitToman)} × {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} ${line.bundleLabel || 'بسته'})`} — {line.tierLabel}
+              {formatToman(line.unitToman)} × {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} بسته)`} — {line.tierLabel}
             </p>
           </div>
           <button
@@ -116,19 +117,35 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
               </button>
             </div>
             <span className="text-xs text-soil-700/80">
-              {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} ${line.bundleLabel || 'بسته'})`}
+              {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} بسته)`}
             </span>
           </div>
 
-          <p className="text-sm font-black text-flora-900">
-            {formatToman(line.unitToman * qty)}
-          </p>
+          <div className="text-end">
+            <p className="text-sm font-black text-flora-900">
+              {formatToman(line.lineTotalToman)}
+            </p>
+            {line.lineTotalToman >= 1000 && (
+              <p className="text-[11px] font-normal text-soil-700/70">
+                ({numberToWordsFa(line.lineTotalToman)} تومان)
+              </p>
+            )}
+          </div>
         </div>
 
         {line.nextTier && (
           <p className="text-[11px] text-dust-500">
-            {toFa(line.nextTier.minQuantity - qty)} عدد دیگر → هر عدد{' '}
-            {formatToman(line.nextTier.unitPriceToman)}
+            {line.bundleSize > 1 ? (
+              <>
+                {toFa(Math.max(1, line.nextTier.minQuantity - Math.round(qty / line.bundleSize)))} بسته دیگر → هر بسته{' '}
+                {formatToman(line.nextTier.unitPriceToman)}
+              </>
+            ) : (
+              <>
+                {toFa(Math.max(1, line.nextTier.minQuantity - qty))} عدد دیگر → هر عدد{' '}
+                {formatToman(line.nextTier.unitPriceToman)}
+              </>
+            )}
           </p>
         )}
 

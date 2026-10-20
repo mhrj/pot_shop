@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ProductFeature, BundleItem } from '@/lib/product-features';
 import { formatToman, toFa } from '@/lib/format';
+import { numberToWordsFa } from '@/lib/number-to-words';
 import { FormError } from '@/components/ui/FormError';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
@@ -24,7 +25,6 @@ export type ProductFormData = {
   unitsPerCarton?: number;
   bundleSize: number;
   minOrderQuantity?: number;
-  bundleLabel: string | null;
   bundleItems: BundleItem[] | null;
   basePriceToman: number;
   isActive: boolean;
@@ -81,10 +81,74 @@ export default function ProductForm({
     categoryId: initial.categoryId ?? '',
     unitsPerCarton: 1,
     bundleSize: initial.bundleSize ?? 1,
-    bundleLabel: initial.bundleLabel ?? '',
     bundleItems: initial.bundleItems ?? [],
     allowBatchDiscount: initial.allowBatchDiscount ?? true,
   });
+
+  const initialIsBundle = Boolean(
+    (initial.bundleSize && initial.bundleSize > 1) ||
+    (initial.bundleItems && initial.bundleItems.length > 0)
+  );
+  const [isBundleActive, setIsBundleActive] = useState<boolean>(initialIsBundle);
+
+  function handleToggleBundle(active: boolean) {
+    setIsBundleActive(active);
+    if (!active) {
+      setForm((prev) => ({
+        ...prev,
+        bundleSize: 1,
+        bundleItems: [],
+      }));
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next.bundleItems;
+        return next;
+      });
+    } else {
+      setForm((prev) => {
+        const items = prev.bundleItems ?? [];
+        return {
+          ...prev,
+          bundleSize: Math.max(1, items.length),
+        };
+      });
+    }
+  }
+
+  function handleAddBundleItem() {
+    const current = form.bundleItems ?? [];
+    const next: BundleItem[] = [
+      ...current,
+      {
+        title: '',
+        description: '',
+        material: '',
+        diameterCm: 0,
+        heightCm: 0,
+        weightGrams: 0,
+        price: 0,
+        priceToman: 0,
+      },
+    ];
+    setForm((prev) => ({
+      ...prev,
+      bundleItems: next,
+      bundleSize: Math.max(1, next.length),
+    }));
+    if (fieldErrors.bundleItems) {
+      setFieldErrors((prev) => ({ ...prev, bundleItems: '' }));
+    }
+  }
+
+  function handleRemoveBundleItem(idx: number) {
+    const current = form.bundleItems ?? [];
+    const next = current.filter((_, i) => i !== idx);
+    setForm((prev) => ({
+      ...prev,
+      bundleItems: next,
+      bundleSize: Math.max(1, next.length),
+    }));
+  }
 
   useEffect(() => {
     async function loadTags() {
@@ -190,6 +254,26 @@ export default function ProductForm({
 
     if (!form.tiers.some((t) => t.minQuantity === 1)) {
       newErrors.tiers = 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود';
+    } else if (
+      (form.allowBatchDiscount ?? true) &&
+      form.tiers.some((t) => t.minQuantity > 1 && t.unitPriceToman > form.basePriceToman)
+    ) {
+      newErrors.tiers = 'خطا: قیمت پله‌های بعدی باید کمتر از قیمت پایه باشد';
+    }
+
+    if (isBundleActive) {
+      if ((form.bundleItems ?? []).length < 2) {
+        newErrors.bundleItems = 'یک بسته باید حداقل شامل ۲ آیتم باشد';
+      } else if (form.bundleItems?.some((it) => !it.title.trim())) {
+        newErrors.bundleItems = 'نام تمام اقلام موجود در بسته الزامی است';
+      }
+      const totalValue = (form.bundleItems ?? []).reduce(
+        (acc, it) => acc + (it.price ?? it.priceToman ?? 0),
+        0,
+      );
+      if (totalValue > 0 && form.basePriceToman > totalValue) {
+        newErrors.basePriceToman = 'قیمت فروش پکیج نمی‌تواند بیشتر از مجموع ارزش اقلام باشد';
+      }
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -207,15 +291,15 @@ export default function ProductForm({
         ...form,
         categoryId: form.categoryId || null,
         unitsPerCarton: 1,
-        bundleSize: form.bundleSize ?? 1,
+        bundleSize: isBundleActive ? Math.max(1, (form.bundleItems ?? []).length) : 1,
         minOrderQuantity: form.minOrderQuantity ?? 1,
-        bundleLabel: form.bundleLabel?.trim() || null,
         bundleItems:
-          (form.bundleSize ?? 1) > 1 || ((form.bundleItems ?? []).length > 0)
+          isBundleActive && (form.bundleItems ?? []).length > 0
             ? (form.bundleItems?.filter((it) => it.title.trim()).map((it) => ({
                 ...it,
-                price: it.priceToman ?? it.price ?? 0,
-                priceToman: it.priceToman ?? it.price ?? 0,
+                description: it.description?.trim() || '',
+                price: it.price ?? it.priceToman ?? 0,
+                priceToman: it.price ?? it.priceToman ?? 0,
               })) ?? [])
             : null,
         allowBatchDiscount: form.allowBatchDiscount ?? true,
@@ -416,34 +500,12 @@ export default function ProductForm({
             <FormError message={fieldErrors.stock} />
           </label>
           <label className="block">
-            <span className={labelCls}>تعداد در بسته فروش (اگر تکفروشی است ۱ بگذارید)</span>
-            <input
-              type="number"
-              min={1}
-              value={form.bundleSize ?? 1}
-              onChange={(e) => update('bundleSize', Number(e.target.value) || 1)}
-              className={inputCls}
-            />
-          </label>
-          <label className="block">
             <span className={labelCls}>حداقل تعداد سفارش (MOQ)</span>
             <input
               type="number"
               min={1}
               value={form.minOrderQuantity ?? 1}
               onChange={(e) => update('minOrderQuantity', Number(e.target.value) || 1)}
-              className={inputCls}
-            />
-          </label>
-          <label className="block">
-            <span className={labelCls}>
-              نام بسته (مثلاً ست ۲ عددی) — فقط اگر تعداد بیشتر از ۱ است
-            </span>
-            <input
-              type="text"
-              value={form.bundleLabel ?? ''}
-              onChange={(e) => update('bundleLabel', e.target.value)}
-              placeholder="مثلاً ست ۲ عددی"
               className={inputCls}
             />
           </label>
@@ -470,266 +532,334 @@ export default function ProductForm({
         </div>
       </section>
 
-      {((form.bundleSize ?? 1) > 1 || (form.bundleItems ?? []).length > 0) && (
-        <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-sm font-black text-soil-900">تنظیمات بسته (Bundle)</h2>
-              <p className="mt-1 text-xs text-soil-700/60">
-                مشخصات اقلام داخل بسته و قیمت تک‌فروشی هر آیتم را برای شفافیت و محاسبه سود خریدار مشخص کنید.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                const current = form.bundleItems ?? [];
-                update('bundleItems', [
-                  ...current,
-                  {
-                    title: '',
-                    material: '',
-                    diameterCm: 0,
-                    heightCm: 0,
-                    weightGrams: 0,
-                    priceToman: 0,
-                    price: 0,
-                  },
-                ]);
-              }}
-              className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-black text-white transition hover:bg-flora-700"
-            >
-              + افزودن آیتم
-            </button>
+      <section className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-soil-900/10 pb-4">
+          <div>
+            <h2 className="text-sm font-black text-soil-900">تنظیمات بسته (Bundle)</h2>
+            <p className="mt-1 text-xs text-soil-700/60">
+              اگر این محصول شامل چند گلدان یا آیتم است و به عنوان یک پکیج فروخته می‌شود، این گزینه را فعال کنید.
+            </p>
           </div>
+          <label className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2.5 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
+            <input
+              type="checkbox"
+              checked={isBundleActive}
+              onChange={(e) => handleToggleBundle(e.target.checked)}
+              className="accent-flora-700 size-4"
+            />
+            این محصول یک بسته (Bundle) است
+          </label>
+        </div>
 
-          {/* Bundle Summary Box */}
-          <div className="mb-5 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4">
-            <div className="grid gap-3 sm:grid-cols-2 text-xs">
-              <div className="rounded-lg bg-white p-3 border border-soil-900/5">
-                <span className="text-soil-700/70 block mb-1">مجموع قیمت تک‌فروشی اقلام:</span>
-                <strong className="text-sm font-black text-soil-900">
-                  {formatToman(
-                    (form.bundleItems ?? []).reduce(
-                      (acc, it) => acc + (it.priceToman ?? it.price ?? 0),
-                      0,
-                    ),
-                  )}
-                </strong>
-              </div>
-              <div className="rounded-lg bg-white p-3 border border-soil-900/5">
-                <span className="text-soil-700/70 block mb-1">قیمت فروش کل بسته (قیمت پایه شما):</span>
-                <strong className="text-sm font-black text-flora-900">
-                  {formatToman((form.basePriceToman || 0) * (form.bundleSize || 1))}
-                </strong>
-              </div>
+        {isBundleActive && (
+          <div className="space-y-5">
+            <div className="max-w-xs">
+              <label className="block">
+                <span className={labelCls}>تعداد اقلام در بسته</span>
+                <div className="relative mt-1.5">
+                  <input
+                    type="number"
+                    readOnly
+                    value={(form.bundleItems ?? []).length}
+                    className="w-full rounded-xl border border-soil-900/10 bg-dust-100/70 px-3 py-2.5 text-sm font-bold text-soil-900 cursor-not-allowed outline-none"
+                  />
+                  <span className="absolute left-3 top-2.5 text-[11px] text-soil-700/60 select-none">
+                    محاسبه خودکار بر اساس اقلام
+                  </span>
+                </div>
+              </label>
             </div>
+
+            {(form.bundleItems ?? []).length < 2 && (
+              <div className="rounded-xl border border-amber-500/20 bg-amber-50/70 px-4 py-3 text-xs text-amber-900">
+                <span>⚠️ توجه: برای اینکه این محصول یک بسته معتبر باشد، باید حداقل ۲ آیتم به لیست زیر اضافه کنید.</span>
+              </div>
+            )}
+
+            {/* Live Summary Box */}
             {(() => {
-              const sum = (form.bundleItems ?? []).reduce(
-                (acc, it) => acc + (it.priceToman ?? it.price ?? 0),
+              const bundleItems = form.bundleItems ?? [];
+              const totalValue = bundleItems.reduce(
+                (acc, it) => acc + (it.price ?? it.priceToman ?? 0),
                 0,
               );
-              const pkgPrice = (form.basePriceToman || 0) * (form.bundleSize || 1);
-              const diff = sum - pkgPrice;
-              if (sum > 0 && diff > 0) {
-                const pct = Math.round((diff / sum) * 100);
-                return (
-                  <div className="mt-2.5 flex items-center gap-1.5 rounded-lg bg-emerald-100/80 px-3 py-1.5 text-xs font-bold text-emerald-800">
-                    <span>🌱</span>
-                    <span>صرفه‌جویی مشتری: {formatToman(diff)} ({toFa(pct)}٪ تخفیف روی کل بسته)</span>
+              const finalPrice = form.basePriceToman || 0;
+              const discount = totalValue - finalPrice;
+              const discountPercent =
+                totalValue > 0 && discount > 0 ? Math.round((discount / totalValue) * 100) : 0;
+              const isOverpriced = totalValue > 0 && finalPrice > totalValue;
+
+              return (
+                <div className="rounded-2xl border border-soil-900/10 bg-dust-50/80 p-5 space-y-4">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
+                      <span className="text-soil-700/70 block text-xs mb-1">مجموع ارزش اقلام:</span>
+                      <strong className="text-sm sm:text-base font-black text-soil-900">
+                        {formatToman(totalValue)}
+                      </strong>
+                    </div>
+                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
+                      <span className="text-soil-700/70 block text-xs mb-1">قیمت فروش نهایی:</span>
+                      <strong className="text-sm sm:text-base font-black text-flora-900">
+                        {formatToman(finalPrice)}
+                      </strong>
+                    </div>
+                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
+                      <span className="text-soil-700/70 block text-xs mb-1">تخفیف پکیج:</span>
+                      <strong
+                        className={`text-sm sm:text-base font-black ${
+                          discount >= 0 ? 'text-emerald-700' : 'text-red-700'
+                        }`}
+                      >
+                        {formatToman(Math.max(0, discount))}
+                      </strong>
+                    </div>
+                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
+                      <span className="text-soil-700/70 block text-xs mb-1">درصد تخفیف:</span>
+                      <strong className="text-sm sm:text-base font-black text-emerald-700">
+                        {toFa(discountPercent)}٪
+                      </strong>
+                    </div>
                   </div>
-                );
-              }
-              return null;
+
+                  {isOverpriced && (
+                    <div className="flex items-center gap-2 rounded-xl bg-red-100/90 px-4 py-2.5 text-xs font-bold text-red-800 border border-red-200">
+                      <span>⚠️</span>
+                      <span>قیمت فروش پکیج نمی‌تواند بیشتر از مجموع ارزش اقلام باشد.</span>
+                    </div>
+                  )}
+
+                  {form.tiers.some((t) => t.minQuantity > 1 && t.unitPriceToman > form.basePriceToman) && (
+                    <div className="flex items-center gap-2 rounded-xl bg-red-100/90 px-4 py-2.5 text-xs font-bold text-red-800 border border-red-200">
+                      <span>⚠️</span>
+                      <span>خطا: قیمت پله‌های بعدی باید کمتر از قیمت پایه باشد.</span>
+                    </div>
+                  )}
+                </div>
+              );
             })()}
-          </div>
 
-          <div className="space-y-4">
-            {(form.bundleItems ?? []).map((item, idx) => (
-              <div
-                key={idx}
-                className="rounded-xl border border-soil-900/10 bg-dust-50 p-4 space-y-3"
+            {/* Repeater Header */}
+            <div className="flex items-center justify-between pt-2">
+              <div>
+                <h3 className="text-xs font-bold text-soil-900">
+                  محتویات بسته ({toFa((form.bundleItems ?? []).length)} آیتم)
+                </h3>
+                <p className="mt-0.5 text-[11px] text-soil-700/60">
+                  مشخصات هر گلدان یا آیتم موجود در این پکیج را وارد کنید.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddBundleItem}
+                className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-black text-white transition hover:bg-flora-700"
               >
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-xs font-bold text-soil-900">آیتم شماره {toFa(idx + 1)}</span>
-                    {catalogProducts.length > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <label className="text-[11px] text-soil-700/70">تکمیل از محصولات:</label>
-                        <select
-                          value={item.productId ?? ''}
-                          onChange={(e) => {
-                            const selectedId = e.target.value;
-                            const prod = catalogProducts.find((p) => p.id === selectedId);
-                            const next = [...(form.bundleItems ?? [])];
-                            if (prod) {
-                              next[idx] = {
-                                ...next[idx],
-                                productId: prod.id,
-                                title: prod.name,
-                                material: prod.material,
-                                diameterCm: prod.diameterCm,
-                                heightCm: prod.heightCm,
-                                weightGrams: prod.weightGrams,
-                                priceToman: prod.basePriceToman,
-                                price: prod.basePriceToman,
-                              };
-                            } else {
-                              next[idx] = {
-                                ...next[idx],
-                                productId: undefined,
-                              };
-                            }
-                            update('bundleItems', next);
-                          }}
-                          className="rounded-lg border border-soil-900/15 bg-white px-2 py-1 text-xs text-soil-900 outline-none focus:border-flora-500"
-                        >
-                          <option value="">-- انتخاب گلدان از فروشگاه --</option>
-                          {catalogProducts.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {p.name} ({formatToman(p.basePriceToman)})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
+                + افزودن آیتم
+              </button>
+            </div>
+            <FormError message={fieldErrors.bundleItems} />
+
+            {/* Repeater List */}
+            <div className="space-y-4">
+              {(form.bundleItems ?? []).map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl border border-soil-900/10 bg-dust-50/70 p-4 space-y-3"
+                >
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span className="text-xs font-bold text-soil-900">آیتم شماره {toFa(idx + 1)}</span>
+                      {catalogProducts.length > 0 && (
+                        <div className="flex items-center gap-1.5">
+                          <label className="text-[11px] text-soil-700/70">تکمیل از محصولات:</label>
+                          <select
+                            value={item.productId ?? ''}
+                            onChange={(e) => {
+                              const selectedId = e.target.value;
+                              const prod = catalogProducts.find((p) => p.id === selectedId);
+                              const next = [...(form.bundleItems ?? [])];
+                              if (prod) {
+                                next[idx] = {
+                                  ...next[idx],
+                                  productId: prod.id,
+                                  title: prod.name,
+                                  material: prod.material,
+                                  diameterCm: prod.diameterCm,
+                                  heightCm: prod.heightCm,
+                                  weightGrams: prod.weightGrams,
+                                  price: prod.basePriceToman,
+                                  priceToman: prod.basePriceToman,
+                                };
+                              } else {
+                                next[idx] = {
+                                  ...next[idx],
+                                  productId: undefined,
+                                };
+                              }
+                              update('bundleItems', next);
+                            }}
+                            className="rounded-lg border border-soil-900/15 bg-white px-2 py-1 text-xs text-soil-900 outline-none focus:border-flora-500"
+                          >
+                            <option value="">-- انتخاب گلدان از فروشگاه --</option>
+                            {catalogProducts.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name} ({formatToman(p.basePriceToman)})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveBundleItem(idx)}
+                      className="rounded-lg px-2.5 py-1 text-xs font-bold text-red-600 hover:bg-red-50 transition"
+                    >
+                      حذف آیتم
+                    </button>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = (form.bundleItems ?? []).filter((_, i) => i !== idx);
-                      update('bundleItems', next);
-                    }}
-                    className="rounded-lg px-2.5 py-1 text-xs font-bold text-red-600 hover:bg-red-50 transition"
-                  >
-                    حذف آیتم
-                  </button>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                    <label className="block sm:col-span-2">
+                      <span className="text-xs font-medium text-soil-700/80">نام آیتم / گلدان *</span>
+                      <input
+                        type="text"
+                        placeholder="مثلاً گلدان استوانه‌ای سایز ۱"
+                        value={item.title}
+                        onChange={(e) => {
+                          const next = [...(form.bundleItems ?? [])];
+                          next[idx] = { ...next[idx], title: e.target.value };
+                          update('bundleItems', next);
+                        }}
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                      />
+                    </label>
+
+                    <label className="block sm:col-span-2">
+                      <span className="text-xs font-medium text-soil-700/80">توضیحات کوتاه آیتم</span>
+                      <input
+                        type="text"
+                        placeholder="مثلاً لعاب براق دست‌ساز"
+                        value={item.description ?? ''}
+                        onChange={(e) => {
+                          const next = [...(form.bundleItems ?? [])];
+                          next[idx] = { ...next[idx], description: e.target.value };
+                          update('bundleItems', next);
+                        }}
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                      />
+                    </label>
+
+                    <label className="block sm:col-span-2">
+                      <span className="text-xs font-medium text-soil-700/80">قیمت تک‌فروشی این آیتم (تومان)</span>
+                      <input
+                        type="number"
+                        step="1000"
+                        min="0"
+                        placeholder="مثلاً ۱۲۰۰۰۰"
+                        value={item.price || item.priceToman || ''}
+                        onChange={(e) => {
+                          const next = [...(form.bundleItems ?? [])];
+                          const p = Math.max(0, Math.floor(Number(e.target.value) || 0));
+                          next[idx] = {
+                            ...next[idx],
+                            price: p,
+                            priceToman: p,
+                          };
+                          update('bundleItems', next);
+                        }}
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="text-xs font-medium text-soil-700/80">متریال</span>
+                      <input
+                        type="text"
+                        placeholder="مثلاً سفال"
+                        value={item.material ?? ''}
+                        onChange={(e) => {
+                          const next = [...(form.bundleItems ?? [])];
+                          next[idx] = { ...next[idx], material: e.target.value };
+                          update('bundleItems', next);
+                        }}
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="text-xs font-medium text-soil-700/80">قطر (cm)</span>
+                      <input
+                        type="number"
+                        step="0.5"
+                        min="0"
+                        placeholder="قطر"
+                        value={item.diameterCm || ''}
+                        onChange={(e) => {
+                          const next = [...(form.bundleItems ?? [])];
+                          next[idx] = {
+                            ...next[idx],
+                            diameterCm: Math.max(0, Number(e.target.value) || 0),
+                          };
+                          update('bundleItems', next);
+                        }}
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="text-xs font-medium text-soil-700/80">ارتفاع (cm)</span>
+                      <input
+                        type="number"
+                        step="0.5"
+                        min="0"
+                        placeholder="ارتفاع"
+                        value={item.heightCm || ''}
+                        onChange={(e) => {
+                          const next = [...(form.bundleItems ?? [])];
+                          next[idx] = {
+                            ...next[idx],
+                            heightCm: Math.max(0, Number(e.target.value) || 0),
+                          };
+                          update('bundleItems', next);
+                        }}
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="text-xs font-medium text-soil-700/80">وزن (گرم)</span>
+                      <input
+                        type="number"
+                        step="1"
+                        min="0"
+                        placeholder="وزن"
+                        value={item.weightGrams || ''}
+                        onChange={(e) => {
+                          const next = [...(form.bundleItems ?? [])];
+                          next[idx] = {
+                            ...next[idx],
+                            weightGrams: Math.max(0, Math.floor(Number(e.target.value) || 0)),
+                          };
+                          update('bundleItems', next);
+                        }}
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                      />
+                    </label>
+                  </div>
                 </div>
+              ))}
 
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
-                  <label className="block sm:col-span-2 lg:col-span-2">
-                    <span className="text-xs font-medium text-soil-700/80">نام گلدان</span>
-                    <input
-                      type="text"
-                      placeholder="مثلاً گلدان استوانه‌ای سایز ۱"
-                      value={item.title}
-                      onChange={(e) => {
-                        const next = [...(form.bundleItems ?? [])];
-                        next[idx] = { ...next[idx], title: e.target.value };
-                        update('bundleItems', next);
-                      }}
-                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-xs font-medium text-soil-700/80">قیمت خرید تکی (تومان)</span>
-                    <input
-                      type="number"
-                      step="1000"
-                      min="0"
-                      placeholder="مثلاً ۱۲۰۰۰۰"
-                      value={item.priceToman || item.price || ''}
-                      onChange={(e) => {
-                        const next = [...(form.bundleItems ?? [])];
-                        const p = Math.max(0, Math.floor(Number(e.target.value) || 0));
-                        next[idx] = {
-                          ...next[idx],
-                          priceToman: p,
-                          price: p,
-                        };
-                        update('bundleItems', next);
-                      }}
-                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-xs font-medium text-soil-700/80">متریال</span>
-                    <input
-                      type="text"
-                      placeholder="مثلاً سفال"
-                      value={item.material ?? ''}
-                      onChange={(e) => {
-                        const next = [...(form.bundleItems ?? [])];
-                        next[idx] = { ...next[idx], material: e.target.value };
-                        update('bundleItems', next);
-                      }}
-                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-xs font-medium text-soil-700/80">قطر (cm)</span>
-                    <input
-                      type="number"
-                      step="0.5"
-                      min="0"
-                      placeholder="قطر"
-                      value={item.diameterCm || ''}
-                      onChange={(e) => {
-                        const next = [...(form.bundleItems ?? [])];
-                        next[idx] = {
-                          ...next[idx],
-                          diameterCm: Math.max(0, Number(e.target.value) || 0),
-                        };
-                        update('bundleItems', next);
-                      }}
-                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-xs font-medium text-soil-700/80">ارتفاع (cm)</span>
-                    <input
-                      type="number"
-                      step="0.5"
-                      min="0"
-                      placeholder="ارتفاع"
-                      value={item.heightCm || ''}
-                      onChange={(e) => {
-                        const next = [...(form.bundleItems ?? [])];
-                        next[idx] = {
-                          ...next[idx],
-                          heightCm: Math.max(0, Number(e.target.value) || 0),
-                        };
-                        update('bundleItems', next);
-                      }}
-                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-xs font-medium text-soil-700/80">وزن (گرم)</span>
-                    <input
-                      type="number"
-                      step="1"
-                      min="0"
-                      placeholder="وزن"
-                      value={item.weightGrams || ''}
-                      onChange={(e) => {
-                        const next = [...(form.bundleItems ?? [])];
-                        next[idx] = {
-                          ...next[idx],
-                          weightGrams: Math.max(0, Math.floor(Number(e.target.value) || 0)),
-                        };
-                        update('bundleItems', next);
-                      }}
-                      className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
-                    />
-                  </label>
-                </div>
-              </div>
-            ))}
-
-            {(form.bundleItems ?? []).length === 0 && (
-              <p className="text-xs text-soil-700/50">
-                هنوز آیتمی به محتویات بسته اضافه نشده است. برای تعریف اقلام دکمه «+ افزودن آیتم» را بزنید.
-              </p>
-            )}
+              {(form.bundleItems ?? []).length === 0 && (
+                <p className="text-xs text-soil-700/50">
+                  هنوز آیتمی به محتویات بسته اضافه نشده است. برای تعریف اقلام دکمه «+ افزودن آیتم» را بزنید.
+                </p>
+              )}
+            </div>
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <h2 className="mb-2 text-sm font-black text-soil-900">ویژگی‌های نمایشی</h2>
@@ -966,8 +1096,10 @@ export default function ProductForm({
           </label>
         </div>
 
-        <label className="block max-w-xs">
-          <span className={labelCls}>قیمت پایه (تومان) *</span>
+        <label className="block max-w-sm">
+          <span className={labelCls}>
+            {isBundleActive ? 'قیمت فروش نهایی این پکیج (تومان) *' : 'قیمت هر عدد (تومان) *'}
+          </span>
           <input
             type="number"
             value={form.basePriceToman}
@@ -975,19 +1107,35 @@ export default function ProductForm({
             min={1000}
             className={fieldCls(fieldErrors.basePriceToman)}
           />
+          {form.basePriceToman >= 1000 && (
+            <span className="block mt-1.5 text-xs text-soil-700/80 font-medium">
+              {formatToman(form.basePriceToman)} ({numberToWordsFa(form.basePriceToman)} تومان)
+            </span>
+          )}
           <FormError message={fieldErrors.basePriceToman} />
         </label>
 
         {(form.allowBatchDiscount ?? true) && (
           <div className="pt-2">
-            <div className="mb-3">
+            <div className="mb-3 space-y-1">
               <h3 className="text-xs font-bold text-soil-900">
                 پله‌های قیمت عمده و بسته‌ای (تومان)
               </h3>
-              <p className="mt-0.5 text-[11px] text-soil-700/60">
+              <p className="text-[11px] text-soil-700/60">
                 تعیین حداقل تعداد و قیمت واحد برای هر سطح خرید
               </p>
+              <p className="mt-1 text-xs font-semibold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200/60 inline-block">
+                💡 قیمت‌ها باید با افزایش تعداد، کاهش پیدا کنند (تخفیف عمده).
+              </p>
             </div>
+
+            {form.tiers.some((t) => t.minQuantity > 1 && t.unitPriceToman > form.basePriceToman) && (
+              <div className="mb-3 flex items-center gap-2 rounded-xl border border-red-300 bg-red-100/90 px-4 py-2.5 text-xs font-bold text-red-800">
+                <span>⚠️</span>
+                <span>خطا: قیمت پله‌های بعدی باید کمتر از قیمت پایه باشد.</span>
+              </div>
+            )}
+
             <div className="space-y-3">
               {form.tiers.map((t, i) => (
                 <div key={i} className="grid gap-3 sm:grid-cols-3">
@@ -1001,13 +1149,20 @@ export default function ProductForm({
                     />
                   </label>
                   <label className="block">
-                    <span className={labelCls}>قیمت هر عدد</span>
+                    <span className={labelCls}>
+                      {isBundleActive ? 'قیمت هر بسته در این پله' : 'قیمت هر عدد'}
+                    </span>
                     <input
                       type="number"
                       value={t.unitPriceToman}
                       onChange={(e) => updateTier(i, { unitPriceToman: Number(e.target.value) })}
                       className={inputCls}
                     />
+                    {t.unitPriceToman >= 1000 && (
+                      <span className="block mt-1 text-[11px] text-soil-700/60 font-medium">
+                        ({numberToWordsFa(t.unitPriceToman)} تومان)
+                      </span>
+                    )}
                   </label>
                   <label className="block">
                     <span className={labelCls}>برچسب</span>

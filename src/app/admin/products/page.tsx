@@ -52,6 +52,11 @@ export default async function AdminProductsPage() {
               <div className="min-w-0 flex-1">
                 <p className="truncate font-bold text-soil-900">{p.name}</p>
                 <div className="mt-1 flex flex-wrap gap-1.5">
+                  {p.bundleSize > 1 && (
+                    <span className="rounded-full bg-flora-100 px-2 py-0.5 text-[10px] font-bold text-flora-800">
+                      ست {toFa(p.bundleSize)} عددی
+                    </span>
+                  )}
                   {p.tags.slice(0, 3).map((entry) => (
                     <span key={entry.tag.id} className="rounded-full bg-dust-100 px-2 py-0.5 text-[10px] font-bold text-soil-700">
                       {entry.tag.name}

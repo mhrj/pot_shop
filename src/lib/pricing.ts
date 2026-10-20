@@ -1,4 +1,5 @@
 import type { BundleItem } from './product-features';
+import { toFa } from './format';
 
 /**
  * Tiered pricing engine -- the single source of truth for price.
@@ -105,7 +106,6 @@ type PriceInput = {
     weightGrams: number;
     unitsPerCarton?: number;
     bundleSize?: number;
-    bundleLabel?: string | null;
     bundleItems?: BundleItem[] | null;
     images?: { url: string }[];
     allowBatchDiscount?: boolean;
@@ -116,17 +116,23 @@ type PriceInput = {
 
 export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine {
   const bundleSize = Math.max(1, product.bundleSize ?? 1);
+  const isBundle = bundleSize > 1;
   const qty = Math.max(bundleSize, Math.floor(quantity));
   const allowBatch = product.allowBatchDiscount !== false;
 
-  const listUnitToman = product.basePriceToman;
+  const bundleCount = isBundle ? Math.max(1, Math.round(qty / bundleSize)) : qty;
+  const baseUnitPrice = Math.round(product.basePriceToman / bundleSize);
+  const listUnitToman = baseUnitPrice;
   const lineWeightGrams = product.weightGrams * qty;
   const cartons = Math.ceil(qty / Math.max(1, product.unitsPerCarton ?? 1));
+  const bundleLabel = isBundle ? `ست ${toFa(bundleSize)} عددی` : null;
 
-  // If allowBatchDiscount is false, the unit price MUST ALWAYS be product.basePriceToman
-  // regardless of quantity. resolveTier is not used.
+  // If allowBatchDiscount is false, unit price is baseUnitPrice and user is charged for number of bundles
   if (!allowBatch) {
-    const lineTotalToman = listUnitToman * qty;
+    const lineTotalToman = isBundle
+      ? Math.round(product.basePriceToman * (qty / bundleSize))
+      : listUnitToman * qty;
+
     return {
       productId: product.id,
       slug: product.slug,
@@ -134,7 +140,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
       imageUrl: product.images?.[0]?.url ?? null,
       quantity: qty,
       bundleSize,
-      bundleLabel: product.bundleLabel ?? null,
+      bundleLabel,
       bundleItems: product.bundleItems ?? null,
       listUnitToman,
       unitToman: listUnitToman,
@@ -147,6 +153,43 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
       cartons,
       tierLabel: 'خرده',
       nextTier: null,
+    };
+  }
+
+  // With allowBatchDiscount enabled:
+  if (isBundle) {
+    const tier = resolveTier(
+      tiers.length ? tiers : [{ minQuantity: 1, unitPriceToman: product.basePriceToman }],
+      bundleCount,
+    );
+    const packagePrice = tier.unitPriceToman;
+    const lineTotalToman = packagePrice * bundleCount;
+    const unitToman = Math.round(packagePrice / bundleSize);
+    const fullListTotal = product.basePriceToman * bundleCount;
+    const lineSavingsToman = Math.max(0, fullListTotal - lineTotalToman);
+    const savingsPercent =
+      fullListTotal > 0 ? Math.round((lineSavingsToman / fullListTotal) * 100) : 0;
+
+    return {
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      imageUrl: product.images?.[0]?.url ?? null,
+      quantity: qty,
+      bundleSize,
+      bundleLabel,
+      bundleItems: product.bundleItems ?? null,
+      listUnitToman,
+      unitToman,
+      lineTotalToman,
+      lineSavingsToman,
+      savingsPercent,
+      weightGrams: product.weightGrams,
+      lineWeightGrams,
+      unitsPerCarton: product.unitsPerCarton ?? 1,
+      cartons,
+      tierLabel: tier.label ?? CHANNEL_LABEL[resolveChannel(qty)],
+      nextTier: nextTierHint(tiers, bundleCount),
     };
   }
 
@@ -170,7 +213,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
     imageUrl: product.images?.[0]?.url ?? null,
     quantity: qty,
     bundleSize,
-    bundleLabel: product.bundleLabel ?? null,
+    bundleLabel,
     bundleItems: product.bundleItems ?? null,
     listUnitToman,
     unitToman,

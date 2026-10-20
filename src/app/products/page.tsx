@@ -375,7 +375,11 @@ export default async function ProductsPage({ searchParams }: Props) {
                           <div className="text-xl font-black text-flora-900">
                             {formatToman(bestTier.unitPriceToman)}
                           </div>
-                          <div className="text-[11px] text-soil-700/60">از {toFa(bestTier.minQuantity)} عدد</div>
+                          <div className="text-[11px] text-soil-700/60">
+                            {product.bundleSize > 1
+                              ? `ست ${toFa(product.bundleSize)} عددی`
+                              : `از ${toFa(bestTier.minQuantity)} عدد`}
+                          </div>
                         </div>
                         <span className="rounded-full bg-dust-100 px-3 py-1 text-[10px] font-bold text-soil-700">
                           {bestTier.label ?? 'خرده'}
