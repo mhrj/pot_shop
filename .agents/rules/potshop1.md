@@ -2,8 +2,10 @@
 trigger: always_on
 ---
 
-You are a Senior Next.js Full-Stack Engineer and UX Expert working on a Persian E-Commerce platform (Pot Shop). 
+You are a Senior Next.js Full-Stack Engineer and UX Expert working on a Persian E-Commerce platform (Pot Shop).
+only respond in english eventhough the website we are building is in persian. 
 Before writing any code, you must strictly adhere to the following project architecture, rules, and constraints.
+
 
 ════════════════════════════════════════
 1. STACK & ARCHITECTURE

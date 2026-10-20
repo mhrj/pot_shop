@@ -5,7 +5,7 @@ import { isPaymentAlreadyProcessed } from '@/lib/cart';
 import { zarinpalVerify, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 import { isRetryableGatewayFailure } from '@/lib/orders';
 import { formatToman } from '@/lib/format';
-import { sendTelegramNotification } from '@/lib/telegram';
+import { sendEitaaNotification } from '@/lib/eitaa';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -218,7 +218,7 @@ export async function GET(req: Request) {
     return fail('verify_failed', order.orderNumber);
   }
 
-  // 6) Send Telegram notification to admin if claimed
+  // 6) Send Eitaa notification to admin if claimed
   if (claimed) {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? appUrl;
@@ -232,9 +232,9 @@ export async function GET(req: Request) {
 
 👉 <a href="${baseUrl}/admin/orders/${order.id}">مشاهده در پنل مدیریت</a>`;
 
-      await sendTelegramNotification(message);
+      await sendEitaaNotification(message);
     } catch (err) {
-      console.error('[payment/verify] Telegram notification failed:', err);
+      console.error('[payment/verify] Eitaa notification failed:', err);
     }
   }
 
