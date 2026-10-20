@@ -50,9 +50,10 @@ export type SalesPoint = {
   orderCount: number;
 };
 
-const faDayMonth = new Intl.DateTimeFormat('fa-IR', {
+const faDayMonth = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
   month: '2-digit',
   day: '2-digit',
+  timeZone: 'Asia/Tehran',
 });
 
 /**

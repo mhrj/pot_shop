@@ -58,6 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       lang="fa"
       dir="rtl"
       className={`${vazirmatn.variable} scroll-smooth antialiased`}
+      suppressHydrationWarning
     >
       {/* `min-h-dvh` + `flex-col` and a `flex-1` wrapper around the page content
           keep the footer pinned to the bottom of the viewport. Without the

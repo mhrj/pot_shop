@@ -21,11 +21,19 @@ export function formatWeight(grams: number): string {
   return `${toFa(grams)} گرم`;
 }
 
-export function formatDateFa(date: Date | string): string {
-  return new Intl.DateTimeFormat('fa-IR', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(date));
+export function formatDateFa(date?: Date | string | null): string {
+  if (!date) return '—';
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '—';
+    return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone: 'Asia/Tehran',
+    }).format(d);
+  } catch {
+    return '—';
+  }
 }
 
 export function orderNumberFa(n: string) {

@@ -24,7 +24,7 @@ const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput
   const [visible, setVisible] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative" dir="ltr">
       <input
         {...props}
         ref={ref}
