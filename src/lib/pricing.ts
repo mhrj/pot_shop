@@ -40,6 +40,7 @@ export type PricedLine = {
     unitPriceToman: number;
     saveMoreToman: number;
   } | null;
+  colorData?: any | null;
 };
 
 export type CartTotals = {
@@ -112,9 +113,10 @@ type PriceInput = {
   };
   tiers: Tier[];
   quantity: number;
+  colorData?: any | null;
 };
 
-export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine {
+export function priceLine({ product, tiers, quantity, colorData }: PriceInput): PricedLine {
   const bundleSize = Math.max(1, product.bundleSize ?? 1);
   const isBundle = bundleSize > 1;
   const qty = Math.max(bundleSize, Math.floor(quantity));
@@ -153,6 +155,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
       cartons,
       tierLabel: 'خرده',
       nextTier: null,
+      colorData: colorData ?? null,
     };
   }
 
@@ -190,6 +193,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
       cartons,
       tierLabel: tier.label ?? CHANNEL_LABEL[resolveChannel(qty)],
       nextTier: nextTierHint(tiers, bundleCount),
+      colorData: colorData ?? null,
     };
   }
 
@@ -226,6 +230,7 @@ export function priceLine({ product, tiers, quantity }: PriceInput): PricedLine 
     cartons,
     tierLabel: tier.label ?? CHANNEL_LABEL[resolveChannel(qty)],
     nextTier: nextTierHint(tiers, qty),
+    colorData: colorData ?? null,
   };
 }
 

@@ -18,6 +18,7 @@ export type ProductFormData = {
   categoryId?: string | null;
   material: string;
   color: string;
+  colorOptions?: string[];
   diameterCm: number;
   heightCm: number;
   weightGrams: number;
@@ -62,10 +63,12 @@ export default function ProductForm({
   initial,
   knownLabels,
   catalogProducts = [],
+  categories: initialCategories,
 }: {
   initial: ProductFormData;
   knownLabels: string[];
   catalogProducts?: CatalogProductOption[];
+  categories?: Array<{ id: string; name: string }>;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -74,14 +77,18 @@ export default function ProductForm({
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
-  const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>(
+    initialCategories ?? [],
+  );
   const [featureInput, setFeatureInput] = useState('');
+  const [newColorHex, setNewColorHex] = useState('#8B8B8B');
   const [form, setForm] = useState<ProductFormData>({
     ...initial,
     categoryId: initial.categoryId ?? '',
     unitsPerCarton: 1,
     bundleSize: initial.bundleSize ?? 1,
     bundleItems: initial.bundleItems ?? [],
+    colorOptions: initial.colorOptions ?? [],
     allowBatchDiscount: initial.allowBatchDiscount ?? true,
   });
 
@@ -211,6 +218,40 @@ export default function ProductForm({
     update('features', form.features.filter((_, j) => j !== i));
   }
 
+  function handleAddColor(hex: string) {
+    const formatted = hex.trim().toUpperCase();
+    const withHash = formatted.startsWith('#') ? formatted : `#${formatted}`;
+    if (!/^#([0-9A-F]{3}|[0-9A-F]{6})$/.test(withHash)) return;
+    const current = form.colorOptions ?? [];
+    if (current.includes(withHash)) return;
+    update('colorOptions', [...current, withHash]);
+  }
+
+  function handleRemoveColor(index: number) {
+    const current = form.colorOptions ?? [];
+    update('colorOptions', current.filter((_, i) => i !== index));
+  }
+
+  function handleAddBundleItemColor(itemIdx: number, hex: string) {
+    const formatted = hex.trim().toUpperCase();
+    const withHash = formatted.startsWith('#') ? formatted : `#${formatted}`;
+    if (!/^#([0-9A-F]{3}|[0-9A-F]{6})$/.test(withHash)) return;
+    const items = [...(form.bundleItems ?? [])];
+    const item = items[itemIdx];
+    const current = item.colorOptions ?? [];
+    if (current.includes(withHash)) return;
+    items[itemIdx] = { ...item, colorOptions: [...current, withHash] };
+    update('bundleItems', items);
+  }
+
+  function handleRemoveBundleItemColor(itemIdx: number, colorIdx: number) {
+    const items = [...(form.bundleItems ?? [])];
+    const item = items[itemIdx];
+    const current = item.colorOptions ?? [];
+    items[itemIdx] = { ...item, colorOptions: current.filter((_, i) => i !== colorIdx) };
+    update('bundleItems', items);
+  }
+
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -300,8 +341,10 @@ export default function ProductForm({
                 description: it.description?.trim() || '',
                 price: it.price ?? it.priceToman ?? 0,
                 priceToman: it.price ?? it.priceToman ?? 0,
+                colorOptions: it.colorOptions ?? [],
               })) ?? [])
             : null,
+        colorOptions: form.colorOptions ?? [],
         allowBatchDiscount: form.allowBatchDiscount ?? true,
         tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
@@ -408,13 +451,20 @@ export default function ProductForm({
               }}
               className={inputCls}
             >
-              <option value="">انتخاب دسته‌بندی…</option>
+              <option value="">
+                {allCategories.length === 0 ? 'ابتدا یک دسته‌بندی ایجاد کنید.' : 'انتخاب دسته‌بندی…'}
+              </option>
               {allCategories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
               ))}
             </select>
+            {allCategories.length === 0 && (
+              <p className="mt-1.5 text-xs text-amber-700 font-medium">
+                ابتدا یک دسته‌بندی ایجاد کنید.
+              </p>
+            )}
           </label>
 
           <label className="block">
@@ -529,6 +579,65 @@ export default function ProductForm({
             />
             نمایش در صفحه اصلی
           </label>
+        </div>
+
+        {/* Color Options Repeater for single product */}
+        <div className="mt-6 border-t border-soil-900/10 pt-4">
+          <label className="block">
+            <span className={labelCls}>گزینه‌های رنگ (کدهای رنگی انتخابی مشتری)</span>
+            <span className="block mt-0.5 text-xs text-soil-700/60">
+              اگر این محصول در رنگ‌های متنوع عرضه می‌شود، کدهای رنگ (Hex) را اضافه کنید تا مشتری هنگام خرید بتواند رنگ را انتخاب کند.
+            </span>
+          </label>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <input
+              type="color"
+              value={newColorHex}
+              onChange={(e) => setNewColorHex(e.target.value)}
+              className="size-10 cursor-pointer rounded-xl border border-soil-900/15 p-1 bg-white"
+              title="انتخاب رنگ"
+            />
+            <input
+              type="text"
+              value={newColorHex}
+              onChange={(e) => setNewColorHex(e.target.value)}
+              placeholder="#FFFFFF"
+              dir="ltr"
+              className="w-28 rounded-xl border border-soil-900/15 px-3 py-2 text-sm font-mono outline-none focus:border-flora-500"
+            />
+            <button
+              type="button"
+              onClick={() => handleAddColor(newColorHex)}
+              className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700"
+            >
+              + افزودن رنگ
+            </button>
+          </div>
+
+          {(form.colorOptions ?? []).length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(form.colorOptions ?? []).map((hex, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-1.5 text-xs shadow-2xs"
+                >
+                  <span
+                    className="size-5 rounded-full border border-soil-900/20 shadow-xs"
+                    style={{ backgroundColor: hex }}
+                  />
+                  <span className="font-mono text-soil-900 dir-ltr font-medium">{hex}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveColor(i)}
+                    className="text-red-500 hover:text-red-700 text-base font-bold leading-none px-1"
+                    title="حذف رنگ"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -847,6 +956,62 @@ export default function ProductForm({
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </label>
+
+                    {/* Bundle Item Color Options */}
+                    <div className="col-span-full border-t border-soil-900/10 pt-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-soil-900">
+                          رنگ‌های این آیتم ({toFa((item.colorOptions ?? []).length)} رنگ)
+                        </span>
+                        <span className="text-[11px] text-soil-700/60">
+                          مشتری در صفحه محصول می‌تواند برای این آیتم از بین این رنگ‌ها انتخاب کند.
+                        </span>
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <input
+                          type="color"
+                          defaultValue="#8B8B8B"
+                          id={`bundle-color-picker-${idx}`}
+                          className="size-8 cursor-pointer rounded-lg border border-soil-900/15 p-0.5 bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.getElementById(
+                              `bundle-color-picker-${idx}`,
+                            ) as HTMLInputElement | null;
+                            if (input) handleAddBundleItemColor(idx, input.value);
+                          }}
+                          className="rounded-lg bg-soil-900 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-soil-800 transition"
+                        >
+                          + افزودن رنگ به این آیتم
+                        </button>
+                      </div>
+                      {(item.colorOptions ?? []).length > 0 && (
+                        <div className="mt-2.5 flex flex-wrap gap-2">
+                          {(item.colorOptions ?? []).map((cHex, cIdx) => (
+                            <div
+                              key={cIdx}
+                              className="flex items-center gap-1.5 rounded-lg border border-soil-900/10 bg-white px-2 py-1 text-[11px]"
+                            >
+                              <span
+                                className="size-4 rounded-full border border-soil-900/20 shadow-xs"
+                                style={{ backgroundColor: cHex }}
+                              />
+                              <span className="font-mono text-soil-900 dir-ltr">{cHex}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveBundleItemColor(idx, cIdx)}
+                                className="text-red-500 hover:text-red-700 font-bold px-0.5 text-xs"
+                                title="حذف"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

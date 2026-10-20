@@ -154,6 +154,7 @@ export async function POST(req: Request) {
           lineTotalToman: l.lineTotalToman,
           lineSavingsToman: l.lineSavingsToman,
           tierLabel: l.tierLabel,
+          colorData: l.colorData ?? null,
         })),
       },
     },

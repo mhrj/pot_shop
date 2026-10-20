@@ -54,6 +54,7 @@ export async function getCartTotals(userId: string): Promise<CartTotals> {
           }),
         ),
         quantity: i.quantity,
+        colorData: i.colorData,
       })),
   );
 }
@@ -62,6 +63,7 @@ export async function addToCart(
   userId: string,
   productId: string,
   quantity: number,
+  colorData?: any,
 ) {
   const product = await prisma.product.findFirst({
     where: { id: productId, isActive: true },
@@ -108,8 +110,8 @@ export async function addToCart(
 
   return prisma.cartItem.upsert({
     where: { userId_productId: { userId, productId } },
-    update: { quantity: target },
-    create: { userId, productId, quantity: target },
+    update: { quantity: target, ...(colorData !== undefined ? { colorData } : {}) },
+    create: { userId, productId, quantity: target, colorData },
   });
 }
 

@@ -112,6 +112,7 @@ async function main() {
           heightCm: 18,
           weightGrams: 800,
           price: 90000,
+          colorOptions: ['#C86A4B', '#8D5B4C', '#E0A899'],
         },
         {
           title: 'گلدان سفالی تراکوتا ۱۵cm',
@@ -121,6 +122,7 @@ async function main() {
           heightCm: 14,
           weightGrams: 600,
           price: 75000,
+          colorOptions: ['#C86A4B', '#4A3525', '#F5EBE6'],
         },
       ],
       basePriceToman: 150000,
@@ -135,6 +137,7 @@ async function main() {
         'سرامیک لعاب‌دار سطح براق و مقاوم دارد و رطوبت را بیشتر در خاک نگه می‌دارد. مناسب گیاهان رطوبت‌دوست مثل سرخس و کالاتیا.',
       material: 'سرامیک',
       color: 'سفید',
+      colorOptions: ['#FFFFFF', '#1A1A1A', '#2E7D32', '#D32F2F', '#0288D1', '#F57C00', '#7B1FA2', '#FBC02D'],
       diameterCm: 24,
       heightCm: 22,
       weightGrams: 1900,
@@ -154,6 +157,7 @@ async function main() {
         'گلدان بتنی با تراکم بالا، مقاوم به سرما و مناسب فضای باز. برای بالکن، تراس و پروژه‌های محوطه‌سازی.',
       material: 'بتن',
       color: 'خاکستری',
+      colorOptions: ['#808080', '#D3D3D3', '#333333'],
       diameterCm: 30,
       heightCm: 28,
       weightGrams: 4500,
@@ -178,6 +182,7 @@ async function main() {
         categoryId,
         bundleSize: p.bundleSize ?? 1,
         bundleItems: p.bundleItems ?? undefined,
+        colorOptions: p.colorOptions ?? undefined,
         allowBatchDiscount: true,
       },
       create: {
@@ -185,6 +190,7 @@ async function main() {
         categoryId,
         bundleSize: p.bundleSize ?? 1,
         bundleItems: p.bundleItems ?? undefined,
+        colorOptions: p.colorOptions ?? undefined,
         allowBatchDiscount: true,
         images: {
           create: [

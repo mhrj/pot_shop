@@ -7,6 +7,7 @@ import { formatToman, formatWeight, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import { nextTierHint, resolveTier, type Tier } from '@/lib/pricing';
 import type { BundleItem } from '@/lib/product-features';
+import { useProductColor } from './ProductColorContext';
 
 type Props = {
   product: {
@@ -18,6 +19,7 @@ type Props = {
     stock: number;
     bundleSize?: number;
     bundleItems?: BundleItem[] | null;
+    colorOptions?: string[] | null;
     minOrderQuantity?: number;
     allowBatchDiscount?: boolean;
   };
@@ -98,6 +100,8 @@ export default function TieredPricing({
     return Math.max(minCount, Math.min(maxCount, val));
   };
 
+  const colorCtx = useProductColor();
+
   const handleAdd = () => {
     setError(null);
     setAdded(false);
@@ -107,11 +111,47 @@ export default function TieredPricing({
       return;
     }
 
+    const singleColors = product.colorOptions ?? [];
+    let color: string | undefined = undefined;
+    let bundleColors: Record<number, string> | undefined = undefined;
+
+    if (isBundle) {
+      const items = product.bundleItems ?? [];
+      const itemsNeedingColor = items
+        .map((it, idx) => ({ it, idx }))
+        .filter(({ it }) => (it.colorOptions && it.colorOptions.length > 0) || singleColors.length > 0);
+
+      if (itemsNeedingColor.length > 0) {
+        for (const { it, idx } of itemsNeedingColor) {
+          if (!colorCtx?.selectedBundleColors[idx]) {
+            setError(
+              `لطفاً رنگ ${it.title ? `«${it.title}» (گلدان ${toFa(idx + 1)})` : `گلدان ${toFa(idx + 1)}`} را انتخاب کنید.`,
+            );
+            return;
+          }
+        }
+        bundleColors = colorCtx?.selectedBundleColors;
+      }
+    } else {
+      if (singleColors.length > 0) {
+        if (!colorCtx?.selectedColor) {
+          setError('لطفاً رنگ مورد نظر خود را انتخاب کنید.');
+          return;
+        }
+        color = colorCtx.selectedColor;
+      }
+    }
+
     startTransition(async () => {
       const res = await fetch('/api/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: product.id, quantity: totalUnits }),
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: totalUnits,
+          color,
+          bundleColors,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -470,6 +510,43 @@ export default function TieredPricing({
       })()}
 
       <div className="space-y-3">
+        {/* Selected color summary preview */}
+        {!isBundle && colorCtx?.selectedColor && (
+          <div className="flex items-center gap-2 rounded-xl bg-dust-50 px-3.5 py-2 text-xs border border-soil-900/10">
+            <span className="text-soil-700/70">رنگ انتخابی:</span>
+            <span
+              className="size-4 rounded-full border border-soil-900/20 shadow-2xs"
+              style={{ backgroundColor: colorCtx.selectedColor }}
+            />
+            <span className="font-mono text-soil-900 font-bold dir-ltr">
+              {colorCtx.selectedColor}
+            </span>
+          </div>
+        )}
+        {isBundle && Object.keys(colorCtx?.selectedBundleColors ?? {}).length > 0 && (
+          <div className="rounded-xl bg-dust-50 p-3 text-xs border border-soil-900/10 space-y-1.5">
+            <span className="font-bold text-soil-900 block">رنگ‌های انتخابی اقلام بسته:</span>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(colorCtx?.selectedBundleColors ?? {}).map(([idxStr, hex]) => {
+                const i = Number(idxStr);
+                const itName = product.bundleItems?.[i]?.title || `گلدان ${toFa(i + 1)}`;
+                return (
+                  <span
+                    key={idxStr}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-soil-900/10 px-2 py-1 text-[11px]"
+                  >
+                    <span className="text-soil-700">{itName}:</span>
+                    <span
+                      className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
+                      style={{ backgroundColor: hex }}
+                    />
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <button
           type="button"
           onClick={handleAdd}

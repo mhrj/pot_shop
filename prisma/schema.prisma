@@ -121,6 +121,7 @@ model Product {
   bundleSize    Int      @default(1)
   minOrderQuantity Int   @default(1)
   bundleItems   Json?
+  colorOptions  Json?
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)
   allowBatchDiscount Boolean @default(true)
@@ -241,6 +242,7 @@ model CartItem {
   productId String
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int      @default(1)
+  colorData Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -326,6 +328,7 @@ model OrderItem {
   lineTotalToman   Int
   lineSavingsToman Int @default(0)
   tierLabel        String?
+  colorData        Json?
 
   @@index([orderId])
   @@index([productId])

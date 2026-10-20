@@ -4,6 +4,7 @@ import GlobalSearch from '@/components/admin/GlobalSearch';
 const NAV = [
   { href: '/admin', label: 'داشبورد' },
   { href: '/admin/products', label: 'محصولات' },
+  { href: '/admin/categories', label: 'دسته‌بندی‌ها' },
   { href: '/admin/tags', label: 'برچسب‌ها' },
   { href: '/admin/content', label: 'محتوای فروشگاه' },
   { href: '/admin/orders', label: 'سفارش‌ها' },

@@ -40,6 +40,7 @@ export async function GET() {
       slug: cat.slug,
       isActive: cat.isActive,
       productCount: cat._count.products,
+      _count: cat._count,
     })),
   });
 }

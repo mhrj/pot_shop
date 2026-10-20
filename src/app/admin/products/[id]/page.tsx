@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
-import { parseFeatures, parseBundleItems } from '@/lib/product-features';
+import { parseFeatures, parseBundleItems, parseColorOptions } from '@/lib/product-features';
 import ProductForm from '@/components/admin/ProductForm';
 
 type Props = { params: Promise<{ id: string }> };
@@ -54,6 +54,11 @@ export default async function EditProductPage({ params }: Props) {
       basePriceToman: p.basePriceToman,
     }));
 
+  const categories = await prisma.category.findMany({
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' },
+  });
+
   return (
     <div>
       <h1 className="text-2xl font-black text-soil-900">ویرایش محصول</h1>
@@ -62,6 +67,7 @@ export default async function EditProductPage({ params }: Props) {
         <ProductForm
           knownLabels={knownLabels}
           catalogProducts={catalogProducts}
+          categories={categories}
           initial={{
             id: product.id,
             slug: product.slug,
@@ -71,6 +77,7 @@ export default async function EditProductPage({ params }: Props) {
             categoryId: product.categoryId ?? '',
             material: product.material,
             color: product.color ?? '',
+            colorOptions: parseColorOptions(product.colorOptions),
             diameterCm: product.diameterCm,
             heightCm: product.heightCm,
             weightGrams: product.weightGrams,

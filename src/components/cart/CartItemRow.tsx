@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { formatToman, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import type { PricedLine } from '@/lib/pricing';
+import ItemColorBadge from '@/components/ui/ItemColorBadge';
 
 export default function CartItemRow({ line, stock }: { line: PricedLine; stock: number }) {
   const router = useRouter();
@@ -68,7 +69,10 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="font-bold text-soil-900">{line.name}</h2>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="font-bold text-soil-900">{line.name}</h2>
+              <ItemColorBadge colorData={line.colorData} />
+            </div>
             <p className="mt-1 text-xs text-soil-700/70">
               {formatToman(line.unitToman)} × {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} بسته)`} — {line.tierLabel}
             </p>

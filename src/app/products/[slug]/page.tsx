@@ -4,9 +4,11 @@ import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { toFa, formatToman } from '@/lib/format';
-import { parseFeatures, parseBundleItems } from '@/lib/product-features';
+import { parseFeatures, parseBundleItems, parseColorOptions } from '@/lib/product-features';
 import TieredPricing from '@/components/product/TieredPricing';
 import ProductGallery from '@/components/product/ProductGallery';
+import ColorPicker from '@/components/product/ColorPicker';
+import { ProductColorProvider } from '@/components/product/ProductColorContext';
 import Container from '@/components/ui/Container';
 
 export const revalidate = 600;
@@ -79,6 +81,7 @@ export default async function ProductPage({ params }: Params) {
         images: { orderBy: { sortOrder: 'asc' } },
         tiers: { orderBy: { minQuantity: 'asc' } },
         tags: { include: { tag: true } },
+        category: true,
       },
     }),
     getSession(),
@@ -134,74 +137,108 @@ export default async function ProductPage({ params }: Params) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <nav aria-label="مسیر" className="mb-8 text-xs text-soil-700/60">
-        خانه / گلدان‌ها / <span className="text-soil-900">{product.name}</span>
+      <nav aria-label="مسیر" className="mb-8 flex items-center gap-1.5 text-xs text-soil-700/60">
+        <Link href="/" className="hover:text-soil-900 transition">
+          خانه
+        </Link>
+        <span>/</span>
+        {product.category ? (
+          <>
+            <Link
+              href={`/products?category=${encodeURIComponent(product.category.slug)}`}
+              className="hover:text-soil-900 transition"
+            >
+              {product.category.name}
+            </Link>
+            <span>/</span>
+          </>
+        ) : (
+          <>
+            <Link href="/products" className="hover:text-soil-900 transition">
+              گلدان‌ها
+            </Link>
+            <span>/</span>
+          </>
+        )}
+        <span className="text-soil-900 font-bold">{product.name}</span>
       </nav>
 
-      <div className="grid gap-10 lg:grid-cols-12">
-        <div className="lg:col-span-6">
-          <ProductGallery
-            images={product.images.map((img) => ({
-              id: img.id,
-              url: img.url,
-              alt: img.alt,
-            }))}
-            productName={product.name}
-            soldOut={product.stock <= 0}
-          />
-        </div>
-
-        <div className="lg:col-span-6">
-          <h1 className="text-3xl font-black text-soil-900 sm:text-4xl">{product.name}</h1>
-          {product.shortDesc && (
-            <p className="mt-4 leading-8 text-soil-700/85">{product.shortDesc}</p>
-          )}
-
-          <div className="mt-6 flex flex-wrap gap-2">
-            <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
-              {product.material}
-            </span>
-            {product.bundleSize > 1 && (
-              <span className="rounded-full bg-flora-900 px-3 py-1 text-xs font-bold text-white">
-                {displayLabel}
-              </span>
-            )}
-            {product.tags.map((entry) => (
-              <Link
-                key={entry.tag.id}
-                href={`/products?tag=${encodeURIComponent(entry.tag.slug)}`}
-                className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700 transition hover:bg-flora-200"
-              >
-                {entry.tag.name}
-              </Link>
-            ))}
-            <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
-              موجودی: {toFa(product.stock)} عدد
-            </span>
-          </div>
-
-          <div className="mt-8">
-            <TieredPricing
+      <ProductColorProvider>
+        <div className="grid gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-6">
+            <ProductGallery
+              images={product.images.map((img) => ({
+                id: img.id,
+                url: img.url,
+                alt: img.alt,
+              }))}
+              productName={product.name}
+              soldOut={product.stock <= 0}
+            />
+            {/* Color swatches below product image */}
+            <ColorPicker
               product={{
                 id: product.id,
                 name: product.name,
-                basePriceToman: product.basePriceToman,
-                weightGrams: product.weightGrams,
-                unitsPerCarton: product.unitsPerCarton,
-                stock: product.stock,
+                colorOptions: parseColorOptions(product.colorOptions),
                 bundleSize: product.bundleSize,
-                bundleItems: bundleItems,
-                minOrderQuantity: product.minOrderQuantity,
-                allowBatchDiscount: product.allowBatchDiscount,
               }}
-              tiers={product.tiers.map((t) => ({
-                minQuantity: t.minQuantity,
-                unitPriceToman: t.unitPriceToman,
-                label: t.label,
-              }))}
-              isAuthed={Boolean(session)}
+              bundleItems={bundleItems}
             />
           </div>
+
+          <div className="lg:col-span-6">
+            <h1 className="text-3xl font-black text-soil-900 sm:text-4xl">{product.name}</h1>
+            {product.shortDesc && (
+              <p className="mt-4 leading-8 text-soil-700/85">{product.shortDesc}</p>
+            )}
+
+            <div className="mt-6 flex flex-wrap gap-2">
+              <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
+                {product.material}
+              </span>
+              {product.bundleSize > 1 && (
+                <span className="rounded-full bg-flora-900 px-3 py-1 text-xs font-bold text-white">
+                  {displayLabel}
+                </span>
+              )}
+              {product.tags.map((entry) => (
+                <Link
+                  key={entry.tag.id}
+                  href={`/products?tag=${encodeURIComponent(entry.tag.slug)}`}
+                  className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700 transition hover:bg-flora-200"
+                >
+                  {entry.tag.name}
+                </Link>
+              ))}
+              <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
+                موجودی: {toFa(product.stock)} عدد
+              </span>
+            </div>
+
+            <div className="mt-8">
+              <TieredPricing
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  basePriceToman: product.basePriceToman,
+                  weightGrams: product.weightGrams,
+                  unitsPerCarton: product.unitsPerCarton,
+                  stock: product.stock,
+                  bundleSize: product.bundleSize,
+                  bundleItems: bundleItems,
+                  colorOptions: parseColorOptions(product.colorOptions),
+                  minOrderQuantity: product.minOrderQuantity,
+                  allowBatchDiscount: product.allowBatchDiscount,
+                }}
+                tiers={product.tiers.map((t) => ({
+                  minQuantity: t.minQuantity,
+                  unitPriceToman: t.unitPriceToman,
+                  label: t.label,
+                }))}
+                isAuthed={Boolean(session)}
+              />
+            </div>
 
           <section className="mt-10">
             <h2 className="text-lg font-black text-soil-900">مشخصات فنی</h2>
@@ -237,6 +274,7 @@ export default async function ProductPage({ params }: Params) {
           </section>
         </div>
       </div>
-    </Container>
+    </ProductColorProvider>
+  </Container>
   );
 }

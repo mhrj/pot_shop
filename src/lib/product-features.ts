@@ -29,7 +29,22 @@ export type BundleItem = {
   priceToman?: number;
   price?: number;
   productId?: string;
+  colorOptions?: string[];
 };
+
+export function parseColorOptions(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((c) => {
+      if (typeof c !== 'string') return '';
+      const trimmed = c.trim();
+      const withHash = trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+      return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(withHash)
+        ? withHash.toUpperCase()
+        : '';
+    })
+    .filter(Boolean);
+}
 
 export function parseBundleItems(raw: unknown): BundleItem[] {
   if (!Array.isArray(raw)) return [];
@@ -66,6 +81,7 @@ export function parseBundleItems(raw: unknown): BundleItem[] {
         priceToman: numPrice,
         price: numPrice,
         productId: typeof it.productId === 'string' && it.productId.trim() ? it.productId.trim() : undefined,
+        colorOptions: parseColorOptions(it.colorOptions),
       };
     });
 }

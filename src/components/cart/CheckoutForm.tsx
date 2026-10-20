@@ -5,6 +5,7 @@ import AddressForm from '@/components/cart/AddressForm';
 import { calcShippingToman, type CartTotals } from '@/lib/pricing';
 import { formatToman, formatWeight, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
+import ItemColorBadge from '@/components/ui/ItemColorBadge';
 
 type Address = {
   id: string;
@@ -194,10 +195,16 @@ export default function CheckoutForm({
 
           <ul className="mt-4 space-y-3 text-xs text-soil-700/80">
             {totals.lines.map((l) => (
-              <li key={l.productId} className="flex justify-between gap-4">
-                <span className="truncate">
-                  {l.name} × {toFa(l.quantity)} {l.bundleSize > 1 ? `(معادل ${toFa(Math.round(l.quantity / l.bundleSize))} بسته)` : ''}
-                </span>
+              <li key={l.productId} className="flex justify-between items-start gap-4">
+                <div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-bold text-soil-900">{l.name}</span>
+                    <ItemColorBadge colorData={l.colorData} />
+                  </div>
+                  <span className="text-[11px] text-soil-700/70 block mt-0.5">
+                    {toFa(l.quantity)} عدد {l.bundleSize > 1 ? `(معادل ${toFa(Math.round(l.quantity / l.bundleSize))} بسته)` : ''}
+                  </span>
+                </div>
                 <span className="shrink-0 font-bold text-soil-900">
                   {formatToman(l.lineTotalToman)}
                 </span>

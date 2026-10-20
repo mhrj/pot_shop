@@ -39,6 +39,11 @@ export default async function NewProductPage() {
     basePriceToman: p.basePriceToman,
   }));
 
+  const categories = await prisma.category.findMany({
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' },
+  });
+
   return (
     <div>
       <h1 className="text-2xl font-black text-soil-900">افزودن محصول</h1>
@@ -49,6 +54,7 @@ export default async function NewProductPage() {
         <ProductForm
           knownLabels={knownLabels}
           catalogProducts={catalogProducts}
+          categories={categories}
           initial={{
             slug: '',
             name: '',
@@ -57,6 +63,7 @@ export default async function NewProductPage() {
             categoryId: '',
             material: 'سفال',
             color: '',
+            colorOptions: [],
             diameterCm: 20,
             heightCm: 18,
             weightGrams: 1000,

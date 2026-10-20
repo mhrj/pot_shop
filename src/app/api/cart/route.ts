@@ -8,6 +8,8 @@ export const runtime = 'nodejs';
 const addSchema = z.object({
   productId: z.string().cuid(),
   quantity: z.coerce.number().int().min(1).max(5000),
+  color: z.string().optional().nullable(),
+  bundleColors: z.record(z.string(), z.string()).optional().nullable(),
 });
 
 export async function GET() {
@@ -32,7 +34,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    await addToCart(session.sub, parsed.data.productId, parsed.data.quantity);
+    const colorData = parsed.data.color
+      ? { color: parsed.data.color }
+      : parsed.data.bundleColors
+      ? { bundleColors: parsed.data.bundleColors }
+      : null;
+
+    await addToCart(session.sub, parsed.data.productId, parsed.data.quantity, colorData);
     const totals = await getCartTotals(session.sub);
     return NextResponse.json({ ok: true, totals });
   } catch (e) {

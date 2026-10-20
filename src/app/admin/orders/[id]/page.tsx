@@ -5,6 +5,7 @@ import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import OrderStatusForm from '@/components/admin/OrderStatusForm';
 import StatusBadge from '@/components/ui/StatusBadge';
+import ItemColorBadge from '@/components/ui/ItemColorBadge';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -98,7 +99,10 @@ export default async function AdminOrderDetailPage({ params }: Props) {
             {order.items.map((i) => (
               <li key={i.id} className="flex justify-between gap-3 py-2.5">
                 <div>
-                  <p className="font-bold text-soil-900">{i.productName}</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-bold text-soil-900">{i.productName}</p>
+                    <ItemColorBadge colorData={i.colorData} />
+                  </div>
                   <p className="mt-1 text-xs text-soil-700/60">
                     {toFa(i.quantity)} × {formatToman(i.unitToman)} — {i.tierLabel ?? '—'}
                   </p>

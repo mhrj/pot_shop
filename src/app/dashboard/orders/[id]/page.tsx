@@ -8,6 +8,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import { allowedTransitions, ORDER_STATUS_LABELS, isOrderStatus } from '@/lib/orders';
 import { channelLabel } from '@/lib/analytics';
 import CancelOrderButton from '@/components/dashboard/CancelOrderButton';
+import ItemColorBadge from '@/components/ui/ItemColorBadge';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -97,7 +98,10 @@ export default async function CustomerOrderPage({ params }: Props) {
             {order.items.map((item) => (
               <li key={item.id} className="flex justify-between gap-4 py-3.5 text-sm">
                 <div>
-                  <p className="font-bold text-soil-900">{item.productName}</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-bold text-soil-900">{item.productName}</p>
+                    <ItemColorBadge colorData={item.colorData} />
+                  </div>
                   <p className="mt-1 text-xs text-soil-700/60">
                     {toFa(item.quantity)} × {formatToman(item.unitToman)}
                     {item.tierLabel ? ` — ${item.tierLabel}` : ''}
