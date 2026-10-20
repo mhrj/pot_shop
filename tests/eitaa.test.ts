@@ -55,7 +55,7 @@ test('Eitaa notifications', async (t) => {
       assert.equal(calledUrl, 'https://eitaayar.ir/api/mock-token/sendMessage');
       assert.equal(calledBody.chat_id, 'mock-chat-id');
       assert.equal(calledBody.text, '<b>سفارش جدید</b>');
-      assert.equal(calledBody.parse_mode, 'HTML');
+      assert.equal(calledBody.parse_mode, 'html');
     } finally {
       globalThis.fetch = originalFetch;
     }

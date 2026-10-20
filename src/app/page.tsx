@@ -6,6 +6,9 @@ import { formatToman, toFa } from '@/lib/format';
 import { resolveTier } from '@/lib/pricing';
 import { getContentMap } from '@/lib/content';
 import DustToFlora from '@/components/landing/DustToFlora';
+import TrustBar from '@/components/landing/TrustBar';
+import WhyChooseUs from '@/components/landing/WhyChooseUs';
+import WholesaleInquiryForm from '@/components/landing/WholesaleInquiryForm';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
 
@@ -72,7 +75,7 @@ export default async function HomePage() {
           </span>
 
           <h1 className="mt-6 text-4xl leading-[1.25] font-black text-soil-900 sm:text-5xl lg:text-6xl">
-            {content.home_hero_title.body}
+            {content.home_hero_title?.body || 'گلدان‌هایی که خانه را زنده می‌کنند — خرید خرد و عمده'}
           </h1>
 
           <p className="mt-7 max-w-xl text-base leading-8 text-soil-700/85 sm:text-lg">
@@ -82,15 +85,19 @@ export default async function HomePage() {
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="#catalog"
-              className="rounded-full bg-flora-900 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 active:scale-[0.98]"
+              className="group relative inline-flex items-center gap-2 rounded-full bg-flora-900 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-flora-900/25 transition duration-300 hover:bg-flora-800 hover:shadow-flora-900/40 active:scale-[0.98]"
             >
-              دیدن گلدان‌ها
+              <span className="inline-block transition duration-300 group-hover:rotate-12 group-hover:scale-125">
+                🌱
+              </span>
+              <span>دیدن گلدان‌ها</span>
             </Link>
             <Link
-              href="#wholesale"
-              className="rounded-full border border-soil-900/15 bg-white/60 px-7 py-3.5 text-sm font-bold text-soil-900 backdrop-blur transition hover:bg-white"
+              href="#wholesale-inquiry"
+              className="group inline-flex items-center gap-2 rounded-full border border-soil-900/15 bg-white/70 px-7 py-3.5 text-sm font-bold text-soil-900 backdrop-blur transition duration-300 hover:bg-white hover:border-soil-900/30"
             >
-              خرید عمده و قیمت‌گیری
+              <span>خرید عمده و استعلام قیمت</span>
+              <span className="text-flora-700 transition duration-300 group-hover:translate-x-1">←</span>
             </Link>
           </div>
 
@@ -358,7 +365,15 @@ export default async function HomePage() {
 
   return (
     <main>
-      <DustToFlora hero={hero} journey={journey} catalog={catalog} trust={trust} />
+      <DustToFlora
+        hero={hero}
+        trustBar={<TrustBar />}
+        whyChooseUs={<WhyChooseUs />}
+        catalog={catalog}
+        journey={journey}
+        wholesaleInquiry={<WholesaleInquiryForm />}
+        trust={trust}
+      />
     </main>
   );
 }

@@ -18,13 +18,19 @@ import BotanicalCanvas from './BotanicalCanvas';
  */
 export default function DustToFlora({
   hero,
-  journey,
+  trustBar,
+  whyChooseUs,
   catalog,
+  journey,
+  wholesaleInquiry,
   trust,
 }: {
   hero: React.ReactNode;
-  journey: React.ReactNode;
+  trustBar?: React.ReactNode;
+  whyChooseUs?: React.ReactNode;
   catalog: React.ReactNode;
+  journey: React.ReactNode;
+  wholesaleInquiry?: React.ReactNode;
   trust: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -64,8 +70,11 @@ export default function DustToFlora({
     return (
       <div className="bg-dust-50">
         {hero}
-        {journey}
+        {trustBar}
+        {whyChooseUs}
         {catalog}
+        {journey}
+        {wholesaleInquiry}
         {trust}
       </div>
     );
@@ -104,8 +113,11 @@ export default function DustToFlora({
         {hero}
       </motion.div>
 
-      <div className="relative z-10">{journey}</div>
+      {trustBar && <div className="relative z-10">{trustBar}</div>}
+      {whyChooseUs && <div className="relative z-10">{whyChooseUs}</div>}
       <div className="relative z-10">{catalog}</div>
+      <div className="relative z-10">{journey}</div>
+      {wholesaleInquiry && <div className="relative z-10">{wholesaleInquiry}</div>}
       <div className="relative z-10">{trust}</div>
     </motion.div>
   );
