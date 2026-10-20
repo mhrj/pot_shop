@@ -23,3 +23,20 @@
 
   --radius-pot: 1.75rem;
 }
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-text-gradient {
+  background-size: 250% auto;
+  animation: gradient-flow 3.5s ease-in-out infinite;
+}

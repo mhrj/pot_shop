@@ -167,7 +167,7 @@ export async function POST(req: Request) {
 
   const result = await zarinpalRequest({
     amountToman: totalToman,
-    description: `سفارش ${order.orderNumber} — پات شاپ`,
+    description: `سفارش ${order.orderNumber} — پات استور`,
     callbackUrl,
     mobile: address.phone,
     email: account?.email ?? undefined,

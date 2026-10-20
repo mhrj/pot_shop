@@ -29,7 +29,7 @@ export default async function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-8">
         <div className="flex items-center gap-5">
           <Link href="/" className="text-lg font-black text-soil-900">
-            پات شاپ
+            پات استور
           </Link>
           <nav aria-label="منوی اصلی" className="hidden items-center gap-4 text-sm font-medium text-soil-700 md:flex">
             {links.map((link) => (

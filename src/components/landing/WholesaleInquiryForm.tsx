@@ -84,7 +84,7 @@ export default function WholesaleInquiryForm() {
                 تأمین عمده برای گلخانه‌ها، کافه‌ها، هتل‌ها و شرکت‌ها
               </h2>
               <p className="mt-5 text-sm leading-8 text-flora-100/85 sm:text-base">
-                اگر قصد تجهیز پروژه، افتتاح گلخانه یا خرید سازمانی با فاکتور رسمی را دارید، پات شاپ بهترین تیراژ و بسته‌بندی را با قیمت بدون واسطه کارگاهی در اختیار شما قرار می‌دهد.
+                اگر قصد تجهیز پروژه، افتتاح گلخانه یا خرید سازمانی با فاکتور رسمی را دارید، پات استور با شبکه گسترده تأمین‌کنندگان خود، بهترین کیفیت و قیمت را بدون واسطه در اختیار شما قرار می‌دهد.
               </p>
 
               <div className="mt-8 space-y-3.5">
@@ -115,7 +115,7 @@ export default function WholesaleInquiryForm() {
                       درخواست شما با موفقیت دریافت شد!
                     </h3>
                     <p className="mt-3 text-xs leading-6 text-flora-100/85 sm:text-sm">
-                      اطلاعات سفارش شما به مدیریت فروش پات شاپ ارسال شد. کارشناسان ما ظرف حداکثر ۲۴ ساعت کاری با شماره ثبت‌شده تماس خواهند گرفت.
+                      اطلاعات سفارش شما به مدیریت فروش پات استور ارسال شد. کارشناسان ما ظرف حداکثر ۲۴ ساعت کاری با شماره ثبت‌شده تماس خواهند گرفت.
                     </p>
                     <button
                       type="button"
@@ -170,7 +170,7 @@ export default function WholesaleInquiryForm() {
 
                       <div>
                         <label className="block text-xs font-medium text-flora-100/90 mb-1.5">
-                          شماره تماس (یا ایتا) <span className="text-rose-400">*</span>
+                          شماره تماس <span className="text-rose-400">*</span>
                         </label>
                         <input
                           type="tel"

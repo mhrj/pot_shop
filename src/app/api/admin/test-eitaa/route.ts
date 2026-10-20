@@ -8,7 +8,7 @@ export async function POST() {
     return NextResponse.json({ error: 'دسترسی غیرمجاز است.' }, { status: 401 });
   }
 
-  const success = await sendEitaaNotification('تست ارسال پیام به ایتا (ایتایار) از فروشگاه پات شاپ با موفقیت انجام شد! 🎉');
+  const success = await sendEitaaNotification('تست ارسال پیام به ایتا (ایتایار) از فروشگاه پات استور با موفقیت انجام شد! 🎉');
   return NextResponse.json({
     ok: true,
     sent: success,
@@ -21,7 +21,7 @@ export async function GET() {
     return NextResponse.json({ error: 'دسترسی غیرمجاز است.' }, { status: 401 });
   }
 
-  const success = await sendEitaaNotification('تست ارسال پیام به ایتا (ایتایار) از فروشگاه پات شاپ با موفقیت انجام شد! 🎉');
+  const success = await sendEitaaNotification('تست ارسال پیام به ایتا (ایتایار) از فروشگاه پات استور با موفقیت انجام شد! 🎉');
   return NextResponse.json({
     ok: true,
     sent: success,

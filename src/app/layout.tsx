@@ -19,16 +19,16 @@ export const metadata: Metadata = {
   // the pages below to resolve into absolute ones.
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
   title: {
-    default: 'پات شاپ | گلدان و فلاورباکس سفالی و سرامیکی',
-    template: '%s | پات شاپ',
+    default: 'پات استور | گلدان، خاک و ملزومات گیاهان',
+    template: '%s | پات استور',
   },
   description:
-    'خرید گلدان و فلاورباکس سفالی، سرامیکی و بتنی — خرده و عمده. ارسال به سراسر ایران، پرداخت امن با زرین‌پال.',
-  keywords: ['گلدان', 'فلاورباکس', 'سفال', 'سرامیک', 'گلدان عمده', 'خرید گلدان'],
+    'خرید و تأمین گلدان سفالی، سرامیکی، بتنی، خاک و ابزار گیاهان — خرده و عمده با ارسال به سراسر ایران و پرداخت امن.',
+  keywords: ['گلدان', 'خاک گیاه', 'ابزار باغبانی', 'سفال', 'سرامیک', 'گلدان عمده', 'پات استور'],
   openGraph: {
     type: 'website',
     locale: 'fa_IR',
-    siteName: 'پات شاپ',
+    siteName: 'پات استور',
   },
   robots: { index: true, follow: true },
 };
@@ -75,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 heading over blank space. */}
             <div className="grid gap-10 md:grid-cols-3">
               <div>
-                <p className="text-lg font-black text-soil-900">پات شاپ</p>
+                <p className="text-lg font-black text-soil-900">پات استور</p>
                 <p className="mt-3 text-sm leading-7 text-soil-700/80">
                   {content.footer_text.body}
                 </p>
@@ -123,7 +123,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
 
             <div className="mt-10 border-t border-soil-900/10 pt-6 text-center text-xs text-soil-700/60">
-              © ۱۴۰۵ پات شاپ — تمامی حقوق محفوظ است.
+              © ۱۴۰۵ پات استور — تمامی حقوق محفوظ است.
             </div>
           </div>
         </footer>

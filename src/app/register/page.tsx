@@ -109,7 +109,7 @@ export default function RegisterPage() {
       >
         <h1 className="text-2xl font-black text-soil-900">ثبت‌نام مشتری</h1>
         <p className="mt-2 text-sm text-soil-700/70">
-          برای اولین بار در پات شاپ، حساب جدید بسازید.
+          برای اولین بار در پات استور، حساب جدید بسازید.
         </p>
 
         <div className="mt-7 space-y-4">

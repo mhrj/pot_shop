@@ -8,15 +8,15 @@ import Container from '@/components/ui/Container';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  // Rendered through the layout's template as "درباره ما | پات شاپ".
+  // Rendered through the layout's template as "درباره ما | پات استور".
   title: 'درباره ما',
   description:
-    'درباره پات شاپ — گلدان سفالی، سرامیکی و بتنی دست‌ساز؛ از یک عدد تا سفارش عمده، با ارسال به سراسر ایران.',
+    'درباره پات استور — کیوریتور و تأمین‌کننده گلدان‌های سفالی، سرامیکی، خاک تخصصی و ابزار باغبانی با ارسال به سراسر ایران.',
   alternates: { canonical: '/about' },
   openGraph: {
-    title: 'درباره ما | پات شاپ',
+    title: 'درباره ما | پات استور',
     description:
-      'کار ما با خاک شروع می‌شود — گلدان سفالی، سرامیکی و بتنی دست‌ساز برای خانه، اداره و پروژه‌های بزرگ.',
+      'پات استور نمایشگاه کیوریت‌شده از بهترین گلدان‌ها، خاک و ابزارهای نگهداری گیاهان از برترین کارگاه‌های ایران.',
     type: 'website',
   },
 };
@@ -38,7 +38,7 @@ export default async function AboutPage() {
 
   return (
     <Container className="py-12 lg:py-16">
-      <p className="text-xs font-bold text-flora-700">پات شاپ</p>
+      <p className="text-xs font-bold text-flora-700">پات استور</p>
       <h1 className="mt-2 text-3xl font-black text-soil-900 sm:text-4xl">
         {content.about_title.body}
       </h1>

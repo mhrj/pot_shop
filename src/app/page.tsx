@@ -9,6 +9,7 @@ import DustToFlora from '@/components/landing/DustToFlora';
 import TrustBar from '@/components/landing/TrustBar';
 import WhyChooseUs from '@/components/landing/WhyChooseUs';
 import WholesaleInquiryForm from '@/components/landing/WholesaleInquiryForm';
+import HeroTitle from '@/components/landing/HeroTitle';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
 
@@ -16,19 +17,19 @@ export const revalidate = 300; // ISR: 5 minutes
 
 // The home page previously inherited the layout's default title, leaving its
 // Open Graph card with no title or description of its own. `absolute` keeps the
-// brand line intact rather than running it through the layout's "%s | پات شاپ"
+// brand line intact rather than running it through the layout's "%s | پات استور"
 // template, which would print the shop name twice.
 export const metadata: Metadata = {
   title: {
-    absolute: 'پات شاپ | گلدان و فلاورباکس سفالی و سرامیکی',
+    absolute: 'پات استور | گلدان، خاک و ملزومات گیاهان',
   },
   description:
-    'خرید گلدان و فلاورباکس سفالی، سرامیکی و بتنی — خرده و عمده. ارسال به سراسر ایران، پرداخت امن با زرین‌پال و قیمت پله‌ای روی هر محصول.',
+    'تأمین‌کننده برتر گلدان سفالی، سرامیکی، بتنی، خاک تخصصی و ابزار گیاهان — خرده و عمده. ارسال به سراسر ایران با درگاه پرداخت امن.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'پات شاپ | گلدان و فلاورباکس سفالی و سرامیکی',
+    title: 'پات استور | گلدان، خاک و ملزومات گیاهان',
     description:
-      'خرید گلدان و فلاورباکس سفالی، سرامیکی و بتنی — خرده و عمده با ارسال به سراسر ایران.',
+      'کیوریتور و تأمین‌کننده گلدان، خاک و ابزار نگهداری گیاهان با بهترین کارگاه‌های ایران — خرده و عمده.',
     type: 'website',
   },
 };
@@ -74,27 +75,24 @@ export default async function HomePage() {
             از خاک خالی، تا رویش سبز
           </span>
 
-          <h1 className="mt-6 text-4xl leading-[1.25] font-black text-soil-900 sm:text-5xl lg:text-6xl">
-            {content.home_hero_title?.body || 'گلدان‌هایی که خانه را زنده می‌کنند — خرید خرد و عمده'}
-          </h1>
-
-          <p className="mt-7 max-w-xl text-base leading-8 text-soil-700/85 sm:text-lg">
-            {content.home_hero_subtitle.body}
-          </p>
+          <HeroTitle
+            title={content.home_hero_title?.body || 'به فضاهای خالی، جان بدهیم.'}
+            subtitle={content.home_hero_subtitle.body}
+          />
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="#catalog"
-              className="group relative inline-flex items-center gap-2 rounded-full bg-flora-900 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-flora-900/25 transition duration-300 hover:bg-flora-800 hover:shadow-flora-900/40 active:scale-[0.98]"
+              className="group relative inline-flex items-center gap-2 rounded-full bg-flora-900 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
             >
               <span className="inline-block transition duration-300 group-hover:rotate-12 group-hover:scale-125">
                 🌱
               </span>
-              <span>دیدن گلدان‌ها</span>
+              <span>دیدن محصولات</span>
             </Link>
             <Link
               href="#wholesale-inquiry"
-              className="group inline-flex items-center gap-2 rounded-full border border-soil-900/15 bg-white/70 px-7 py-3.5 text-sm font-bold text-soil-900 backdrop-blur transition duration-300 hover:bg-white hover:border-soil-900/30"
+              className="group inline-flex items-center gap-2 rounded-full border border-soil-900/15 bg-white/70 px-7 py-3.5 text-sm font-bold text-soil-900 backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white hover:border-soil-900/35 hover:shadow-xl hover:shadow-soil-900/10 active:scale-[0.98]"
             >
               <span>خرید عمده و استعلام قیمت</span>
               <span className="text-flora-700 transition duration-300 group-hover:translate-x-1">←</span>
@@ -166,39 +164,36 @@ export default async function HomePage() {
         {[
           {
             t: 'خاک',
-            d: 'انتخاب متریال درست: سفال نفس‌کش، سرامیک لعاب‌دار، بتن مقاوم.',
+            d: 'انتخاب متریال درست: از خاک‌های تخصصی و کودهای مغذی تا سفال نفس‌کش و سرامیک لعاب‌دار.',
             icon: '🏺',
             card: 'bg-dust-200',
             accent: 'border-t-dust-400',
           },
           {
             t: 'ریشه',
-            d: 'زهکشی اصولی و حجم کافی خاک، ریشه را از پوسیدگی حفظ می‌کند.',
+            d: 'زهکشی اصولی و حجم کافی خاک، ریشه را از پوسیدگی حفظ می‌کند. ما ابزار و بستر مناسب را برای شما فراهم کرده‌ایم.',
             icon: '🪴',
             card: 'bg-flora-100',
             accent: 'border-t-flora-300',
           },
           {
             t: 'رویش',
-            d: 'بعد از آن، فقط تماشا کن. فضای خالی‌ات زنده شده است.',
+            d: 'بعد از آن، فقط تماشا کنید. فضای خالی‌تان با انتخاب‌های درست ما زنده شده است.',
             icon: '🌸',
             card: 'bg-flora-300/50',
             accent: 'border-t-flora-500',
           },
-        ].map((s, i) => (
+        ].map((s) => (
           <div
             key={s.t}
             className={`flex flex-col rounded-pot border-t-4 ${s.accent} ${s.card} p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_44px_-16px_rgba(62,39,35,0.32)]`}
           >
-            <div className="flex items-center justify-between">
-              <span
-                aria-hidden
-                className="grid size-12 place-items-center rounded-2xl bg-white/60 text-2xl"
-              >
-                {s.icon}
-              </span>
-              <span className="text-xs font-bold text-soil-700/60">{toFa(i + 1)}</span>
-            </div>
+            <span
+              aria-hidden
+              className="grid size-12 place-items-center rounded-2xl bg-white/60 text-2xl"
+            >
+              {s.icon}
+            </span>
             <h3 className="mt-5 text-xl font-black text-soil-900">{s.t}</h3>
             <p className="mt-3 text-sm leading-7 text-soil-700/80">{s.d}</p>
           </div>

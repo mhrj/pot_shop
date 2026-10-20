@@ -1,4 +1,4 @@
-# IMPLEMENTATION STATUS — Pot Shop
+# IMPLEMENTATION STATUS — Pot Store
 
 Last updated: 2026-10-16 (verification pass)
 Branch: `main` (working tree, uncommitted)
