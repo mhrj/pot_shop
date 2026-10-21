@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import type { ProductFeature, BundleItem } from '@/lib/product-features';
+import type { ProductFeature, BundleItem, ColorOption } from '@/lib/product-features';
 import { formatToman, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import { FormError } from '@/components/ui/FormError';
@@ -19,7 +19,7 @@ export type ProductFormData = {
   categoryId?: string | null;
   material: string;
   color: string;
-  colorOptions?: string[];
+  colorOptions?: ColorOption[];
   diameterCm: number;
   heightCm: number;
   weightGrams: number;
@@ -243,10 +243,10 @@ export default function ProductForm({
     const normalized = hex.toUpperCase();
     setForm((prev) => {
       const current = prev.colorOptions ?? [];
-      const exists = current.some((c) => c.toUpperCase() === normalized);
+      const exists = current.some((c) => c.hexCode.toUpperCase() === normalized);
       const next = exists
-        ? current.filter((c) => c.toUpperCase() !== normalized)
-        : [...current, normalized];
+        ? current.filter((c) => c.hexCode.toUpperCase() !== normalized)
+        : [...current, { hexCode: normalized, stock: Math.max(0, prev.stock ?? 0) }];
       return { ...prev, colorOptions: next };
     });
   }
@@ -256,7 +256,17 @@ export default function ProductForm({
     setForm((prev) => ({
       ...prev,
       colorOptions: (prev.colorOptions ?? []).filter(
-        (c) => c.toUpperCase() !== normalized,
+        (c) => c.hexCode.toUpperCase() !== normalized,
+      ),
+    }));
+  }
+
+  function handleUpdateColorStock(hex: string, stock: number) {
+    const normalized = hex.toUpperCase();
+    setForm((prev) => ({
+      ...prev,
+      colorOptions: (prev.colorOptions ?? []).map((c) =>
+        c.hexCode.toUpperCase() === normalized ? { ...c, stock } : c,
       ),
     }));
   }
@@ -268,10 +278,11 @@ export default function ProductForm({
       const item = items[itemIdx];
       if (!item) return prev;
       const current = item.colorOptions ?? [];
-      const exists = current.some((c) => c.toUpperCase() === normalized);
+      const exists = current.some((c) => c.hexCode.toUpperCase() === normalized);
+      const defaultStock = Math.max(0, prev.stock ?? 0);
       const next = exists
-        ? current.filter((c) => c.toUpperCase() !== normalized)
-        : [...current, normalized];
+        ? current.filter((c) => c.hexCode.toUpperCase() !== normalized)
+        : [...current, { hexCode: normalized, stock: defaultStock }];
       items[itemIdx] = { ...item, colorOptions: next };
       return { ...prev, bundleItems: items };
     });
@@ -286,7 +297,24 @@ export default function ProductForm({
       const current = item.colorOptions ?? [];
       items[itemIdx] = {
         ...item,
-        colorOptions: current.filter((c) => c.toUpperCase() !== normalized),
+        colorOptions: current.filter((c) => c.hexCode.toUpperCase() !== normalized),
+      };
+      return { ...prev, bundleItems: items };
+    });
+  }
+
+  function handleUpdateBundleItemColorStock(itemIdx: number, hex: string, stock: number) {
+    const normalized = hex.toUpperCase();
+    setForm((prev) => {
+      const items = [...(prev.bundleItems ?? [])];
+      const item = items[itemIdx];
+      if (!item) return prev;
+      const current = item.colorOptions ?? [];
+      items[itemIdx] = {
+        ...item,
+        colorOptions: current.map((c) =>
+          c.hexCode.toUpperCase() === normalized ? { ...c, stock } : c,
+        ),
       };
       return { ...prev, bundleItems: items };
     });
@@ -632,9 +660,10 @@ export default function ProductForm({
             </label>
             <GlobalColorPicker
               globalColors={allGlobalColors}
-              selectedHexes={form.colorOptions ?? []}
+              selectedColors={form.colorOptions ?? []}
               onToggleColor={handleToggleColor}
               onRemoveColor={handleRemoveColorByHex}
+              onUpdateStock={handleUpdateColorStock}
             />
           </div>
         )}
@@ -969,9 +998,10 @@ export default function ProductForm({
                       <GlobalColorPicker
                         compact
                         globalColors={allGlobalColors}
-                        selectedHexes={item.colorOptions ?? []}
+                        selectedColors={item.colorOptions ?? []}
                         onToggleColor={(hex) => handleToggleBundleItemColor(idx, hex)}
                         onRemoveColor={(hex) => handleRemoveBundleItemColorByHex(idx, hex)}
+                        onUpdateStock={(hex, stock) => handleUpdateBundleItemColorStock(idx, hex, stock)}
                       />
                     </div>
                   </div>

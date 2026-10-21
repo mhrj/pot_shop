@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { toFa } from '@/lib/format';
 import { useProductColor } from './ProductColorContext';
-import type { BundleItem } from '@/lib/product-features';
+import type { BundleItem, ColorOption } from '@/lib/product-features';
 
 type Props = {
   product: {
     id: string;
     name: string;
-    colorOptions?: string[] | null;
+    colorOptions?: ColorOption[] | null;
     bundleSize?: number;
   };
   bundleItems?: BundleItem[] | null;
@@ -33,7 +33,7 @@ function ColorSwatchRow({
   required = false,
 }: {
   label: string;
-  colors: string[];
+  colors: ColorOption[];
   selectedColor: string | null;
   onSelect: (color: string) => void;
   required?: boolean;
@@ -53,9 +53,6 @@ function ColorSwatchRow({
       return;
     }
 
-    // In RTL containers:
-    // Some browsers have scrollLeft = 0 at initial right-aligned start, and negative values when scrolling left.
-    // Others have positive values or inverted numbers.
     const scrollVal = Math.abs(el.scrollLeft);
     setCanScrollStart(scrollVal > 5);
     setCanScrollEnd(scrollVal < maxScroll - 5);
@@ -79,13 +76,16 @@ function ColorSwatchRow({
     const el = scrollRef.current;
     if (!el) return;
 
-    // In RTL: "next" (further in Persian reading direction) moves towards the left (negative delta)
     const step = 140;
     const delta = direction === 'next' ? -step : step;
     el.scrollBy({ left: delta, behavior: 'smooth' });
   };
 
   if (!colors.length) return null;
+
+  const selectedOpt = selectedColor
+    ? colors.find((c) => c.hexCode.toUpperCase() === selectedColor.toUpperCase())
+    : null;
 
   return (
     <div className="rounded-2xl border border-soil-900/10 bg-white p-4 space-y-3">
@@ -108,6 +108,11 @@ function ColorSwatchRow({
             <span className="font-mono text-[11px] dir-ltr text-soil-900 font-bold">
               {selectedColor}
             </span>
+            {selectedOpt && (
+              <span className={selectedOpt.stock > 0 ? "text-soil-700/60 font-medium" : "text-red-600 font-bold"}>
+                ({selectedOpt.stock > 0 ? `موجودی: ${toFa(selectedOpt.stock)}` : 'ناموجود'})
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -131,7 +136,9 @@ function ColorSwatchRow({
           ref={scrollRef}
           className="flex flex-1 items-center gap-1.5 overflow-x-auto py-1 px-1 scroll-smooth no-scrollbar"
         >
-          {colors.map((hex) => {
+          {colors.map((colorOpt) => {
+            const hex = colorOpt.hexCode;
+            const isOutOfStock = colorOpt.stock <= 0;
             const isSelected = selectedColor?.toUpperCase() === hex.toUpperCase();
             const light = isLightColor(hex);
 
@@ -140,16 +147,27 @@ function ColorSwatchRow({
                 key={hex}
                 type="button"
                 onClick={() => onSelect(hex)}
-                title={hex}
-                aria-label={`رنگ ${hex}`}
+                title={isOutOfStock ? `${hex} (ناموجود)` : hex}
+                aria-label={`رنگ ${hex}${isOutOfStock ? ' (ناموجود)' : ''}`}
                 aria-pressed={isSelected}
-                className={`group relative w-6 h-6 shrink-0 rounded-full transition-all duration-150 focus:outline-none cursor-pointer border border-soil-900/20 ${
+                className={`group relative w-6 h-6 shrink-0 rounded-full transition-all duration-150 focus:outline-none border border-soil-900/20 ${
+                  isOutOfStock
+                    ? 'opacity-30 cursor-not-allowed'
+                    : 'cursor-pointer hover:scale-105'
+                } ${
                   isSelected
                     ? 'ring-2 ring-flora-700 ring-offset-1 scale-105 shadow-xs'
-                    : 'hover:scale-105 shadow-2xs'
+                    : 'shadow-2xs'
                 }`}
                 style={{ backgroundColor: hex }}
               >
+                {/* Red diagonal line if out of stock */}
+                {isOutOfStock && (
+                  <span className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
+                    <span className="w-[140%] h-[2px] bg-red-600 rotate-45 transform" />
+                  </span>
+                )}
+
                 {/* Subtle border for very light colors so they are distinct against white background */}
                 {light && !isSelected && (
                   <span className="absolute inset-0 rounded-full border border-soil-900/25 pointer-events-none" />

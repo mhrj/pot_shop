@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { formatToman, formatWeight, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import { nextTierHint, resolveTier, type Tier } from '@/lib/pricing';
-import type { BundleItem } from '@/lib/product-features';
+import type { BundleItem, ColorOption } from '@/lib/product-features';
 import { useProductColor } from './ProductColorContext';
 
 type Props = {
@@ -19,7 +19,7 @@ type Props = {
     stock: number;
     bundleSize?: number;
     bundleItems?: BundleItem[] | null;
-    colorOptions?: string[] | null;
+    colorOptions?: ColorOption[] | null;
     minOrderQuantity?: number;
     allowBatchDiscount?: boolean;
   };
@@ -112,8 +112,8 @@ export default function TieredPricing({
     }
 
     const singleColors = product.colorOptions ?? [];
-    let color: string | undefined = undefined;
-    let bundleColors: Record<number, string> | undefined = undefined;
+    let selectedColorObj: ColorOption | undefined = undefined;
+    let bundleColorsData: Record<number, { hexCode: string; stock: number }> | undefined = undefined;
 
     if (isBundle) {
       const items = product.bundleItems ?? [];
@@ -123,14 +123,34 @@ export default function TieredPricing({
 
       if (itemsNeedingColor.length > 0) {
         for (const { it, idx } of itemsNeedingColor) {
-          if (!colorCtx?.selectedBundleColors[idx]) {
+          const chosenHex = colorCtx?.selectedBundleColors[idx];
+          if (!chosenHex) {
             setError(
               `لطفاً رنگ ${it.title ? `«${it.title}» (گلدان ${toFa(idx + 1)})` : `گلدان ${toFa(idx + 1)}`} را انتخاب کنید.`,
             );
             return;
           }
+          const opt = it.colorOptions?.find(
+            (c) => c.hexCode.toUpperCase() === chosenHex.toUpperCase(),
+          );
+          if (opt && opt.stock < count) {
+            setError(`موجودی رنگ ${chosenHex} برای این تعداد کافی نیست.`);
+            return;
+          }
         }
-        bundleColors = colorCtx?.selectedBundleColors;
+        const bundleObj: Record<number, { hexCode: string; stock: number }> = {};
+        for (const [idxStr, hex] of Object.entries(colorCtx?.selectedBundleColors ?? {})) {
+          const i = Number(idxStr);
+          const item = items[i];
+          const opt = item?.colorOptions?.find(
+            (c) => c.hexCode.toUpperCase() === hex.toUpperCase(),
+          );
+          bundleObj[i] = {
+            hexCode: hex,
+            stock: opt ? opt.stock : product.stock,
+          };
+        }
+        bundleColorsData = bundleObj;
       }
     } else {
       if (singleColors.length > 0) {
@@ -138,7 +158,15 @@ export default function TieredPricing({
           setError('لطفاً رنگ مورد نظر خود را انتخاب کنید.');
           return;
         }
-        color = colorCtx.selectedColor;
+        const chosenHex = colorCtx.selectedColor;
+        const opt = singleColors.find(
+          (c) => c.hexCode.toUpperCase() === chosenHex.toUpperCase(),
+        );
+        selectedColorObj = opt ?? { hexCode: chosenHex, stock: product.stock };
+        if (selectedColorObj.stock < count) {
+          setError(`موجودی رنگ ${chosenHex} برای این تعداد کافی نیست.`);
+          return;
+        }
       }
     }
 
@@ -149,8 +177,9 @@ export default function TieredPricing({
         body: JSON.stringify({
           productId: product.id,
           quantity: totalUnits,
-          color,
-          bundleColors,
+          color: selectedColorObj ? selectedColorObj.hexCode : undefined,
+          selectedColor: selectedColorObj,
+          bundleColors: bundleColorsData ?? colorCtx?.selectedBundleColors,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -163,7 +192,55 @@ export default function TieredPricing({
     });
   };
 
-  const outOfStock = product.stock <= 0 || maxCount < minCount;
+  function isBundleAvailable(): boolean {
+    if (!isBundle) {
+      const singleColors = product.colorOptions ?? [];
+      if (singleColors.length > 0) {
+        if (!colorCtx?.selectedColor) {
+          return singleColors.some((c) => c.stock >= count);
+        }
+        const opt = singleColors.find(
+          (c) => c.hexCode.toUpperCase() === colorCtx.selectedColor?.toUpperCase(),
+        );
+        return Boolean(opt && opt.stock >= count);
+      }
+      return product.stock >= count;
+    }
+
+    const items = product.bundleItems ?? [];
+    if (items.length === 0) {
+      return product.stock >= count * bundleSize;
+    }
+
+    for (let idx = 0; idx < items.length; idx++) {
+      const it = items[idx];
+      const itemColors = it.colorOptions ?? [];
+      if (itemColors.length > 0) {
+        const selectedHex = colorCtx?.selectedBundleColors[idx];
+        if (selectedHex) {
+          const selectedOpt = itemColors.find(
+            (c) => c.hexCode.toUpperCase() === selectedHex.toUpperCase(),
+          );
+          if (!selectedOpt || selectedOpt.stock < count) {
+            return false;
+          }
+        } else {
+          const hasInStockColor = itemColors.some((c) => c.stock >= count);
+          if (!hasInStockColor) return false;
+        }
+      } else {
+        if (product.stock < count * bundleSize) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  const outOfStock = isBundle
+    ? !isBundleAvailable() || maxCount < minCount
+    : !isBundleAvailable() || product.stock <= 0 || maxCount < minCount;
 
   return (
     <div className="space-y-6">
@@ -553,7 +630,9 @@ export default function TieredPricing({
                       </div>
 
                       <div className="flex flex-wrap gap-1.5 py-1 px-0.5">
-                        {itemColors.map((hex) => {
+                        {itemColors.map((colorOpt) => {
+                          const hex = colorOpt.hexCode;
+                          const isOutOfStock = colorOpt.stock <= 0;
                           const isSelected = selectedHex?.toUpperCase() === hex.toUpperCase();
                           const isLight = (() => {
                             const clean = hex.replace('#', '');
@@ -568,14 +647,25 @@ export default function TieredPricing({
                               key={hex}
                               type="button"
                               onClick={() => colorCtx?.setSelectedBundleColor(idx, hex)}
-                              title={hex}
-                              className={`group relative w-6 h-6 shrink-0 rounded-full transition-all focus:outline-none cursor-pointer border border-soil-900/20 ${
+                              title={isOutOfStock ? `${hex} (ناموجود)` : hex}
+                              aria-label={`رنگ ${hex}${isOutOfStock ? ' (ناموجود)' : ''}`}
+                              className={`group relative w-6 h-6 shrink-0 rounded-full transition-all focus:outline-none border border-soil-900/20 ${
+                                isOutOfStock
+                                  ? 'opacity-30 cursor-not-allowed'
+                                  : 'cursor-pointer hover:scale-105'
+                              } ${
                                 isSelected
                                   ? 'ring-2 ring-flora-700 ring-offset-1 scale-105 shadow-xs'
-                                  : 'hover:scale-105 shadow-2xs'
+                                  : 'shadow-2xs'
                               }`}
                               style={{ backgroundColor: hex }}
                             >
+                              {/* Red diagonal line if out of stock */}
+                              {isOutOfStock && (
+                                <span className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
+                                  <span className="w-[140%] h-[2px] bg-red-600 rotate-45 transform" />
+                                </span>
+                              )}
                               {isLight && !isSelected && (
                                 <span className="absolute inset-0 rounded-full border border-soil-900/25 pointer-events-none" />
                               )}
@@ -601,25 +691,39 @@ export default function TieredPricing({
             </div>
           )}
         {/* Selected color summary preview */}
-        {!isBundle && colorCtx?.selectedColor && (
-          <div className="flex items-center gap-2 rounded-xl bg-dust-50 px-3.5 py-2 text-xs border border-soil-900/10">
-            <span className="text-soil-700/70">رنگ انتخابی:</span>
-            <span
-              className="size-4 rounded-full border border-soil-900/20 shadow-2xs"
-              style={{ backgroundColor: colorCtx.selectedColor }}
-            />
-            <span className="font-mono text-soil-900 font-bold dir-ltr">
-              {colorCtx.selectedColor}
-            </span>
-          </div>
-        )}
+        {!isBundle && colorCtx?.selectedColor && (() => {
+          const opt = (product.colorOptions ?? []).find(
+            (c) => c.hexCode.toUpperCase() === colorCtx.selectedColor?.toUpperCase(),
+          );
+          return (
+            <div className="flex items-center gap-2 rounded-xl bg-dust-50 px-3.5 py-2 text-xs border border-soil-900/10">
+              <span className="text-soil-700/70">رنگ انتخابی:</span>
+              <span
+                className="size-4 rounded-full border border-soil-900/20 shadow-2xs"
+                style={{ backgroundColor: colorCtx.selectedColor }}
+              />
+              <span className="font-mono text-soil-900 font-bold dir-ltr">
+                {colorCtx.selectedColor}
+              </span>
+              {opt && (
+                <span className={opt.stock > 0 ? "text-soil-700/60 font-medium" : "text-red-600 font-bold"}>
+                  ({opt.stock > 0 ? `موجودی: ${toFa(opt.stock)} عدد` : 'ناموجود'})
+                </span>
+              )}
+            </div>
+          );
+        })()}
         {isBundle && Object.keys(colorCtx?.selectedBundleColors ?? {}).length > 0 && (
           <div className="rounded-xl bg-dust-50 p-3 text-xs border border-soil-900/10 space-y-1.5">
             <span className="font-bold text-soil-900 block">رنگ‌های انتخابی اقلام بسته:</span>
             <div className="flex flex-wrap gap-2">
               {Object.entries(colorCtx?.selectedBundleColors ?? {}).map(([idxStr, hex]) => {
                 const i = Number(idxStr);
-                const itName = product.bundleItems?.[i]?.title || `گلدان ${toFa(i + 1)}`;
+                const item = product.bundleItems?.[i];
+                const itName = item?.title || `گلدان ${toFa(i + 1)}`;
+                const opt = item?.colorOptions?.find(
+                  (c) => c.hexCode.toUpperCase() === hex.toUpperCase(),
+                );
                 return (
                   <span
                     key={idxStr}
@@ -630,6 +734,11 @@ export default function TieredPricing({
                       className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
                       style={{ backgroundColor: hex }}
                     />
+                    {opt && (
+                      <span className={opt.stock > 0 ? "text-soil-700/60 font-medium" : "text-red-600 font-bold"}>
+                        ({opt.stock > 0 ? toFa(opt.stock) : 'ناموجود'})
+                      </span>
+                    )}
                   </span>
                 );
               })}

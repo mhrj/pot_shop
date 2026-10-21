@@ -2,6 +2,9 @@
 
 import Link from 'next/link';
 
+import type { ColorOption } from '@/lib/product-features';
+import { toFa } from '@/lib/format';
+
 export type GlobalColorOption = {
   id: string;
   name: string;
@@ -10,9 +13,11 @@ export type GlobalColorOption = {
 
 type Props = {
   globalColors: GlobalColorOption[];
-  selectedHexes: string[];
+  selectedColors?: ColorOption[];
+  selectedHexes?: string[];
   onToggleColor: (hexCode: string) => void;
   onRemoveColor: (hexCode: string) => void;
+  onUpdateStock?: (hexCode: string, stock: number) => void;
   compact?: boolean;
 };
 
@@ -28,9 +33,11 @@ function isLightColor(hex: string): boolean {
 
 export default function GlobalColorPicker({
   globalColors,
+  selectedColors,
   selectedHexes,
   onToggleColor,
   onRemoveColor,
+  onUpdateStock,
   compact = false,
 }: Props) {
   if (globalColors.length === 0) {
@@ -48,6 +55,10 @@ export default function GlobalColorPicker({
     );
   }
 
+  const colorsList: ColorOption[] = selectedColors
+    ? selectedColors
+    : (selectedHexes ?? []).map((h) => ({ hexCode: h, stock: 0 }));
+
   // Find color name for each selected hex
   const hexMap = new Map<string, string>();
   for (const c of globalColors) {
@@ -64,8 +75,8 @@ export default function GlobalColorPicker({
         <div className="flex flex-wrap gap-2">
           {globalColors.map((color) => {
             const normalizedHex = color.hexCode.toUpperCase();
-            const isSelected = selectedHexes.some(
-              (h) => h.toUpperCase() === normalizedHex,
+            const isSelected = colorsList.some(
+              (c) => c.hexCode.toUpperCase() === normalizedHex,
             );
             const light = isLightColor(color.hexCode);
 
@@ -112,29 +123,44 @@ export default function GlobalColorPicker({
       </div>
 
       {/* Selected Color Chips */}
-      {selectedHexes.length > 0 && (
+      {colorsList.length > 0 && (
         <div className="pt-1">
           <span className="block text-[11px] font-bold text-soil-900 mb-1.5">
-            رنگ‌های انتخاب‌شده ({selectedHexes.length}):
+            رنگ‌های انتخاب‌شده ({toFa(colorsList.length)}):
           </span>
-          <div className="flex flex-wrap gap-1.5">
-            {selectedHexes.map((hex, i) => {
-              const name = hexMap.get(hex.toUpperCase()) || hex;
+          <div className="flex flex-wrap gap-2">
+            {colorsList.map((color, i) => {
+              const name = hexMap.get(color.hexCode.toUpperCase()) || color.hexCode;
               return (
                 <div
                   key={i}
-                  className="flex items-center gap-1.5 rounded-lg border border-soil-900/10 bg-white px-2.5 py-1 text-xs shadow-2xs"
+                  className="flex flex-wrap items-center gap-2 rounded-xl border border-soil-900/10 bg-white px-3 py-1.5 text-xs shadow-2xs"
                 >
                   <span
-                    className="size-3.5 rounded-full border border-soil-900/20 shadow-xs"
-                    style={{ backgroundColor: hex }}
+                    className="size-3.5 rounded-full border border-soil-900/20 shadow-xs shrink-0"
+                    style={{ backgroundColor: color.hexCode }}
                   />
-                  <span className="font-medium text-soil-900">{name}</span>
-                  <span className="font-mono text-[10px] text-soil-700/60 dir-ltr">{hex}</span>
+                  <span className="font-bold text-soil-900">{name}</span>
+                  <span className="font-mono text-[10px] text-soil-700/60 dir-ltr">{color.hexCode}</span>
+
+                  <label className="flex items-center gap-1.5 text-[11px] text-soil-700 font-medium border-r border-soil-900/10 pr-2 mr-1">
+                    <span>موجودی:</span>
+                    <input
+                      type="number"
+                      min={0}
+                      value={color.stock}
+                      onChange={(e) => {
+                        const val = Math.max(0, Math.floor(Number(e.target.value) || 0));
+                        onUpdateStock?.(color.hexCode, val);
+                      }}
+                      className="w-16 rounded-lg border border-soil-900/15 bg-dust-50/70 px-1.5 py-0.5 text-center text-xs font-bold text-soil-900 outline-none focus:border-flora-500 focus:bg-white focus:ring-1 focus:ring-flora-500"
+                    />
+                  </label>
+
                   <button
                     type="button"
-                    onClick={() => onRemoveColor(hex)}
-                    className="text-red-500 hover:text-red-700 text-sm font-bold leading-none px-1 hover:bg-red-50 rounded"
+                    onClick={() => onRemoveColor(color.hexCode)}
+                    className="text-red-500 hover:text-red-700 text-sm font-bold leading-none p-1 hover:bg-red-50 rounded"
                     title="حذف رنگ"
                   >
                     ×

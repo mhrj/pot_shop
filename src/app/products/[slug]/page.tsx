@@ -92,9 +92,7 @@ export default async function ProductPage({ params }: Params) {
   // `include` above pulls in every scalar, so `features` needs no change to the
   // query. Only the ones the admin left switched on are shown.
   const enabledFeatures = parseFeatures(product.features).filter((f) => f.enabled);
-  const bundleItems = parseBundleItems(product.bundleItems);
-
-
+  const bundleItems = parseBundleItems(product.bundleItems, product.stock);
 
   const displayLabel = product.bundleSize > 1 ? `ست ${toFa(product.bundleSize)} عددی` : 'تک‌عدد';
 
@@ -181,7 +179,7 @@ export default async function ProductPage({ params }: Params) {
                 product={{
                   id: product.id,
                   name: product.name,
-                  colorOptions: parseColorOptions(product.colorOptions),
+                  colorOptions: parseColorOptions(product.colorOptions, product.stock),
                   bundleSize: product.bundleSize,
                 }}
               />
@@ -228,7 +226,7 @@ export default async function ProductPage({ params }: Params) {
                   stock: product.stock,
                   bundleSize: product.bundleSize,
                   bundleItems: bundleItems,
-                  colorOptions: parseColorOptions(product.colorOptions),
+                  colorOptions: parseColorOptions(product.colorOptions, product.stock),
                   minOrderQuantity: product.minOrderQuantity,
                   allowBatchDiscount: product.allowBatchDiscount,
                 }}

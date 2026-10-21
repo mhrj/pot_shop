@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import { calcShippingToman, priceCart } from '../src/lib/pricing';
 import { getStockShortages, isPaymentAlreadyProcessed } from '../src/lib/cart';
+import { parseColorOptions } from '../src/lib/product-features';
 
 test('checkout pricing uses tiered prices and shipping rules', () => {
   const totals = priceCart([
@@ -71,4 +72,28 @@ test('priceCart enforces allowBatchDiscount=false so bulk orders do not get disc
   assert.equal(totals.lines[0].lineTotalToman, 1000000);
   assert.equal(totals.payableToman, 1000000);
   assert.equal(totals.discountToman, 0);
+});
+
+test('parseColorOptions converts legacy string arrays to objects with defaultStock fallback', () => {
+  const legacyStrings = ['#ff0000', '00ff00', '#123'];
+  const parsed = parseColorOptions(legacyStrings, 7);
+  assert.deepEqual(parsed, [
+    { hexCode: '#FF0000', stock: 7 },
+    { hexCode: '#00FF00', stock: 7 },
+    { hexCode: '#123', stock: 7 },
+  ]);
+});
+
+test('parseColorOptions preserves stock when raw contains objects', () => {
+  const objects = [
+    { hexCode: '#FF0000', stock: 2 },
+    { hex: '#00FF00', stock: 0 },
+    { hexCode: '#AABBCC' },
+  ];
+  const parsed = parseColorOptions(objects, 10);
+  assert.deepEqual(parsed, [
+    { hexCode: '#FF0000', stock: 2 },
+    { hexCode: '#00FF00', stock: 0 },
+    { hexCode: '#AABBCC', stock: 10 },
+  ]);
 });

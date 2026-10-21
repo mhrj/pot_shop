@@ -19,6 +19,8 @@ export function parseFeatures(raw: unknown): ProductFeature[] {
   );
 }
 
+export type ColorOption = { hexCode: string; stock: number };
+
 export type BundleItem = {
   title: string;
   description?: string;
@@ -29,24 +31,49 @@ export type BundleItem = {
   priceToman?: number;
   price?: number;
   productId?: string;
-  colorOptions?: string[];
+  colorOptions?: ColorOption[];
 };
 
-export function parseColorOptions(raw: unknown): string[] {
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .map((c) => {
-      if (typeof c !== 'string') return '';
-      const trimmed = c.trim();
-      const withHash = trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
-      return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(withHash)
-        ? withHash.toUpperCase()
-        : '';
-    })
-    .filter(Boolean);
+export function normalizeHex(c: string): string {
+  const trimmed = c.trim();
+  const withHash = trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+  return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(withHash)
+    ? withHash.toUpperCase()
+    : '';
 }
 
-export function parseBundleItems(raw: unknown): BundleItem[] {
+export function parseColorOptions(raw: unknown, defaultStock: number = 0): ColorOption[] {
+  if (!Array.isArray(raw)) return [];
+  const results: ColorOption[] = [];
+
+  for (const item of raw) {
+    if (typeof item === 'string') {
+      const hex = normalizeHex(item);
+      if (hex) {
+        results.push({ hexCode: hex, stock: Math.max(0, defaultStock) });
+      }
+    } else if (typeof item === 'object' && item !== null) {
+      const rawHex = (item as any).hexCode ?? (item as any).hex;
+      if (typeof rawHex === 'string') {
+        const hex = normalizeHex(rawHex);
+        if (hex) {
+          const rawStock = (item as any).stock;
+          let stockVal = defaultStock;
+          if (typeof rawStock === 'number' && Number.isFinite(rawStock) && rawStock >= 0) {
+            stockVal = Math.floor(rawStock);
+          } else if (typeof rawStock === 'string' && !isNaN(Number(rawStock)) && Number(rawStock) >= 0) {
+            stockVal = Math.floor(Number(rawStock));
+          }
+          results.push({ hexCode: hex, stock: Math.max(0, stockVal) });
+        }
+      }
+    }
+  }
+
+  return results;
+}
+
+export function parseBundleItems(raw: unknown, defaultStock: number = 0): BundleItem[] {
   if (!Array.isArray(raw)) return [];
   return raw
     .filter(
@@ -81,7 +108,7 @@ export function parseBundleItems(raw: unknown): BundleItem[] {
         priceToman: numPrice,
         price: numPrice,
         productId: typeof it.productId === 'string' && it.productId.trim() ? it.productId.trim() : undefined,
-        colorOptions: parseColorOptions(it.colorOptions),
+        colorOptions: parseColorOptions(it.colorOptions, defaultStock),
       };
     });
 }

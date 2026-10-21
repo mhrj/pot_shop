@@ -17,9 +17,21 @@ export default function ItemColorBadge({ colorData, className = '' }: Props) {
     const data = colorData as Record<string, unknown>;
     if (typeof data.color === 'string') {
       singleColor = data.color;
+    } else if (typeof data.color === 'object' && data.color !== null && 'hexCode' in data.color) {
+      singleColor = String((data.color as any).hexCode);
+    } else if (typeof data.selectedColor === 'object' && data.selectedColor !== null && 'hexCode' in data.selectedColor) {
+      singleColor = String((data.selectedColor as any).hexCode);
     }
     if (typeof data.bundleColors === 'object' && data.bundleColors !== null) {
-      bundleColors = data.bundleColors as Record<string, string>;
+      const bMap: Record<string, string> = {};
+      for (const [k, v] of Object.entries(data.bundleColors as Record<string, any>)) {
+        if (typeof v === 'string') {
+          bMap[k] = v;
+        } else if (typeof v === 'object' && v !== null && 'hexCode' in v) {
+          bMap[k] = String(v.hexCode);
+        }
+      }
+      bundleColors = bMap;
     }
   }
 

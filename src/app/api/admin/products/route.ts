@@ -24,6 +24,14 @@ const tiersSchema = z
     message: 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود',
   });
 
+const colorOptionSchema = z.union([
+  z.object({
+    hexCode: z.string(),
+    stock: z.coerce.number().int().min(0),
+  }),
+  z.string().transform((hex) => ({ hexCode: hex, stock: 0 })),
+]);
+
 const bundleItemSchema = z.object({
   title: z.string({ required_error: 'نام آیتم بسته الزامی است' }).min(1, 'نام آیتم بسته الزامی است').max(150, 'نام آیتم بسته حداکثر ۱۵۰ کاراکتر است'),
   description: z.string().max(500, 'توضیحات آیتم حداکثر ۵۰۰ کاراکتر است').optional().default(''),
@@ -34,7 +42,7 @@ const bundleItemSchema = z.object({
   priceToman: z.number().int().min(0).max(100000000).optional().nullable(),
   price: z.number().int().min(0).max(100000000).optional().nullable(),
   productId: z.string().optional().nullable(),
-  colorOptions: z.array(z.string()).optional().default([]),
+  colorOptions: z.array(colorOptionSchema).optional().default([]),
 });
 
 const schema = z.object({
@@ -45,7 +53,7 @@ const schema = z.object({
   categoryId: z.string().cuid('شناسه دسته‌بندی نامعتبر است').optional().nullable().or(z.literal('')),
   material: z.string({ required_error: 'متریال الزامی است' }).min(2, 'متریال باید حداقل ۲ حرف باشد').max(60, 'متریال حداکثر ۶۰ حرف است'),
   color: z.string().max(60, 'رنگ حداکثر ۶۰ حرف است').optional().default(''),
-  colorOptions: z.array(z.string()).optional().default([]),
+  colorOptions: z.array(colorOptionSchema).optional().default([]),
   diameterCm: z.number({ invalid_type_error: 'قطر باید عدد باشد' }).min(0, 'قطر نمی‌تواند منفی باشد').max(500, 'قطر حداکثر ۵۰۰ سانتی‌متر است'),
   heightCm: z.number({ invalid_type_error: 'ارتفاع باید عدد باشد' }).min(0, 'ارتفاع نمی‌تواند منفی باشد').max(500, 'ارتفاع حداکثر ۵۰۰ سانتی‌متر است'),
   weightGrams: z.number({ invalid_type_error: 'وزن باید عدد باشد' }).int('وزن باید عدد صحیح باشد').min(0, 'وزن نمی‌تواند منفی باشد').max(100000, 'وزن حداکثر ۱۰۰ کیلوگرم است'),

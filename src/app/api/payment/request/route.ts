@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { getStockShortages } from '@/lib/cart';
 import { calcShippingToman, priceCart, type Tier } from '@/lib/pricing';
-import { parseBundleItems } from '@/lib/product-features';
+import { parseBundleItems, parseColorOptions } from '@/lib/product-features';
 import { zarinpalRequest, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 
 export const runtime = 'nodejs';
@@ -66,14 +66,60 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: 'سبد خرید خالی است' }, { status: 400 });
   }
 
-  // 3) Verify stock before creating a pending order.
-  const shortages = getStockShortages(
-    activeItems.map((i) => ({
-      name: i.product.name,
-      quantity: i.quantity,
-      stock: i.product.stock,
-    })),
-  );
+  // 3) Verify stock (overall product stock & specific color stock) before creating a pending order.
+  const shortages: Array<{ name: string; available: number }> = [];
+
+  for (const i of activeItems) {
+    if (i.quantity > i.product.stock) {
+      shortages.push({ name: i.product.name, available: i.product.stock });
+      continue;
+    }
+
+    const isBundle = (i.product.bundleSize ?? 1) > 1;
+    const colorData = (i.colorData as Record<string, any>) ?? {};
+
+    if (!isBundle) {
+      const singleColors = parseColorOptions(i.product.colorOptions, i.product.stock);
+      const chosenHex =
+        colorData.selectedColor?.hexCode ??
+        (typeof colorData.color === 'string' ? colorData.color : null);
+
+      if (chosenHex && singleColors.length > 0) {
+        const opt = singleColors.find(
+          (c) => c.hexCode.toUpperCase() === chosenHex.toUpperCase(),
+        );
+        if (opt && i.quantity > opt.stock) {
+          shortages.push({
+            name: `${i.product.name} (رنگ ${opt.hexCode})`,
+            available: opt.stock,
+          });
+        }
+      }
+    } else {
+      const bundleItems = parseBundleItems(i.product.bundleItems, i.product.stock);
+      const bundleColors = colorData.bundleColors ?? {};
+      const bundleCount = Math.max(1, Math.floor(i.quantity / (i.product.bundleSize || 1)));
+
+      for (let idx = 0; idx < bundleItems.length; idx++) {
+        const it = bundleItems[idx];
+        const itColors = it.colorOptions ?? [];
+        const chosen = bundleColors[idx] ?? bundleColors[String(idx)];
+        const chosenHex = typeof chosen === 'string' ? chosen : chosen?.hexCode;
+
+        if (chosenHex && itColors.length > 0) {
+          const opt = itColors.find(
+            (c) => c.hexCode.toUpperCase() === chosenHex.toUpperCase(),
+          );
+          if (opt && bundleCount > opt.stock) {
+            shortages.push({
+              name: `${i.product.name} — ${it.title} (رنگ ${opt.hexCode})`,
+              available: opt.stock,
+            });
+          }
+        }
+      }
+    }
+  }
 
   if (shortages.length > 0) {
     return NextResponse.json(
@@ -98,7 +144,7 @@ export async function POST(req: Request) {
         weightGrams: i.product.weightGrams,
         unitsPerCarton: i.product.unitsPerCarton,
         bundleSize: i.product.bundleSize,
-        bundleItems: parseBundleItems(i.product.bundleItems),
+        bundleItems: parseBundleItems(i.product.bundleItems, i.product.stock),
         images: i.product.images,
         allowBatchDiscount: i.product.allowBatchDiscount,
       },

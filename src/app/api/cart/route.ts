@@ -5,11 +5,17 @@ import { addToCart, getCartTotals } from '@/lib/cart';
 
 export const runtime = 'nodejs';
 
+const colorOptionSchema = z.object({
+  hexCode: z.string(),
+  stock: z.coerce.number().int().min(0),
+});
+
 const addSchema = z.object({
   productId: z.string().cuid(),
   quantity: z.coerce.number().int().min(1).max(5000),
-  color: z.string().optional().nullable(),
-  bundleColors: z.record(z.string(), z.string()).optional().nullable(),
+  color: z.union([z.string(), colorOptionSchema]).optional().nullable(),
+  selectedColor: colorOptionSchema.optional().nullable(),
+  bundleColors: z.record(z.string(), z.any()).optional().nullable(),
 });
 
 export async function GET() {
@@ -34,11 +40,28 @@ export async function POST(req: Request) {
   }
 
   try {
-    const colorData = parsed.data.color
-      ? { color: parsed.data.color }
-      : parsed.data.bundleColors
-      ? { bundleColors: parsed.data.bundleColors }
-      : null;
+    const selectedColorObj =
+      parsed.data.selectedColor ??
+      (typeof parsed.data.color === 'object' && parsed.data.color !== null
+        ? parsed.data.color
+        : null);
+
+    const colorHex =
+      typeof parsed.data.color === 'string'
+        ? parsed.data.color
+        : selectedColorObj?.hexCode ?? null;
+
+    let colorData: any = null;
+    if (selectedColorObj) {
+      colorData = {
+        color: colorHex,
+        selectedColor: selectedColorObj,
+      };
+    } else if (colorHex) {
+      colorData = { color: colorHex };
+    } else if (parsed.data.bundleColors) {
+      colorData = { bundleColors: parsed.data.bundleColors };
+    }
 
     await addToCart(session.sub, parsed.data.productId, parsed.data.quantity, colorData);
     const totals = await getCartTotals(session.sub);
