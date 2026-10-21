@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useEffect, useMemo, useState, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { formatToman, formatWeight, toFa } from '@/lib/format';
@@ -8,6 +8,88 @@ import { numberToWordsFa } from '@/lib/number-to-words';
 import { nextTierHint, resolveTier, type Tier } from '@/lib/pricing';
 import type { BundleItem, ColorOption } from '@/lib/product-features';
 import { useProductColor } from './ProductColorContext';
+
+export type LimitingItem = {
+  itemIndex: number;
+  itemName: string;
+  colorName: string;
+  stock: number;
+};
+
+const DEFAULT_COLOR_NAMES: Record<string, string> = {
+  '#000000': 'مشکی',
+  '#1F1F1F': 'مشکی',
+  '#111111': 'مشکی',
+  '#222222': 'مشکی',
+  '#FFFFFF': 'سفید',
+  '#FAFAFA': 'سفید',
+  '#F5F5F5': 'سفید',
+  '#C86A4B': 'تراکوتا',
+  '#D3D3D3': 'طوسی روشن',
+  '#808080': 'طوسی',
+  '#8B8B8B': 'طوسی',
+  '#A9A9A9': 'طوسی تیره',
+  '#E8D8C8': 'خاکی / کرم',
+  '#F5F5DC': 'کرم',
+  '#7A8B7B': 'سبز صدری',
+  '#4A3525': 'قهوه‌ای سوخته',
+  '#8D5B4C': 'قهوه‌ای',
+  '#8B4513': 'قهوه‌ای',
+  '#A52A2A': 'قهوه‌ای',
+  '#E0A899': 'گلبهی',
+  '#F5EBE6': 'استخوانی',
+  '#FF0000': 'قرمز',
+  '#0000FF': 'آبی',
+  '#008000': 'سبز',
+  '#FFFF00': 'زرد',
+  '#FFA500': 'نارنجی',
+  '#800080': 'بنفش',
+  '#FFC0CB': 'صورتی',
+  '#D4AF37': 'طلایی',
+  '#C0C0C0': 'نقره‌ای',
+};
+
+const ORDINAL_ITEM_NAMES = [
+  'گلدان اول',
+  'گلدان دوم',
+  'گلدان سوم',
+  'گلدان چهارم',
+  'گلدان پنجم',
+  'گلدان ششم',
+  'گلدان هفتم',
+  'گلدان هشتم',
+  'گلدان نهم',
+  'گلدان دهم',
+];
+
+function getColorName(
+  hex: string,
+  optName?: string,
+  globalColors?: Array<{ name: string; hexCode: string }>,
+): string {
+  if (optName && optName.trim()) return optName.trim();
+  const normalized = hex.trim().toUpperCase();
+
+  if (globalColors && globalColors.length > 0) {
+    const found = globalColors.find(
+      (c) => c.hexCode.trim().toUpperCase() === normalized,
+    );
+    if (found && found.name) return found.name;
+  }
+
+  if (DEFAULT_COLOR_NAMES[normalized]) {
+    return DEFAULT_COLOR_NAMES[normalized];
+  }
+
+  let expanded = normalized;
+  if (!expanded.startsWith('#')) expanded = `#${expanded}`;
+  if (/^#([0-9A-F]{3})$/.test(expanded)) {
+    expanded = `#${expanded[1]}${expanded[1]}${expanded[2]}${expanded[2]}${expanded[3]}${expanded[3]}`;
+    if (DEFAULT_COLOR_NAMES[expanded]) return DEFAULT_COLOR_NAMES[expanded];
+  }
+
+  return hex;
+}
 
 type Props = {
   product: {
@@ -26,6 +108,7 @@ type Props = {
   tiers: Tier[];
   isAuthed: boolean;
   allowBatchDiscount?: boolean;
+  globalColors?: Array<{ name: string; hexCode: string }>;
 };
 
 export default function TieredPricing({
@@ -33,23 +116,151 @@ export default function TieredPricing({
   tiers,
   isAuthed,
   allowBatchDiscount,
+  globalColors,
 }: Props) {
   const allowBatch = allowBatchDiscount ?? product.allowBatchDiscount ?? true;
   const bundleSize = Math.max(1, product.bundleSize ?? 1);
   const isBundle = bundleSize > 1;
+  const colorCtx = useProductColor();
 
   const minCount = isBundle
     ? Math.max(1, Math.ceil((product.minOrderQuantity || 1) / bundleSize))
     : Math.max(1, product.minOrderQuantity || 1);
-  const maxCount = isBundle
-    ? Math.max(0, Math.floor(product.stock / bundleSize))
-    : Math.max(0, product.stock);
+
+  const { maxCount, limitingItem } = useMemo(() => {
+    if (!isBundle) {
+      const singleColors = product.colorOptions ?? [];
+      if (singleColors.length > 0 && colorCtx?.selectedColor) {
+        const opt = singleColors.find(
+          (c) => c.hexCode.toUpperCase() === colorCtx.selectedColor?.toUpperCase(),
+        );
+        if (opt) {
+          const colorName = getColorName(opt.hexCode, (opt as any)?.name, globalColors);
+          return {
+            maxCount: Math.max(0, opt.stock),
+            limitingItem: opt.stock < product.stock ? {
+              itemIndex: 0,
+              itemName: product.name,
+              colorName,
+              stock: opt.stock,
+            } : null,
+          };
+        }
+      }
+      return {
+        maxCount: Math.max(0, product.stock),
+        limitingItem: null,
+      };
+    }
+
+    const items = product.bundleItems ?? [];
+    if (items.length === 0) {
+      return {
+        maxCount: Math.max(0, Math.floor(product.stock / bundleSize)),
+        limitingItem: null,
+      };
+    }
+
+    const packageMaxCount = Math.floor(product.stock / bundleSize);
+    let minColorStock = packageMaxCount;
+    let bottleneck: LimitingItem | null = null;
+    let lowestSelectedStock = Infinity;
+
+    for (let idx = 0; idx < items.length; idx++) {
+      const it = items[idx];
+      const itemColors = it.colorOptions ?? [];
+      if (itemColors.length > 0) {
+        const selectedHex = colorCtx?.selectedBundleColors[idx];
+        if (selectedHex) {
+          const opt = itemColors.find(
+            (c) => c.hexCode.toUpperCase() === selectedHex.toUpperCase(),
+          );
+          const s = opt ? opt.stock : 0;
+          if (s < lowestSelectedStock) {
+            lowestSelectedStock = s;
+            const cName = getColorName(selectedHex, (opt as any)?.name, globalColors);
+            const iName = it.title?.trim() || ORDINAL_ITEM_NAMES[idx] || `گلدان ${toFa(idx + 1)}`;
+            bottleneck = {
+              itemIndex: idx,
+              itemName: iName,
+              colorName: cName,
+              stock: s,
+            };
+          }
+          minColorStock = Math.min(minColorStock, s);
+        } else {
+          const maxAvail = Math.max(0, ...itemColors.map((c) => c.stock));
+          minColorStock = Math.min(minColorStock, maxAvail);
+        }
+      }
+    }
+
+    const limitingItem =
+      bottleneck && lowestSelectedStock <= packageMaxCount ? bottleneck : null;
+
+    return {
+      maxCount: Math.max(0, minColorStock),
+      limitingItem,
+    };
+  }, [
+    isBundle,
+    product.bundleItems,
+    product.colorOptions,
+    product.name,
+    product.stock,
+    bundleSize,
+    colorCtx?.selectedBundleColors,
+    colorCtx?.selectedColor,
+    globalColors,
+  ]);
+
+  const maxAllowedQty = isBundle ? maxCount * bundleSize : maxCount;
+  const isColorStockLimited = isBundle
+    ? maxCount < Math.floor(product.stock / bundleSize)
+    : maxCount < product.stock;
 
   const [count, setCount] = useState<number>(minCount);
+  const [colorStockWarning, setColorStockWarning] = useState<string | null>(null);
+  const [shakePlus, setShakePlus] = useState(false);
+  const [limitError, setLimitError] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (limitError) {
+      const timer = setTimeout(() => setLimitError(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [limitError]);
+
+  useEffect(() => {
+    if (shakePlus) {
+      const timer = setTimeout(() => setShakePlus(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [shakePlus]);
+
+  const handleIncrement = () => {
+    if (count >= maxCount) {
+      setShakePlus(true);
+      setLimitError(true);
+      return;
+    }
+    setCount((c) => clamp(c + 1));
+  };
+
+  useEffect(() => {
+    if (isBundle && maxCount > 0 && count > maxCount) {
+      setCount(maxCount);
+      setColorStockWarning('تعداد سفارش به دلیل موجودی رنگ انتخاب شده کاهش یافت.');
+      const timer = setTimeout(() => {
+        setColorStockWarning(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [isBundle, maxCount, count]);
 
   const sorted = useMemo(
     () => [...tiers].sort((a, b) => a.minQuantity - b.minQuantity),
@@ -99,8 +310,6 @@ export default function TieredPricing({
     const val = Math.floor(n) || minCount;
     return Math.max(minCount, Math.min(maxCount, val));
   };
-
-  const colorCtx = useProductColor();
 
   const handleAdd = () => {
     setError(null);
@@ -244,6 +453,133 @@ export default function TieredPricing({
 
   return (
     <div className="space-y-6">
+      {/* For bundles: Swatches for each bundle item before pricing & quantity */}
+      {isBundle &&
+        product.bundleItems &&
+        product.bundleItems.some((it) => (it.colorOptions ?? []).length > 0) && (
+          <div className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-4">
+            <div>
+              <h3 className="text-sm font-black text-soil-900">
+                انتخاب رنگ برای اقلام بسته
+              </h3>
+              <p className="mt-0.5 text-xs text-soil-700/60">
+                برای هر گلدان موجود در این پکیج، رنگ مورد نظر خود را مشخص کنید:
+              </p>
+            </div>
+
+            <div className="space-y-4 divide-y divide-soil-900/5">
+              {product.bundleItems.map((item, idx) => {
+                const itemColors = item.colorOptions ?? [];
+                if (itemColors.length === 0) return null;
+
+                const selectedHex = colorCtx?.selectedBundleColors[idx] ?? null;
+
+                return (
+                  <div key={idx} className={idx > 0 ? 'pt-3.5 space-y-2' : 'space-y-2'}>
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className={`font-bold transition-colors ${
+                          limitingItem?.itemIndex === idx ? 'text-amber-950 font-black' : 'text-soil-900'
+                        }`}>
+                          رنگ {item.title || `گلدان ${toFa(idx + 1)}`}
+                        </span>
+                        {limitingItem?.itemIndex === idx && (
+                          <span
+                            title={`این آیتم سقف سفارش را به ${toFa(limitingItem.stock)} عدد محدود کرده است`}
+                            className="inline-flex items-center gap-1 rounded-full bg-amber-100/90 border border-amber-300/80 px-2 py-0.5 text-[10px] font-bold text-amber-900 shadow-2xs"
+                          >
+                            <span>⚠️</span>
+                            <span>محدودیت موجودی ({toFa(limitingItem.stock)} عدد)</span>
+                          </span>
+                        )}
+                      </div>
+                      {selectedHex ? (
+                        <div className="flex items-center gap-1.5 text-soil-700/80 font-mono text-[11px] dir-ltr">
+                          <span
+                            className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
+                            style={{ backgroundColor: selectedHex }}
+                          />
+                          <span>{selectedHex}</span>
+                        </div>
+                      ) : (
+                        <span className="text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
+                          انتخاب الزامی
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2.5 py-1.5 px-0.5">
+                      {itemColors.map((colorOpt) => {
+                        const hex = colorOpt.hexCode;
+                        const isOutOfStock = colorOpt.stock <= 0;
+                        const isSelected = selectedHex?.toUpperCase() === hex.toUpperCase();
+                        const isLight = (() => {
+                          const clean = hex.replace('#', '');
+                          const r = parseInt(clean.substring(0, 2), 16) || 0;
+                          const g = parseInt(clean.substring(2, 4), 16) || 0;
+                          const b = parseInt(clean.substring(4, 6), 16) || 0;
+                          return (r * 299 + g * 587 + b * 114) / 1000 > 180;
+                        })();
+
+                        return (
+                          <div key={hex} className="flex flex-col items-center gap-1 min-w-[36px]">
+                            <button
+                              type="button"
+                              onClick={() => colorCtx?.setSelectedBundleColor(idx, hex)}
+                              title={`موجودی: ${toFa(colorOpt.stock)} عدد`}
+                              aria-label={`رنگ ${hex}${isOutOfStock ? ' (ناموجود)' : ` - موجودی: ${toFa(colorOpt.stock)} عدد`}`}
+                              className={`group relative size-7 shrink-0 rounded-full transition-all focus:outline-none border border-soil-900/20 ${
+                                isOutOfStock
+                                  ? 'opacity-35 cursor-not-allowed'
+                                  : 'cursor-pointer hover:scale-105'
+                              } ${
+                                isSelected
+                                  ? 'ring-2 ring-flora-700 ring-offset-1 scale-105 shadow-xs'
+                                  : 'shadow-2xs'
+                              }`}
+                              style={{ backgroundColor: hex }}
+                            >
+                              {/* Red diagonal line if out of stock */}
+                              {isOutOfStock && (
+                                <span className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
+                                  <span className="w-[140%] h-[2px] bg-red-600 rotate-45 transform" />
+                                </span>
+                              )}
+                              {isLight && !isSelected && (
+                                <span className="absolute inset-0 rounded-full border border-soil-900/25 pointer-events-none" />
+                              )}
+                              {isSelected && (
+                                <span
+                                  className={`absolute inset-0 flex items-center justify-center ${
+                                    isLight ? 'text-soil-900' : 'text-white'
+                                  }`}
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                </span>
+                              )}
+                            </button>
+                            <span
+                              className={`text-[10px] leading-tight select-none text-center ${
+                                colorOpt.stock > 0
+                                  ? 'text-soil-700/80 font-medium'
+                                  : 'text-red-600 font-bold'
+                              }`}
+                            >
+                              {colorOpt.stock > 0 ? `${toFa(colorOpt.stock)} عدد` : 'ناموجود'}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
       {allowBatch && sorted.length > 0 && (
         <div className="overflow-hidden rounded-2xl border border-soil-900/10 bg-white">
           <table className="w-full text-sm">
@@ -346,17 +682,69 @@ export default function TieredPricing({
               aria-label={isBundle ? 'تعداد بسته سفارش' : 'تعداد سفارش'}
               className="w-16 border-0 bg-transparent text-center text-base font-black text-soil-900 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <button
+            <motion.button
               type="button"
-              onClick={() => setCount((c) => clamp(c + 1))}
-              disabled={count >= maxCount}
+              onClick={handleIncrement}
+              animate={shakePlus ? { x: [-5, 5, -5, 5, -2, 2, 0] } : { x: 0 }}
+              transition={{ duration: 0.35 }}
               aria-label={isBundle ? 'افزایش تعداد بسته' : 'افزایش تعداد'}
-              className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
+              className={`grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 ${
+                count >= maxCount ? 'opacity-40 hover:bg-red-50' : ''
+              }`}
             >
               +
-            </button>
+            </motion.button>
           </div>
         </div>
+
+        <AnimatePresence>
+          {limitError && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="mt-2 text-xs font-bold text-red-600 flex items-center gap-1"
+            >
+              <span>⚠️</span>
+              <span>موجودی کافی نیست</span>
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+        {count >= maxCount && maxCount > 0 && (
+          <div className="mt-2.5 flex flex-col sm:flex-row items-start sm:items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50 px-3.5 py-2.5 text-xs font-semibold text-amber-900 leading-relaxed">
+            <span className="shrink-0 text-sm">⚠️</span>
+            <span className="flex-1 break-words">
+              {limitingItem ? (
+                <>
+                  محدودیت موجودی: رنگ <strong className="font-bold text-amber-950">{limitingItem.colorName}</strong> برای <strong className="font-bold text-amber-950">{limitingItem.itemName}</strong> تنها <strong className="font-bold text-amber-950">{toFa(limitingItem.stock)} عدد</strong> موجود دارد.
+                </>
+              ) : isBundle ? (
+                <>
+                  حداکثر تعداد قابل سفارش با این ترکیب رنگ: {toFa(maxAllowedQty / bundleSize)} بسته است.
+                </>
+              ) : (
+                <>
+                  حداکثر تعداد قابل سفارش: {toFa(maxCount)} عدد است.
+                </>
+              )}
+            </span>
+          </div>
+        )}
+
+        <AnimatePresence>
+          {colorStockWarning && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="mt-2.5 flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2 text-xs font-bold text-amber-800"
+            >
+              <span>ℹ️</span>
+              <span>{colorStockWarning}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {allowBatch && sorted.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
@@ -485,6 +873,13 @@ export default function TieredPricing({
             {tierLabel} — {toFa(percent)}٪ تخفیف، {formatToman(savings)} صرفه‌جویی
           </motion.p>
         )}
+
+        {isColorStockLimited && (
+          <p className="mt-3.5 flex items-center gap-1.5 rounded-xl border border-amber-300/80 bg-amber-50/80 px-3.5 py-2 text-xs font-bold text-amber-800">
+            <span>ℹ️</span>
+            <span>توجه: موجودی رنگهای انتخاب شده محدود است.</span>
+          </p>
+        )}
       </motion.div>
 
       {/* Dynamic Accordion directly below green summary box */}
@@ -587,109 +982,6 @@ export default function TieredPricing({
       })()}
 
       <div className="space-y-4">
-        {/* For bundles: Swatches for each bundle item before adding to cart */}
-        {isBundle &&
-          product.bundleItems &&
-          product.bundleItems.some((it) => (it.colorOptions ?? []).length > 0) && (
-            <div className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-4">
-              <div>
-                <h3 className="text-sm font-black text-soil-900">
-                  انتخاب رنگ برای اقلام بسته
-                </h3>
-                <p className="mt-0.5 text-xs text-soil-700/60">
-                  برای هر گلدان موجود در این پکیج، رنگ مورد نظر خود را مشخص کنید:
-                </p>
-              </div>
-
-              <div className="space-y-4 divide-y divide-soil-900/5">
-                {product.bundleItems.map((item, idx) => {
-                  const itemColors = item.colorOptions ?? [];
-                  if (itemColors.length === 0) return null;
-
-                  const selectedHex = colorCtx?.selectedBundleColors[idx] ?? null;
-
-                  return (
-                    <div key={idx} className={idx > 0 ? 'pt-3.5 space-y-2' : 'space-y-2'}>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-soil-900">
-                          رنگ {item.title || `گلدان ${toFa(idx + 1)}`}
-                        </span>
-                        {selectedHex ? (
-                          <div className="flex items-center gap-1.5 text-soil-700/80 font-mono text-[11px] dir-ltr">
-                            <span
-                              className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
-                              style={{ backgroundColor: selectedHex }}
-                            />
-                            <span>{selectedHex}</span>
-                          </div>
-                        ) : (
-                          <span className="text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
-                            انتخاب الزامی
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap gap-1.5 py-1 px-0.5">
-                        {itemColors.map((colorOpt) => {
-                          const hex = colorOpt.hexCode;
-                          const isOutOfStock = colorOpt.stock <= 0;
-                          const isSelected = selectedHex?.toUpperCase() === hex.toUpperCase();
-                          const isLight = (() => {
-                            const clean = hex.replace('#', '');
-                            const r = parseInt(clean.substring(0, 2), 16) || 0;
-                            const g = parseInt(clean.substring(2, 4), 16) || 0;
-                            const b = parseInt(clean.substring(4, 6), 16) || 0;
-                            return (r * 299 + g * 587 + b * 114) / 1000 > 180;
-                          })();
-
-                          return (
-                            <button
-                              key={hex}
-                              type="button"
-                              onClick={() => colorCtx?.setSelectedBundleColor(idx, hex)}
-                              title={isOutOfStock ? `${hex} (ناموجود)` : hex}
-                              aria-label={`رنگ ${hex}${isOutOfStock ? ' (ناموجود)' : ''}`}
-                              className={`group relative w-6 h-6 shrink-0 rounded-full transition-all focus:outline-none border border-soil-900/20 ${
-                                isOutOfStock
-                                  ? 'opacity-30 cursor-not-allowed'
-                                  : 'cursor-pointer hover:scale-105'
-                              } ${
-                                isSelected
-                                  ? 'ring-2 ring-flora-700 ring-offset-1 scale-105 shadow-xs'
-                                  : 'shadow-2xs'
-                              }`}
-                              style={{ backgroundColor: hex }}
-                            >
-                              {/* Red diagonal line if out of stock */}
-                              {isOutOfStock && (
-                                <span className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
-                                  <span className="w-[140%] h-[2px] bg-red-600 rotate-45 transform" />
-                                </span>
-                              )}
-                              {isLight && !isSelected && (
-                                <span className="absolute inset-0 rounded-full border border-soil-900/25 pointer-events-none" />
-                              )}
-                              {isSelected && (
-                                <span
-                                  className={`absolute inset-0 flex items-center justify-center ${
-                                    isLight ? 'text-soil-900' : 'text-white'
-                                  }`}
-                                >
-                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                  </svg>
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         {/* Selected color summary preview */}
         {!isBundle && colorCtx?.selectedColor && (() => {
           const opt = (product.colorOptions ?? []).find(

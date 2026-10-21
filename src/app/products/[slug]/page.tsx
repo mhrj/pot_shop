@@ -74,7 +74,7 @@ export async function generateStaticParams() {
 export default async function ProductPage({ params }: Params) {
   const { slug } = await params;
 
-  const [product, session] = await Promise.all([
+  const [product, session, globalColors] = await Promise.all([
     prisma.product.findFirst({
       where: { slug, isActive: true },
       include: {
@@ -85,6 +85,9 @@ export default async function ProductPage({ params }: Params) {
       },
     }),
     getSession(),
+    prisma.globalColor.findMany({
+      select: { name: true, hexCode: true },
+    }),
   ]);
 
   if (!product) notFound();
@@ -236,6 +239,7 @@ export default async function ProductPage({ params }: Params) {
                   label: t.label,
                 }))}
                 isAuthed={Boolean(session)}
+                globalColors={globalColors}
               />
             </div>
 

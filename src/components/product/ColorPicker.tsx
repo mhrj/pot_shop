@@ -13,6 +13,8 @@ type Props = {
     bundleSize?: number;
   };
   bundleItems?: BundleItem[] | null;
+  limitingItemIndex?: number | null;
+  limitingStock?: number | null;
 };
 
 // Check if color is light to show dark checkmark or darker border
@@ -31,12 +33,16 @@ function ColorSwatchRow({
   selectedColor,
   onSelect,
   required = false,
+  isLimiting = false,
+  limitingStock,
 }: {
   label: string;
   colors: ColorOption[];
   selectedColor: string | null;
   onSelect: (color: string) => void;
   required?: boolean;
+  isLimiting?: boolean;
+  limitingStock?: number | null;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollStart, setCanScrollStart] = useState(false);
@@ -91,7 +97,16 @@ function ColorSwatchRow({
     <div className="rounded-2xl border border-soil-900/10 bg-white p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-soil-900">{label}</span>
+          <span className={`text-xs font-bold ${isLimiting ? 'text-amber-950 font-black' : 'text-soil-900'}`}>{label}</span>
+          {isLimiting && (
+            <span
+              title={limitingStock !== undefined && limitingStock !== null ? `این آیتم سقف سفارش را به ${toFa(limitingStock)} عدد محدود کرده است` : undefined}
+              className="inline-flex items-center gap-1 rounded-full bg-amber-100/90 border border-amber-300/80 px-2 py-0.5 text-[10px] font-bold text-amber-900 shadow-2xs"
+            >
+              <span>⚠️</span>
+              <span>محدودیت موجودی{limitingStock !== undefined && limitingStock !== null ? ` (${toFa(limitingStock)} عدد)` : ''}</span>
+            </span>
+          )}
           {required && !selectedColor && (
             <span className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
               انتخاب الزامی است
@@ -207,7 +222,12 @@ function ColorSwatchRow({
   );
 }
 
-export default function ColorPicker({ product, bundleItems }: Props) {
+export default function ColorPicker({
+  product,
+  bundleItems,
+  limitingItemIndex,
+  limitingStock,
+}: Props) {
   const colorContext = useProductColor();
   const isBundle = (product.bundleSize ?? 1) > 1 || (bundleItems && bundleItems.length > 0);
 
@@ -278,6 +298,8 @@ export default function ColorPicker({ product, bundleItems }: Props) {
                 selectedColor={selectedBundleColors[idx] ?? null}
                 onSelect={(hex) => setSelectedBundleColor(idx, hex)}
                 required
+                isLimiting={limitingItemIndex === idx}
+                limitingStock={limitingItemIndex === idx ? limitingStock : undefined}
               />
             );
           })}
