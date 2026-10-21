@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getActiveAdmin } from '@/lib/auth';
@@ -84,6 +85,8 @@ export async function POST(req: Request) {
     data: { name, hexCode },
   });
 
+  revalidatePath('/admin/colors');
+  revalidatePath('/admin/products');
   return NextResponse.json({ ok: true, color });
 }
 
@@ -114,5 +117,7 @@ export async function DELETE(req: Request) {
   }
 
   await prisma.globalColor.delete({ where: { id } });
+  revalidatePath('/admin/colors');
+  revalidatePath('/admin/products');
   return NextResponse.json({ ok: true });
 }

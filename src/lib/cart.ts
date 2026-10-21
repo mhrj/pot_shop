@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { priceCart, type CartTotals, type Tier } from '@/lib/pricing';
 import { parseBundleItems, parseColorOptions } from '@/lib/product-features';
+import { toFa } from '@/lib/format';
 
 export function getStockShortages(
   items: Array<{ name: string; quantity: number; stock: number }>,
@@ -85,11 +86,11 @@ export async function addToCart(
     : (product.minOrderQuantity || 1);
 
   if (quantity < minQty) {
-    throw new Error(`حداقل تعداد سفارش برای این محصول ${minQty} عدد است`);
+    throw new Error(`حداقل تعداد سفارش برای این محصول ${toFa(minQty)} عدد است`);
   }
 
   if (isBundle && quantity % bundleSize !== 0) {
-    throw new Error(`تعداد سفارش باید مضربی از ${bundleSize} باشد`);
+    throw new Error(`تعداد سفارش باید مضربی از ${toFa(bundleSize)} باشد`);
   }
 
   // Validate the resulting line, not just this increment: adding 10 to a cart
@@ -105,7 +106,7 @@ export async function addToCart(
   if (product.stock < target) {
     throw new Error(
       existing
-        ? `موجودی کافی نیست — ${existing.quantity} عدد در سبد شماست و حداکثر موجودی ${product.stock} عدد است`
+        ? `موجودی کافی نیست — ${toFa(existing.quantity)} عدد در سبد شماست و حداکثر موجودی ${toFa(product.stock)} عدد است`
         : 'موجودی کافی نیست',
     );
   }
@@ -121,7 +122,7 @@ export async function addToCart(
         (c) => c.hexCode.toUpperCase() === chosenHex.toUpperCase(),
       );
       if (opt && opt.stock < target) {
-        throw new Error(`موجودی رنگ ${opt.hexCode} کافی نیست (موجودی: ${opt.stock} عدد)`);
+        throw new Error(`موجودی رنگ ${opt.hexCode} کافی نیست (موجودی: ${toFa(opt.stock)} عدد)`);
       }
     }
   } else if (colorData?.bundleColors) {
@@ -141,7 +142,7 @@ export async function addToCart(
         );
         if (opt && opt.stock < bundleCount) {
           throw new Error(
-            `موجودی رنگ ${opt.hexCode} برای ${it.title} کافی نیست (موجودی: ${opt.stock} عدد)`,
+            `موجودی رنگ ${opt.hexCode} برای ${it.title} کافی نیست (موجودی: ${toFa(opt.stock)} عدد)`,
           );
         }
       }

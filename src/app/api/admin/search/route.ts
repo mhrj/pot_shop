@@ -44,6 +44,9 @@ export async function GET(req: Request) {
           { orderNumber: { contains: q, mode: 'insensitive' } },
           { id: { contains: q, mode: 'insensitive' } },
           { refId: { contains: q, mode: 'insensitive' } },
+          { shipPhone: { contains: q, mode: 'insensitive' } },
+          { shipFullName: { contains: rawQ, mode: 'insensitive' } },
+          { user: { fullName: { contains: rawQ, mode: 'insensitive' } } },
         ],
       },
       select: {

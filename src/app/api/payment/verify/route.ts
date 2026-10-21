@@ -46,8 +46,14 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const authority = url.searchParams.get('Authority');
   const status = url.searchParams.get('Status');
-  const origin = req.headers.get('origin') || url.origin;
-  const appUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_APP_URL! : origin;
+  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || url.host;
+  const proto = req.headers.get('x-forwarded-proto') || (url.protocol ? url.protocol.replace(':', '') : 'http');
+  const hostOrigin = `${proto}://${host}`;
+  const origin = req.headers.get('origin') || hostOrigin;
+  const appUrl =
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_APP_URL
+      ? process.env.NEXT_PUBLIC_APP_URL
+      : origin;
 
   const fail = (reason: string, orderNumber?: string) => {
     const target = new URL('/checkout/failed', appUrl);

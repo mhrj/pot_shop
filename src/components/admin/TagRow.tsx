@@ -111,7 +111,9 @@ export default function TagRow({ tag }: Props) {
         <div>
           <div className="flex items-center gap-2">
             <p className="font-bold text-soil-900">{tag.name}</p>
-            <span className="font-mono text-[11px] text-soil-700/50 dir-ltr">({tag.slug})</span>
+            {tag.slug.toLowerCase() !== tag.name.toLowerCase() && (
+              <span className="font-mono text-[11px] text-soil-700/50 dir-ltr">({tag.slug})</span>
+            )}
           </div>
           <p className="mt-1 text-xs text-soil-700/60">
             {toFa(tag._count.products)} محصول مرتبط
