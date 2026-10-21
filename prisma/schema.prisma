@@ -417,4 +417,15 @@ model GlobalColor {
   @@index([name])
 }
 
+model PageView {
+  id        String   @id @default(cuid())
+  path      String   // The URL path (e.g., "/products/slug")
+  ipHash    String   // SHA-256 hash of IP + User-Agent + daily salt for unique visitors
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path, createdAt])
+}
+
+
 

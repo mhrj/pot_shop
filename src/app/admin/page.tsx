@@ -10,14 +10,51 @@ import {
 import StatusBadge from '@/components/ui/StatusBadge';
 import LandingImageManager from '@/components/admin/LandingImageManager';
 import SalesChart from '@/components/admin/SalesChart';
+import VisitsChart from '@/components/admin/VisitsChart';
+
+export const revalidate = 300;
 
 const WINDOW_DAYS = 90;
+
+function formatPathLabel(path: string): string {
+  if (path === '/') return 'صفحه اصلی';
+  if (path === '/products') return 'کاتالوگ محصولات';
+  if (path === '/cart') return 'سبد خرید';
+  if (path === '/about') return 'درباره ما';
+  if (path === '/checkout') return 'تسویه‌حساب';
+  if (path.startsWith('/products/')) {
+    const slug = path.replace('/products/', '');
+    return `محصول: ${slug}`;
+  }
+  return path;
+}
 
 export default async function AdminPage() {
   await requireAdmin();
 
   const windowStart = new Date();
   windowStart.setDate(windowStart.getDate() - WINDOW_DAYS);
+
+  // Generate 7 trailing days for visitor stats
+  const today = new Date();
+  const trailingDays: { key: string; label: string; start: Date; end: Date }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    d.setHours(0, 0, 0, 0);
+    const end = new Date(d);
+    end.setHours(23, 59, 59, 999);
+    const key = d.toISOString().split('T')[0];
+    const label = new Intl.DateTimeFormat('fa-IR', {
+      weekday: 'short',
+      month: 'numeric',
+      day: 'numeric',
+    }).format(d);
+    trailingDays.push({ key, label, start: d, end });
+  }
+
+  const sevenDaysStart = trailingDays[0].start;
+  const todayStart = trailingDays[6].start;
 
   const [
     revenue,
@@ -29,6 +66,11 @@ export default async function AdminPage() {
     topProducts,
     recentOrders,
     landingImages,
+    // Analytics queries
+    totalViewsCount,
+    todayVisitorsGroups,
+    recentPageViews,
+    topPagesGroups,
   ] = await Promise.all([
     // Revenue counts verified payments only.
     prisma.order.aggregate({
@@ -81,7 +123,46 @@ export default async function AdminPage() {
       orderBy: { key: 'asc' },
       select: { key: true, url: true, alt: true },
     }),
+    // 1. Total page views
+    prisma.pageView.count(),
+    // 2. Unique visitors today (distinct ipHash)
+    prisma.pageView.groupBy({
+      by: ['ipHash'],
+      where: { createdAt: { gte: todayStart } },
+    }),
+    // 3. Views for trailing 7 days
+    prisma.pageView.findMany({
+      where: { createdAt: { gte: sevenDaysStart } },
+      select: { createdAt: true, ipHash: true },
+    }),
+    // 4. Top 5 pages
+    prisma.pageView.groupBy({
+      by: ['path'],
+      _count: { path: true },
+      orderBy: { _count: { path: 'desc' } },
+      take: 5,
+    }),
   ]);
+
+  const uniqueVisitorsTodayCount = todayVisitorsGroups.length;
+
+  const dailyVisitsPoints = trailingDays.map((td) => {
+    const dayViews = recentPageViews.filter(
+      (v) => v.createdAt >= td.start && v.createdAt <= td.end,
+    );
+    const uniqueSet = new Set(dayViews.map((v) => v.ipHash));
+    return {
+      key: td.key,
+      label: td.label,
+      viewsCount: dayViews.length,
+      uniqueVisitors: uniqueSet.size,
+    };
+  });
+
+  const topPages = topPagesGroups.map((p) => ({
+    path: p.path,
+    count: p._count.path,
+  }));
 
   const orders = windowOrders as ReportingOrder[];
   const channels = summarizeChannels(orders);
@@ -116,10 +197,124 @@ export default async function AdminPage() {
     <div>
       <h1 className="text-2xl font-black text-soil-900">پنل مدیریت</h1>
       <p className="mt-2 text-sm text-soil-700/70">
-        مدیریت محصولات، سفارش‌ها و تراکنش‌های زرین‌پال
+        مدیریت محصولات، سفارش‌ها و ترافیک فروشگاه
       </p>
 
-      <dl className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {/* ── Visitor & Traffic Analytics Section ── */}
+      <section className="mt-8 rounded-3xl border border-soil-900/10 bg-dust-50/70 p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-black text-soil-900">آمار و ترافیک بازدیدکنندگان</h2>
+            <p className="mt-1 text-xs text-soil-700/60">
+              سیستم آمارگیر بومی و مستقل از گوگل آنالیتیکس (با رعایت حریم خصوصی)
+            </p>
+          </div>
+          <span className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-800 border border-flora-300">
+            بروزرسانی ۵ دقیقه‌ای
+          </span>
+        </div>
+
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-soil-900/10 bg-white p-5 flex items-center justify-between shadow-2xs">
+            <div>
+              <p className="text-xs text-soil-700/70 font-medium">کل بازدیدهای سایت (Page Views)</p>
+              <p className="mt-2 text-2xl font-black text-soil-900">{toFa(totalViewsCount)}</p>
+              <p className="mt-1 text-[11px] text-soil-700/50">مجموع تمام صفحات دیده شده</p>
+            </div>
+            <div className="size-12 rounded-xl bg-flora-50 border border-flora-200/60 flex items-center justify-center text-flora-700 shrink-0">
+              <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-soil-900/10 bg-white p-5 flex items-center justify-between shadow-2xs">
+            <div>
+              <p className="text-xs text-soil-700/70 font-medium">کاربران یکتای امروز (Unique Visitors)</p>
+              <p className="mt-2 text-2xl font-black text-flora-700">{toFa(uniqueVisitorsTodayCount)}</p>
+              <p className="mt-1 text-[11px] text-soil-700/50">بر اساس آی‌پی هش‌شده روزانه</p>
+            </div>
+            <div className="size-12 rounded-xl bg-dust-100 border border-dust-300 flex items-center justify-center text-dust-500 shrink-0">
+              <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <VisitsChart points={dailyVisitsPoints} />
+          </div>
+
+          <div className="rounded-2xl border border-soil-900/10 bg-white p-6 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between border-b border-soil-900/10 pb-3">
+                <div>
+                  <h3 className="text-base font-black text-soil-900">۵ صفحه پربازدید</h3>
+                  <p className="mt-1 text-xs text-soil-700/60">محبوب‌ترین صفحات سایت</p>
+                </div>
+                <span className="text-xs font-bold text-soil-500">رتبه‌بندی</span>
+              </div>
+
+              {topPages.length === 0 ? (
+                <p className="mt-6 text-center text-xs text-soil-700/60 py-8">
+                  هنوز بازدیدی برای صفحات ثبت نشده است.
+                </p>
+              ) : (
+                <div className="mt-4 space-y-3">
+                  {topPages.map((page, idx) => {
+                    const maxPageViews = topPages[0]?.count || 1;
+                    const pct = Math.max(8, Math.round((page.count / maxPageViews) * 100));
+                    return (
+                      <div
+                        key={page.path}
+                        className="group rounded-xl border border-soil-900/5 bg-dust-50/60 p-3 transition hover:bg-dust-100"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-flora-100 text-[10px] font-bold text-flora-800">
+                              {toFa(idx + 1)}
+                            </span>
+                            <div className="min-w-0">
+                              <Link
+                                href={page.path}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block font-bold text-xs text-soil-900 hover:text-flora-700 truncate"
+                              >
+                                {formatPathLabel(page.path)}
+                              </Link>
+                              <span className="block font-mono text-[10px] text-soil-700/50 truncate" dir="ltr">
+                                {page.path}
+                              </span>
+                            </div>
+                          </div>
+                          <span className="shrink-0 text-xs font-bold text-soil-900">
+                            {toFa(page.count)}{' '}
+                            <span className="text-[10px] text-soil-700/60 font-normal">بازدید</span>
+                          </span>
+                        </div>
+                        <div className="mt-2 h-1.5 w-full rounded-full bg-soil-900/5 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-flora-700/70 transition-all duration-300 group-hover:bg-flora-700"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Financial & Order Metrics ── */}
+      <h2 className="mt-10 text-lg font-black text-soil-900">عملکرد فروش و سفارش‌ها</h2>
+      <dl className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => (
           <div key={s.k} className="rounded-2xl border border-soil-900/10 bg-white p-5">
             <dt className="text-xs text-soil-700/70">{s.k}</dt>

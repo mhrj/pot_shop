@@ -4,6 +4,7 @@ import './globals.css';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import PersianChatbot from '@/components/chatbot/PersianChatbot';
+import PageViewTracker from '@/components/analytics/PageViewTracker';
 import { getContentMap } from '@/lib/content';
 import { toFa } from '@/lib/format';
 
@@ -66,6 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           `/login`) leaves the footer floating mid-screen with dead space below
           it, because the body is only as tall as its content. */}
       <body className="flex min-h-dvh flex-col bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950">
+        <PageViewTracker />
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <footer className="border-t border-soil-900/10 bg-white/80 print:hidden no-print">
