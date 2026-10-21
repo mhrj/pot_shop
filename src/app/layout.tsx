@@ -68,7 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="flex min-h-dvh flex-col bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950">
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
-        <footer className="border-t border-soil-900/10 bg-white/80">
+        <footer className="border-t border-soil-900/10 bg-white/80 print:hidden no-print">
           <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
             {/* Three columns on desktop, stacked on mobile. The contact column is
                 skipped entirely when every key is empty, rather than rendering a

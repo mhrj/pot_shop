@@ -170,26 +170,22 @@
   }
 }
 
-@media print {
-  header,
-  footer,
-  aside,
-  nav:not(.invoice-nav),
-  .print\:hidden {
-    display: none !important;
-  }
+@page {
+  size: A4;
+  margin: 10mm;
+}
 
+@media print {
   body {
     background-color: #ffffff !important;
     color: #1a1a1a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
-
-  main,
-  .lg\:col-span-9,
-  .lg\:col-span-12 {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  /* Hide the chat widget, sidebars, and headers on print */
+  .no-print,
+  .print\:hidden {
+    display: none !important;
   }
 }
+

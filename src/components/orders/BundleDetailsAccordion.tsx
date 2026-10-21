@@ -112,25 +112,25 @@ export default function BundleDetailsAccordion({
   }
 
   return (
-    <details className={`group mt-2 rounded-xl border border-soil-900/10 bg-dust-50/60 p-2.5 text-xs transition ${className}`}>
-      <summary className="flex cursor-pointer select-none items-center justify-between font-bold text-soil-800 hover:text-flora-800 list-none [&::-webkit-details-marker]:hidden">
+    <details className={`group mt-2 rounded-xl border border-soil-900/10 bg-dust-50/60 p-2.5 text-xs transition print:mt-0.5 print:p-0 print:border-none print:bg-transparent print:text-[9px] ${className}`}>
+      <summary className="flex cursor-pointer select-none items-center justify-between font-bold text-soil-800 hover:text-flora-800 list-none [&::-webkit-details-marker]:hidden print:text-[9px]">
         <span className="flex items-center gap-1.5">
           <svg
-            className="size-3.5 text-soil-500 transition-transform duration-200 group-open:rotate-180"
+            className="size-3.5 text-soil-500 transition-transform duration-200 group-open:rotate-180 print:hidden"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
-          <span className="text-xs">مشاهده جزئیات این بسته</span>
+          <span className="text-xs print:text-[9px]">مشاهده جزئیات این بسته</span>
         </span>
-        <span className="text-[11px] font-normal text-soil-700/60 group-open:hidden">
+        <span className="text-[11px] font-normal text-soil-700/60 group-open:hidden print:inline print:text-[9px]">
           ({toFa(itemsList.length)} قلم)
         </span>
       </summary>
 
-      <div className="mt-2.5 space-y-1.5 border-t border-soil-900/10 pt-2.5">
+      <div className="mt-2.5 space-y-1.5 border-t border-soil-900/10 pt-2.5 print:hidden">
         {itemsList.map((bItem, idx) => {
           const chosen = bundleColors[idx] ?? bundleColors[String(idx)];
           const hex = chosen?.hex || null;

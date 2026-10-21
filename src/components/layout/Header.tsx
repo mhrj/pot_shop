@@ -25,7 +25,7 @@ export default async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-soil-900/10 bg-dust-50/90 backdrop-blur supports-[backdrop-filter]:bg-dust-50/75">
+    <header className="sticky top-0 z-40 border-b border-soil-900/10 bg-dust-50/90 backdrop-blur supports-[backdrop-filter]:bg-dust-50/75 print:hidden no-print">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-8">
         <div className="flex items-center gap-5">
           <Link href="/" className="text-lg font-black text-soil-900">

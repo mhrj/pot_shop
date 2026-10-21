@@ -56,16 +56,16 @@ export default async function AdminOrderDetailPage({ params }: Props) {
   const currentIndex = (TIMELINE as readonly string[]).indexOf(status);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-soil-900/10 pb-5">
+    <div className="space-y-6 print:space-y-2 print:max-w-full print:p-0 print:m-0">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-soil-900/10 pb-5 print:pb-2 print:gap-2">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-soil-700/70">سفارش شماره:</span>
-            <h1 className="font-mono text-2xl font-black text-soil-900">
+            <span className="text-xs text-soil-700/70 print:text-[11px]">سفارش شماره:</span>
+            <h1 className="font-mono text-2xl font-black text-soil-900 print:text-lg">
               {toFa(order.orderNumber)}
             </h1>
           </div>
-          <p className="mt-1 text-xs text-soil-700/70">
+          <p className="mt-1 text-xs text-soil-700/70 print:text-[10px]">
             تاریخ ثبت: {formatDateFa(order.createdAt)}
           </p>
         </div>
@@ -76,11 +76,11 @@ export default async function AdminOrderDetailPage({ params }: Props) {
       </div>
 
       {isCanceled ? (
-        <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
+        <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700 print:mt-2 print:p-2">
           این سفارش لغو شده است.
         </p>
       ) : (
-        <ol className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+        <ol className="grid gap-3 grid-cols-2 sm:grid-cols-4 print:flex print:flex-row print:justify-between print:gap-2 print:p-1.5 print:rounded-lg print:border print:border-soil-900/10 print:bg-dust-50/50 print:text-xs">
           {TIMELINE.map((step, index) => {
             const isCurrent = index === currentIndex;
             const isDone = currentIndex >= 0 && index < currentIndex;
@@ -94,26 +94,21 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                     ? 'border-flora-600 bg-flora-50 text-flora-950 ring-2 ring-flora-500/20'
                     : isDone
                       ? 'border-flora-200 bg-flora-100/70 text-flora-800'
-                      : 'border-soil-900/10 bg-white text-soil-700/40')
+                      : 'border-soil-900/10 bg-white text-soil-700/40') +
+                  ' print:border-none print:bg-transparent print:p-0 print:shadow-none print:ring-0 print:text-[10px]'
                 }
               >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] opacity-75">مرحله {toFa(index + 1)}</span>
-                  {isDone && (
-                    <span className="flex size-4 items-center justify-center rounded-full bg-flora-700 text-[10px] text-white">
-                      ✓
+                <div className="flex items-center justify-between mb-1 print:mb-0 print:inline-flex print:gap-1">
+                  <span className="text-[10px] print:text-[9px] opacity-75">
+                    {isDone ? '✓ ' : ''}مرحله {toFa(index + 1)}:
+                  </span>
+                  <span className="text-xs font-black print:text-[10px]">{ORDER_STATUS_LABELS[step]}</span>
+                  {isCurrent && (
+                    <span className="mt-0.5 inline-block text-[10px] print:text-[9px] font-medium text-flora-700 print:mt-0">
+                      (کنونی)
                     </span>
                   )}
-                  {isCurrent && (
-                    <span className="size-2 rounded-full bg-flora-600 animate-ping" />
-                  )}
                 </div>
-                <p className="text-xs font-black">{ORDER_STATUS_LABELS[step]}</p>
-                {isCurrent && (
-                  <span className="mt-0.5 inline-block text-[10px] font-medium text-flora-700">
-                    وضعیت کنونی
-                  </span>
-                )}
               </li>
             );
           })}
@@ -121,7 +116,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
       )}
 
       {order.note && (
-        <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+        <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950 print:p-2 print:text-xs">
           <div className="flex items-center gap-2 font-black text-amber-900 mb-1">
             <svg className="size-4 shrink-0 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
@@ -132,50 +127,50 @@ export default async function AdminOrderDetailPage({ params }: Props) {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2">
+      <div className="grid gap-6 lg:grid-cols-2 print:grid print:grid-cols-3 print:gap-2 print:mt-2">
+        <section className="rounded-2xl border border-soil-900/10 bg-white p-5 print:p-2 print:shadow-none print:border print:border-soil-900/10 print:text-[10px]">
+          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2 print:text-xs print:pb-1">
             اطلاعات مشتری
           </h2>
-          <dl className="mt-3 space-y-2 text-sm">
+          <dl className="mt-3 space-y-2 text-sm print:mt-1 print:space-y-1 print:text-[10px]">
             <div className="flex justify-between gap-3">
               <dt className="text-soil-700/70">نام</dt>
               <dd className="font-bold text-soil-900">{order.user.fullName ?? '—'}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-soil-700/70">موبایل</dt>
-              <dd className="font-mono text-xs text-soil-900 font-bold" dir="ltr">
+              <dd className="font-mono text-xs text-soil-900 font-bold print:text-[10px]" dir="ltr">
                 {toFa(order.user.phone ?? order.shipPhone ?? '—')}
               </dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-soil-700/70">ایمیل</dt>
-              <dd className="font-mono text-xs text-soil-900" dir="ltr">
+              <dd className="font-mono text-xs text-soil-900 print:text-[10px]" dir="ltr">
                 {order.user.email ?? '—'}
               </dd>
             </div>
           </dl>
         </section>
 
-        <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2">
+        <section className="rounded-2xl border border-soil-900/10 bg-white p-5 print:p-2 print:shadow-none print:border print:border-soil-900/10 print:text-[10px]">
+          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2 print:text-xs print:pb-1">
             آدرس ارسال
           </h2>
-          <p className="mt-3 text-sm leading-7 text-soil-700/85">
+          <p className="mt-3 text-sm leading-7 text-soil-700/85 print:mt-1 print:text-[10px] print:leading-4">
             {order.shipFullName}<br />
             {order.shipProvince}، {order.shipCity}، {order.shipLine1}
             {order.shipLine2 ? '، ' + order.shipLine2 : ''}<br />
-            <span className="text-xs text-soil-700/60" dir="ltr">
+            <span className="text-xs text-soil-700/60 print:text-[9px]" dir="ltr">
               {toFa(order.shipPhone)} · کد پستی: {toFa(order.shipPostalCode)}
             </span>
           </p>
         </section>
 
-        <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2">
+        <section className="rounded-2xl border border-soil-900/10 bg-white p-5 print:p-2 print:shadow-none print:border print:border-soil-900/10 print:text-[10px]">
+          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2 print:text-xs print:pb-1">
             اطلاعات پرداخت
           </h2>
-          <dl className="mt-3 space-y-2 text-sm">
+          <dl className="mt-3 space-y-2 text-sm print:mt-1 print:space-y-1 print:text-[10px]">
             <div className="flex justify-between gap-3">
               <dt className="text-soil-700/70">وضعیت پرداخت</dt>
               <dd><StatusBadge kind="payment" value={order.paymentStatus} /></dd>
@@ -186,24 +181,24 @@ export default async function AdminOrderDetailPage({ params }: Props) {
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-soil-700/70">کد پیگیری شاپرک</dt>
-              <dd className="font-mono text-xs" dir="ltr">
+              <dd className="font-mono text-xs print:text-[10px]" dir="ltr">
                 {order.refId ? toFa(order.refId) : '—'}
               </dd>
             </div>
             {order.paidAt && (
               <div className="flex justify-between gap-3">
                 <dt className="text-soil-700/70">زمان پرداخت</dt>
-                <dd className="text-xs">{formatDateFa(order.paidAt)}</dd>
+                <dd className="text-xs print:text-[10px]">{formatDateFa(order.paidAt)}</dd>
               </div>
             )}
           </dl>
         </section>
 
-        <section className="rounded-2xl border border-soil-900/10 bg-white p-5 lg:col-span-2">
-          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2">
+        <section className="rounded-2xl border border-soil-900/10 bg-white p-5 lg:col-span-2 print:col-span-3 print:p-2 print:shadow-none print:border print:border-soil-900/10">
+          <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2 print:text-xs print:pb-1">
             اقلام سفارش
           </h2>
-          <div className="mt-4 divide-y divide-soil-900/10">
+          <div className="mt-4 divide-y divide-soil-900/10 print:mt-1">
             {order.items.map((i) => {
               const specs = renderItemSpecs(i);
               const bundleSize = i.bundleSize && i.bundleSize > 1 ? i.bundleSize : 1;
@@ -214,41 +209,41 @@ export default async function AdminOrderDetailPage({ params }: Props) {
               return (
                 <div
                   key={i.id}
-                  className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between print:flex-row print:items-center print:justify-between print:py-1 print:gap-2 print:break-inside-avoid"
                 >
-                  <div className="flex items-start sm:items-center gap-4">
+                  <div className="flex items-start sm:items-center gap-4 print:gap-2">
                     {i.imageUrl ? (
                       <img
                         src={i.imageUrl}
                         alt={i.productName}
-                        className="w-20 h-20 rounded-xl object-cover shrink-0 border border-soil-900/10 shadow-2xs"
+                        className="w-20 h-20 rounded-xl object-cover shrink-0 border border-soil-900/10 shadow-2xs print:w-10 print:h-10 print:rounded-md"
                       />
                     ) : (
-                      <div className="w-20 h-20 rounded-xl bg-dust-100 border border-soil-900/10 flex items-center justify-center text-soil-700/40 shrink-0">
-                        <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <div className="w-20 h-20 rounded-xl bg-dust-100 border border-soil-900/10 flex items-center justify-center text-soil-700/40 shrink-0 print:w-10 print:h-10 print:rounded-md">
+                        <svg className="w-7 h-7 print:w-5 print:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                       </div>
                     )}
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 print:space-y-0.5 print:text-[10px]">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Link
                           href={`/products/${i.productSlug}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-bold text-soil-900 hover:text-flora-700 transition"
+                          className="font-bold text-soil-900 hover:text-flora-700 transition print:text-xs"
                         >
                           {i.productName}
                         </Link>
                         {isBundle && (
-                          <span className="inline-flex items-center rounded-md bg-flora-100 px-2 py-0.5 text-[11px] font-bold text-flora-800 border border-flora-300">
+                          <span className="inline-flex items-center rounded-md bg-flora-100 px-2 py-0.5 text-[11px] font-bold text-flora-800 border border-flora-300 print:text-[9px] print:px-1.5 print:py-0">
                             شامل {toFa(bundleSize)} عدد گلدان
                           </span>
                         )}
                       </div>
 
                       {i.sku && (
-                        <p className="text-xs text-soil-700/60">
+                        <p className="text-xs text-soil-700/60 print:text-[9px]">
                           کد کالا:{' '}
                           <span className="font-mono font-medium" dir="ltr">
                             {i.sku}
@@ -256,7 +251,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                         </p>
                       )}
 
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-soil-700/75">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-soil-700/75 print:text-[9px]">
                         {specs && <span>{specs}</span>}
                         {!isBundle && <ItemColorBadge colorData={i.colorData} />}
                       </div>
@@ -269,7 +264,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                         />
                       )}
 
-                      <div className="flex items-center gap-2 flex-wrap text-xs text-soil-700/80">
+                      <div className="flex items-center gap-2 flex-wrap text-xs text-soil-700/80 print:text-[9px]">
                         <p>
                           {isBundle ? (
                             <>
@@ -288,7 +283,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                           )}
                         </p>
                         {i.tierLabel && (
-                          <span className="rounded-md bg-flora-50 px-2 py-0.5 text-[11px] font-medium text-flora-800 border border-flora-200/60">
+                          <span className="rounded-md bg-flora-50 px-2 py-0.5 text-[11px] font-medium text-flora-800 border border-flora-200/60 print:text-[9px]">
                             سطح: {i.tierLabel}
                           </span>
                         )}
@@ -296,9 +291,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-soil-900/5 pt-2 sm:pt-0 shrink-0">
+                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-soil-900/5 pt-2 sm:pt-0 shrink-0 print:border-0 print:pt-0">
                     <span className="text-xs text-soil-700/60 sm:hidden">مبلغ کل:</span>
-                    <p className="font-bold text-flora-900 text-sm sm:text-base">
+                    <p className="font-bold text-flora-900 text-sm sm:text-base print:text-xs">
                       {formatToman(i.lineTotalToman)}
                     </p>
                   </div>
@@ -309,7 +304,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
         </section>
       </div>
 
-      <div className="print:hidden">
+      <div className="print:hidden no-print">
         <OrderStatusForm
           orderId={order.id}
           initialStatus={order.status}

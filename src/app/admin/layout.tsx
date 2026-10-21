@@ -14,9 +14,9 @@ const NAV = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8">
-      <div className="grid gap-8 lg:grid-cols-12">
-        <aside className="lg:col-span-3">
+    <div className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 print:max-w-full print:p-0 print:m-0">
+      <div className="grid gap-8 lg:grid-cols-12 print:block">
+        <aside className="lg:col-span-3 print:hidden no-print">
           <nav className="sticky top-6 rounded-2xl border border-soil-900/10 bg-white p-4">
             <p className="px-3 pb-3 text-[11px] font-bold uppercase tracking-wider text-soil-700/50">
               پنل مدیریت
@@ -36,7 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </ul>
           </nav>
         </aside>
-        <main className="lg:col-span-9">{children}</main>
+        <main className="lg:col-span-9 print:w-full print:p-0 print:m-0">{children}</main>
       </div>
     </div>
   );

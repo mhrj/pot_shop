@@ -100,7 +100,7 @@ export default function PersianChatbot() {
   };
 
   return (
-    <>
+    <div className="print:hidden no-print">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -230,6 +230,6 @@ export default function PersianChatbot() {
           </motion.aside>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }
