@@ -8,6 +8,7 @@ import OrderStatusForm from '@/components/admin/OrderStatusForm';
 import StatusBadge from '@/components/ui/StatusBadge';
 import ItemColorBadge from '@/components/ui/ItemColorBadge';
 import PrintInvoiceButton from '@/components/orders/PrintInvoiceButton';
+import BundleDetailsAccordion from '@/components/orders/BundleDetailsAccordion';
 import { isOrderStatus, ORDER_STATUS_LABELS, TIMELINE } from '@/lib/orders';
 
 type Props = { params: Promise<{ id: string }> };
@@ -37,7 +38,15 @@ export default async function AdminOrderDetailPage({ params }: Props) {
     where: { id },
     include: {
       user: { select: { fullName: true, phone: true, email: true } },
-      items: true,
+      items: {
+        include: {
+          product: {
+            select: {
+              bundleItems: true,
+            },
+          },
+        },
+      },
     },
   });
   if (!order) notFound();
@@ -197,15 +206,10 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           <div className="mt-4 divide-y divide-soil-900/10">
             {order.items.map((i) => {
               const specs = renderItemSpecs(i);
-              const isBundle = Boolean(
-                i.isBundle ||
-                (i.bundleSize && i.bundleSize > 1) ||
-                (i.tierLabel && i.tierLabel.includes('ست')) ||
-                (typeof i.colorData === 'object' &&
-                  i.colorData &&
-                  'bundleColors' in (i.colorData as Record<string, unknown>))
-              );
-              const bundleCount = i.bundleSize && i.bundleSize > 1 ? i.bundleSize : 2;
+              const bundleSize = i.bundleSize && i.bundleSize > 1 ? i.bundleSize : 1;
+              const isBundle = bundleSize > 1;
+              const displayQty = isBundle ? Math.round(i.quantity / bundleSize) : i.quantity;
+              const displayUnitPrice = isBundle ? i.unitToman * bundleSize : i.unitToman;
 
               return (
                 <div
@@ -238,27 +242,57 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                         </Link>
                         {isBundle && (
                           <span className="inline-flex items-center rounded-md bg-flora-100 px-2 py-0.5 text-[11px] font-bold text-flora-800 border border-flora-300">
-                            شامل {toFa(bundleCount)} عدد گلدان
+                            شامل {toFa(bundleSize)} عدد گلدان
                           </span>
                         )}
+                      </div>
+
+                      {i.sku && (
+                        <p className="text-xs text-soil-700/60">
+                          کد کالا:{' '}
+                          <span className="font-mono font-medium" dir="ltr">
+                            {i.sku}
+                          </span>
+                        </p>
+                      )}
+
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-soil-700/75">
+                        {specs && <span>{specs}</span>}
+                        {!isBundle && <ItemColorBadge colorData={i.colorData} />}
+                      </div>
+
+                      {isBundle && (
+                        <BundleDetailsAccordion
+                          bundleSize={bundleSize}
+                          colorData={i.colorData}
+                          productBundleItems={i.product?.bundleItems}
+                        />
+                      )}
+
+                      <div className="flex items-center gap-2 flex-wrap text-xs text-soil-700/80">
+                        <p>
+                          {isBundle ? (
+                            <>
+                              {toFa(displayQty)} بسته × {formatToman(displayUnitPrice)} ={' '}
+                              <span className="font-bold text-soil-900">
+                                {formatToman(i.lineTotalToman)}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {toFa(displayQty)} عدد × {formatToman(displayUnitPrice)} ={' '}
+                              <span className="font-bold text-soil-900">
+                                {formatToman(i.lineTotalToman)}
+                              </span>
+                            </>
+                          )}
+                        </p>
                         {i.tierLabel && (
-                          <span className="rounded-md bg-flora-50 px-2 py-0.5 text-xs font-medium text-flora-800 border border-flora-200/60">
+                          <span className="rounded-md bg-flora-50 px-2 py-0.5 text-[11px] font-medium text-flora-800 border border-flora-200/60">
                             سطح: {i.tierLabel}
                           </span>
                         )}
                       </div>
-
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-soil-700/75">
-                        {specs && <span>{specs}</span>}
-                        <ItemColorBadge colorData={i.colorData} />
-                      </div>
-
-                      <p className="text-xs text-soil-700/80">
-                        {toFa(i.quantity)} عدد × {formatToman(i.unitToman)} ={' '}
-                        <span className="font-bold text-soil-900">
-                          {formatToman(i.lineTotalToman)}
-                        </span>
-                      </p>
                     </div>
                   </div>
 

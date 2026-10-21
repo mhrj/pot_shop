@@ -36,9 +36,138 @@
   }
 }
 
+@keyframes breathe {
+  0%, 100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
 .animate-text-gradient {
   background-size: 250% auto;
   animation: gradient-flow 3.5s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Pixel Plant Growth Animations
+   ========================================================================== */
+@keyframes grow-stem {
+  0%, 8% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  32%, 84% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  92%, 100% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}
+
+@keyframes pop-leaf {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-leaf-left {
+  0%, 32% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  46%, 84% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  92%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes pop-leaf-right {
+  0%, 46% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  54% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  60%, 84% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  92%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes pop-sprout {
+  0%, 58% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  66% {
+    transform: scale(1.22);
+    opacity: 1;
+  }
+  72%, 84% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  92%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.pixel-stem {
+  transform-origin: 12px 16px;
+  animation: grow-stem 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.pixel-leaf-left {
+  transform-origin: 11px 11px;
+  animation: pop-leaf-left 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.pixel-leaf-right {
+  transform-origin: 13px 10px;
+  animation: pop-leaf-right 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.pixel-sprout {
+  transform-origin: 12px 8px;
+  animation: pop-sprout 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-stem,
+  .pixel-leaf-left,
+  .pixel-leaf-right,
+  .pixel-sprout {
+    animation: none !important;
+    transform: scale(1) !important;
+    opacity: 1 !important;
+  }
 }
 
 @media print {

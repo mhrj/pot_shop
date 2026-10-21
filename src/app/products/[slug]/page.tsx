@@ -188,7 +188,17 @@ export default async function ProductPage({ params }: Params) {
           </div>
 
           <div className="lg:col-span-6">
-            <h1 className="text-3xl font-black text-soil-900 sm:text-4xl">{product.name}</h1>
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <h1 className="text-3xl font-black text-soil-900 sm:text-4xl">{product.name}</h1>
+              {product.sku && (
+                <span className="rounded-lg border border-soil-900/10 bg-dust-50 px-2.5 py-1 text-xs font-medium text-soil-700/80">
+                  کد کالا:{' '}
+                  <span dir="ltr" className="font-mono font-bold text-soil-900">
+                    {product.sku}
+                  </span>
+                </span>
+              )}
+            </div>
             {product.shortDesc && (
               <p className="mt-4 leading-8 text-soil-700/85">{product.shortDesc}</p>
             )}

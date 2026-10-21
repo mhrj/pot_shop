@@ -10,6 +10,7 @@ import { channelLabel } from '@/lib/analytics';
 import CancelOrderButton from '@/components/dashboard/CancelOrderButton';
 import ItemColorBadge from '@/components/ui/ItemColorBadge';
 import PrintInvoiceButton from '@/components/orders/PrintInvoiceButton';
+import BundleDetailsAccordion from '@/components/orders/BundleDetailsAccordion';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -38,7 +39,15 @@ export default async function CustomerOrderPage({ params }: Props) {
     // Scoped by userId so another customer's id simply 404s.
     where: { id, userId: user.id },
     include: {
-      items: true,
+      items: {
+        include: {
+          product: {
+            select: {
+              bundleItems: true,
+            },
+          },
+        },
+      },
       user: { select: { fullName: true, phone: true, email: true } },
     },
   });
@@ -160,15 +169,10 @@ export default async function CustomerOrderPage({ params }: Props) {
           <div className="mt-4 divide-y divide-soil-900/10">
             {order.items.map((item) => {
               const specs = renderItemSpecs(item);
-              const isBundle = Boolean(
-                item.isBundle ||
-                (item.bundleSize && item.bundleSize > 1) ||
-                (item.tierLabel && item.tierLabel.includes('ست')) ||
-                (typeof item.colorData === 'object' &&
-                  item.colorData &&
-                  'bundleColors' in (item.colorData as Record<string, unknown>))
-              );
-              const bundleCount = item.bundleSize && item.bundleSize > 1 ? item.bundleSize : 2;
+              const bundleSize = item.bundleSize && item.bundleSize > 1 ? item.bundleSize : 1;
+              const isBundle = bundleSize > 1;
+              const displayQty = isBundle ? Math.round(item.quantity / bundleSize) : item.quantity;
+              const displayUnitPrice = isBundle ? item.unitToman * bundleSize : item.unitToman;
 
               return (
                 <div
@@ -199,27 +203,57 @@ export default async function CustomerOrderPage({ params }: Props) {
                         </Link>
                         {isBundle && (
                           <span className="inline-flex items-center rounded-md bg-flora-100 px-2 py-0.5 text-[11px] font-bold text-flora-800 border border-flora-300">
-                            شامل {toFa(bundleCount)} عدد گلدان
+                            شامل {toFa(bundleSize)} عدد گلدان
                           </span>
                         )}
+                      </div>
+
+                      {item.sku && (
+                        <p className="text-xs text-soil-700/60">
+                          کد کالا:{' '}
+                          <span className="font-mono font-medium" dir="ltr">
+                            {item.sku}
+                          </span>
+                        </p>
+                      )}
+
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-soil-700/75">
+                        {specs && <span>{specs}</span>}
+                        {!isBundle && <ItemColorBadge colorData={item.colorData} />}
+                      </div>
+
+                      {isBundle && (
+                        <BundleDetailsAccordion
+                          bundleSize={bundleSize}
+                          colorData={item.colorData}
+                          productBundleItems={item.product?.bundleItems}
+                        />
+                      )}
+
+                      <div className="flex items-center gap-2 flex-wrap text-xs text-soil-700/80">
+                        <p>
+                          {isBundle ? (
+                            <>
+                              {toFa(displayQty)} بسته × {formatToman(displayUnitPrice)} ={' '}
+                              <span className="font-bold text-soil-900">
+                                {formatToman(item.lineTotalToman)}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {toFa(displayQty)} عدد × {formatToman(displayUnitPrice)} ={' '}
+                              <span className="font-bold text-soil-900">
+                                {formatToman(item.lineTotalToman)}
+                              </span>
+                            </>
+                          )}
+                        </p>
                         {item.tierLabel && (
-                          <span className="rounded-md bg-flora-50 px-2 py-0.5 text-xs font-medium text-flora-800 border border-flora-200/60">
+                          <span className="rounded-md bg-flora-50 px-2 py-0.5 text-[11px] font-medium text-flora-800 border border-flora-200/60">
                             سطح: {item.tierLabel}
                           </span>
                         )}
                       </div>
-
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-soil-700/75">
-                        {specs && <span>{specs}</span>}
-                        <ItemColorBadge colorData={item.colorData} />
-                      </div>
-
-                      <p className="text-xs text-soil-700/80">
-                        {toFa(item.quantity)} عدد × {formatToman(item.unitToman)} ={' '}
-                        <span className="font-bold text-soil-900">
-                          {formatToman(item.lineTotalToman)}
-                        </span>
-                      </p>
                     </div>
                   </div>
 

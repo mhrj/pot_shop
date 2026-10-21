@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getActiveAdmin } from '@/lib/auth';
+import { toEn } from '@/lib/format';
 
 export const runtime = 'nodejs';
 
@@ -11,9 +12,10 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get('q')?.trim() ?? '';
+  const rawQ = (searchParams.get('q') ?? '').trim();
+  const q = toEn(rawQ);
 
-  if (!q) {
+  if (!rawQ && !q) {
     return NextResponse.json({ users: [], orders: [], products: [] });
   }
 
@@ -22,7 +24,7 @@ export async function GET(req: Request) {
       where: {
         OR: [
           { phone: { contains: q, mode: 'insensitive' } },
-          { fullName: { contains: q, mode: 'insensitive' } },
+          { fullName: { contains: rawQ, mode: 'insensitive' } },
           { email: { contains: q, mode: 'insensitive' } },
         ],
       },
@@ -38,7 +40,11 @@ export async function GET(req: Request) {
     }),
     prisma.order.findMany({
       where: {
-        orderNumber: { contains: q, mode: 'insensitive' },
+        OR: [
+          { orderNumber: { contains: q, mode: 'insensitive' } },
+          { id: { contains: q, mode: 'insensitive' } },
+          { refId: { contains: q, mode: 'insensitive' } },
+        ],
       },
       select: {
         id: true,
@@ -59,8 +65,10 @@ export async function GET(req: Request) {
     prisma.product.findMany({
       where: {
         OR: [
-          { name: { contains: q, mode: 'insensitive' } },
+          { name: { contains: rawQ, mode: 'insensitive' } },
+          { id: { contains: q, mode: 'insensitive' } },
           { slug: { contains: q, mode: 'insensitive' } },
+          { sku: { contains: q, mode: 'insensitive' } },
         ],
       },
       select: {

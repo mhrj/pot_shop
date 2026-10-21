@@ -13,6 +13,7 @@ type Tier = { minQuantity: number; unitPriceToman: number; label: string };
 export type ProductFormData = {
   id?: string;
   slug: string;
+  sku?: string | null;
   name: string;
   shortDesc: string;
   description: string;
@@ -91,6 +92,7 @@ export default function ProductForm({
   const [featureInput, setFeatureInput] = useState('');
   const [form, setForm] = useState<ProductFormData>({
     ...initial,
+    sku: initial.sku ?? '',
     categoryId: initial.categoryId ?? '',
     unitsPerCarton: 1,
     bundleSize: initial.bundleSize ?? 1,
@@ -420,6 +422,7 @@ export default function ProductForm({
       const url = isNew ? '/api/admin/products' : '/api/admin/products/' + initial.id;
       const payload = {
         ...form,
+        sku: form.sku?.trim() || null,
         categoryId: form.categoryId || null,
         material: isBundleActive ? (form.material.trim() || 'ترکیبی') : form.material,
         weightGrams: isBundleActive ? bundleWeightSum : form.weightGrams,
@@ -527,6 +530,17 @@ export default function ProductForm({
               className={fieldCls(fieldErrors.slug)}
             />
             <FormError message={fieldErrors.slug} />
+          </label>
+
+          <label className="block">
+            <span className={labelCls}>کد کالا (SKU)</span>
+            <input
+              value={form.sku ?? ''}
+              onChange={(e) => update('sku', e.target.value)}
+              dir="ltr"
+              placeholder="POT-101"
+              className={`${inputCls} font-mono`}
+            />
           </label>
 
           <label className={`block ${isBundleActive ? 'sm:col-span-2' : ''}`}>

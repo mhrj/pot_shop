@@ -139,6 +139,7 @@ export async function POST(req: Request) {
       product: {
         id: i.product.id,
         slug: i.product.slug,
+        sku: i.product.sku,
         name: i.product.name,
         basePriceToman: i.product.basePriceToman,
         weightGrams: i.product.weightGrams,
@@ -190,12 +191,31 @@ export async function POST(req: Request) {
       shipLine1: address.line1,
       shipLine2: address.line2,
       items: {
-        create: totals.lines.map((l) => {
-          const cartItem = activeItems.find((ai) => ai.product.id === l.productId);
+        create: totals.lines.map((l, idx) => {
+          const cartItem = activeItems[idx] ?? activeItems.find((ai) => ai.product.id === l.productId);
+          const isBundle = (l.bundleSize ?? 1) > 1;
+          const rawColorData = (l.colorData ?? cartItem?.colorData ?? null) as Record<string, any> | null;
+
+          let itemColorData: any = rawColorData;
+          if (isBundle && cartItem?.product) {
+            const bItems = parseBundleItems(cartItem.product.bundleItems, cartItem.product.stock);
+            itemColorData = {
+              ...(rawColorData || {}),
+              bundleItems: bItems.map((bi) => ({
+                title: bi.title,
+                material: bi.material,
+                weightGrams: bi.weightGrams,
+                diameterCm: bi.diameterCm,
+                heightCm: bi.heightCm,
+              })),
+            };
+          }
+
           return {
             productId: l.productId,
             productName: l.name,
             productSlug: l.slug,
+            sku: l.sku ?? cartItem?.product.sku ?? null,
             imageUrl: l.imageUrl ?? null,
             material: cartItem?.product.material ?? null,
             diameterCm: cartItem?.product.diameterCm ?? null,
@@ -206,8 +226,8 @@ export async function POST(req: Request) {
             lineTotalToman: l.lineTotalToman,
             lineSavingsToman: l.lineSavingsToman,
             tierLabel: l.tierLabel,
-            colorData: l.colorData ?? cartItem?.colorData ?? null,
-            isBundle: (l.bundleSize ?? 1) > 1,
+            colorData: itemColorData ?? null,
+            isBundle,
             bundleSize: l.bundleSize ?? 1,
           };
         }),

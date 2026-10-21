@@ -41,3 +41,12 @@ test('tag slug generation preserves Persian letters and numbers', () => {
   assert.equal(slugify('  مقاوم در برابر سرما! '), 'مقاوم-در-برابر-سرما');
   assert.equal(slugify(''), 'tag');
 });
+
+test('toEn converts Persian and Arabic digits to ASCII digits', async () => {
+  const { toEn } = await import('../src/lib/format');
+  assert.equal(toEn('PS-۱۴۰۵-۲۰۱۲۵۰'), 'PS-1405-201250');
+  assert.equal(toEn('۰۹۱۲۳۴۵۶۷۸۹'), '09123456789');
+  assert.equal(toEn('٠١٢٣٤٥٦٧٨٩'), '0123456789'); // Arabic-Indic digits
+  assert.equal(toEn('123abc'), '123abc');
+});
+

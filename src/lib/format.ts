@@ -4,6 +4,12 @@ export function toFa(input: string | number): string {
   return String(input).replace(/\d/g, (d) => faDigits[Number(d)]);
 }
 
+export function toEn(input: string | number): string {
+  return String(input)
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06F0))
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660));
+}
+
 export function formatToman(
   amount: number,
   opts: { withUnit?: boolean; fa?: boolean } = {},

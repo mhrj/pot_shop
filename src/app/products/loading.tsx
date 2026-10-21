@@ -1,25 +1,22 @@
 import Container from '@/components/ui/Container';
-import Skeleton from '@/components/ui/Skeleton';
+import PixelPlantLoader from '@/components/ui/PixelPlantLoader';
 
-/** Route-level fallback while the catalog's server queries resolve. */
+/**
+ * Route-level loading state for the catalog page (/products).
+ * Displays the retro pixelated growing plant while catalog server queries resolve.
+ */
 export default function Loading() {
   return (
-    <Container className="py-12">
-      <div aria-busy="true" aria-live="polite">
-        <span className="sr-only">در حال بارگذاری…</span>
-
-        <Skeleton className="h-7 w-48" />
-        <Skeleton className="mt-3 h-4 w-72" />
-
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="rounded-2xl border border-soil-900/10 bg-white p-4">
-              <Skeleton className="aspect-square w-full rounded-xl" />
-              <Skeleton className="mt-4 h-4 w-3/4" />
-              <Skeleton className="mt-2 h-4 w-1/3" />
-            </div>
-          ))}
-        </div>
+    <Container className="py-24">
+      <div
+        aria-busy="true"
+        aria-live="polite"
+        className="flex min-h-[50vh] flex-col items-center justify-center"
+      >
+        <PixelPlantLoader size={80} />
+        <p className="mt-4 text-xs md:text-sm font-medium text-soil-700/70 tracking-wide animate-pulse">
+          در حال بارگذاری...
+        </p>
       </div>
     </Container>
   );

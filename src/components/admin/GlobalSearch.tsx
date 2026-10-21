@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { formatToman, toFa, formatDateFa } from '@/lib/format';
+import { formatToman, toFa, toEn, formatDateFa } from '@/lib/format';
 
 type SearchResults = {
   users: Array<{
@@ -34,13 +34,19 @@ type SearchResults = {
 };
 
 function Highlight({ text, query }: { text: string; query: string }) {
-  if (!query.trim() || !text) return <>{text}</>;
-  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+  const trimmed = query.trim();
+  if (!trimmed || !text) return <>{text}</>;
+  const qFa = toFa(trimmed);
+  const qEn = toEn(trimmed);
+  const patterns = Array.from(new Set([trimmed, qFa, qEn]))
+    .filter(Boolean)
+    .map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const regex = new RegExp(`(${patterns.join('|')})`, 'gi');
+  const parts = text.split(regex);
   return (
     <>
       {parts.map((part, i) =>
-        part.toLowerCase() === query.toLowerCase() ? (
+        patterns.some((p) => p.toLowerCase() === part.toLowerCase()) ? (
           <mark
             key={i}
             className="rounded bg-amber-200/80 px-1 py-0.5 font-bold text-amber-950"

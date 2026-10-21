@@ -3,7 +3,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { formatToman, toFa } from '@/lib/format';
-import { resolveTier } from '@/lib/pricing';
 import { getContentMap } from '@/lib/content';
 import DustToFlora from '@/components/landing/DustToFlora';
 import TrustBar from '@/components/landing/TrustBar';
@@ -12,6 +11,7 @@ import WholesaleInquiryForm from '@/components/landing/WholesaleInquiryForm';
 import HeroTitle from '@/components/landing/HeroTitle';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
+import ProductCard from '@/components/catalog/ProductCard';
 
 export const revalidate = 300; // ISR: 5 minutes
 
@@ -41,7 +41,7 @@ async function getFeatured() {
       tiers: { orderBy: { minQuantity: 'asc' } },
       images: { orderBy: { sortOrder: 'asc' }, take: 1 },
     },
-    take: 6,
+    take: 8,
     orderBy: { createdAt: 'desc' },
   });
 }
@@ -216,57 +216,18 @@ export default async function HomePage() {
         </div>
 
         {products.length === 0 ? (
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-96 rounded-pot" />
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-72 md:h-96 rounded-2xl md:rounded-3xl" />
             ))}
           </div>
         ) : (
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((p) => {
-              const wholesale =
-                p.tiers.find((t) => t.minQuantity >= 20) ?? resolveTier(p.tiers, 20);
-              return (
-                <li key={p.id}>
-                  <Link
-                    href={`/products/${p.slug}`}
-                    className="group block overflow-hidden rounded-pot bg-white shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] transition hover:-translate-y-1"
-                  >
-                    <div className="relative aspect-square overflow-hidden bg-dust-100">
-                      {p.images[0] && (
-                        <Image
-                          src={p.images[0].url}
-                          alt={p.images[0].alt ?? p.name}
-                          fill
-                          sizes="(max-width: 640px) 100vw, 33vw"
-                          className="object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      )}
-                      {wholesale.minQuantity >= 20 && (
-                        <span className="absolute end-3 top-3 rounded-full bg-flora-900/90 px-3 py-1 text-[11px] font-bold text-white backdrop-blur">
-                          عمده از {toFa(20)} عدد
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-bold text-soil-900">{p.name}</h3>
-                      <p className="mt-2 text-xs text-soil-700/70">
-                        {p.material} · قطر {toFa(p.diameterCm)} سانتی‌متر
-                      </p>
-                      <div className="mt-4 flex items-baseline gap-2">
-                        <span className="text-lg font-black text-flora-900">
-                          {formatToman(p.basePriceToman)}
-                        </span>
-                        <span className="text-xs text-soil-700/60">/ هر عدد</span>
-                      </div>
-                      <p className="mt-2 text-xs font-medium text-dust-500">
-                        از {toFa(20)} عدد: {formatToman(wholesale.unitPriceToman)} هر عدد
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
+          <ul className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+            {products.map((p) => (
+              <li key={p.id}>
+                <ProductCard product={p} />
+              </li>
+            ))}
           </ul>
         )}
       </Container>

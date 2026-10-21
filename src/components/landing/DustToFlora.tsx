@@ -82,6 +82,12 @@ export default function DustToFlora({
 
   return (
     <motion.div ref={ref} style={{ backgroundColor }} className="relative">
+      {/* Sunlight Breathing Overlay */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 animate-[breathe_10s_ease-in-out_infinite] motion-reduce:animate-none bg-[radial-gradient(circle_at_top_left,rgba(255,235,200,0.4),transparent_60%)] mix-blend-soft-light"
+      />
+
       <motion.div
         aria-hidden
         style={{ opacity: soilVeilOpacity, scale: textureScale }}

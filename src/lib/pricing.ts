@@ -15,6 +15,7 @@ export type Tier = {
 export type PricedLine = {
   productId: string;
   slug: string;
+  sku?: string | null;
   name: string;
   imageUrl?: string | null;
   quantity: number;
@@ -102,6 +103,7 @@ type PriceInput = {
   product: {
     id: string;
     slug: string;
+    sku?: string | null;
     name: string;
     basePriceToman: number;
     weightGrams: number;
@@ -216,6 +218,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
   return {
     productId: product.id,
     slug: product.slug,
+    sku: product.sku ?? null,
     name: product.name,
     imageUrl: product.images?.[0]?.url ?? null,
     quantity: qty,

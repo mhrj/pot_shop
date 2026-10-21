@@ -64,6 +64,7 @@ export default async function NewProductPage() {
           globalColors={globalColors}
           initial={{
             slug: '',
+            sku: '',
             name: '',
             shortDesc: '',
             description: '',

@@ -47,6 +47,7 @@ const bundleItemSchema = z.object({
 
 const schema = z.object({
   slug: z.string({ required_error: 'اسلاگ الزامی است' }).min(2, 'اسلاگ باید حداقل ۲ کاراکتر باشد').max(120, 'اسلاگ حداکثر ۱۲۰ کاراکتر است').regex(/^[a-z0-9-]+$/, 'اسلاگ فقط حروف کوچک، عدد و خط تیره'),
+  sku: z.string().max(80, 'کد کالا حداکثر ۸۰ کاراکتر است').optional().nullable().or(z.literal('')),
   name: z.string({ required_error: 'نام محصول الزامی است' }).min(2, 'نام کالا باید حداقل ۲ حرف باشد').max(150, 'نام کالا حداکثر ۱۵۰ حرف است'),
   shortDesc: z.string().max(300, 'توضیح کوتاه حداکثر ۳۰۰ کاراکتر است').optional().default(''),
   description: z.string({ required_error: 'توضیحات کامل الزامی است' }).min(1, 'توضیحات کامل الزامی است').max(5000, 'توضیحات حداکثر ۵۰۰۰ کاراکتر است'),
@@ -102,9 +103,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: 'این اسلاگ قبلاً استفاده شده' }, { status: 409 });
   }
 
+  const sku = data.sku?.trim() || null;
+  if (sku) {
+    const skuConflict = await prisma.product.findUnique({ where: { sku } });
+    if (skuConflict) {
+      return NextResponse.json({ message: 'این کد کالا (SKU) قبلاً استفاده شده است' }, { status: 409 });
+    }
+  }
+
   const product = await prisma.product.create({
     data: {
       slug: data.slug,
+      sku,
       name: data.name,
       shortDesc: data.shortDesc || null,
       description: data.description,

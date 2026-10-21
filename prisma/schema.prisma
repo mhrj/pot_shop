@@ -103,6 +103,7 @@ model Address {
 model Product {
   id            String   @id @default(cuid())
   slug          String   @unique
+  sku           String?  @unique
   name          String
   shortDesc     String?
   description   String
@@ -317,6 +318,7 @@ model OrderItem {
   // Snapshot fields: order history must not change if the product changes
   productName   String
   productSlug   String
+  sku           String?
   imageUrl      String?
   material      String?
   diameterCm    Float?
@@ -330,7 +332,7 @@ model OrderItem {
   tierLabel        String?
   colorData        Json?
   isBundle         Boolean @default(false)
-  bundleSize       Int?
+  bundleSize       Int     @default(1)
 
   @@index([orderId])
   @@index([productId])
