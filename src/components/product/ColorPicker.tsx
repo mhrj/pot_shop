@@ -112,16 +112,16 @@ function ColorSwatchRow({
         )}
       </div>
 
-      <div className="relative flex items-center gap-2">
+      <div className="relative flex items-center gap-1.5">
         {/* Right Arrow (Scroll towards previous/start in RTL) */}
         <button
           type="button"
           onClick={() => handleScroll('prev')}
           disabled={!canScrollStart}
           aria-label="رنگ‌های قبلی"
-          className="size-8 shrink-0 rounded-full border border-soil-900/15 bg-white grid place-items-center text-soil-700 shadow-2xs transition hover:bg-dust-100 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="size-7 shrink-0 rounded-full border border-soil-900/15 bg-white grid place-items-center text-soil-700 shadow-2xs transition hover:bg-dust-100 disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -129,7 +129,7 @@ function ColorSwatchRow({
         {/* Scrollable Swatches Container */}
         <div
           ref={scrollRef}
-          className="flex flex-1 items-center gap-2 overflow-x-auto py-1.5 px-1 scroll-smooth no-scrollbar"
+          className="flex flex-1 items-center gap-1.5 overflow-x-auto py-1 px-1 scroll-smooth no-scrollbar"
         >
           {colors.map((hex) => {
             const isSelected = selectedColor?.toUpperCase() === hex.toUpperCase();
@@ -143,10 +143,10 @@ function ColorSwatchRow({
                 title={hex}
                 aria-label={`رنگ ${hex}`}
                 aria-pressed={isSelected}
-                className={`group relative size-9 sm:size-10 shrink-0 rounded-full transition-all duration-150 focus:outline-none ${
+                className={`group relative w-6 h-6 shrink-0 rounded-full transition-all duration-150 focus:outline-none cursor-pointer border border-soil-900/20 ${
                   isSelected
-                    ? 'ring-2 ring-flora-700 ring-offset-2 scale-110 shadow-md'
-                    : 'hover:scale-105 border border-soil-900/20 hover:border-soil-900/40 shadow-xs'
+                    ? 'ring-2 ring-flora-700 ring-offset-1 scale-105 shadow-xs'
+                    : 'hover:scale-105 shadow-2xs'
                 }`}
                 style={{ backgroundColor: hex }}
               >
@@ -158,11 +158,13 @@ function ColorSwatchRow({
                 {/* Checkmark indicator when selected */}
                 {isSelected && (
                   <span
-                    className={`absolute inset-0 flex items-center justify-center font-bold text-xs ${
+                    className={`absolute inset-0 flex items-center justify-center ${
                       light ? 'text-soil-900' : 'text-white'
                     }`}
                   >
-                    ✓
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
                   </span>
                 )}
               </button>
@@ -176,9 +178,9 @@ function ColorSwatchRow({
           onClick={() => handleScroll('next')}
           disabled={!canScrollEnd}
           aria-label="رنگ‌های بعدی"
-          className="size-8 shrink-0 rounded-full border border-soil-900/15 bg-white grid place-items-center text-soil-700 shadow-2xs transition hover:bg-dust-100 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="size-7 shrink-0 rounded-full border border-soil-900/15 bg-white grid place-items-center text-soil-700 shadow-2xs transition hover:bg-dust-100 disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
         </button>

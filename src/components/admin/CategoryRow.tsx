@@ -105,10 +105,7 @@ export default function CategoryRow({ category }: Props) {
         </form>
       ) : (
         <div>
-          <div className="flex items-center gap-2">
-            <p className="font-bold text-soil-900">{category.name}</p>
-            <span className="font-mono text-[11px] text-soil-700/50 dir-ltr">({category.slug})</span>
-          </div>
+          <p className="font-bold text-soil-900">{category.name}</p>
           <p className="mt-1 text-xs text-soil-700/60">
             {toFa(category._count.products)} محصول
           </p>

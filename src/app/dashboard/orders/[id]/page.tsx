@@ -94,25 +94,65 @@ export default async function CustomerOrderPage({ params }: Props) {
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <section className="rounded-2xl border border-soil-900/10 bg-white p-6">
           <h2 className="text-sm font-black text-soil-900">اقلام سفارش</h2>
-          <ul className="mt-4 divide-y divide-soil-900/5">
+          <div className="mt-4 divide-y divide-soil-900/10">
             {order.items.map((item) => (
-              <li key={item.id} className="flex justify-between gap-4 py-3.5 text-sm">
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="font-bold text-soil-900">{item.productName}</p>
-                    <ItemColorBadge colorData={item.colorData} />
+              <div
+                key={item.id}
+                className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex items-start sm:items-center gap-3.5">
+                  {item.imageUrl ? (
+                    <img
+                      src={item.imageUrl}
+                      alt={item.productName}
+                      className="w-16 h-16 rounded-lg object-cover shrink-0 border border-soil-900/10"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-lg bg-dust-100 border border-soil-900/10 flex items-center justify-center text-soil-700/40 shrink-0">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Link
+                        href={`/products/${item.productSlug}`}
+                        className="font-bold text-soil-900 hover:text-flora-700 transition"
+                      >
+                        {item.productName}
+                      </Link>
+                      <ItemColorBadge colorData={item.colorData} />
+                    </div>
+                    {(item.tierLabel || item.material) && (
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-soil-700/70">
+                        {item.tierLabel && (
+                          <span className="rounded-md bg-flora-50 px-2 py-0.5 font-medium text-flora-800 border border-flora-200/60">
+                            سطح قیمت: {item.tierLabel}
+                          </span>
+                        )}
+                        {item.material && (
+                          <span className="rounded-md bg-dust-100 px-2 py-0.5 text-soil-700">
+                            جنس: {item.material}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <p className="text-xs text-soil-700/80">
+                      {toFa(item.quantity)} عدد × {formatToman(item.unitToman)}
+                    </p>
                   </div>
-                  <p className="mt-1 text-xs text-soil-700/60">
-                    {toFa(item.quantity)} × {formatToman(item.unitToman)}
-                    {item.tierLabel ? ` — ${item.tierLabel}` : ''}
+                </div>
+
+                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-soil-900/5 pt-2 sm:pt-0 shrink-0">
+                  <span className="text-xs text-soil-700/60 sm:hidden">مبلغ کل:</span>
+                  <p className="font-bold text-flora-900 text-sm sm:text-base">
+                    {formatToman(item.lineTotalToman)}
                   </p>
                 </div>
-                <p className="shrink-0 font-bold text-flora-900">
-                  {formatToman(item.lineTotalToman)}
-                </p>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
 
           <dl className="mt-5 space-y-2 border-t border-soil-900/5 pt-4 text-sm">
             <div className="flex justify-between">

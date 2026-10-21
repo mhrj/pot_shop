@@ -552,7 +552,7 @@ export default function TieredPricing({
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 overflow-x-auto py-1 px-0.5">
+                      <div className="flex flex-wrap gap-1.5 py-1 px-0.5">
                         {itemColors.map((hex) => {
                           const isSelected = selectedHex?.toUpperCase() === hex.toUpperCase();
                           const isLight = (() => {
@@ -569,10 +569,10 @@ export default function TieredPricing({
                               type="button"
                               onClick={() => colorCtx?.setSelectedBundleColor(idx, hex)}
                               title={hex}
-                              className={`group relative size-9 shrink-0 rounded-full transition-all focus:outline-none cursor-pointer ${
+                              className={`group relative w-6 h-6 shrink-0 rounded-full transition-all focus:outline-none cursor-pointer border border-soil-900/20 ${
                                 isSelected
-                                  ? 'ring-2 ring-flora-700 ring-offset-2 scale-105 shadow-md'
-                                  : 'hover:scale-105 border border-soil-900/20 shadow-xs'
+                                  ? 'ring-2 ring-flora-700 ring-offset-1 scale-105 shadow-xs'
+                                  : 'hover:scale-105 shadow-2xs'
                               }`}
                               style={{ backgroundColor: hex }}
                             >
@@ -581,11 +581,13 @@ export default function TieredPricing({
                               )}
                               {isSelected && (
                                 <span
-                                  className={`absolute inset-0 flex items-center justify-center font-bold text-xs ${
+                                  className={`absolute inset-0 flex items-center justify-center ${
                                     isLight ? 'text-soil-900' : 'text-white'
                                   }`}
                                 >
-                                  ✓
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                  </svg>
                                 </span>
                               )}
                             </button>

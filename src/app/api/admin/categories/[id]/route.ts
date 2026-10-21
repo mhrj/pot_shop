@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getActiveAdmin } from '@/lib/auth';
@@ -56,6 +57,8 @@ export async function PATCH(req: Request, { params }: Params) {
     data: { name, slug },
   });
 
+  revalidatePath('/admin/categories');
+  revalidatePath('/admin/products');
   return NextResponse.json({ ok: true, category: updated });
 }
 
@@ -82,5 +85,7 @@ export async function DELETE(_req: Request, { params }: Params) {
   }
 
   await prisma.category.delete({ where: { id } });
+  revalidatePath('/admin/categories');
+  revalidatePath('/admin/products');
   return NextResponse.json({ ok: true });
 }

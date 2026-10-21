@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import CategoryRow from '@/components/admin/CategoryRow';
@@ -26,6 +27,9 @@ async function createCategory(formData: FormData) {
   await prisma.category.create({
     data: { name, slug, isActive: true },
   });
+
+  revalidatePath('/admin/categories');
+  revalidatePath('/admin/products');
 }
 
 export default async function AdminCategoriesPage() {
