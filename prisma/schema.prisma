@@ -329,6 +329,8 @@ model OrderItem {
   lineSavingsToman Int @default(0)
   tierLabel        String?
   colorData        Json?
+  isBundle         Boolean @default(false)
+  bundleSize       Int?
 
   @@index([orderId])
   @@index([productId])

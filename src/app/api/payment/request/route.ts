@@ -110,6 +110,7 @@ export async function POST(req: Request) {
         }),
       ),
       quantity: i.quantity,
+      colorData: i.colorData,
     })),
   );
 
@@ -143,19 +144,27 @@ export async function POST(req: Request) {
       shipLine1: address.line1,
       shipLine2: address.line2,
       items: {
-        create: totals.lines.map((l) => ({
-          productId: l.productId,
-          productName: l.name,
-          productSlug: l.slug,
-          imageUrl: l.imageUrl ?? null,
-          quantity: l.quantity,
-          listUnitToman: l.listUnitToman,
-          unitToman: l.unitToman,
-          lineTotalToman: l.lineTotalToman,
-          lineSavingsToman: l.lineSavingsToman,
-          tierLabel: l.tierLabel,
-          colorData: l.colorData ?? null,
-        })),
+        create: totals.lines.map((l) => {
+          const cartItem = activeItems.find((ai) => ai.product.id === l.productId);
+          return {
+            productId: l.productId,
+            productName: l.name,
+            productSlug: l.slug,
+            imageUrl: l.imageUrl ?? null,
+            material: cartItem?.product.material ?? null,
+            diameterCm: cartItem?.product.diameterCm ?? null,
+            heightCm: cartItem?.product.heightCm ?? null,
+            quantity: l.quantity,
+            listUnitToman: l.listUnitToman,
+            unitToman: l.unitToman,
+            lineTotalToman: l.lineTotalToman,
+            lineSavingsToman: l.lineSavingsToman,
+            tierLabel: l.tierLabel,
+            colorData: l.colorData ?? cartItem?.colorData ?? null,
+            isBundle: (l.bundleSize ?? 1) > 1,
+            bundleSize: l.bundleSize ?? 1,
+          };
+        }),
       },
     },
   });

@@ -20,6 +20,10 @@ export const ORDER_STATUSES = [
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
+/** Where the order sits in the shop's fulfillment tracker */
+export const TIMELINE = ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED'] as const;
+export type TimelineStatus = (typeof TIMELINE)[number];
+
 export type PaymentStatus =
   | 'PENDING'
   | 'PAID'
