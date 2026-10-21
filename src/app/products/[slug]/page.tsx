@@ -97,15 +97,22 @@ export default async function ProductPage({ params }: Params) {
   const enabledFeatures = parseFeatures(product.features).filter((f) => f.enabled);
   const bundleItems = parseBundleItems(product.bundleItems, product.stock);
 
-  const displayLabel = product.bundleSize > 1 ? `ست ${toFa(product.bundleSize)} عددی` : 'تک‌عدد';
+  const isBundle = product.bundleSize > 1;
+  const displayLabel = isBundle ? `ست ${toFa(product.bundleSize)} عددی` : 'تک‌عدد';
 
   const specs = [
-    { k: 'متریال', v: product.material },
-    { k: 'رنگ', v: product.color ?? '—' },
+    ...(!isBundle
+      ? [
+          { k: 'متریال', v: product.material },
+          { k: 'رنگ', v: product.color ?? '—' },
+        ]
+      : product.material && product.material.trim() !== '' && product.material !== '—'
+        ? [{ k: 'متریال', v: product.material }]
+        : []),
     { k: 'قطر دهانه', v: `${toFa(product.diameterCm)} سانتی‌متر` },
     { k: 'ارتفاع', v: `${toFa(product.heightCm)} سانتی‌متر` },
     { k: 'وزن خالی', v: `${toFa(product.weightGrams)} گرم` },
-    product.bundleSize > 1
+    isBundle
       ? {
           k: 'تعداد در هر بسته',
           v: `${toFa(product.bundleSize)} عدد (${displayLabel})`,
