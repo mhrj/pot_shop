@@ -100,25 +100,16 @@ export default async function ProductPage({ params }: Params) {
   const isBundle = product.bundleSize > 1;
   const displayLabel = isBundle ? `ست ${toFa(product.bundleSize)} عددی` : 'تک‌عدد';
 
-  const specs = [
-    ...(!isBundle
-      ? [
-          { k: 'متریال', v: product.material },
-          { k: 'رنگ', v: product.color ?? '—' },
-        ]
-      : product.material && product.material.trim() !== '' && product.material !== '—'
-        ? [{ k: 'متریال', v: product.material }]
-        : []),
-    { k: 'قطر دهانه', v: `${toFa(product.diameterCm)} سانتی‌متر` },
-    { k: 'ارتفاع', v: `${toFa(product.heightCm)} سانتی‌متر` },
-    { k: 'وزن خالی', v: `${toFa(product.weightGrams)} گرم` },
-    isBundle
-      ? {
-          k: 'تعداد در هر بسته',
-          v: `${toFa(product.bundleSize)} عدد (${displayLabel})`,
-        }
-      : { k: 'واحد فروش', v: 'تک‌عددی' },
-  ];
+  const specs = isBundle
+    ? []
+    : [
+        { k: 'متریال', v: product.material },
+        { k: 'رنگ', v: product.color ?? '—' },
+        { k: 'قطر دهانه', v: `${toFa(product.diameterCm)} سانتی‌متر` },
+        { k: 'ارتفاع', v: `${toFa(product.heightCm)} سانتی‌متر` },
+        { k: 'وزن خالی', v: `${toFa(product.weightGrams)} گرم` },
+        { k: 'واحد فروش', v: 'تک‌عددی' },
+      ];
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -203,10 +194,12 @@ export default async function ProductPage({ params }: Params) {
             )}
 
             <div className="mt-6 flex flex-wrap gap-2">
-              <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
-                {product.material}
-              </span>
-              {product.bundleSize > 1 && (
+              {!isBundle && (
+                <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
+                  {product.material}
+                </span>
+              )}
+              {isBundle && (
                 <span className="rounded-full bg-flora-900 px-3 py-1 text-xs font-bold text-white">
                   {displayLabel}
                 </span>
@@ -250,17 +243,19 @@ export default async function ProductPage({ params }: Params) {
               />
             </div>
 
-          <section className="mt-10">
-            <h2 className="text-lg font-black text-soil-900">مشخصات فنی</h2>
-            <dl className="mt-4 divide-y divide-soil-900/5 overflow-hidden rounded-2xl border border-soil-900/10">
-              {specs.map((s) => (
-                <div key={s.k} className="flex justify-between gap-4 px-5 py-3.5 text-sm">
-                  <dt className="text-soil-700/70">{s.k}</dt>
-                  <dd className="font-bold text-soil-900">{s.v}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
+          {specs.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-lg font-black text-soil-900">مشخصات فنی</h2>
+              <dl className="mt-4 divide-y divide-soil-900/5 overflow-hidden rounded-2xl border border-soil-900/10">
+                {specs.map((s) => (
+                  <div key={s.k} className="flex justify-between gap-4 px-5 py-3.5 text-sm">
+                    <dt className="text-soil-700/70">{s.k}</dt>
+                    <dd className="font-bold text-soil-900">{s.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
 
           {enabledFeatures.length > 0 && (
             <section className="mt-10">

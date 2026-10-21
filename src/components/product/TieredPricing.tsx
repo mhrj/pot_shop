@@ -305,6 +305,10 @@ export default function TieredPricing({
     }, [allowBatch, count, sorted, product.basePriceToman, bundleSize]);
 
   const totalUnits = isBundle ? count * bundleSize : count;
+  const singleBundleWeight = isBundle
+    ? ((product.bundleItems ?? []).reduce((sum, item) => sum + (item.weightGrams || 0), 0) || product.weightGrams)
+    : product.weightGrams;
+  const totalWeight = singleBundleWeight * count;
 
   const clamp = (n: number) => {
     const val = Math.floor(n) || minCount;
@@ -834,7 +838,7 @@ export default function TieredPricing({
           <div>
             <dt className="text-soil-700/70">وزن تقریبی</dt>
             <dd className="mt-1 font-bold text-soil-900">
-              {formatWeight(product.weightGrams * totalUnits)}
+              {formatWeight(totalWeight)}
             </dd>
           </div>
           <div>

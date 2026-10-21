@@ -97,3 +97,31 @@ test('parseColorOptions preserves stock when raw contains objects', () => {
     { hexCode: '#AABBCC', stock: 10 },
   ]);
 });
+
+test('priceCart calculates bundle weight by multiplying single bundle weight by bundle count', () => {
+  const totals = priceCart([
+    {
+      product: {
+        id: 'bundle-1',
+        slug: 'trio-pot-set',
+        name: 'ست سه عددی گلدان',
+        basePriceToman: 300000,
+        weightGrams: 1500, // Top-level bundle weight fallback
+        bundleSize: 3,
+        bundleItems: [
+          { title: 'گلدان ۱', material: 'سفال', diameterCm: 10, heightCm: 15, weightGrams: 400 },
+          { title: 'گلدان ۲', material: 'سفال', diameterCm: 12, heightCm: 18, weightGrams: 500 },
+          { title: 'گلدان ۳', material: 'سفال', diameterCm: 15, heightCm: 22, weightGrams: 600 },
+        ],
+      },
+      tiers: [{ minQuantity: 1, unitPriceToman: 300000, label: 'خرده' }],
+      quantity: 6, // 6 individual units = 2 bundles (since bundleSize=3)
+    },
+  ]);
+
+  // Single bundle weight = 400 + 500 + 600 = 1500g
+  // 2 bundles = 1500 * 2 = 3000g (NOT 1500 * 6 = 9000g)
+  assert.equal(totals.lines[0].weightGrams, 1500);
+  assert.equal(totals.lines[0].lineWeightGrams, 3000);
+  assert.equal(totals.totalWeightGrams, 3000);
+});

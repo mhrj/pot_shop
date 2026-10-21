@@ -121,13 +121,35 @@ export default function ProductForm({
     } else {
       setForm((prev) => {
         const items = prev.bundleItems ?? [];
+        const sum = items.reduce(
+          (acc, it) => acc + (Number(it.weightGrams) || 0),
+          0,
+        );
         return {
           ...prev,
           bundleSize: Math.max(1, items.length),
+          weightGrams: sum,
         };
       });
     }
   }
+
+  const bundleWeightSum = (form.bundleItems ?? []).reduce(
+    (acc, it) => acc + (Number(it.weightGrams) || 0),
+    0,
+  );
+
+  useEffect(() => {
+    if (isBundleActive) {
+      const sum = (form.bundleItems ?? []).reduce(
+        (acc, it) => acc + (Number(it.weightGrams) || 0),
+        0,
+      );
+      if (form.weightGrams !== sum) {
+        setForm((prev) => ({ ...prev, weightGrams: sum }));
+      }
+    }
+  }, [isBundleActive, form.bundleItems, form.weightGrams]);
 
   function handleAddBundleItem() {
     const current = form.bundleItems ?? [];
@@ -340,7 +362,7 @@ export default function ProductForm({
       newErrors.slug = 'اسلاگ فقط شامل حروف کوچک انگلیسی، عدد و خط تیره باشد';
     }
 
-    if (!form.material.trim()) {
+    if (!isBundleActive && !form.material.trim()) {
       newErrors.material = 'متریال/جنس الزامی است';
     }
 
@@ -399,6 +421,8 @@ export default function ProductForm({
       const payload = {
         ...form,
         categoryId: form.categoryId || null,
+        material: isBundleActive ? (form.material.trim() || 'ترکیبی') : form.material,
+        weightGrams: isBundleActive ? bundleWeightSum : form.weightGrams,
         unitsPerCarton: 1,
         bundleSize: isBundleActive ? Math.max(1, (form.bundleItems ?? []).length) : 1,
         minOrderQuantity: form.minOrderQuantity ?? 1,
@@ -505,7 +529,7 @@ export default function ProductForm({
             <FormError message={fieldErrors.slug} />
           </label>
 
-          <label className="block">
+          <label className={`block ${isBundleActive ? 'sm:col-span-2' : ''}`}>
             <span className={labelCls}>دسته‌بندی</span>
             <select
               value={form.categoryId ?? ''}
@@ -535,15 +559,17 @@ export default function ProductForm({
             )}
           </label>
 
-          <label className="block">
-            <span className={labelCls}>متریال *</span>
-            <input
-              value={form.material}
-              onChange={(e) => update('material', e.target.value)}
-              className={fieldCls(fieldErrors.material)}
-            />
-            <FormError message={fieldErrors.material} />
-          </label>
+          {!isBundleActive && (
+            <label className="block">
+              <span className={labelCls}>متریال *</span>
+              <input
+                value={form.material}
+                onChange={(e) => update('material', e.target.value)}
+                className={fieldCls(fieldErrors.material)}
+              />
+              <FormError message={fieldErrors.material} />
+            </label>
+          )}
 
           <label className="block sm:col-span-2">
             <span className={labelCls}>توضیح کوتاه</span>
@@ -570,42 +596,60 @@ export default function ProductForm({
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <h2 className="mb-4 text-sm font-black text-soil-900">مشخصات فنی</h2>
         <div className="grid gap-4 sm:grid-cols-3">
+          {!isBundleActive && (
+            <>
+              <label className="block">
+                <span className={labelCls}>رنگ</span>
+                <input
+                  value={form.color}
+                  onChange={(e) => update('color', e.target.value)}
+                  className={inputCls}
+                />
+              </label>
+              <label className="block">
+                <span className={labelCls}>قطر (cm)</span>
+                <input
+                  type="number"
+                  step="0.5"
+                  value={form.diameterCm}
+                  onChange={(e) => update('diameterCm', Number(e.target.value))}
+                  className={inputCls}
+                />
+              </label>
+              <label className="block">
+                <span className={labelCls}>ارتفاع (cm)</span>
+                <input
+                  type="number"
+                  step="0.5"
+                  value={form.heightCm}
+                  onChange={(e) => update('heightCm', Number(e.target.value))}
+                  className={inputCls}
+                />
+              </label>
+            </>
+          )}
           <label className="block">
-            <span className={labelCls}>رنگ</span>
-            <input
-              value={form.color}
-              onChange={(e) => update('color', e.target.value)}
-              className={inputCls}
-            />
-          </label>
-          <label className="block">
-            <span className={labelCls}>قطر (cm)</span>
-            <input
-              type="number"
-              step="0.5"
-              value={form.diameterCm}
-              onChange={(e) => update('diameterCm', Number(e.target.value))}
-              className={inputCls}
-            />
-          </label>
-          <label className="block">
-            <span className={labelCls}>ارتفاع (cm)</span>
-            <input
-              type="number"
-              step="0.5"
-              value={form.heightCm}
-              onChange={(e) => update('heightCm', Number(e.target.value))}
-              className={inputCls}
-            />
-          </label>
-          <label className="block">
-            <span className={labelCls}>وزن (گرم)</span>
-            <input
-              type="number"
-              value={form.weightGrams}
-              onChange={(e) => update('weightGrams', Number(e.target.value))}
-              className={inputCls}
-            />
+            <span className={labelCls}>
+              {isBundleActive ? 'وزن کل بسته (گرم) *' : 'وزن (گرم)'}
+            </span>
+            <div className="relative">
+              <input
+                type="number"
+                readOnly={isBundleActive}
+                value={isBundleActive ? bundleWeightSum : form.weightGrams}
+                onChange={(e) => update('weightGrams', Number(e.target.value))}
+                className={`${inputCls} ${
+                  isBundleActive
+                    ? 'bg-dust-100/70 cursor-not-allowed font-bold text-soil-900 border-soil-900/10'
+                    : ''
+                }`}
+              />
+              {isBundleActive && (
+                <span className="absolute left-2.5 top-3.5 text-[10px] text-soil-700/60 select-none">
+                  مجموع اقلام
+                </span>
+              )}
+            </div>
           </label>
           <label className="block">
             <span className={labelCls}>موجودی</span>
@@ -1021,7 +1065,9 @@ export default function ProductForm({
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <h2 className="mb-2 text-sm font-black text-soil-900">ویژگی‌های نمایشی</h2>
         <p className="mb-4 text-xs text-soil-700/60">
-          این ویژگی‌ها فقط برای نمایش در صفحه محصول هستند و روی عملکرد سیستم اثر ندارند.
+          {isBundleActive
+            ? 'این ویژگی‌ها مربوط به کل بسته است (مثلاً بسته‌بندی ضد ضربه). برای مشخصات هر گلدان، از توضیحات همان آیتم در پایین استفاده کنید.'
+            : 'این ویژگی‌ها فقط برای نمایش در صفحه محصول هستند و روی عملکرد سیستم اثر ندارند.'}
         </p>
 
         <div className="flex gap-2">

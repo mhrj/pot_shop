@@ -125,7 +125,10 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
   const bundleCount = isBundle ? Math.max(1, Math.round(qty / bundleSize)) : qty;
   const baseUnitPrice = Math.round(product.basePriceToman / bundleSize);
   const listUnitToman = baseUnitPrice;
-  const lineWeightGrams = product.weightGrams * qty;
+  const singleBundleWeight = isBundle && product.bundleItems && product.bundleItems.length > 0
+    ? (product.bundleItems.reduce((sum, item) => sum + (item.weightGrams || 0), 0) || product.weightGrams)
+    : product.weightGrams;
+  const lineWeightGrams = isBundle ? singleBundleWeight * bundleCount : product.weightGrams * qty;
   const cartons = Math.ceil(qty / Math.max(1, product.unitsPerCarton ?? 1));
   const bundleLabel = isBundle ? `ست ${toFa(bundleSize)} عددی` : null;
 
@@ -149,7 +152,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
       lineTotalToman,
       lineSavingsToman: 0,
       savingsPercent: 0,
-      weightGrams: product.weightGrams,
+      weightGrams: singleBundleWeight,
       lineWeightGrams,
       unitsPerCarton: product.unitsPerCarton ?? 1,
       cartons,
@@ -187,7 +190,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
       lineTotalToman,
       lineSavingsToman,
       savingsPercent,
-      weightGrams: product.weightGrams,
+      weightGrams: singleBundleWeight,
       lineWeightGrams,
       unitsPerCarton: product.unitsPerCarton ?? 1,
       cartons,
@@ -224,7 +227,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
     lineTotalToman,
     lineSavingsToman,
     savingsPercent,
-    weightGrams: product.weightGrams,
+    weightGrams: singleBundleWeight,
     lineWeightGrams,
     unitsPerCarton: product.unitsPerCarton ?? 1,
     cartons,
