@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatToman, toFa } from '@/lib/format';
-import { parseBundleItems, parseColorOptions, type ColorOption } from '@/lib/product-features';
+import { parseColorOptions, type ColorOption } from '@/lib/product-features';
 
 export type ProductCardData = {
   id: string;
@@ -43,23 +43,9 @@ export default function ProductCard({ product, className = '' }: Props) {
     tiers.length > 1 &&
     tiers.some((t) => t.unitPriceToman < product.basePriceToman);
 
-  // Extract color options (either on product root or collected from bundleItems)
-  let colors: ColorOption[] = parseColorOptions(product.colorOptions, product.stock);
-  if (colors.length === 0 && product.bundleItems) {
-    const bItems = parseBundleItems(product.bundleItems);
-    const seen = new Set<string>();
-    for (const bi of bItems) {
-      for (const c of bi.colorOptions ?? []) {
-        if (c.hexCode && !seen.has(c.hexCode.toUpperCase())) {
-          seen.add(c.hexCode.toUpperCase());
-          colors.push(c);
-        }
-      }
-    }
-  }
-
-  const visibleColors = colors.slice(0, 3);
-  const remainingColors = colors.length - 3;
+  // Color options count (only for single products, bundles pick colors on product page)
+  const colors: ColorOption[] = !isBundle ? parseColorOptions(product.colorOptions, product.stock) : [];
+  const hasMultipleColors = colors.length > 1;
 
   return (
     <Link
@@ -131,27 +117,6 @@ export default function ProductCard({ product, className = '' }: Props) {
           </p>
         )}
 
-        {/* Color Swatches */}
-        {visibleColors.length > 0 && (
-          <div className="mt-2 flex items-center gap-1.5">
-            <div className="flex items-center -space-x-1 space-x-reverse">
-              {visibleColors.map((c, i) => (
-                <span
-                  key={i}
-                  className="size-3 md:size-3.5 rounded-full border border-white shadow-2xs shrink-0 ring-1 ring-soil-900/10"
-                  style={{ backgroundColor: c.hexCode }}
-                  title={c.hexCode}
-                />
-              ))}
-            </div>
-            {remainingColors > 0 && (
-              <span className="text-[10px] md:text-xs text-soil-700/60 font-medium">
-                +{toFa(remainingColors)} رنگ
-              </span>
-            )}
-          </div>
-        )}
-
         {/* Price & Label Row */}
         <div className="mt-3 md:mt-4 flex items-end justify-between gap-2 border-t border-soil-900/5 pt-2 md:pt-3">
           <div>
@@ -167,11 +132,18 @@ export default function ProductCard({ product, className = '' }: Props) {
             </div>
           </div>
 
-          {bestTier.label && (
-            <span className="rounded-md md:rounded-lg bg-dust-100 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold text-soil-700">
-              {bestTier.label}
-            </span>
-          )}
+          <div className="flex flex-wrap items-center justify-end gap-1.5 shrink-0">
+            {hasMultipleColors && (
+              <span className="rounded-full bg-dust-100 px-2 py-0.5 text-[10px] font-medium text-soil-700/60">
+                شامل {toFa(colors.length)} رنگ
+              </span>
+            )}
+            {bestTier.label && (
+              <span className="rounded-md md:rounded-lg bg-dust-100 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold text-soil-700">
+                {bestTier.label}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Link>
