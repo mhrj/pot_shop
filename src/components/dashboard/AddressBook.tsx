@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AddressForm, { type AddressRecord } from '@/components/cart/AddressForm';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 const LABEL_TEXT: Record<AddressRecord['label'], string> = {
   HOME: 'خانه',
@@ -23,6 +24,8 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
   const [adding, setAdding] = useState(initial.length === 0);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [addressToDelete, setAddressToDelete] = useState<AddressRecord | null>(null);
 
   const upsert = (address: AddressRecord) => {
     setAddresses((current) => {
@@ -65,8 +68,10 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
     upsert(data.address as AddressRecord);
   };
 
-  const remove = async (address: AddressRecord) => {
-    if (!confirm(`آدرس «${address.fullName}» حذف شود؟`)) return;
+  const confirmRemove = async () => {
+    if (!addressToDelete) return;
+    const address = addressToDelete;
+    setAddressToDelete(null);
     setBusyId(address.id);
     setError(null);
     const res = await fetch(`/api/addresses/${address.id}`, { method: 'DELETE' });
@@ -155,9 +160,9 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
                 )}
                 <button
                   type="button"
-                  onClick={() => remove(a)}
+                  onClick={() => setAddressToDelete(a)}
                   disabled={busyId === a.id}
-                  className="rounded-full border border-red-200 bg-red-50 px-3.5 py-2 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+                  className="rounded-full border border-red-200 bg-red-50 px-3.5 py-2 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
                 >
                   حذف
                 </button>
@@ -173,11 +178,22 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
         <button
           type="button"
           onClick={() => setAdding(true)}
-          className="w-full rounded-2xl border border-dashed border-soil-900/20 px-6 py-3.5 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
+          className="w-full rounded-2xl border border-dashed border-soil-900/20 px-6 py-3.5 text-sm font-bold text-soil-900 transition hover:bg-dust-50 cursor-pointer"
         >
           + افزودن آدرس جدید
         </button>
       )}
+
+      <ConfirmModal
+        isOpen={Boolean(addressToDelete)}
+        title="حذف آدرس"
+        message={addressToDelete ? `آیا از حذف آدرس «${addressToDelete.fullName}» مطمئن هستید؟` : 'آیا از حذف این آدرس مطمئن هستید؟'}
+        isDestructive={true}
+        confirmText="حذف آدرس"
+        cancelText="انصراف"
+        onConfirm={confirmRemove}
+        onCancel={() => setAddressToDelete(null)}
+      />
     </div>
   );
 }

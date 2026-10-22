@@ -7,12 +7,14 @@ import { formatToman, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import type { PricedLine } from '@/lib/pricing';
 import ItemColorBadge from '@/components/ui/ItemColorBadge';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 export default function CartItemRow({ line, stock }: { line: PricedLine; stock: number }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [qty, setQty] = useState(line.quantity);
   const [error, setError] = useState<string | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const clamp = (n: number) => {
     const step = line.bundleSize > 1 ? line.bundleSize : 1;
@@ -45,8 +47,8 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
     });
   };
 
-  const remove = () => {
-    if (!confirm('این کالا از سبد حذف شود؟')) return;
+  const handleConfirmRemove = () => {
+    setIsConfirmOpen(false);
     setError(null);
     startTransition(async () => {
       const res = await fetch('/api/cart/' + line.productId, { method: 'DELETE' });
@@ -79,10 +81,10 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
           </div>
           <button
             type="button"
-            onClick={remove}
+            onClick={() => setIsConfirmOpen(true)}
             disabled={pending}
             aria-label="حذف از سبد"
-            className="rounded-full p-1.5 text-soil-700/60 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
+            className="rounded-full p-1.5 text-soil-700/60 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-40 cursor-pointer"
           >
             <svg
               className="size-4"
@@ -159,6 +161,17 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
           </p>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="حذف از سبد خرید"
+        message="آیا از حذف این کالا از سبد خرید مطمئن هستید؟"
+        isDestructive={true}
+        confirmText="حذف کالا"
+        cancelText="انصراف"
+        onConfirm={handleConfirmRemove}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </li>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 type LandingImageEntry = {
   key: string;
@@ -31,6 +32,7 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
   const [savingAlt, setSavingAlt] = useState<Record<string, boolean>>({});
   const [slotErrors, setSlotErrors] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
+  const [slotToClear, setSlotToClear] = useState<string | null>(null);
 
   const persist = async (slotKey: string, url: string, alt?: string) => {
     const res = await fetch('/api/admin/landing-images', {
@@ -89,8 +91,10 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
     }
   }
 
-  async function clearSlot(slotKey: string) {
-    if (!confirm('این تصویر حذف شود؟ بخش مربوطه به حالت پیش‌فرض برمی‌گردد.')) return;
+  async function handleConfirmClear() {
+    if (!slotToClear) return;
+    const slotKey = slotToClear;
+    setSlotToClear(null);
     setError(null);
     setUploading((prev) => ({ ...prev, [slotKey]: true }));
     try {
@@ -199,9 +203,9 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
 
                     <button
                       type="button"
-                      onClick={() => clearSlot(slot.key)}
+                      onClick={() => setSlotToClear(slot.key)}
                       disabled={isUploading}
-                      className="mt-3 w-full rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+                      className="mt-3 w-full rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
                     >
                       {isUploading ? 'در حال حذف…' : 'حذف تصویر'}
                     </button>
@@ -218,6 +222,17 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
           {error}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={Boolean(slotToClear)}
+        title="حذف تصویر"
+        message="این تصویر حذف شود؟ بخش مربوطه به حالت پیش‌فرض برمی‌گردد."
+        isDestructive={true}
+        confirmText="حذف تصویر"
+        cancelText="انصراف"
+        onConfirm={handleConfirmClear}
+        onCancel={() => setSlotToClear(null)}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { toFa } from '@/lib/format';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 type Props = {
   category: {
@@ -19,6 +20,7 @@ export default function CategoryRow({ category }: Props) {
   const [name, setName] = useState(category.name);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,11 +52,8 @@ export default function CategoryRow({ category }: Props) {
     });
   };
 
-  const handleRemove = () => {
-    if (!confirm(`آیا از حذف دسته‌بندی «${category.name}» اطمینان دارید؟`)) {
-      return;
-    }
-
+  const handleConfirmRemove = () => {
+    setIsConfirmOpen(false);
     setError(null);
     startTransition(async () => {
       try {
@@ -125,9 +124,9 @@ export default function CategoryRow({ category }: Props) {
         )}
         <button
           type="button"
-          onClick={handleRemove}
+          onClick={() => setIsConfirmOpen(true)}
           disabled={pending}
-          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
         >
           {pending ? 'در حال حذف…' : 'حذف'}
         </button>
@@ -138,6 +137,17 @@ export default function CategoryRow({ category }: Props) {
           {error}
         </p>
       )}
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="حذف دسته‌بندی"
+        message={`آیا از حذف دسته‌بندی «${category.name}» اطمینان دارید؟`}
+        isDestructive={true}
+        confirmText="حذف دسته‌بندی"
+        cancelText="انصراف"
+        onConfirm={handleConfirmRemove}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }

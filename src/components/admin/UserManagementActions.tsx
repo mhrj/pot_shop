@@ -2,11 +2,20 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 type Props = {
   userId: string;
   currentRole: 'CUSTOMER' | 'ADMIN';
   currentIsActive: boolean;
+};
+
+type ConfirmState = {
+  title: string;
+  message: string;
+  isDestructive: boolean;
+  confirmText: string;
+  action: () => void;
 };
 
 export default function UserManagementActions({
@@ -17,6 +26,7 @@ export default function UserManagementActions({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmModal, setConfirmModal] = useState<ConfirmState | null>(null);
 
   async function updateStatus(payload: { role?: 'ADMIN' | 'CUSTOMER'; isActive?: boolean }) {
     setError(null);
@@ -44,25 +54,29 @@ export default function UserManagementActions({
 
   const handleRoleToggle = () => {
     const nextRole = currentRole === 'ADMIN' ? 'CUSTOMER' : 'ADMIN';
-    const message =
-      nextRole === 'ADMIN'
-        ? 'آیا از ارتقای این کاربر به مدیر اطمینان دارید؟ این کاربر به تمام بخش‌های مدیریت دسترسی خواهد داشت.'
-        : 'آیا از لغو دسترسی مدیریت این کاربر اطمینان دارید؟';
-
-    if (window.confirm(message)) {
-      updateStatus({ role: nextRole });
-    }
+    setConfirmModal({
+      title: nextRole === 'ADMIN' ? 'ارتقا به مدیر سیستم' : 'لغو دسترسی مدیریت',
+      message:
+        nextRole === 'ADMIN'
+          ? 'آیا از ارتقای این کاربر به مدیر اطمینان دارید؟ این کاربر به تمام بخش‌های مدیریت دسترسی خواهد داشت.'
+          : 'آیا از لغو دسترسی مدیریت این کاربر اطمینان دارید؟',
+      isDestructive: nextRole !== 'ADMIN',
+      confirmText: nextRole === 'ADMIN' ? 'ارتقا به مدیر' : 'لغو دسترسی',
+      action: () => updateStatus({ role: nextRole }),
+    });
   };
 
   const handleActiveToggle = () => {
     const nextStatus = !currentIsActive;
-    const message = nextStatus
-      ? 'آیا از فعال‌سازی مجدد حساب کاربری اطمینان دارید؟'
-      : 'آیا از غیرفعال‌سازی این حساب کاربری اطمینان دارید؟ کاربر دیگر قادر به ورود نخواهد بود.';
-
-    if (window.confirm(message)) {
-      updateStatus({ isActive: nextStatus });
-    }
+    setConfirmModal({
+      title: nextStatus ? 'فعال‌سازی حساب کاربری' : 'غیرفعال‌سازی حساب کاربری',
+      message: nextStatus
+        ? 'آیا از فعال‌سازی مجدد حساب کاربری اطمینان دارید؟'
+        : 'آیا از غیرفعال‌سازی این حساب کاربری اطمینان دارید؟ کاربر دیگر قادر به ورود نخواهد بود.',
+      isDestructive: !nextStatus,
+      confirmText: nextStatus ? 'فعال‌سازی' : 'غیرفعال‌سازی',
+      action: () => updateStatus({ isActive: nextStatus }),
+    });
   };
 
   return (
@@ -91,7 +105,7 @@ export default function UserManagementActions({
           type="button"
           disabled={loading}
           onClick={handleActiveToggle}
-          className={`rounded-xl px-4 py-2 text-xs font-bold transition disabled:opacity-50 ${
+          className={`rounded-xl px-4 py-2 text-xs font-bold transition disabled:opacity-50 cursor-pointer ${
             currentIsActive
               ? 'border border-red-200 bg-red-50 text-red-700 hover:bg-red-100'
               : 'border border-flora-300 bg-flora-50 text-flora-800 hover:bg-flora-100'
@@ -100,6 +114,22 @@ export default function UserManagementActions({
           {loading ? 'در حال اعمال...' : currentIsActive ? 'غیرفعال‌سازی حساب' : 'فعال‌سازی حساب'}
         </button>
       </div>
+
+      <ConfirmModal
+        isOpen={Boolean(confirmModal)}
+        title={confirmModal?.title ?? ''}
+        message={confirmModal?.message ?? ''}
+        isDestructive={confirmModal?.isDestructive ?? false}
+        confirmText={confirmModal?.confirmText ?? 'تایید'}
+        cancelText="انصراف"
+        onConfirm={() => {
+          if (confirmModal) {
+            confirmModal.action();
+            setConfirmModal(null);
+          }
+        }}
+        onCancel={() => setConfirmModal(null)}
+      />
     </div>
   );
 }

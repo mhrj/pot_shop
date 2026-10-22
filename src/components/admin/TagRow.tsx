@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { toFa } from '@/lib/format';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 type Props = {
   tag: {
@@ -19,6 +20,7 @@ export default function TagRow({ tag }: Props) {
   const [name, setName] = useState(tag.name);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,15 +52,8 @@ export default function TagRow({ tag }: Props) {
     });
   };
 
-  const handleRemove = () => {
-    if (
-      !confirm(
-        `برچسب «${tag.name}» حذف شود؟ این برچسب از تمام محصولات مرتبط جدا خواهد شد اما خود محصولات حذف نمی‌شوند.`,
-      )
-    ) {
-      return;
-    }
-
+  const handleConfirmRemove = () => {
+    setIsConfirmOpen(false);
     setError(null);
     startTransition(async () => {
       try {
@@ -134,9 +129,9 @@ export default function TagRow({ tag }: Props) {
         )}
         <button
           type="button"
-          onClick={handleRemove}
+          onClick={() => setIsConfirmOpen(true)}
           disabled={pending}
-          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
         >
           {pending ? 'در حال حذف…' : 'حذف'}
         </button>
@@ -147,6 +142,17 @@ export default function TagRow({ tag }: Props) {
           {error}
         </p>
       )}
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="حذف برچسب"
+        message={`برچسب «${tag.name}» حذف شود؟ این برچسب از تمام محصولات مرتبط جدا خواهد شد اما خود محصولات حذف نمی‌شوند.`}
+        isDestructive={true}
+        confirmText="حذف برچسب"
+        cancelText="انصراف"
+        onConfirm={handleConfirmRemove}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }

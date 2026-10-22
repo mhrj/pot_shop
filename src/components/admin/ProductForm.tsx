@@ -7,6 +7,7 @@ import { formatToman, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import { FormError } from '@/components/ui/FormError';
 import GlobalColorPicker, { type GlobalColorOption } from '@/components/admin/GlobalColorPicker';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };
 
@@ -82,6 +83,7 @@ export default function ProductForm({
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState<Record<number, boolean>>({});
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string }>>([]);
   const [allCategories, setAllCategories] = useState<Array<{ id: string; name: string }>>(
     initialCategories ?? [],
@@ -462,9 +464,9 @@ export default function ProductForm({
     });
   }
 
-  function remove() {
+  function handleConfirmDelete() {
     if (!initial.id) return;
-    if (!confirm('این محصول حذف شود؟ سفارش‌های قبلی حفظ می‌شوند.')) return;
+    setIsDeleteModalOpen(false);
     startTransition(async () => {
       const res = await fetch('/api/admin/products/' + initial.id, { method: 'DELETE' });
       if (!res.ok) {
@@ -1414,14 +1416,25 @@ export default function ProductForm({
         {initial.id && (
           <button
             type="button"
-            onClick={remove}
+            onClick={() => setIsDeleteModalOpen(true)}
             disabled={pending}
-            className="rounded-xl border border-red-200 bg-red-50 px-6 py-3 text-sm font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+            className="rounded-xl border border-red-200 bg-red-50 px-6 py-3 text-sm font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
           >
             حذف محصول
           </button>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="حذف محصول"
+        message="آیا از حذف این محصول مطمئن هستید؟ این عمل قابل بازگشت نیست."
+        isDestructive={true}
+        confirmText="حذف محصول"
+        cancelText="انصراف"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </form>
   );
 }

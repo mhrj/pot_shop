@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 type Props = {
   color: {
@@ -29,6 +30,7 @@ export default function ColorRow({ color }: Props) {
   const [hexCode, setHexCode] = useState(color.hexCode);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,11 +72,8 @@ export default function ColorRow({ color }: Props) {
     });
   };
 
-  const handleRemove = () => {
-    if (!confirm(`آیا از حذف رنگ «${color.name}» (${color.hexCode}) اطمینان دارید؟`)) {
-      return;
-    }
-
+  const handleConfirmRemove = () => {
+    setIsConfirmOpen(false);
     setError(null);
     startTransition(async () => {
       try {
@@ -167,9 +166,9 @@ export default function ColorRow({ color }: Props) {
               </button>
               <button
                 type="button"
-                onClick={handleRemove}
+                onClick={() => setIsConfirmOpen(true)}
                 disabled={pending}
-                className="rounded-xl border border-red-200 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 transition disabled:opacity-50"
+                className="rounded-xl border border-red-200 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 transition disabled:opacity-50 cursor-pointer"
               >
                 حذف
               </button>
@@ -179,6 +178,17 @@ export default function ColorRow({ color }: Props) {
       </div>
 
       {error && <p className="text-xs text-red-600">{error}</p>}
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="حذف رنگ"
+        message={`آیا از حذف رنگ «${color.name}» (${color.hexCode}) اطمینان دارید؟`}
+        isDestructive={true}
+        confirmText="حذف رنگ"
+        cancelText="انصراف"
+        onConfirm={handleConfirmRemove}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }
