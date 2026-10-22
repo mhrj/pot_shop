@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { toEn } from '@/lib/format';
 
+export const IRANIAN_MOBILE_REGEX = /^09(1[0-9]|2[0-9]|3[0-9]|9[0-9]|0[1-5]|41)\d{7}$/;
+
 export const addressLabelSchema = z.enum(['HOME', 'WORK', 'OTHER']).default('HOME');
 
 export const addressInputSchema = z
@@ -17,7 +19,7 @@ export const addressInputSchema = z
         .string({ required_error: 'شماره موبایل الزامی است' })
         .trim()
         .min(1, 'شماره موبایل الزامی است')
-        .regex(/^09\d{9}$/, 'شماره موبایل وارد شده معتبر نیست'),
+        .regex(IRANIAN_MOBILE_REGEX, 'شماره موبایل وارد شده معتبر نیست'),
     ),
     province: z
       .string({ required_error: 'نام استان الزامی است' })

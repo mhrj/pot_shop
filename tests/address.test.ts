@@ -45,22 +45,60 @@ describe('Address normalization', () => {
     assert.throws(() => normalizeAddressInput(input), /نام|شماره|شهر|آدرس|کد پستی/i);
   });
 
-  it('strictly validates phone number with /^09\\d{9}$/ and exact Persian error message', () => {
-    const base = {
-      label: 'HOME',
-      fullName: 'علی رضایی',
-      phone: '02112345678', // landline instead of mobile
-      province: 'تهران',
-      city: 'تهران',
-      postalCode: '1234567890',
-      line1: 'خیابان ولیعصر',
-      isDefault: false,
-    };
+  it('strictly validates phone number with strict Iranian mobile regex and rejects 09000000000', () => {
+    const invalidNumbers = [
+      '02112345678', // landline instead of mobile
+      '09000000000', // 0900 is an invalid prefix
+      '09060000000', // 0906 is invalid
+      '09400000000', // 0940 is invalid (only 0941 allowed)
+      '0912345',      // too short
+      '091212345678', // too long
+    ];
 
-    assert.throws(
-      () => normalizeAddressInput(base),
-      (err: any) => err?.issues?.some((i: any) => i.message === 'شماره موبایل وارد شده معتبر نیست'),
-    );
+    for (const phone of invalidNumbers) {
+      const base = {
+        label: 'HOME',
+        fullName: 'علی رضایی',
+        phone,
+        province: 'تهران',
+        city: 'تهران',
+        postalCode: '1234567890',
+        line1: 'خیابان ولیعصر',
+        isDefault: false,
+      };
+
+      assert.throws(
+        () => normalizeAddressInput(base),
+        (err: any) => err?.issues?.some((i: any) => i.message === 'شماره موبایل وارد شده معتبر نیست'),
+        `Expected ${phone} to be rejected`,
+      );
+    }
+
+    const validNumbers = [
+      '09121234567',
+      '09211234567',
+      '09351234567',
+      '09901234567',
+      '09011234567',
+      '09051234567',
+      '09411234567',
+    ];
+
+    for (const phone of validNumbers) {
+      const base = {
+        label: 'HOME',
+        fullName: 'علی رضایی',
+        phone,
+        province: 'تهران',
+        city: 'تهران',
+        postalCode: '1234567890',
+        line1: 'خیابان ولیعصر',
+        isDefault: false,
+      };
+
+      const result = normalizeAddressInput(base);
+      assert.equal(result.phone, phone);
+    }
   });
 
   it('strictly validates postal code with 10 digits and exact Persian error message', () => {

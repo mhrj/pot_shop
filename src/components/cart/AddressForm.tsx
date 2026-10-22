@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ProvinceCitySelect from '@/components/ui/ProvinceCitySelect';
 import { FormError } from '@/components/ui/FormError';
+import { IRANIAN_MOBILE_REGEX } from '@/lib/address';
 
 export type AddressRecord = {
   id: string;
@@ -77,6 +78,7 @@ export default function AddressForm({
   const editing = Boolean(address);
   const [form, setForm] = useState<FormState>(() => toFormState(address));
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -99,6 +101,10 @@ export default function AddressForm({
       [name]: value,
     }));
 
+    if (name === 'phone') {
+      setPhoneError(null);
+    }
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -108,18 +114,20 @@ export default function AddressForm({
     event.preventDefault();
     setError(null);
 
+    let hasPhoneError = false;
+    if (!form.phone.trim() || !IRANIAN_MOBILE_REGEX.test(form.phone.trim())) {
+      setPhoneError('شماره موبایل وارد شده معتبر نیست');
+      hasPhoneError = true;
+    } else {
+      setPhoneError(null);
+    }
+
     const newErrors: Record<string, string> = {};
 
     if (!form.fullName.trim()) {
       newErrors.fullName = 'نام و نام خانوادگی الزامی است';
     } else if (form.fullName.trim().length < 2) {
       newErrors.fullName = 'نام و نام خانوادگی باید حداقل ۲ کاراکتر باشد';
-    }
-
-    if (!form.phone.trim()) {
-      newErrors.phone = 'شماره همراه الزامی است';
-    } else if (!/^09\d{9}$/.test(form.phone.trim())) {
-      newErrors.phone = 'شماره موبایل وارد شده معتبر نیست';
     }
 
     if (!form.province.trim()) {
@@ -142,7 +150,7 @@ export default function AddressForm({
       newErrors.line1 = 'آدرس دقیق باید حداقل ۳ کاراکتر باشد';
     }
 
-    if (Object.keys(newErrors).length > 0) {
+    if (hasPhoneError || Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
@@ -217,13 +225,13 @@ export default function AddressForm({
             maxLength={11}
             inputMode="numeric"
             className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
-              errors.phone
-                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              phoneError
+                ? 'border-red-500 focus:ring-red-500'
                 : 'border-soil-900/10 focus:border-flora-500'
             }`}
             placeholder="09121234567"
           />
-          <FormError message={errors.phone} />
+          {phoneError && <p className="mt-1 text-xs font-bold text-red-600">{phoneError}</p>}
         </label>
 
         <div className="sm:col-span-2">
