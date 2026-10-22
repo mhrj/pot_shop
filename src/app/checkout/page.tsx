@@ -1,7 +1,7 @@
 import { requireUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { getCartTotals } from '@/lib/cart';
-import { calculateShippingCost } from '@/lib/postex';
+import { calculateShippingCost, resolveCityCode } from '@/lib/postex';
 import Container from '@/components/ui/Container';
 import CheckoutForm from '@/components/cart/CheckoutForm';
 import { redirect } from 'next/navigation';
@@ -22,17 +22,29 @@ export default async function CheckoutPage() {
   }
 
   // Pre-calculate shipping rates with Postex helper for all available addresses
-  const originCity = process.env.POSTEX_ORIGIN_CITY || 'تهران';
+  let originCity = 'تهران';
+  try {
+    const settings = await prisma.storeSettings.findUnique({
+      where: { id: 'singleton' },
+    });
+    if (settings?.originCity) {
+      originCity = settings.originCity;
+    }
+  } catch {
+    // fallback
+  }
+  const fromCityCode = resolveCityCode(originCity);
   const initialShippingRates: Record<string, number> = {};
 
   await Promise.all(
     addresses.map(async (a) => {
-      initialShippingRates[a.id] = await calculateShippingCost(
+      initialShippingRates[a.id] = await calculateShippingCost({
         originCity,
-        a.city || a.province,
-        totals.totalWeightGrams,
-        totals,
-      );
+        from_city_code: fromCityCode,
+        destinationCity: a.city || a.province,
+        weightGrams: totals.totalWeightGrams,
+        fallbackTotals: totals,
+      });
     }),
   );
 

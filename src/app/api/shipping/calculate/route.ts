@@ -69,18 +69,31 @@ export async function POST(req: Request) {
   // 2) Get totals and weight
   const totals = await getCartTotals(session.sub);
   const effectiveWeight = weightGrams ?? totals.totalWeightGrams ?? 1000;
-  const originCity = process.env.POSTEX_ORIGIN_CITY || 'تهران';
+
+  // 3) Fetch store settings for origin city and from_city_code
+  let originCity = 'تهران';
+  try {
+    const settings = await prisma.storeSettings.findUnique({
+      where: { id: 'singleton' },
+    });
+    if (settings?.originCity) {
+      originCity = settings.originCity;
+    }
+  } catch (err) {
+    console.warn('[shipping/calculate] Failed to read store settings, falling back to default:', err);
+  }
+  const fromCityCode = resolveCityCode(originCity);
 
   let shippingToman: number;
 
   try {
-    // 3) Call Postex API securely on the server
+    // 4) Call Postex API securely on the server
     shippingToman = await calculatePostexShipping({
       originCity,
       destinationCity: destination,
       weightGrams: effectiveWeight,
       fallbackTotals: totals,
-      from_city_code: resolveCityCode(originCity),
+      from_city_code: fromCityCode,
       to_city_code: resolvedCode,
     });
   } catch (error) {

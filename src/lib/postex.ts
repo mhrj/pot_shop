@@ -144,6 +144,37 @@ function extractTomanPrice(data: any): number | null {
   return isRials ? Math.round(raw / 10) : raw;
 }
 
+export async function getStoreOrigin(): Promise<{
+  originProvince: string;
+  originCity: string;
+  from_city_code: number;
+}> {
+  try {
+    if (typeof window === 'undefined') {
+      const { prisma } = await import('@/lib/prisma');
+      const settings = await prisma.storeSettings.findUnique({
+        where: { id: 'singleton' },
+      });
+      if (settings?.originCity) {
+        return {
+          originProvince: settings.originProvince || 'تهران',
+          originCity: settings.originCity,
+          from_city_code: resolveCityCode(settings.originCity),
+        };
+      }
+    }
+  } catch {
+    // fallback if DB unreachable or in client bundle
+  }
+
+  const fallbackCity = process.env.POSTEX_ORIGIN_CITY || 'تهران';
+  return {
+    originProvince: 'تهران',
+    originCity: fallbackCity,
+    from_city_code: resolveCityCode(fallbackCity),
+  };
+}
+
 /**
  * Calculate dynamic shipping cost using Postex Quotes API with fallback to built-in pricing engine.
  *
@@ -158,18 +189,29 @@ export async function calculatePostexShipping(
   weightGrams?: number,
   fallbackTotals?: CartTotals,
 ): Promise<number> {
-  let originCity = 'تهران';
+  let originCity = '';
   let destination = destinationCity ?? 'تهران';
   let weight = weightGrams ?? 1000;
   let totals = fallbackTotals;
+  let explicitFromCityCode: number | undefined;
 
   if (typeof originCityOrParams === 'object' && originCityOrParams !== null) {
-    originCity = originCityOrParams.originCity ?? 'تهران';
+    originCity = originCityOrParams.originCity ?? '';
     destination = originCityOrParams.destinationCity ?? destination;
     weight = originCityOrParams.weightGrams ?? weight;
     totals = originCityOrParams.fallbackTotals ?? totals;
-  } else if (typeof originCityOrParams === 'string') {
-    originCity = originCityOrParams;
+    explicitFromCityCode = originCityOrParams.from_city_code;
+  } else if (typeof originCityOrParams === 'string' && originCityOrParams.trim()) {
+    originCity = originCityOrParams.trim();
+  }
+
+  // If origin is not provided, fetch from StoreSettings (defaulting to Tehran / 1)
+  if (!originCity) {
+    const origin = await getStoreOrigin();
+    originCity = origin.originCity;
+    if (!explicitFromCityCode) {
+      explicitFromCityCode = origin.from_city_code;
+    }
   }
 
   const defaultFallbackTotals: CartTotals = totals ?? {
@@ -201,6 +243,7 @@ export async function calculatePostexShipping(
       'https://api.postex.ir/api/v1/shipping/quotes';
 
     const fromCityCode =
+      explicitFromCityCode ||
       (typeof originCityOrParams === 'object' && originCityOrParams !== null && originCityOrParams.from_city_code) ||
       resolveCityCode(originCity);
     const toCityCode =

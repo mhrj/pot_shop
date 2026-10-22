@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { getStockShortages } from '@/lib/cart';
 import { calcShippingToman, priceCart, type Tier } from '@/lib/pricing';
-import { calculateShippingCost } from '@/lib/postex';
+import { calculateShippingCost, resolveCityCode } from '@/lib/postex';
 import { parseBundleItems, parseColorOptions } from '@/lib/product-features';
 import { zarinpalRequest, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 
@@ -165,13 +165,25 @@ export async function POST(req: Request) {
     })),
   );
 
-  const originCity = process.env.POSTEX_ORIGIN_CITY || 'تهران';
-  const pishtazShippingToman = await calculateShippingCost(
+  let originCity = 'تهران';
+  try {
+    const settings = await prisma.storeSettings.findUnique({
+      where: { id: 'singleton' },
+    });
+    if (settings?.originCity) {
+      originCity = settings.originCity;
+    }
+  } catch {
+    // fallback
+  }
+  const fromCityCode = resolveCityCode(originCity);
+  const pishtazShippingToman = await calculateShippingCost({
     originCity,
-    address.city || address.province,
-    totals.totalWeightGrams,
-    totals,
-  );
+    from_city_code: fromCityCode,
+    destinationCity: address.city || address.province,
+    weightGrams: totals.totalWeightGrams,
+    fallbackTotals: totals,
+  });
 
   const shippingCarrier = parsed.data.shippingCarrier?.trim() || 'پست پیشتاز';
   let shippingToman = pishtazShippingToman;

@@ -1,8 +1,5 @@
-import '@/lib/react19-compat';
 import { useState } from 'react';
-import { ProvinceCitySelect, type ProvinceCity } from 'iran-regions';
-import 'iran-regions/styles';
-import IRAN_REGIONS from '@/lib/iran-regions-data.json';
+import ProvinceCitySelect from '@/components/ui/ProvinceCitySelect';
 import { FormError } from '@/components/ui/FormError';
 
 export type AddressRecord = {
@@ -232,11 +229,11 @@ export default function AddressForm({
         <div className="sm:col-span-2">
           <ProvinceCitySelect
             value={{ province: form.province, city: form.city }}
-            onChange={(val: ProvinceCity) => {
+            onChange={(val) => {
               setForm((current) => ({
                 ...current,
-                province: val.province || '',
-                city: val.city || '',
+                province: val.province,
+                city: val.city,
               }));
               if (errors.province && val.province) {
                 setErrors((prev) => ({ ...prev, province: '' }));
@@ -245,35 +242,14 @@ export default function AddressForm({
                 setErrors((prev) => ({ ...prev, city: '' }));
               }
             }}
-            isRequired
-            placeholders={{ province: 'انتخاب استان', city: 'انتخاب شهر' }}
-            labels={{ province: 'استان', city: 'شهر' }}
-            provinces={IRAN_REGIONS}
-            theme="light"
-            size="sm"
-            containerClassName="address-form-regions !grid sm:!grid-cols-2 !gap-4 !w-full"
-            customTheme={{
-              'color-primary': '#1b4332',
-              'color-primaryHover': '#2d6a4f',
-              'color-border': 'rgba(62, 39, 35, 0.1)',
-              'color-borderHover': 'rgba(62, 39, 35, 0.25)',
-              'color-borderFocus': '#2d6a4f',
-              'color-focusRing': 'rgba(45, 106, 79, 0.15)',
-              'color-background': '#fdfbf7',
-              'color-surface': '#fdfbf7',
-              'color-text': '#3e2723',
-              'color-textSecondary': 'rgba(62, 39, 35, 0.6)',
-              'color-error': '#ef4444',
-              'radius-md': '0.75rem',
-              'font-sm': '0.75rem',
-            }}
+            required
+            provinceLabel="استان"
+            cityLabel="شهر"
+            provincePlaceholder="انتخاب استان"
+            cityPlaceholder="انتخاب شهر"
+            errorProvince={errors.province}
+            errorCity={errors.city}
           />
-          {(errors.province || errors.city) && (
-            <div className="grid sm:grid-cols-2 gap-4 mt-1">
-              <div>{errors.province && <FormError message={errors.province} />}</div>
-              <div>{errors.city && <FormError message={errors.city} />}</div>
-            </div>
-          )}
         </div>
 
         <label className="text-xs font-bold text-soil-700/80">
@@ -375,52 +351,7 @@ export default function AddressForm({
         )}
       </div>
 
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        .address-form-regions .flexible-input__label {
-          font-size: 0.75rem !important;
-          font-weight: 700 !important;
-          color: rgba(62, 39, 35, 0.8) !important;
-        }
-        .address-form-regions .flexible-input__input {
-          margin-top: 0.25rem !important;
-          background-color: #fdfbf7 !important;
-          border: 1px solid rgba(62, 39, 35, 0.1) !important;
-          border-radius: 0.75rem !important;
-          padding: 0.625rem 0.75rem !important;
-          padding-inline-end: 2rem !important;
-          font-size: 0.875rem !important;
-          color: #3e2723 !important;
-          min-height: 42px !important;
-          outline: none !important;
-          transition: all 0.15s ease !important;
-        }
-        .address-form-regions .flexible-input__input:focus {
-          border-color: #2d6a4f !important;
-          box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.2) !important;
-        }
-        .address-form-regions .flexible-input.error .flexible-input__input {
-          border-color: #ef4444 !important;
-        }
-        .address-form-regions .flexible-input__options {
-          z-index: 50 !important;
-          border-radius: 0.75rem !important;
-          border: 1px solid rgba(62, 39, 35, 0.1) !important;
-          box-shadow: 0 10px 25px -5px rgba(62, 39, 35, 0.15) !important;
-        }
-        .address-form-regions .flexible-input__option.selected {
-          background-color: rgba(45, 106, 79, 0.1) !important;
-          color: #1b4332 !important;
-          font-weight: 700 !important;
-        }
-        .address-form-regions .required-mark {
-          color: #ef4444 !important;
-          margin-inline-start: 0.125rem !important;
-        }
-      `,
-        }}
-      />
+
     </form>
   );
 }

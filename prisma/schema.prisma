@@ -428,5 +428,9 @@ model PageView {
   @@index([path, createdAt])
 }
 
-
-
+model StoreSettings {
+  id              String   @id @default("singleton")
+  originProvince  String   @default("تهران")
+  originCity      String   @default("تهران")
+  updatedAt       DateTime @updatedAt
+}
