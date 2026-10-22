@@ -5,6 +5,7 @@ import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
 import StatusBadge from '@/components/ui/StatusBadge';
 import AddressBook from '@/components/dashboard/AddressBook';
+import ReorderButton from '@/components/dashboard/ReorderButton';
 
 export default async function DashboardPage() {
   const user = await requireUser();
@@ -12,7 +13,10 @@ export default async function DashboardPage() {
   const [orders, addresses] = await Promise.all([
     prisma.order.findMany({
       where: { userId: user.id },
-      include: { items: { take: 3 } },
+      include: {
+        items: { take: 4 },
+        _count: { select: { items: true } },
+      },
       orderBy: { createdAt: 'desc' },
       take: 20,
     }),
@@ -47,54 +51,99 @@ export default async function DashboardPage() {
           </p>
         ) : (
           <ul className="mt-4 space-y-4">
-            {orders.map((o) => (
-              <li key={o.id} className="rounded-2xl border border-soil-900/10 bg-white p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="font-mono text-sm font-bold text-soil-900">
-                      {toFa(o.orderNumber)}
+            {orders.map((order) => (
+              <li key={order.id}>
+                <Link
+                  href={"/dashboard/orders/" + order.id}
+                  className="group block rounded-2xl border border-soil-900/10 bg-white p-5 transition hover:border-soil-900/25 hover:shadow-md"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-soil-900/5 pb-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="font-mono text-sm font-bold text-soil-900">
+                        {toFa(order.orderNumber)}
+                      </span>
+                      <StatusBadge kind="order" value={order.status} />
+                      <StatusBadge kind="payment" value={order.paymentStatus} />
+                    </div>
+                    <span className="text-xs text-soil-700/60">
+                      {formatDateFa(order.createdAt)}
                     </span>
-                    <StatusBadge kind="order" value={o.status} />
-                    <StatusBadge kind="payment" value={o.paymentStatus} />
                   </div>
-                  <span className="text-xs text-soil-700/60">
-                    {formatDateFa(o.createdAt)}
-                  </span>
-                </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-soil-700/80">
-                  <span>
-                    مبلغ: <b className="text-soil-900">{formatToman(o.totalToman)}</b>
-                  </span>
-                  <span>
-                    تعداد: <b className="text-soil-900">{toFa(o.totalCartons)}</b>
-                  </span>
-                  {o.refId && (
-                    <span dir="ltr">
-                      کد پیگیری: <b className="font-mono text-flora-700">{toFa(o.refId)}</b>
-                    </span>
-                  )}
-                  {o.trackingCode && (
-                    <span>
-                      مرسوله: <b className="text-soil-900">{toFa(o.trackingCode)}</b>
-                    </span>
-                  )}
-                </div>
+                  {/* Item Thumbnails and Names Summary */}
+                  <div className="flex flex-wrap items-center gap-4 py-4">
+                    {order.items.length > 0 && (
+                      <div className="flex -space-x-3 rtl:space-x-reverse shrink-0">
+                        {order.items.slice(0, 3).map((item, idx) =>
+                          item.imageUrl ? (
+                            <img
+                              key={item.id || idx}
+                              src={item.imageUrl}
+                              alt={item.productName}
+                              className="relative z-10 w-12 h-12 rounded-full border-2 border-white object-cover"
+                            />
+                          ) : (
+                            <div
+                              key={item.id || idx}
+                              className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white bg-dust-100 text-soil-700/50 text-xs"
+                            >
+                              🏺
+                            </div>
+                          )
+                        )}
+                        {order._count.items > 3 && (
+                          <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white bg-dust-200 text-xs font-bold text-soil-800">
+                            +{toFa(order._count.items - 3)}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link
-                    href={`/dashboard/orders/${o.id}`}
-                    className="rounded-full bg-dust-100 px-4 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-200"
-                  >
-                    جزئیات سفارش
-                  </Link>
-                  <form action="/api/cart/reorder" method="post">
-                    <input type="hidden" name="orderId" value={o.id} />
-                    <button className="rounded-full bg-flora-900 px-4 py-2 text-[11px] font-bold text-white transition hover:bg-flora-700">
-                      سفارش مجدد
-                    </button>
-                  </form>
-                </div>
+                    {order.items.length > 0 && (
+                      <div className="text-xs text-soil-800">
+                        <span className="font-bold">{order.items[0]?.productName}</span>
+                        {order._count.items > 1 && (
+                          <span className="text-soil-700/70">
+                            {' '}و {toFa(order._count.items - 1)} محصول دیگر
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Metadata and Actions */}
+                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-soil-900/5 pt-4 text-xs text-soil-700/80">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                      <span>
+                        مبلغ: <b className="text-soil-900">{formatToman(order.totalToman)}</b>
+                      </span>
+                      <span>
+                        تعداد اقلام: <b className="text-soil-900">{toFa(order._count.items)}</b>
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 px-2.5 py-1 text-xs text-soil-700">
+                        <span>🚚</span>
+                        <span>ارسال با {order.shippingCarrier || 'پست پیشتاز'}</span>
+                      </span>
+                      {order.refId && (
+                        <span dir="ltr">
+                          کد پیگیری: <b className="font-mono text-flora-700">{toFa(order.refId)}</b>
+                        </span>
+                      )}
+                      {order.trackingCode && (
+                        <span>
+                          مرسوله: <b className="text-soil-900">{toFa(order.trackingCode)}</b>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-dust-100 px-4 py-2 text-[11px] font-bold text-soil-900 transition group-hover:bg-dust-200">
+                        جزئیات سفارش
+                      </span>
+                      <ReorderButton orderId={order.id} />
+                    </div>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>

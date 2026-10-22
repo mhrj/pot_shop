@@ -15,29 +15,33 @@ export default async function AdminUserDetailPage({ params }: Props) {
   await requireAdmin();
   const { id } = await params;
 
-  const user = await prisma.user.findUnique({
-    where: { id },
-    include: {
-      addresses: {
-        orderBy: { isDefault: 'desc' },
-      },
-      orders: {
-        orderBy: { createdAt: 'desc' },
-        take: 30,
-        include: {
-          _count: { select: { items: true } },
+  const [user, orders] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id },
+      include: {
+        addresses: {
+          orderBy: { isDefault: 'desc' },
         },
       },
-    },
-  });
+    }),
+    prisma.order.findMany({
+      where: { userId: id },
+      orderBy: { createdAt: 'desc' },
+      take: 30,
+      include: {
+        items: { take: 4 },
+        _count: { select: { items: true } },
+      },
+    }),
+  ]);
 
   if (!user) notFound();
 
-  const totalSpent = user.orders
+  const totalSpent = orders
     .filter((o) => o.paymentStatus === 'PAID')
     .reduce((sum, o) => sum + o.totalToman, 0);
 
-  const totalOrders = user.orders.length;
+  const totalOrders = orders.length;
 
   return (
     <div className="space-y-6">
@@ -183,63 +187,116 @@ export default async function AdminUserDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Recent Orders Table */}
+      {/* Recent Orders List */}
       <div className="rounded-2xl border border-soil-900/10 bg-white">
         <div className="flex items-center justify-between border-b border-soil-900/10 px-5 py-4">
           <h2 className="text-sm font-black text-soil-900">
-            سفارش‌های کاربر ({toFa(user.orders.length)})
+            سفارش‌های کاربر ({toFa(orders.length)})
           </h2>
         </div>
 
-        {user.orders.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="p-8 text-center text-xs text-soil-700/60">
             هنوز سفارشی توسط این کاربر ثبت نشده است.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-dust-50 text-soil-700/70">
-                <tr>
-                  <th className="px-4 py-3 text-start font-medium">شماره سفارش</th>
-                  <th className="px-4 py-3 text-start font-medium">تعداد اقلام</th>
-                  <th className="px-4 py-3 text-start font-medium">مبلغ</th>
-                  <th className="px-4 py-3 text-start font-medium">وضعیت پرداخت</th>
-                  <th className="px-4 py-3 text-start font-medium">وضعیت سفارش</th>
-                  <th className="px-4 py-3 text-start font-medium">تاریخ ثبت</th>
-                  <th className="px-4 py-3 text-start font-medium"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-soil-900/5">
-                {user.orders.map((o) => (
-                  <tr key={o.id} className="transition hover:bg-dust-50/50">
-                    <td className="px-4 py-3.5 font-mono text-xs">{toFa(o.orderNumber)}</td>
-                    <td className="px-4 py-3.5 text-xs text-soil-700/70">
-                      {toFa(o._count.items)} قلم
-                    </td>
-                    <td className="px-4 py-3.5 font-bold text-soil-900">
-                      {formatToman(o.totalToman)}
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <StatusBadge kind="payment" value={o.paymentStatus} />
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <OrderStatusBadge status={o.status} />
-                    </td>
-                    <td className="px-4 py-3.5 text-xs text-soil-700/60">
-                      {formatDateFa(o.createdAt)}
-                    </td>
-                    <td className="px-4 py-3.5 text-left">
-                      <Link
-                        href={`/admin/orders/${o.id}`}
-                        className="text-xs font-bold text-flora-700 hover:text-flora-900"
-                      >
-                        مشاهده سفارش ←
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="p-5">
+            <ul className="space-y-4">
+              {orders.map((order) => (
+                <li key={order.id}>
+                  <Link
+                    href={`/admin/orders/${order.id}`}
+                    className="group block rounded-2xl border border-soil-900/10 bg-dust-50/50 p-5 transition hover:border-soil-900/25 hover:bg-white hover:shadow-md"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-soil-900/5 pb-4">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className="font-mono text-sm font-bold text-soil-900">
+                          {toFa(order.orderNumber)}
+                        </span>
+                        <OrderStatusBadge status={order.status} />
+                        <StatusBadge kind="payment" value={order.paymentStatus} />
+                      </div>
+                      <span className="text-xs text-soil-700/60">
+                        {formatDateFa(order.createdAt)}
+                      </span>
+                    </div>
+
+                    {/* Item Thumbnails and Names Summary */}
+                    <div className="flex flex-wrap items-center gap-4 py-4">
+                      {order.items.length > 0 && (
+                        <div className="flex -space-x-3 rtl:space-x-reverse shrink-0">
+                          {order.items.slice(0, 3).map((item, idx) =>
+                            item.imageUrl ? (
+                              <img
+                                key={item.id || idx}
+                                src={item.imageUrl}
+                                alt={item.productName}
+                                className="relative z-10 w-12 h-12 rounded-full border-2 border-white object-cover"
+                              />
+                            ) : (
+                              <div
+                                key={item.id || idx}
+                                className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white bg-dust-100 text-soil-700/50 text-xs"
+                              >
+                                🏺
+                              </div>
+                            )
+                          )}
+                          {order._count.items > 3 && (
+                            <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white bg-dust-200 text-xs font-bold text-soil-800">
+                              +{toFa(order._count.items - 3)}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {order.items.length > 0 && (
+                        <div className="text-xs text-soil-800">
+                          <span className="font-bold">{order.items[0]?.productName}</span>
+                          {order._count.items > 1 && (
+                            <span className="text-soil-700/70">
+                              {' '}و {toFa(order._count.items - 1)} محصول دیگر
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Metadata and Actions */}
+                    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-soil-900/5 pt-4 text-xs text-soil-700/80">
+                      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                        <span>
+                          مبلغ: <b className="text-soil-900">{formatToman(order.totalToman)}</b>
+                        </span>
+                        <span>
+                          تعداد اقلام: <b className="text-soil-900">{toFa(order._count.items)}</b>
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 px-2.5 py-1 text-xs text-soil-700">
+                          <span>🚚</span>
+                          <span>ارسال با {order.shippingCarrier || 'پست پیشتاز'}</span>
+                        </span>
+                        {order.refId && (
+                          <span dir="ltr">
+                            کد پیگیری: <b className="font-mono text-flora-700">{toFa(order.refId)}</b>
+                          </span>
+                        )}
+                        {order.trackingCode && (
+                          <span>
+                            مرسوله: <b className="text-soil-900">{toFa(order.trackingCode)}</b>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-flora-50 px-4 py-2 text-[11px] font-bold text-flora-800 transition group-hover:bg-flora-100">
+                          مشاهده سفارش ←
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
