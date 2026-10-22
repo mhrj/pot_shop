@@ -42,6 +42,42 @@ describe('Address normalization', () => {
       isDefault: false,
     };
 
-    assert.throws(() => normalizeAddressInput(input), /نام|شماره|شهر|آدرس|کد پستی|فقط عدد/i);
+    assert.throws(() => normalizeAddressInput(input), /نام|شماره|شهر|آدرس|کد پستی/i);
+  });
+
+  it('strictly validates phone number with /^09\\d{9}$/ and exact Persian error message', () => {
+    const base = {
+      label: 'HOME',
+      fullName: 'علی رضایی',
+      phone: '02112345678', // landline instead of mobile
+      province: 'تهران',
+      city: 'تهران',
+      postalCode: '1234567890',
+      line1: 'خیابان ولیعصر',
+      isDefault: false,
+    };
+
+    assert.throws(
+      () => normalizeAddressInput(base),
+      (err: any) => err?.issues?.some((i: any) => i.message === 'شماره موبایل وارد شده معتبر نیست'),
+    );
+  });
+
+  it('strictly validates postal code with 10 digits and exact Persian error message', () => {
+    const base = {
+      label: 'HOME',
+      fullName: 'علی رضایی',
+      phone: '09121234567',
+      province: 'تهران',
+      city: 'تهران',
+      postalCode: '12345', // 5 digits instead of 10
+      line1: 'خیابان ولیعصر',
+      isDefault: false,
+    };
+
+    assert.throws(
+      () => normalizeAddressInput(base),
+      (err: any) => err?.issues?.some((i: any) => i.message === 'کد پستی باید دقیقاً ۱۰ رقم باشد'),
+    );
   });
 });

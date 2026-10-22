@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { toEn } from '@/lib/format';
 
 export const addressLabelSchema = z.enum(['HOME', 'WORK', 'OTHER']).default('HOME');
 
@@ -10,11 +11,14 @@ export const addressInputSchema = z
       .trim()
       .min(2, 'نام و نام خانوادگی الزامی است')
       .max(80, 'نام کامل بیش از حد مجاز است'),
-    phone: z
-      .string({ required_error: 'شماره موبایل الزامی است' })
-      .trim()
-      .min(1, 'شماره موبایل الزامی است')
-      .regex(/^09\d{9}$/, 'شماره موبایل معتبر نیست (۱۱ رقم با ۰۹)'),
+    phone: z.preprocess(
+      (val) => (typeof val === 'string' ? toEn(val).trim() : val),
+      z
+        .string({ required_error: 'شماره موبایل الزامی است' })
+        .trim()
+        .min(1, 'شماره موبایل الزامی است')
+        .regex(/^09\d{9}$/, 'شماره موبایل وارد شده معتبر نیست'),
+    ),
     province: z
       .string({ required_error: 'نام استان الزامی است' })
       .trim()
@@ -23,11 +27,14 @@ export const addressInputSchema = z
       .string({ required_error: 'نام شهر الزامی است' })
       .trim()
       .min(2, 'نام شهر الزامی است'),
-    postalCode: z
-      .string({ required_error: 'کد پستی الزامی است' })
-      .trim()
-      .min(1, 'کد پستی الزامی است')
-      .regex(/^\d{5,10}$/, 'کد پستی فقط باید شامل اعداد باشد'),
+    postalCode: z.preprocess(
+      (val) => (typeof val === 'string' ? toEn(val).trim() : val),
+      z
+        .string({ required_error: 'کد پستی الزامی است' })
+        .trim()
+        .min(1, 'کد پستی الزامی است')
+        .regex(/^\d{10}$/, 'کد پستی باید دقیقاً ۱۰ رقم باشد'),
+    ),
     line1: z
       .string({ required_error: 'آدرس اصلی الزامی است' })
       .trim()

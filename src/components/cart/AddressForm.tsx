@@ -1,4 +1,8 @@
+import '@/lib/react19-compat';
 import { useState } from 'react';
+import { ProvinceCitySelect, type ProvinceCity } from 'iran-regions';
+import 'iran-regions/styles';
+import IRAN_REGIONS from '@/lib/iran-regions-data.json';
 import { FormError } from '@/components/ui/FormError';
 
 export type AddressRecord = {
@@ -19,7 +23,7 @@ const EMPTY_FORM = {
   fullName: '',
   phone: '',
   province: 'تهران',
-  city: '',
+  city: 'تهران',
   postalCode: '',
   line1: '',
   line2: '',
@@ -89,6 +93,8 @@ export default function AddressForm({
 
     if (typeof value === 'string' && (name === 'phone' || name === 'postalCode')) {
       value = toDigitsOnly(value);
+      if (name === 'phone') value = value.slice(0, 11);
+      if (name === 'postalCode') value = value.slice(0, 10);
     }
 
     setForm((current) => ({
@@ -116,7 +122,7 @@ export default function AddressForm({
     if (!form.phone.trim()) {
       newErrors.phone = 'شماره همراه الزامی است';
     } else if (!/^09\d{9}$/.test(form.phone.trim())) {
-      newErrors.phone = 'شماره همراه باید ۱۱ رقم و با ۰۹ شروع شود';
+      newErrors.phone = 'شماره موبایل وارد شده معتبر نیست';
     }
 
     if (!form.province.trim()) {
@@ -130,7 +136,7 @@ export default function AddressForm({
     if (!form.postalCode.trim()) {
       newErrors.postalCode = 'کد پستی الزامی است';
     } else if (!/^\d{10}$/.test(form.postalCode.trim())) {
-      newErrors.postalCode = 'کد پستی باید ۱۰ رقم و فقط شامل اعداد باشد';
+      newErrors.postalCode = 'کد پستی باید دقیقاً ۱۰ رقم باشد';
     }
 
     if (!form.line1.trim()) {
@@ -211,6 +217,7 @@ export default function AddressForm({
             onChange={handleChange}
             dir="ltr"
             type="tel"
+            maxLength={11}
             inputMode="numeric"
             className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
               errors.phone
@@ -222,39 +229,52 @@ export default function AddressForm({
           <FormError message={errors.phone} />
         </label>
 
-        <label className="text-xs font-bold text-soil-700/80">
-          استان
-          <span className="text-red-500 ms-0.5">*</span>
-          <input
-            name="province"
-            value={form.province}
-            onChange={handleChange}
-            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
-              errors.province
-                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-soil-900/10 focus:border-flora-500'
-            }`}
-            placeholder="تهران"
+        <div className="sm:col-span-2">
+          <ProvinceCitySelect
+            value={{ province: form.province, city: form.city }}
+            onChange={(val: ProvinceCity) => {
+              setForm((current) => ({
+                ...current,
+                province: val.province || '',
+                city: val.city || '',
+              }));
+              if (errors.province && val.province) {
+                setErrors((prev) => ({ ...prev, province: '' }));
+              }
+              if (errors.city && val.city) {
+                setErrors((prev) => ({ ...prev, city: '' }));
+              }
+            }}
+            isRequired
+            placeholders={{ province: 'انتخاب استان', city: 'انتخاب شهر' }}
+            labels={{ province: 'استان', city: 'شهر' }}
+            provinces={IRAN_REGIONS}
+            theme="light"
+            size="sm"
+            containerClassName="address-form-regions !grid sm:!grid-cols-2 !gap-4 !w-full"
+            customTheme={{
+              'color-primary': '#1b4332',
+              'color-primaryHover': '#2d6a4f',
+              'color-border': 'rgba(62, 39, 35, 0.1)',
+              'color-borderHover': 'rgba(62, 39, 35, 0.25)',
+              'color-borderFocus': '#2d6a4f',
+              'color-focusRing': 'rgba(45, 106, 79, 0.15)',
+              'color-background': '#fdfbf7',
+              'color-surface': '#fdfbf7',
+              'color-text': '#3e2723',
+              'color-textSecondary': 'rgba(62, 39, 35, 0.6)',
+              'color-error': '#ef4444',
+              'radius-md': '0.75rem',
+              'font-sm': '0.75rem',
+            }}
           />
-          <FormError message={errors.province} />
-        </label>
-
-        <label className="text-xs font-bold text-soil-700/80">
-          شهر
-          <span className="text-red-500 ms-0.5">*</span>
-          <input
-            name="city"
-            value={form.city}
-            onChange={handleChange}
-            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
-              errors.city
-                ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-soil-900/10 focus:border-flora-500'
-            }`}
-            placeholder="تهران"
-          />
-          <FormError message={errors.city} />
-        </label>
+          {(errors.province || errors.city) && (
+            <div className="grid sm:grid-cols-2 gap-4 mt-1">
+              <div>{errors.province && <FormError message={errors.province} />}</div>
+              <div>{errors.city && <FormError message={errors.city} />}</div>
+            </div>
+          )}
+        </div>
 
         <label className="text-xs font-bold text-soil-700/80">
           کد پستی
@@ -264,6 +284,7 @@ export default function AddressForm({
             value={form.postalCode}
             onChange={handleChange}
             dir="ltr"
+            maxLength={10}
             inputMode="numeric"
             className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
               errors.postalCode
@@ -353,6 +374,53 @@ export default function AddressForm({
           </button>
         )}
       </div>
+
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        .address-form-regions .flexible-input__label {
+          font-size: 0.75rem !important;
+          font-weight: 700 !important;
+          color: rgba(62, 39, 35, 0.8) !important;
+        }
+        .address-form-regions .flexible-input__input {
+          margin-top: 0.25rem !important;
+          background-color: #fdfbf7 !important;
+          border: 1px solid rgba(62, 39, 35, 0.1) !important;
+          border-radius: 0.75rem !important;
+          padding: 0.625rem 0.75rem !important;
+          padding-inline-end: 2rem !important;
+          font-size: 0.875rem !important;
+          color: #3e2723 !important;
+          min-height: 42px !important;
+          outline: none !important;
+          transition: all 0.15s ease !important;
+        }
+        .address-form-regions .flexible-input__input:focus {
+          border-color: #2d6a4f !important;
+          box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.2) !important;
+        }
+        .address-form-regions .flexible-input.error .flexible-input__input {
+          border-color: #ef4444 !important;
+        }
+        .address-form-regions .flexible-input__options {
+          z-index: 50 !important;
+          border-radius: 0.75rem !important;
+          border: 1px solid rgba(62, 39, 35, 0.1) !important;
+          box-shadow: 0 10px 25px -5px rgba(62, 39, 35, 0.15) !important;
+        }
+        .address-form-regions .flexible-input__option.selected {
+          background-color: rgba(45, 106, 79, 0.1) !important;
+          color: #1b4332 !important;
+          font-weight: 700 !important;
+        }
+        .address-form-regions .required-mark {
+          color: #ef4444 !important;
+          margin-inline-start: 0.125rem !important;
+        }
+      `,
+        }}
+      />
     </form>
   );
 }
