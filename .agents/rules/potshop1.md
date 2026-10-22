@@ -53,3 +53,10 @@ Before writing any code, you must strictly adhere to the following project archi
 - ALWAYS run `npx tsc --noEmit` after changes and fix all TypeScript errors.
 - ALWAYS run `npm run build` before declaring a task complete.
 - When asked to fix a bug, explain WHY it happened before giving the fix.
+
+
+
+You updated the Prisma schema but forgot to sync the database. 
+From now on, whenever you edit `prisma/schema.prisma`, you must immediately run `npx prisma db push` and `npx prisma generate` in the terminal to apply the changes. 
+
+For now, I have run `npx prisma db push` manually, so the errors are fixed. Just remember this rule for future changes.
