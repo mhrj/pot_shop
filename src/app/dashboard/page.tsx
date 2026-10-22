@@ -6,6 +6,7 @@ import Container from '@/components/ui/Container';
 import StatusBadge from '@/components/ui/StatusBadge';
 import AddressBook from '@/components/dashboard/AddressBook';
 import ReorderButton from '@/components/dashboard/ReorderButton';
+import { formatCarrierName } from '@/lib/orders';
 
 export default async function DashboardPage() {
   const user = await requireUser();
@@ -122,7 +123,7 @@ export default async function DashboardPage() {
                       </span>
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 px-2.5 py-1 text-xs text-soil-700">
                         <span>🚚</span>
-                        <span>ارسال با {order.shippingCarrier || 'پست پیشتاز'}</span>
+                        <span>ارسال با {formatCarrierName(order.shippingCarrier)}</span>
                       </span>
                       {order.refId && (
                         <span dir="ltr">

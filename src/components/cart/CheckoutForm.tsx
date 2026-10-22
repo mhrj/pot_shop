@@ -386,7 +386,7 @@ export default function CheckoutForm({
                   d="M4 12a8 8 0 018-8v8H4z"
                 />
               </svg>
-              <p className="text-xs">در حال دریافت هزینه ارسال از پستکس…</p>
+              <p className="text-xs">در حال محاسبه هزینه ارسال…</p>
             </div>
           ) : (
             <ul className="space-y-2.5">

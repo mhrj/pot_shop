@@ -9,7 +9,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import ItemColorBadge from '@/components/ui/ItemColorBadge';
 import PrintInvoiceButton from '@/components/orders/PrintInvoiceButton';
 import BundleDetailsAccordion from '@/components/orders/BundleDetailsAccordion';
-import { isOrderStatus, ORDER_STATUS_LABELS, TIMELINE } from '@/lib/orders';
+import { isOrderStatus, ORDER_STATUS_LABELS, TIMELINE, formatCarrierName } from '@/lib/orders';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -129,7 +129,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
 
       {order.trackingCode && (
         <p className="text-sm text-soil-700/80">
-          کد رهگیری {order.shippingCarrier || 'مرسوله'}:{' '}
+          کد رهگیری {formatCarrierName(order.shippingCarrier)}:{' '}
           <b className="font-mono text-soil-900" dir="ltr">
             {toFa(order.trackingCode)}
           </b>
@@ -175,7 +175,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           </p>
           <div className="mt-3 pt-2.5 border-t border-soil-900/5 flex items-center justify-between text-xs print:text-[10px]">
             <span className="text-soil-700/70">شرکت حمل و نقل:</span>
-            <span className="font-bold text-soil-900">{order.shippingCarrier || 'پست پیشتاز'}</span>
+            <span className="font-bold text-soil-900">{formatCarrierName(order.shippingCarrier)}</span>
           </div>
         </section>
 
@@ -322,7 +322,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           orderId={order.id}
           initialStatus={order.status}
           initialTracking={order.trackingCode ?? ''}
-          initialCarrier={order.shippingCarrier ?? 'پست پیشتاز'}
+          initialCarrier={formatCarrierName(order.shippingCarrier)}
         />
       </div>
     </div>

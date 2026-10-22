@@ -6,6 +6,7 @@ import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import StatusBadge from '@/components/ui/StatusBadge';
 import UserManagementActions from '@/components/admin/UserManagementActions';
+import { formatCarrierName } from '@/lib/orders';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -273,7 +274,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
                         </span>
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 px-2.5 py-1 text-xs text-soil-700">
                           <span>🚚</span>
-                          <span>ارسال با {order.shippingCarrier || 'پست پیشتاز'}</span>
+                          <span>ارسال با {formatCarrierName(order.shippingCarrier)}</span>
                         </span>
                         {order.refId && (
                           <span dir="ltr">

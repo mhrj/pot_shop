@@ -5,7 +5,7 @@ import { requireUser } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { allowedTransitions, ORDER_STATUS_LABELS, isOrderStatus, TIMELINE } from '@/lib/orders';
+import { allowedTransitions, ORDER_STATUS_LABELS, isOrderStatus, TIMELINE, formatCarrierName } from '@/lib/orders';
 import { channelLabel } from '@/lib/analytics';
 import CancelOrderButton from '@/components/dashboard/CancelOrderButton';
 import ItemColorBadge from '@/components/ui/ItemColorBadge';
@@ -139,7 +139,7 @@ export default async function CustomerOrderPage({ params }: Props) {
 
       {order.trackingCode && (
         <p className="mt-4 text-sm text-soil-700/80">
-          کد رهگیری {order.shippingCarrier || 'مرسوله'}:{' '}
+          کد رهگیری {formatCarrierName(order.shippingCarrier)}:{' '}
           <b className="font-mono text-soil-900" dir="ltr">
             {toFa(order.trackingCode)}
           </b>
@@ -314,7 +314,7 @@ export default async function CustomerOrderPage({ params }: Props) {
               <div className="flex justify-between gap-3">
                 <dt className="text-soil-700/70">شرکت حمل و نقل:</dt>
                 <dd className="font-bold text-soil-900">
-                  {order.shippingCarrier || 'پست پیشتاز'}
+                  {formatCarrierName(order.shippingCarrier)}
                 </dd>
               </div>
               <div className="pt-2 border-t border-soil-900/5 print:pt-1">

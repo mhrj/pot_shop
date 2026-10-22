@@ -11,6 +11,7 @@ import {
   paymentStatusAfterCancel,
   paymentStatusLabel,
   shouldRestoreStockOnCancel,
+  formatCarrierName,
 } from '../src/lib/orders';
 
 test('order status transitions follow the fulfilment flow', () => {
@@ -107,4 +108,18 @@ test('every status has a Persian label and no raw enum leaks through', () => {
   for (const status of ['PENDING', 'PAID', 'FAILED', 'CANCELED', 'REFUNDED']) {
     assert.notEqual(paymentStatusLabel(status), status);
   }
+});
+
+test('formatCarrierName maps Postex and empty to default courier and preserves specific names', () => {
+  assert.equal(formatCarrierName(null), 'پست پیشتاز');
+  assert.equal(formatCarrierName(undefined), 'پست پیشتاز');
+  assert.equal(formatCarrierName(''), 'پست پیشتاز');
+  assert.equal(formatCarrierName('   '), 'پست پیشتاز');
+  assert.equal(formatCarrierName('پستکس'), 'پست پیشتاز');
+  assert.equal(formatCarrierName('postex'), 'پست پیشتاز');
+  assert.equal(formatCarrierName('Postex'), 'پست پیشتاز');
+  assert.equal(formatCarrierName('پست پیشتاز'), 'پست پیشتاز');
+  assert.equal(formatCarrierName('پست عادی'), 'پست عادی');
+  assert.equal(formatCarrierName('تیپاکس'), 'تیپاکس');
+  assert.equal(formatCarrierName('پیک موتوری'), 'پیک موتوری');
 });

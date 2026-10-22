@@ -76,7 +76,7 @@ export default function StoreSettingsForm({
         <h2 className="text-base font-black text-soil-900">مبدا ارسال سفارشات (انبار مرکزی)</h2>
         <p className="mt-1 text-xs leading-6 text-soil-700/70">
           استان و شهر کارگاه یا انبار مرکزی فروشگاه را مشخص کنید. محاسبات نرخ حمل و نقل شرکت ملی پست
-          و تیپاکس در سامانه پستکس بر اساس فاصله این مبدا تا آدرس مشتری انجام می‌شود.
+          و تیپاکس در سامانه ارسال (پستکس) بر اساس فاصله این مبدا تا آدرس مشتری انجام می‌شود.
         </p>
       </div>
 
@@ -100,7 +100,7 @@ export default function StoreSettingsForm({
 
         {city && (
           <div className="flex items-center gap-2 rounded-xl bg-dust-50 border border-soil-900/10 px-4 py-3 text-xs text-soil-800">
-            <span className="font-bold">شناسه مبدا در وب‌سرویس پستکس:</span>
+            <span className="font-bold">شناسه مبدا در سامانه ارسال (پستکس):</span>
             <span className="font-black text-flora-700 dir-ltr">{toFa(cityCode)}</span>
             <span className="text-soil-700/60 font-normal">
               ({province} — {city})

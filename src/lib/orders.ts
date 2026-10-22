@@ -155,3 +155,13 @@ export function paymentStatusAfterCancel(
 export function isRetryableGatewayFailure(code: number): boolean {
   return code === 502 || code === 503;
 }
+
+/** Returns user-facing courier name, mapping any legacy "پستکس" / "postex" or empty string to "پست پیشتاز". */
+export function formatCarrierName(carrier?: string | null): string {
+  if (!carrier) return 'پست پیشتاز';
+  const trimmed = carrier.trim();
+  if (!trimmed || trimmed === 'پستکس' || trimmed.toLowerCase() === 'postex') {
+    return 'پست پیشتاز';
+  }
+  return trimmed;
+}
