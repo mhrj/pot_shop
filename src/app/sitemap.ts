@@ -17,11 +17,16 @@ export const revalidate = 3600;
  * the catalogue uses is applied here.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const products = await prisma.product.findMany({
-    where: { isActive: true },
-    select: { slug: true, updatedAt: true },
-    orderBy: { updatedAt: 'desc' },
-  });
+  let products: Array<{ slug: string; updatedAt: Date }> = [];
+  try {
+    products = await prisma.product.findMany({
+      where: { isActive: true },
+      select: { slug: true, updatedAt: true },
+      orderBy: { updatedAt: 'desc' },
+    });
+  } catch {
+    // DB unreachable at build time
+  }
 
   return [
     {

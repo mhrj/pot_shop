@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: Node (Server-side)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev"
+    },
+    {
+      "name": "Next.js: Chrome (Client-side)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Run Current Test File",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npx tsx --test ${file}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Next.js: Full Stack",
+      "configurations": [
+        "Next.js: Node (Server-side)",
+        "Next.js: Chrome (Client-side)"
+      ]
+    }
+  ]
+}
