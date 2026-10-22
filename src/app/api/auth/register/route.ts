@@ -12,7 +12,10 @@ export async function POST(req: Request) {
 
     const existing = await prisma.user.findFirst({
       where: {
-        OR: [{ phone: userInput.phone }, { email: userInput.email }],
+        OR: [
+          { phone: userInput.phone },
+          ...(userInput.email ? [{ email: userInput.email }] : []),
+        ],
       },
     });
 
@@ -28,7 +31,7 @@ export async function POST(req: Request) {
       data: {
         fullName: userInput.fullName,
         phone: userInput.phone,
-        email: userInput.email,
+        email: userInput.email || null,
         passwordHash: await hashPassword(userInput.password),
         role: 'CUSTOMER',
       },

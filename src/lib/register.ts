@@ -14,26 +14,33 @@ export const registrationSchema = z.object({
     .regex(/^09\d{9}$/, 'شماره موبایل نامعتبر است (باید ۱۱ رقم و با ۰۹ شروع شود)')
     .transform((value) => value.replace(/\s+/g, '')),
   email: z
-    .string({ required_error: 'ایمیل الزامی است' })
+    .string()
     .trim()
-    .min(1, 'ایمیل الزامی است')
     .email('ایمیل معتبر نیست')
-    .transform((value) => value.toLowerCase()),
+    .optional()
+    .or(z.literal(''))
+    .transform((value) => (value && value.trim() ? value.trim().toLowerCase() : null)),
   password: passwordSchema,
 });
 
-export type RegistrationInput = z.infer<typeof registrationSchema> & {
+export type RegistrationInput = {
+  fullName: string;
+  phone: string;
+  email: string | null;
+  password: string;
   role: 'CUSTOMER';
 };
 
 export function getRegistrationConflict(
   phone: string,
-  email: string,
+  email: string | null | undefined,
   existing: { phone?: string | null; email?: string | null } | null,
 ) {
   if (!existing) return null;
   if (existing.phone === phone) return 'phone' as const;
-  if (existing.email === email) return 'email' as const;
+  if (email && existing.email && existing.email.toLowerCase() === email.toLowerCase()) {
+    return 'email' as const;
+  }
   return null;
 }
 

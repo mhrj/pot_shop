@@ -5,9 +5,11 @@ import { createSessionCookie, verifyPassword } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
+import { toEn } from '@/lib/format';
+
 const schema = z.object({
-  identifier: z.string().min(3, 'شماره موبایل یا ایمیل را وارد کنید'),
-  password: z.string().min(6, 'رمز عبور حداقل ۶ کاراکتر است'),
+  identifier: z.string().min(1, 'شماره موبایل یا ایمیل را وارد کنید'),
+  password: z.string().min(1, 'رمز عبور را وارد کنید'),
 });
 
 // Simple in-memory login attempt limiter.
@@ -47,19 +49,62 @@ export async function POST(req: Request) {
   }
 
   const { identifier, password } = parsed.data;
-  const normalized = identifier.trim().toLowerCase();
+  const rawIdentifier = identifier.trim();
+  const normalizedIdentifier = toEn(rawIdentifier);
 
-  const user = await prisma.user.findFirst({
-    where: {
-      OR: [{ phone: normalized }, { email: normalized }],
-      isActive: true,
-    },
-  });
+  let user;
 
-  // Same error message on both branches to avoid leaking whether a user exists.
-  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+  if (normalizedIdentifier.includes('@')) {
+    const email = normalizedIdentifier.toLowerCase();
+    user = await prisma.user.findFirst({
+      where: { email },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { message: 'حسابی با این ایمیل یافت نشد.' },
+        { status: 404 },
+      );
+    }
+
+    if (!user.email) {
+      return NextResponse.json(
+        { message: 'این حساب ایمیل ثبت نکرده است. لطفاً با شماره موبایل وارد شوید.' },
+        { status: 400 },
+      );
+    }
+  } else {
+    const phone = normalizedIdentifier.replace(/\s+/g, '');
+    if (!/^09\d{9}$/.test(phone)) {
+      return NextResponse.json(
+        { message: 'شماره موبایل نامعتبر است (باید ۱۱ رقم و با ۰۹ شروع شود).' },
+        { status: 400 },
+      );
+    }
+
+    user = await prisma.user.findUnique({
+      where: { phone },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { message: 'حسابی با این شماره موبایل یافت نشد.' },
+        { status: 404 },
+      );
+    }
+  }
+
+  if (!user.isActive) {
     return NextResponse.json(
-      { message: 'شماره موبایل، ایمیل یا رمز عبور اشتباه است' },
+      { message: 'حساب کاربری شما غیرفعال شده است.' },
+      { status: 403 },
+    );
+  }
+
+  const validPassword = await verifyPassword(password, user.passwordHash);
+  if (!validPassword) {
+    return NextResponse.json(
+      { message: 'رمز عبور اشتباه است.' },
       { status: 401 },
     );
   }

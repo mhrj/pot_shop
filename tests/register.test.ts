@@ -18,7 +18,7 @@ test('normalizeRegistrationInput accepts valid Persian customer data', () => {
   assert.equal(result.fullName, 'زهرا محمدی');
 });
 
-test('registration validation rejects missing phone and missing email', () => {
+test('registration validation rejects missing phone and validates email format if provided', () => {
   assert.throws(
     () =>
       normalizeRegistrationInput({
@@ -35,7 +35,7 @@ test('registration validation rejects missing phone and missing email', () => {
       normalizeRegistrationInput({
         fullName: 'امیر',
         phone: '09121234567',
-        email: '',
+        email: 'invalid-email-format',
         password: 'Str0ngPass!2025',
       }),
     /ایمیل/i,
@@ -52,19 +52,24 @@ test('duplicate email is detected for registration conflicts', () => {
     'email',
   );
   assert.equal(getRegistrationConflict('09110000000', 'new@example.com', { phone: '09121234567', email: 'other@example.com' }), null);
+  assert.equal(getRegistrationConflict('09110000000', null, { phone: '09121234567', email: 'other@example.com' }), null);
 });
 
-test('normalizeRegistrationInput requires a valid email for new registrations', () => {
-  assert.throws(
-    () =>
-      normalizeRegistrationInput({
-        fullName: 'امیر',
-        phone: '09121234567',
-        email: '',
-        password: 'Str0ngPass!2025',
-      }),
-    /ایمیل/i,
-  );
+test('normalizeRegistrationInput allows optional email and normalizes casing', () => {
+  const withoutEmail = normalizeRegistrationInput({
+    fullName: 'امیر',
+    phone: '09121234567',
+    email: '',
+    password: 'Str0ngPass!2025',
+  });
+  assert.equal(withoutEmail.email, null);
+
+  const omittedEmail = normalizeRegistrationInput({
+    fullName: 'امیر',
+    phone: '09121234567',
+    password: 'Str0ngPass!2025',
+  });
+  assert.equal(omittedEmail.email, null);
 
   const result = normalizeRegistrationInput({
     fullName: 'امیر',

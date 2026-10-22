@@ -36,9 +36,7 @@ export default function RegisterPage() {
       newErrors.phone = 'شماره موبایل نامعتبر است (باید ۱۱ رقم و با ۰۹ شروع شود).';
     }
 
-    if (!form.email.trim()) {
-      newErrors.email = 'ایمیل الزامی است.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
       newErrors.email = 'ایمیل معتبر نیست.';
     }
 
@@ -156,7 +154,7 @@ export default function RegisterPage() {
 
           <label className="block">
             <span className="text-xs font-bold text-soil-900">
-              ایمیل <span className="text-red-600">*</span>
+              ایمیل <span className="text-xs font-normal text-soil-700/60">(اختیاری)</span>
             </span>
             <input
               type="email"

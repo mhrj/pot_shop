@@ -360,6 +360,7 @@ enum VerificationType {
   PASSWORD_RESET
   REGISTER
   PHONE_CHANGE
+  LOGIN_OTP
 }
 
 model VerificationCode {
