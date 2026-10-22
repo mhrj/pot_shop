@@ -139,7 +139,7 @@ export default async function CustomerOrderPage({ params }: Props) {
 
       {order.trackingCode && (
         <p className="mt-4 text-sm text-soil-700/80">
-          کد رهگیری مرسوله:{' '}
+          کد رهگیری {order.shippingCarrier || 'مرسوله'}:{' '}
           <b className="font-mono text-soil-900" dir="ltr">
             {toFa(order.trackingCode)}
           </b>
@@ -309,6 +309,12 @@ export default async function CustomerOrderPage({ params }: Props) {
                 <dt className="text-soil-700/70">ایمیل:</dt>
                 <dd className="font-mono text-xs text-soil-900 print:text-[10px]" dir="ltr">
                   {order.user.email || '—'}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-soil-700/70">شرکت حمل و نقل:</dt>
+                <dd className="font-bold text-soil-900">
+                  {order.shippingCarrier || 'پست پیشتاز'}
                 </dd>
               </div>
               <div className="pt-2 border-t border-soil-900/5 print:pt-1">

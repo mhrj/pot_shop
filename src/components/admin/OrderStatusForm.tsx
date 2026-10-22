@@ -12,19 +12,29 @@ const STATUSES = [
   { key: 'CANCELED', label: 'لغو‌شده' },
 ];
 
+const CARRIERS = [
+  'پست پیشتاز',
+  'پست عادی',
+  'تیپاکس',
+  'پیک موتوری',
+];
+
 export default function OrderStatusForm({
   orderId,
   initialStatus,
   initialTracking,
+  initialCarrier = 'پست پیشتاز',
 }: {
   orderId: string;
   initialStatus: string;
   initialTracking: string;
+  initialCarrier?: string | null;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [status, setStatus] = useState(initialStatus);
   const [tracking, setTracking] = useState(initialTracking);
+  const [carrier, setCarrier] = useState(initialCarrier || 'پست پیشتاز');
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
@@ -36,18 +46,21 @@ export default function OrderStatusForm({
       const res = await fetch('/api/admin/orders/' + orderId, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status, trackingCode: tracking || null }),
+        body: JSON.stringify({
+          status,
+          trackingCode: tracking.trim() || null,
+          shippingCarrier: carrier.trim() || null,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(data?.message ?? 'ذخیره ناموفق بود');
         return;
       }
-      // The server mints a tracking code when an order first moves to SHIPPED,
-      // so the input has to take whatever it actually stored. `useState` reads
-      // its initialiser only on mount, so `router.refresh()` alone can never
-      // bring a generated code into this field.
       setTracking(data?.order?.trackingCode ?? tracking);
+      if (data?.order?.shippingCarrier) {
+        setCarrier(data.order.shippingCarrier);
+      }
       setSaved(true);
       router.refresh();
     });
@@ -55,9 +68,9 @@ export default function OrderStatusForm({
 
   return (
     <form onSubmit={submit} className="rounded-2xl border border-soil-900/10 bg-white p-5">
-      <h2 className="text-sm font-black text-soil-900">به‌روزرسانی وضعیت</h2>
+      <h2 className="text-sm font-black text-soil-900">به‌روزرسانی وضعیت و مرسوله</h2>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
         <label className="block">
           <span className="text-xs font-bold text-soil-900">وضعیت سفارش</span>
           <select
@@ -72,24 +85,34 @@ export default function OrderStatusForm({
         </label>
 
         <label className="block">
-          <span className="text-xs font-bold text-soil-900">کد رهگیری مرسوله</span>
-          {/* `readOnly`, not `disabled`: the code is minted by the server the
-              first time an order moves to SHIPPED. `disabled` would drop the
-              value out of the form's own reading of the field, and a greyed-out
-              field that still submits its value is clearer than one that looks
-              present but is not sent. */}
+          <span className="text-xs font-bold text-soil-900">شرکت حمل و نقل</span>
+          <select
+            value={carrier}
+            onChange={(e) => setCarrier(e.target.value)}
+            className="mt-1.5 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-flora-500"
+          >
+            {CARRIERS.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-bold text-soil-900">
+            کد رهگیری {carrier || 'مرسوله'}
+          </span>
           <input
             value={tracking}
             onChange={(e) => setTracking(e.target.value)}
-            readOnly
             dir="ltr"
-            placeholder="خودکار پر می‌شود"
+            placeholder={status === 'SHIPPED' ? 'کد رهگیری (در صورت خالی بودن خودکار ایجاد می‌شود)' : 'کد رهگیری'}
             aria-describedby="tracking-hint"
-            className="mt-1.5 w-full cursor-not-allowed rounded-xl border border-soil-900/15 bg-dust-50 px-3 py-2.5 text-sm text-soil-700 outline-none"
+            className="mt-1.5 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-sm text-soil-900 outline-none focus:border-flora-500"
           />
-          {/* A `<span>`, not a `<p>` — `<label>` only accepts phrasing content. */}
           <span id="tracking-hint" className="mt-1.5 block text-[11px] text-soil-700/60">
-            به صورت خودکار هنگام ثبت ارسال ایجاد می‌شود
+            {status === 'SHIPPED' && !tracking
+              ? 'در صورت خالی ماندن، کد سیستمی ایجاد می‌شود'
+              : 'کد رهگیری صادرشده توسط شرکت پست یا باربری'}
           </span>
         </label>
       </div>

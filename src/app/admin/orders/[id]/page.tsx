@@ -127,6 +127,15 @@ export default async function AdminOrderDetailPage({ params }: Props) {
         </div>
       )}
 
+      {order.trackingCode && (
+        <p className="text-sm text-soil-700/80">
+          کد رهگیری {order.shippingCarrier || 'مرسوله'}:{' '}
+          <b className="font-mono text-soil-900" dir="ltr">
+            {toFa(order.trackingCode)}
+          </b>
+        </p>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-2 print:grid print:grid-cols-3 print:gap-2 print:mt-2">
         <section className="rounded-2xl border border-soil-900/10 bg-white p-5 print:p-2 print:shadow-none print:border print:border-soil-900/10 print:text-[10px]">
           <h2 className="text-sm font-black text-soil-900 border-b border-soil-900/5 pb-2 print:text-xs print:pb-1">
@@ -164,6 +173,10 @@ export default async function AdminOrderDetailPage({ params }: Props) {
               {toFa(order.shipPhone)} · کد پستی: {toFa(order.shipPostalCode)}
             </span>
           </p>
+          <div className="mt-3 pt-2.5 border-t border-soil-900/5 flex items-center justify-between text-xs print:text-[10px]">
+            <span className="text-soil-700/70">شرکت حمل و نقل:</span>
+            <span className="font-bold text-soil-900">{order.shippingCarrier || 'پست پیشتاز'}</span>
+          </div>
         </section>
 
         <section className="rounded-2xl border border-soil-900/10 bg-white p-5 print:p-2 print:shadow-none print:border print:border-soil-900/10 print:text-[10px]">
@@ -309,6 +322,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           orderId={order.id}
           initialStatus={order.status}
           initialTracking={order.trackingCode ?? ''}
+          initialCarrier={order.shippingCarrier ?? 'پست پیشتاز'}
         />
       </div>
     </div>

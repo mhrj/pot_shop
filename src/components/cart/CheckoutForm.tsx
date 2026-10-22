@@ -20,12 +20,68 @@ type Address = {
   isDefault: boolean;
 };
 
+export type ShippingOption = {
+  carrier: string;
+  label: string;
+  costToman: number;
+  deliveryDays: string;
+};
+
+function getDefaultShippingOptions(baseCost: number): ShippingOption[] {
+  if (baseCost === 0) {
+    return [
+      {
+        carrier: 'پست پیشتاز',
+        label: 'پست پیشتاز (۳ روز کاری)',
+        costToman: 0,
+        deliveryDays: '۳ روز کاری',
+      },
+      {
+        carrier: 'پست عادی',
+        label: 'پست عادی (۷ روز کاری)',
+        costToman: 0,
+        deliveryDays: '۷ روز کاری',
+      },
+      {
+        carrier: 'تیپاکس',
+        label: 'تیپاکس (۱ الی ۲ روز کاری)',
+        costToman: 0,
+        deliveryDays: '۱ الی ۲ روز کاری',
+      },
+    ];
+  }
+
+  const normalCost = Math.max(25000, Math.round((baseCost * 0.7) / 1000) * 1000);
+  const tipaxCost = Math.max(45000, Math.round((baseCost * 1.25) / 1000) * 1000);
+
+  return [
+    {
+      carrier: 'پست پیشتاز',
+      label: 'پست پیشتاز (۳ روز کاری)',
+      costToman: baseCost,
+      deliveryDays: '۳ روز کاری',
+    },
+    {
+      carrier: 'پست عادی',
+      label: 'پست عادی (۷ روز کاری)',
+      costToman: normalCost,
+      deliveryDays: '۷ روز کاری',
+    },
+    {
+      carrier: 'تیپاکس',
+      label: 'تیپاکس (۱ الی ۲ روز کاری)',
+      costToman: tipaxCost,
+      deliveryDays: '۱ الی ۲ روز کاری',
+    },
+  ];
+}
+
 /**
- * Address picker plus the order summary.
+ * Address picker plus shipping carrier selection and the order summary.
  *
- * The summary owns the address selection because shipping depends on the
- * destination province: showing the default address's freight while the
- * customer has selected another one would display a total the gateway then
+ * The summary owns the address and carrier selection because shipping depends on the
+ * destination province and selected courier: showing the default freight while the
+ * customer has selected another courier or address would display a total the gateway then
  * contradicts. The authority on the amount is still the server, which re-prices
  * from the database in /api/payment/request — this only keeps the screen honest.
  */
@@ -42,7 +98,15 @@ export default function CheckoutForm({
   const [selectedId, setSelectedId] = useState<string>(
     addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? '',
   );
+  const [selectedCarrier, setSelectedCarrier] = useState<string>('پست پیشتاز');
   const [shippingRates, setShippingRates] = useState<Record<string, number>>(initialShippingRates);
+  const [shippingOptionsMap, setShippingOptionsMap] = useState<Record<string, ShippingOption[]>>(() => {
+    const map: Record<string, ShippingOption[]> = {};
+    for (const [id, cost] of Object.entries(initialShippingRates)) {
+      map[id] = getDefaultShippingOptions(cost);
+    }
+    return map;
+  });
   const [calculatingShipping, setCalculatingShipping] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -64,7 +128,7 @@ export default function CheckoutForm({
   useEffect(() => {
     if (!selectedId) return;
 
-    if (shippingRates[selectedId] !== undefined) {
+    if (shippingRates[selectedId] !== undefined && shippingOptionsMap[selectedId] !== undefined) {
       return;
     }
 
@@ -81,8 +145,13 @@ export default function CheckoutForm({
     })
       .then((res) => res.json())
       .then((data) => {
-        if (!cancelled && data?.ok && typeof data.shippingToman === 'number') {
-          setShippingRates((prev) => ({ ...prev, [selectedId]: data.shippingToman }));
+        if (!cancelled && data?.ok) {
+          if (typeof data.shippingToman === 'number') {
+            setShippingRates((prev) => ({ ...prev, [selectedId]: data.shippingToman }));
+          }
+          if (Array.isArray(data.options)) {
+            setShippingOptionsMap((prev) => ({ ...prev, [selectedId]: data.options }));
+          }
         }
       })
       .catch(() => {
@@ -95,16 +164,32 @@ export default function CheckoutForm({
     return () => {
       cancelled = true;
     };
-  }, [selectedId, addressList, shippingRates]);
+  }, [selectedId, addressList, shippingRates, shippingOptionsMap]);
 
   const selected = addressList.find((a) => a.id === selectedId) ?? null;
 
-  const shippingToman = useMemo(() => {
+  const baseShippingCost = useMemo(() => {
     if (selected && shippingRates[selected.id] !== undefined) {
       return shippingRates[selected.id];
     }
     return calcShippingToman(totals, selected?.province ?? 'تهران');
   }, [selected, shippingRates, totals]);
+
+  const currentOptions = useMemo(() => {
+    if (selected && shippingOptionsMap[selected.id]) {
+      return shippingOptionsMap[selected.id];
+    }
+    return getDefaultShippingOptions(baseShippingCost);
+  }, [selected, shippingOptionsMap, baseShippingCost]);
+
+  const selectedOption = useMemo(() => {
+    return (
+      currentOptions.find((opt) => opt.carrier === selectedCarrier) ??
+      currentOptions[0]
+    );
+  }, [currentOptions, selectedCarrier]);
+
+  const effectiveShippingToman = selectedOption ? selectedOption.costToman : baseShippingCost;
 
   const handleCreated = async (address: Address) => {
     setAddressList((current) => [address, ...current]);
@@ -119,8 +204,13 @@ export default function CheckoutForm({
         body: JSON.stringify({ addressId: address.id, city: address.city, province: address.province }),
       });
       const data = await res.json();
-      if (data?.ok && typeof data.shippingToman === 'number') {
-        setShippingRates((prev) => ({ ...prev, [address.id]: data.shippingToman }));
+      if (data?.ok) {
+        if (typeof data.shippingToman === 'number') {
+          setShippingRates((prev) => ({ ...prev, [address.id]: data.shippingToman }));
+        }
+        if (Array.isArray(data.options)) {
+          setShippingOptionsMap((prev) => ({ ...prev, [address.id]: data.options }));
+        }
       }
     } catch {
       // Fallback is handled automatically
@@ -140,7 +230,10 @@ export default function CheckoutForm({
       const res = await fetch('/api/payment/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ addressId: selectedId }),
+        body: JSON.stringify({
+          addressId: selectedId,
+          shippingCarrier: selectedOption?.carrier ?? selectedCarrier,
+        }),
         signal: AbortSignal.timeout(18_000),
       });
       const data = await res.json().catch(() => ({}));
@@ -226,6 +319,57 @@ export default function CheckoutForm({
           </button>
         )}
 
+        {/* Shipping carrier selection */}
+        <fieldset className="rounded-2xl border border-soil-900/10 bg-white p-5">
+          <legend className="px-2 text-sm font-black text-soil-900 flex items-center gap-2">
+            <span>روش و شرکت حمل و نقل</span>
+            {calculatingShipping && (
+              <span className="text-[11px] text-flora-700 animate-pulse font-normal">
+                (در حال به‌روزرسانی نرخ‌ها…)
+              </span>
+            )}
+          </legend>
+
+          <p className="mb-3 text-xs text-soil-700/70">
+            روش ارسال مرسوله خود را انتخاب کنید:
+          </p>
+
+          <ul className="space-y-2.5">
+            {currentOptions.map((opt) => (
+              <li key={opt.carrier}>
+                <label
+                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border p-3.5 transition ${
+                    (selectedOption?.carrier ?? selectedCarrier) === opt.carrier
+                      ? 'border-flora-500 bg-flora-100/40 shadow-2xs ring-1 ring-flora-500/20'
+                      : 'border-soil-900/10 hover:border-soil-900/25 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="shippingCarrier"
+                      value={opt.carrier}
+                      checked={(selectedOption?.carrier ?? selectedCarrier) === opt.carrier}
+                      onChange={(e) => setSelectedCarrier(e.target.value)}
+                      className="accent-flora-700"
+                    />
+                    <span className="text-xs sm:text-sm font-bold text-soil-900">
+                      {opt.label}
+                    </span>
+                  </div>
+                  <span className="text-xs sm:text-sm font-black text-soil-900 shrink-0">
+                    {opt.costToman === 0 ? (
+                      <span className="text-flora-700">رایگان</span>
+                    ) : (
+                      formatToman(opt.costToman)
+                    )}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+
         {error && (
           <p
             role="alert"
@@ -283,14 +427,18 @@ export default function CheckoutForm({
             </div>
             <div className="flex justify-between items-center">
               <dt className="flex items-center gap-1.5">
-                <span>هزینه ارسال{selected ? ` به ${selected.province}` : ''}</span>
+                <span>
+                  هزینه ارسال {selectedOption?.carrier ? `(با ${selectedOption.carrier})` : ''}
+                </span>
                 {calculatingShipping && (
                   <span className="text-[10px] text-flora-700 animate-pulse font-normal">
                     (در حال محاسبه…)
                   </span>
                 )}
               </dt>
-              <dd>{shippingToman === 0 ? 'رایگان' : formatToman(shippingToman)}</dd>
+              <dd>
+                {effectiveShippingToman === 0 ? 'رایگان' : formatToman(effectiveShippingToman)}
+              </dd>
             </div>
             <div className="flex justify-between">
               <dt>وزن تقریبی</dt>
@@ -299,10 +447,10 @@ export default function CheckoutForm({
             <div className="flex justify-between border-t border-soil-900/10 pt-3 text-base font-black">
               <dt>قابل پرداخت</dt>
               <dd className="text-end">
-                <div>{formatToman(totals.payableToman + shippingToman)}</div>
-                {totals.payableToman + shippingToman >= 1000 && (
+                <div>{formatToman(totals.payableToman + effectiveShippingToman)}</div>
+                {totals.payableToman + effectiveShippingToman >= 1000 && (
                   <div className="text-[11px] font-normal text-soil-700/70 mt-0.5">
-                    ({numberToWordsFa(totals.payableToman + shippingToman)} تومان)
+                    ({numberToWordsFa(totals.payableToman + effectiveShippingToman)} تومان)
                   </div>
                 )}
               </dd>
