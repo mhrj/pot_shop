@@ -73,7 +73,7 @@ export default async function CartPage() {
               href="/checkout"
               className="mt-6 block rounded-xl bg-flora-900 px-6 py-3.5 text-center text-sm font-black text-white transition hover:bg-flora-700"
             >
-              ادامه به پرداخت
+              ادامه فرآیند خرید
             </Link>
           </div>
         </aside>

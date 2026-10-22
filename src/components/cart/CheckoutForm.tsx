@@ -385,7 +385,7 @@ export default function CheckoutForm({
           disabled={loading || !selectedId}
           className="w-full rounded-2xl bg-flora-900 px-6 py-4 text-sm font-black text-white shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 disabled:opacity-50"
         >
-          {loading ? 'در حال انتقال به درگاه…' : 'پرداخت با زرین‌پال'}
+          {loading ? 'در حال انتقال به درگاه…' : 'پرداخت با زرینپال'}
         </button>
 
         <p className="text-center text-[11px] leading-6 text-soil-700/55">
