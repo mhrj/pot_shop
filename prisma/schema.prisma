@@ -293,6 +293,7 @@ model Order {
   shipLine1      String
   shipLine2      String?
 
+  shippingCarrier String?
   trackingCode  String?
   shippedAt     DateTime?
   deliveredAt   DateTime?

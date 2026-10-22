@@ -235,6 +235,7 @@ export async function GET(req: Request) {
 📞 تلفن: <code>${order.shipPhone}</code>
 💰 مبلغ کل: ${formatToman(order.totalToman)}
 🛒 تعداد اقلام: ${order.items.length} قلم
+🚚 روش ارسال: ${order.shippingCarrier || 'پست پیشتاز'}
 
 👉 <a href="${baseUrl}/admin/orders/${order.id}">مشاهده در پنل مدیریت</a>`;
 

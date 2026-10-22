@@ -1,6 +1,7 @@
 import { requireUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { getCartTotals } from '@/lib/cart';
+import { calculateShippingCost } from '@/lib/postex';
 import Container from '@/components/ui/Container';
 import CheckoutForm from '@/components/cart/CheckoutForm';
 import { redirect } from 'next/navigation';
@@ -19,6 +20,21 @@ export default async function CheckoutPage() {
   if (totals.lines.length === 0) {
     redirect('/cart');
   }
+
+  // Pre-calculate shipping rates with Postex helper for all available addresses
+  const originCity = process.env.POSTEX_ORIGIN_CITY || 'تهران';
+  const initialShippingRates: Record<string, number> = {};
+
+  await Promise.all(
+    addresses.map(async (a) => {
+      initialShippingRates[a.id] = await calculateShippingCost(
+        originCity,
+        a.city || a.province,
+        totals.totalWeightGrams,
+        totals,
+      );
+    }),
+  );
 
   return (
     <Container className="py-12">
@@ -42,6 +58,7 @@ export default async function CheckoutPage() {
             isDefault: a.isDefault,
           }))}
           totals={totals}
+          initialShippingRates={initialShippingRates}
         />
       </div>
     </Container>

@@ -5,13 +5,17 @@ import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { getStockShortages } from '@/lib/cart';
 import { calcShippingToman, priceCart, type Tier } from '@/lib/pricing';
+import { calculateShippingCost } from '@/lib/postex';
 import { parseBundleItems, parseColorOptions } from '@/lib/product-features';
 import { zarinpalRequest, ZARINPAL_ERRORS } from '@/lib/zarinpal';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const schema = z.object({ addressId: z.string().cuid() });
+const schema = z.object({
+  addressId: z.string().cuid(),
+  shippingCarrier: z.string().trim().max(50).optional(),
+});
 
 function generateOrderNumber() {
   const now = new Date();
@@ -161,7 +165,27 @@ export async function POST(req: Request) {
     })),
   );
 
-  const shippingToman = calcShippingToman(totals, address.province);
+  const originCity = process.env.POSTEX_ORIGIN_CITY || 'تهران';
+  const pishtazShippingToman = await calculateShippingCost(
+    originCity,
+    address.city || address.province,
+    totals.totalWeightGrams,
+    totals,
+  );
+
+  const shippingCarrier = parsed.data.shippingCarrier?.trim() || 'پست پیشتاز';
+  let shippingToman = pishtazShippingToman;
+
+  if (pishtazShippingToman > 0) {
+    if (shippingCarrier === 'پست عادی') {
+      shippingToman = Math.max(25000, Math.round((pishtazShippingToman * 0.7) / 1000) * 1000);
+    } else if (shippingCarrier === 'تیپاکس') {
+      shippingToman = Math.max(45000, Math.round((pishtazShippingToman * 1.25) / 1000) * 1000);
+    } else if (shippingCarrier === 'پیک موتوری') {
+      shippingToman = Math.max(40000, Math.round((pishtazShippingToman * 1.2) / 1000) * 1000);
+    }
+  }
+
   const totalToman = totals.payableToman + shippingToman;
 
   if (totalToman <= 0) {
@@ -177,6 +201,7 @@ export async function POST(req: Request) {
       subtotalToman: totals.subtotalToman,
       discountToman: totals.discountToman,
       shippingToman,
+      shippingCarrier,
       totalToman,
       totalWeightGrams: totals.totalWeightGrams,
       totalCartons: totals.totalCartons,

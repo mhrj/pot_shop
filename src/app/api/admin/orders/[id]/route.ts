@@ -19,6 +19,7 @@ type Params = { params: Promise<{ id: string }> };
 const schema = z.object({
   status: z.enum(ORDER_STATUSES),
   trackingCode: z.string().trim().max(60).nullable().optional(),
+  shippingCarrier: z.string().trim().max(50).nullable().optional(),
 });
 
 /**
@@ -95,6 +96,9 @@ export async function PATCH(req: Request, { params }: Params) {
     status: to,
     trackingCode,
   };
+  if (parsed.data.shippingCarrier !== undefined) {
+    data.shippingCarrier = parsed.data.shippingCarrier?.trim() || null;
+  }
   if (to === 'SHIPPED' && !order.shippedAt) data.shippedAt = new Date();
   if (to === 'DELIVERED' && !order.deliveredAt) data.deliveredAt = new Date();
   if (isCancelling) {

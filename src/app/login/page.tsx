@@ -125,6 +125,15 @@ function LoginForm() {
             </a>
           </span>
         </div>
+
+        <div className="mt-4 border-t border-soil-900/10 pt-4 text-center">
+          <a
+            href="/login-otp"
+            className="text-xs font-bold text-flora-700 hover:text-flora-900 transition"
+          >
+            ورود با رمز یکبار مصرف
+          </a>
+        </div>
       </form>
     </main>
   );

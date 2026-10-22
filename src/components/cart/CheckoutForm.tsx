@@ -32,14 +32,18 @@ type Address = {
 export default function CheckoutForm({
   addresses,
   totals,
+  initialShippingRates = {},
 }: {
   addresses: Address[];
   totals: CartTotals;
+  initialShippingRates?: Record<string, number>;
 }) {
   const [addressList, setAddressList] = useState<Address[]>(addresses);
   const [selectedId, setSelectedId] = useState<string>(
     addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? '',
   );
+  const [shippingRates, setShippingRates] = useState<Record<string, number>>(initialShippingRates);
+  const [calculatingShipping, setCalculatingShipping] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,17 +60,73 @@ export default function CheckoutForm({
     );
   }, [addresses]);
 
+  // Dynamically calculate Postex shipping if the selected address rate isn't cached yet
+  useEffect(() => {
+    if (!selectedId) return;
+
+    if (shippingRates[selectedId] !== undefined) {
+      return;
+    }
+
+    const addr = addressList.find((a) => a.id === selectedId);
+    if (!addr) return;
+
+    let cancelled = false;
+    setCalculatingShipping(true);
+
+    fetch('/api/shipping/calculate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ addressId: selectedId, city: addr.city, province: addr.province }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.ok && typeof data.shippingToman === 'number') {
+          setShippingRates((prev) => ({ ...prev, [selectedId]: data.shippingToman }));
+        }
+      })
+      .catch(() => {
+        // Fallback already handled
+      })
+      .finally(() => {
+        if (!cancelled) setCalculatingShipping(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId, addressList, shippingRates]);
+
   const selected = addressList.find((a) => a.id === selectedId) ?? null;
 
-  const shippingToman = useMemo(
-    () => calcShippingToman(totals, selected?.province ?? 'تهران'),
-    [totals, selected?.province],
-  );
+  const shippingToman = useMemo(() => {
+    if (selected && shippingRates[selected.id] !== undefined) {
+      return shippingRates[selected.id];
+    }
+    return calcShippingToman(totals, selected?.province ?? 'تهران');
+  }, [selected, shippingRates, totals]);
 
-  const handleCreated = (address: Address) => {
+  const handleCreated = async (address: Address) => {
     setAddressList((current) => [address, ...current]);
     setSelectedId(address.id);
     setShowForm(false);
+
+    try {
+      setCalculatingShipping(true);
+      const res = await fetch('/api/shipping/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ addressId: address.id, city: address.city, province: address.province }),
+      });
+      const data = await res.json();
+      if (data?.ok && typeof data.shippingToman === 'number') {
+        setShippingRates((prev) => ({ ...prev, [address.id]: data.shippingToman }));
+      }
+    } catch {
+      // Fallback is handled automatically
+    } finally {
+      setCalculatingShipping(false);
+    }
   };
 
   const pay = async () => {
@@ -221,8 +281,15 @@ export default function CheckoutForm({
               <dt>تخفیف پله‌ای</dt>
               <dd>−{formatToman(totals.discountToman)}</dd>
             </div>
-            <div className="flex justify-between">
-              <dt>هزینه ارسال{selected ? ` به ${selected.province}` : ''}</dt>
+            <div className="flex justify-between items-center">
+              <dt className="flex items-center gap-1.5">
+                <span>هزینه ارسال{selected ? ` به ${selected.province}` : ''}</span>
+                {calculatingShipping && (
+                  <span className="text-[10px] text-flora-700 animate-pulse font-normal">
+                    (در حال محاسبه…)
+                  </span>
+                )}
+              </dt>
               <dd>{shippingToman === 0 ? 'رایگان' : formatToman(shippingToman)}</dd>
             </div>
             <div className="flex justify-between">
