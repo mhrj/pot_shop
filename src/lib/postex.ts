@@ -1,11 +1,81 @@
 import { calcShippingToman, type CartTotals } from '@/lib/pricing';
 
 export type PostexCalculationParams = {
-  originCity: string;
-  destinationCity: string;
-  weightGrams: number;
+  originCity?: string;
+  destinationCity?: string;
+  weightGrams?: number;
   fallbackTotals?: CartTotals;
+  collection_type?: string;
+  from_city_code?: number;
+  to_city_code?: number;
+  courier?: any;
+  parcels?: any[];
 };
+
+const CITY_CODE_MAP: Record<string, number> = {
+  'تهران': 1,
+  'اصفهان': 175,
+  'شیراز': 409,
+  'فارس': 409,
+  'مشهد': 264,
+  'خراسان رضوی': 264,
+  'تبریز': 619,
+  'آذربایجان شرقی': 619,
+  'ارومیه': 68,
+  'آذربایجان غربی': 68,
+  'اردبیل': 87,
+  'کرج': 65,
+  'البرز': 65,
+  'ایلام': 95,
+  'بوشهر': 140,
+  'شهرکرد': 160,
+  'چهارمحال و بختیاری': 160,
+  'بیرجند': 100,
+  'خراسان جنوبی': 100,
+  'بجنورد': 126,
+  'خراسان شمالی': 126,
+  'اهواز': 200,
+  'خوزستان': 200,
+  'زنجان': 234,
+  'سمنان': 245,
+  'زاهدان': 396,
+  'سیستان و بلوچستان': 396,
+  'قزوین': 357,
+  'قم': 376,
+  'سنندج': 300,
+  'کردستان': 300,
+  'کرمان': 335,
+  'کرمانشاه': 348,
+  'یاسوج': 560,
+  'کهگیلویه و بویراحمد': 560,
+  'گرگان': 450,
+  'گلستان': 450,
+  'رشت': 324,
+  'گیلان': 324,
+  'خرم‌آباد': 429,
+  'خرم آباد': 429,
+  'لرستان': 429,
+  'ساری': 280,
+  'مازندران': 280,
+  'اراک': 461,
+  'مرکزی': 461,
+  'بندرعباس': 572,
+  'بندر عباس': 572,
+  'هرمزگان': 572,
+  'همدان': 545,
+  'یزد': 585,
+};
+
+export function resolveCityCode(cityName?: string): number {
+  if (!cityName) return 1;
+  const trimmed = cityName.trim();
+  for (const [key, code] of Object.entries(CITY_CODE_MAP)) {
+    if (trimmed.includes(key) || key.includes(trimmed)) {
+      return code;
+    }
+  }
+  return 1;
+}
 
 /**
  * Extracts shipping cost in Toman from various Postex response formats.
@@ -25,7 +95,23 @@ function extractTomanPrice(data: any): number | null {
     if (typeof item.cost === 'number') candidatePrices.push(item.cost);
     if (typeof item.total_cost === 'number') candidatePrices.push(item.total_cost);
     if (typeof item.total_price === 'number') candidatePrices.push(item.total_price);
+    if (typeof item.totalPrice === 'number') candidatePrices.push(item.totalPrice);
+    if (typeof item.shipping_price === 'number') candidatePrices.push(item.shipping_price);
     if (typeof item.shipping_rate === 'number') candidatePrices.push(item.shipping_rate);
+
+    if (Array.isArray(item.shipping_prices)) {
+      for (const sp of item.shipping_prices) {
+        if (typeof sp?.total_shipping_price === 'number') candidatePrices.push(sp.total_shipping_price);
+        if (typeof sp?.shipping_price === 'number') candidatePrices.push(sp.shipping_price);
+        if (Array.isArray(sp?.service_price)) {
+          for (const s of sp.service_price) {
+            if (typeof s?.totalPrice === 'number') candidatePrices.push(s.totalPrice);
+            if (typeof s?.initPrice === 'number') candidatePrices.push(s.initPrice);
+          }
+        }
+      }
+    }
+
     if (Array.isArray(item.services)) {
       for (const s of item.services) {
         if (s?.service === 'pishtaz' || s?.name === 'pishtaz' || s?.type === 'pishtaz') {
@@ -59,32 +145,46 @@ function extractTomanPrice(data: any): number | null {
 }
 
 /**
- * Calculate dynamic shipping cost using Postex API with fallback to built-in pricing engine.
+ * Calculate dynamic shipping cost using Postex Quotes API with fallback to built-in pricing engine.
  *
- * @param originCity Shop origin city (e.g. 'تهران')
+ * @param originCity Shop origin city (e.g. 'تهران') or options object
  * @param destinationCity Customer city/province
  * @param weightGrams Total package weight in grams
  * @param fallbackTotals Optional CartTotals used for fallback calculation and free-shipping rule
  */
-export async function calculateShippingCost(
-  originCity: string,
-  destinationCity: string,
-  weightGrams: number,
+export async function calculatePostexShipping(
+  originCityOrParams: string | PostexCalculationParams,
+  destinationCity?: string,
+  weightGrams?: number,
   fallbackTotals?: CartTotals,
 ): Promise<number> {
-  const defaultFallbackTotals: CartTotals = fallbackTotals ?? {
+  let originCity = 'تهران';
+  let destination = destinationCity ?? 'تهران';
+  let weight = weightGrams ?? 1000;
+  let totals = fallbackTotals;
+
+  if (typeof originCityOrParams === 'object' && originCityOrParams !== null) {
+    originCity = originCityOrParams.originCity ?? 'تهران';
+    destination = originCityOrParams.destinationCity ?? destination;
+    weight = originCityOrParams.weightGrams ?? weight;
+    totals = originCityOrParams.fallbackTotals ?? totals;
+  } else if (typeof originCityOrParams === 'string') {
+    originCity = originCityOrParams;
+  }
+
+  const defaultFallbackTotals: CartTotals = totals ?? {
     lines: [],
     totalQuantity: 1,
     subtotalToman: 0,
     payableToman: 0,
     discountToman: 0,
-    totalWeightGrams: weightGrams,
+    totalWeightGrams: weight,
     totalCartons: 1,
     channel: 'RETAIL',
   };
 
   // Free shipping rule check if cart totals are known
-  if (fallbackTotals && fallbackTotals.payableToman >= 5000000) {
+  if (totals && totals.payableToman >= 5000000) {
     return 0;
   }
 
@@ -92,13 +192,48 @@ export async function calculateShippingCost(
 
   // If API key is not configured or is a placeholder, immediately use the fallback
   if (!apiKey || apiKey === 'your-postex-api-key') {
-    return calcShippingToman(defaultFallbackTotals, destinationCity);
+    return calcShippingToman(defaultFallbackTotals, destination);
   }
 
   try {
     const endpoint =
       process.env.POSTEX_API_URL ||
-      'https://api.postex.ir/api/v1/shipping/calculate';
+      'https://api.postex.ir/api/v1/shipping/quotes';
+
+    const fromCityCode =
+      (typeof originCityOrParams === 'object' && originCityOrParams !== null && originCityOrParams.from_city_code) ||
+      resolveCityCode(originCity);
+    const toCityCode =
+      (typeof originCityOrParams === 'object' && originCityOrParams !== null && originCityOrParams.to_city_code) ||
+      resolveCityCode(destination);
+
+    const requestBody = {
+      collection_type: 'courier_drop_off',
+      from_city_code: fromCityCode,
+      courier: {
+        courier_code: 'IR_POST',
+        service_type: 'EXPRESS',
+      },
+      parcels: [
+        {
+          to_city_code: toCityCode,
+          payment_type: 'SENDER',
+          parcel_properties: {
+            length: 20,
+            width: 20,
+            height: 20,
+            total_weight: Math.max(100, Math.round(weight)),
+            total_value: totals?.payableToman ? totals.payableToman * 10 : 1_000_000,
+            box_type_id: 1,
+          },
+        },
+      ],
+      value_added_service: {
+        request_label: false,
+        request_packaging: false,
+        request_sms_notification: false,
+      },
+    };
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -108,16 +243,7 @@ export async function calculateShippingCost(
         Authorization: `Bearer ${apiKey}`,
         'x-api-key': apiKey,
       },
-      body: JSON.stringify({
-        origin: originCity,
-        destination: destinationCity,
-        from_city: originCity,
-        to_city: destinationCity,
-        weight: weightGrams,
-        weight_grams: weightGrams,
-        service: 'pishtaz',
-        service_type: 'pishtaz',
-      }),
+      body: JSON.stringify(requestBody),
       signal: AbortSignal.timeout(6000), // 6-second timeout
     });
 
@@ -125,7 +251,7 @@ export async function calculateShippingCost(
       console.warn(
         `[postex] API returned HTTP ${response.status}, falling back to calcShippingToman`,
       );
-      return calcShippingToman(defaultFallbackTotals, destinationCity);
+      return calcShippingToman(defaultFallbackTotals, destination);
     }
 
     const data = await response.json().catch(() => null);
@@ -138,10 +264,13 @@ export async function calculateShippingCost(
     console.warn(
       '[postex] Could not parse valid shipping price from response, falling back to calcShippingToman',
     );
-    return calcShippingToman(defaultFallbackTotals, destinationCity);
+    return calcShippingToman(defaultFallbackTotals, destination);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     console.warn(`[postex] Failed to calculate shipping rate: ${message}. Using fallback.`);
-    return calcShippingToman(defaultFallbackTotals, destinationCity);
+    return calcShippingToman(defaultFallbackTotals, destination);
   }
 }
+
+/** Alias for backward compatibility */
+export const calculateShippingCost = calculatePostexShipping;
