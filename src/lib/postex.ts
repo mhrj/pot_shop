@@ -194,6 +194,48 @@ function extractTomanPrice(data: any): number | null {
   return isRials ? Math.round(raw / 10) : raw;
 }
 
+/**
+ * Diagnostic call to fetch available shipping methods from Postex.
+ */
+export async function getPostexShippingMethods(apiKey: string): Promise<
+  Array<{
+    courierCode: string;
+    courierServiceCode: string;
+    courierServiceName?: string;
+    isActive: boolean;
+  }>
+> {
+  try {
+    const res = await fetch("https://api.postex.ir/api/v1/shipping-methods", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "x-api-key": apiKey,
+      },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      console.log(
+        "[postex] Diagnostic GET /api/v1/shipping-methods response:",
+        JSON.stringify(json, null, 2),
+      );
+      if (Array.isArray(json?.data)) {
+        return json.data;
+      }
+    } else {
+      console.warn(
+        `[postex] Diagnostic GET /api/v1/shipping-methods failed with HTTP ${res.status}`,
+      );
+    }
+  } catch (err) {
+    console.warn("[postex] Error fetching diagnostic shipping-methods:", err);
+  }
+  return [];
+}
+
 export async function getStoreOrigin(): Promise<{
   originProvince: string;
   originCity: string;
@@ -295,6 +337,28 @@ export async function calculatePostexShipping(
       process.env.POSTEX_API_URL ||
       "https://api.postex.ir/api/v1/shipping/quotes";
 
+    // Diagnostic call to retrieve available shipping methods
+    const shippingMethods = await getPostexShippingMethods(apiKey);
+    const firstValidMethod = shippingMethods.find(
+      (m) => m.isActive && m.courierCode && m.courierServiceCode,
+    );
+
+    const requestedCourier =
+      typeof originCityOrParams === "object" &&
+      originCityOrParams !== null &&
+      originCityOrParams.courier
+        ? originCityOrParams.courier
+        : null;
+
+    const courierCode =
+      requestedCourier?.courier_code ||
+      firstValidMethod?.courierCode ||
+      "POSTEX_EXPRESS";
+    const serviceType =
+      requestedCourier?.service_type ||
+      firstValidMethod?.courierServiceCode ||
+      "DGX_GOLD";
+
     const rawFrom =
       explicitFromCityCode ??
       (typeof originCityOrParams === "object" && originCityOrParams !== null
@@ -311,18 +375,18 @@ export async function calculatePostexShipping(
     const fromCityCode = resolveCityCode(rawFrom);
     const toCityCode = resolveCityCode(rawTo);
 
-    // Convert weight from grams to kilograms (e.g. 8700g -> 8.7kg)
-    const totalWeight =
-      weight >= 25
-        ? Number((weight / 1000).toFixed(2))
-        : Number(weight.toFixed(2));
+    // Ensure weight is an integer in grams (Postex API expects System.Int64 in grams, e.g. 8700 for 8.7kg)
+    const totalWeightGrams = Math.round(
+      weight < 25 && weight > 0 ? weight * 1000 : weight,
+    );
 
+    // Clean, flat request body without duplicate fields or wrapper
     const requestBody = {
       collection_type: "courier_drop_off",
       from_city_code: fromCityCode,
       courier: {
-        courier_code: "IR_POST",
-        service_type: "EXPRESS",
+        courier_code: courierCode,
+        service_type: serviceType,
       },
       parcels: [
         {
@@ -332,10 +396,8 @@ export async function calculatePostexShipping(
             length: 20,
             width: 20,
             height: 20,
-            total_weight: totalWeight,
-            total_value: totals?.payableToman
-              ? Math.round(totals.payableToman * 10)
-              : 1_000_000,
+            total_weight: totalWeightGrams,
+            total_value: 500_000,
             box_type_id: 1,
           },
         },
