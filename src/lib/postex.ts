@@ -374,6 +374,7 @@ export async function calculatePostexShipping(
       },
       parcels: [
         {
+          custom_parcel_id: `cart_${Date.now()}`,
           to_city_code: toCityCode,
           payment_type: "SENDER",
           parcel_properties: {
@@ -381,7 +382,13 @@ export async function calculatePostexShipping(
             width: 20,
             height: 20,
             total_weight: totalWeightGrams,
-            total_value: 500_000,
+            is_fragile: true,
+            is_liquid: false,
+            total_value: totals?.payableToman
+              ? totals.payableToman * 10
+              : 5_000_000,
+            pre_paid_amount: 0,
+            total_value_currency: "IRR",
             box_type_id: 1,
           },
         },
