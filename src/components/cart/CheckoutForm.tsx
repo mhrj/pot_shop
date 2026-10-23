@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import AddressForm, { type AddressRecord } from '@/components/cart/AddressForm';
-import { calcShippingToman, type CartTotals } from '@/lib/pricing';
-import { formatToman, formatWeight, toFa } from '@/lib/format';
-import { numberToWordsFa } from '@/lib/number-to-words';
-import { resolveCityCode } from '@/lib/postex';
-import ItemColorBadge from '@/components/ui/ItemColorBadge';
+import { useEffect, useMemo, useState } from "react";
+import AddressForm, { type AddressRecord } from "@/components/cart/AddressForm";
+import { calcShippingToman, type CartTotals } from "@/lib/pricing";
+import { formatToman, formatWeight, toFa } from "@/lib/format";
+import { numberToWordsFa } from "@/lib/number-to-words";
+import { resolveCityCode } from "@/lib/postex";
+import ItemColorBadge from "@/components/ui/ItemColorBadge";
 
 type Address = {
   id: string;
@@ -30,50 +30,12 @@ export type ShippingOption = {
 };
 
 function getDefaultShippingOptions(baseCost: number): ShippingOption[] {
-  if (baseCost === 0) {
-    return [
-      {
-        carrier: 'پست پیشتاز',
-        label: 'پست پیشتاز (۳ روز کاری)',
-        costToman: 0,
-        deliveryDays: '۳ روز کاری',
-      },
-      {
-        carrier: 'پست عادی',
-        label: 'پست عادی (۷ روز کاری)',
-        costToman: 0,
-        deliveryDays: '۷ روز کاری',
-      },
-      {
-        carrier: 'تیپاکس',
-        label: 'تیپاکس (۱ الی ۲ روز کاری)',
-        costToman: 0,
-        deliveryDays: '۱ الی ۲ روز کاری',
-      },
-    ];
-  }
-
-  const normalCost = Math.max(25000, Math.round((baseCost * 0.7) / 1000) * 1000);
-  const tipaxCost = Math.max(45000, Math.round((baseCost * 1.25) / 1000) * 1000);
-
   return [
     {
-      carrier: 'پست پیشتاز',
-      label: 'پست پیشتاز (۳ روز کاری)',
+      carrier: "پست پیشتاز",
+      label: "پست پیشتاز (۳ روز کاری)",
       costToman: baseCost,
-      deliveryDays: '۳ روز کاری',
-    },
-    {
-      carrier: 'پست عادی',
-      label: 'پست عادی (۷ روز کاری)',
-      costToman: normalCost,
-      deliveryDays: '۷ روز کاری',
-    },
-    {
-      carrier: 'تیپاکس',
-      label: 'تیپاکس (۱ الی ۲ روز کاری)',
-      costToman: tipaxCost,
-      deliveryDays: '۱ الی ۲ روز کاری',
+      deliveryDays: "۳ روز کاری",
     },
   ];
 }
@@ -95,10 +57,10 @@ export default function CheckoutForm({
 }) {
   const [addressList, setAddressList] = useState<Address[]>(addresses);
   const [selectedId, setSelectedId] = useState<string>(
-    addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? '',
+    addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? "",
   );
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
-  const [selectedCarrier, setSelectedCarrier] = useState<string>('پست پیشتاز');
+  const [selectedCarrier, setSelectedCarrier] = useState<string>("پست پیشتاز");
   const [calculatingShipping, setCalculatingShipping] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -110,12 +72,13 @@ export default function CheckoutForm({
     setSelectedId((current) =>
       addresses.some((a) => a.id === current)
         ? current
-        : (addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? ''),
+        : (addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? ""),
     );
   }, [addresses]);
 
   const selectedAddress = useMemo(() => {
-    const addr = addressList.find((a) => a.id === selectedId) ?? addressList[0] ?? null;
+    const addr =
+      addressList.find((a) => a.id === selectedId) ?? addressList[0] ?? null;
     if (!addr) return null;
     return {
       ...addr,
@@ -129,14 +92,20 @@ export default function CheckoutForm({
     if (!found) return undefined;
     return {
       ...found,
-      label: (found.label === 'WORK' || found.label === 'OTHER' ? found.label : 'HOME') as 'HOME' | 'WORK' | 'OTHER',
+      label: (found.label === "WORK" || found.label === "OTHER"
+        ? found.label
+        : "HOME") as "HOME" | "WORK" | "OTHER",
     };
   }, [addressList, editingAddressId]);
 
-  const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>(() => {
-    const initialCost = initialShippingRates[selectedId] ?? calcShippingToman(totals, selectedAddress?.province ?? 'تهران');
-    return getDefaultShippingOptions(initialCost);
-  });
+  const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>(
+    () => {
+      const initialCost =
+        initialShippingRates[selectedId] ??
+        calcShippingToman(totals, selectedAddress?.province ?? "تهران");
+      return getDefaultShippingOptions(initialCost);
+    },
+  );
 
   // Dynamic Postex shipping calculation whenever selected address or weight changes
   useEffect(() => {
@@ -145,9 +114,9 @@ export default function CheckoutForm({
     let cancelled = false;
     setCalculatingShipping(true);
 
-    fetch('/api/shipping/calculate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("/api/shipping/calculate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cityCode: selectedAddress.cityCode,
         weightGrams: totals.totalWeightGrams,
@@ -166,8 +135,14 @@ export default function CheckoutForm({
         }
       })
       .catch((err) => {
-        console.warn('[checkout] Failed to recalculate shipping, using fallback:', err);
-        const fallbackCost = calcShippingToman(totals, selectedAddress.province ?? 'تهران');
+        console.warn(
+          "[checkout] Failed to recalculate shipping, using fallback:",
+          err,
+        );
+        const fallbackCost = calcShippingToman(
+          totals,
+          selectedAddress.province ?? "تهران",
+        );
         setShippingOptions(getDefaultShippingOptions(fallbackCost));
       })
       .finally(() => {
@@ -207,7 +182,7 @@ export default function CheckoutForm({
 
   const pay = async () => {
     if (!selectedId) {
-      setError('یک آدرس ارسال انتخاب کنید');
+      setError("یک آدرس ارسال انتخاب کنید");
       return;
     }
     if (calculatingShipping) {
@@ -216,9 +191,9 @@ export default function CheckoutForm({
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch('/api/payment/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/payment/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           addressId: selectedId,
           shippingCarrier: selectedOption?.carrier ?? selectedCarrier,
@@ -228,14 +203,15 @@ export default function CheckoutForm({
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.redirectUrl) {
         setError(
-          data?.message || 'ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.',
+          data?.message ||
+            "ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.",
         );
         setLoading(false);
         return;
       }
       window.location.href = data.redirectUrl;
     } catch {
-      setError('ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.');
+      setError("ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.");
       setLoading(false);
     }
   };
@@ -258,10 +234,15 @@ export default function CheckoutForm({
             onCancel={() => setEditingAddressId(null)}
           />
         ) : showForm ? (
-          <AddressForm onSaved={handleCreated} onCancel={() => setShowForm(false)} />
+          <AddressForm
+            onSaved={handleCreated}
+            onCancel={() => setShowForm(false)}
+          />
         ) : (
           <fieldset className="rounded-2xl border border-soil-900/10 bg-white p-5">
-            <legend className="px-2 text-sm font-black text-soil-900">آدرس ارسال</legend>
+            <legend className="px-2 text-sm font-black text-soil-900">
+              آدرس ارسال
+            </legend>
 
             <ul className="space-y-3">
               {addressList.map((a) => (
@@ -269,8 +250,8 @@ export default function CheckoutForm({
                   <label
                     className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
                       selectedId === a.id
-                        ? 'border-flora-500 bg-flora-100/40 ring-1 ring-flora-500/20'
-                        : 'border-soil-900/10 hover:border-soil-900/25'
+                        ? "border-flora-500 bg-flora-100/40 ring-1 ring-flora-500/20"
+                        : "border-soil-900/10 hover:border-soil-900/25"
                     }`}
                   >
                     <input
@@ -284,7 +265,9 @@ export default function CheckoutForm({
                     <div className="flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-soil-900">{a.fullName}</span>
+                          <span className="text-sm font-bold text-soil-900">
+                            {a.fullName}
+                          </span>
                           {a.isDefault && (
                             <span className="rounded-full bg-flora-100 px-2 py-0.5 text-[10px] font-bold text-flora-700">
                               پیش‌فرض
@@ -307,10 +290,10 @@ export default function CheckoutForm({
                       </div>
                       <p className="mt-1.5 text-xs leading-6 text-soil-700/80">
                         {a.province}، {a.city}، {a.line1}
-                        {a.line2 ? `، ${a.line2}` : ''}
+                        {a.line2 ? `، ${a.line2}` : ""}
                       </p>
                       <p className="mt-1 text-xs text-soil-700/60">
-                        کد پستی: <span dir="ltr">{a.postalCode}</span> · تلفن:{' '}
+                        کد پستی: <span dir="ltr">{a.postalCode}</span> · تلفن:{" "}
                         <span dir="ltr">{a.phone}</span>
                       </p>
                     </div>
@@ -390,26 +373,23 @@ export default function CheckoutForm({
             </div>
           ) : (
             <ul className="space-y-2.5">
-              {shippingOptions.map((opt) => (
+              {(shippingOptions.filter((opt) => opt.carrier === 'پست پیشتاز').length > 0
+                ? shippingOptions.filter((opt) => opt.carrier === 'پست پیشتاز')
+                : getDefaultShippingOptions(effectiveShippingToman)
+              ).map((opt) => (
                 <li key={opt.carrier}>
-                  <label
-                    className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border p-3.5 transition ${
-                      (selectedOption?.carrier ?? selectedCarrier) === opt.carrier
-                        ? 'border-flora-500 bg-flora-100/40 shadow-2xs ring-1 ring-flora-500/20'
-                        : 'border-soil-900/10 hover:border-soil-900/25 bg-white'
-                    }`}
-                  >
+                  <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-flora-500 bg-flora-100/40 p-3.5 shadow-2xs ring-1 ring-flora-500/20">
                     <div className="flex items-center gap-3">
                       <input
                         type="radio"
                         name="shippingCarrier"
-                        value={opt.carrier}
-                        checked={(selectedOption?.carrier ?? selectedCarrier) === opt.carrier}
-                        onChange={(e) => setSelectedCarrier(e.target.value)}
+                        value="پست پیشتاز"
+                        checked={true}
+                        readOnly
                         className="accent-flora-700"
                       />
                       <span className="text-xs sm:text-sm font-bold text-soil-900">
-                        {opt.label}
+                        {opt.label || 'پست پیشتاز'}
                       </span>
                     </div>
                     <span className="text-xs sm:text-sm font-black text-soil-900 shrink-0">
@@ -424,6 +404,10 @@ export default function CheckoutForm({
               ))}
             </ul>
           )}
+
+          <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700">
+            📦 توجه: مرسولات فقط در روزهای <strong>شنبه</strong> و <strong>چهارشنبه</strong> ارسال میشوند.
+          </div>
         </fieldset>
 
         {error && (
@@ -442,10 +426,10 @@ export default function CheckoutForm({
           className="w-full rounded-2xl bg-flora-900 px-6 py-4 text-sm font-black text-white shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer"
         >
           {loading
-            ? 'در حال انتقال به درگاه…'
+            ? "در حال انتقال به درگاه…"
             : calculatingShipping
-              ? 'در حال محاسبه هزینه ارسال…'
-              : 'پرداخت با زرینپال'}
+              ? "در حال محاسبه هزینه ارسال…"
+              : "پرداخت با زرینپال"}
         </button>
 
         <p className="text-center text-[11px] leading-6 text-soil-700/55">
@@ -459,14 +443,20 @@ export default function CheckoutForm({
 
           <ul className="mt-4 space-y-3 text-xs text-soil-700/80">
             {totals.lines.map((l) => (
-              <li key={l.productId} className="flex justify-between items-start gap-4">
+              <li
+                key={l.productId}
+                className="flex justify-between items-start gap-4"
+              >
                 <div>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="font-bold text-soil-900">{l.name}</span>
                     <ItemColorBadge colorData={l.colorData} />
                   </div>
                   <span className="text-[11px] text-soil-700/70 block mt-0.5">
-                    {toFa(l.quantity)} عدد {l.bundleSize > 1 ? `(معادل ${toFa(Math.round(l.quantity / l.bundleSize))} بسته)` : ''}
+                    {toFa(l.quantity)} عدد{" "}
+                    {l.bundleSize > 1
+                      ? `(معادل ${toFa(Math.round(l.quantity / l.bundleSize))} بسته)`
+                      : ""}
                   </span>
                 </div>
                 <span className="shrink-0 font-bold text-soil-900">
@@ -488,7 +478,10 @@ export default function CheckoutForm({
             <div className="flex justify-between items-center">
               <dt className="flex items-center gap-1.5">
                 <span>
-                  هزینه ارسال {selectedOption?.carrier ? `(با ${selectedOption.carrier})` : ''}
+                  هزینه ارسال{" "}
+                  {selectedOption?.carrier
+                    ? `(با ${selectedOption.carrier})`
+                    : ""}
                 </span>
                 {calculatingShipping && (
                   <span className="text-[10px] text-flora-700 animate-pulse font-normal">
@@ -500,7 +493,7 @@ export default function CheckoutForm({
                 {calculatingShipping ? (
                   <span className="text-soil-700/60 text-xs">…</span>
                 ) : effectiveShippingToman === 0 ? (
-                  'رایگان'
+                  "رایگان"
                 ) : (
                   formatToman(effectiveShippingToman)
                 )}
@@ -515,7 +508,9 @@ export default function CheckoutForm({
               <dd className="text-end">
                 <div>
                   {calculatingShipping ? (
-                    <span className="text-soil-700/60 text-sm">در حال محاسبه…</span>
+                    <span className="text-soil-700/60 text-sm">
+                      در حال محاسبه…
+                    </span>
                   ) : (
                     formatToman(grandTotalToman)
                   )}

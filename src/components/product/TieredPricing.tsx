@@ -1059,6 +1059,10 @@ export default function TieredPricing({
                   : `افزودن ${toFa(count)} عدد به سبد — ${formatToman(total)}`}
         </button>
 
+        <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700 text-center">
+          📦 توجه: مرسولات فقط در روزهای <strong>شنبه</strong> و <strong>چهارشنبه</strong> ارسال میشوند.
+        </div>
+
         {error && (
           <p
             role="alert"

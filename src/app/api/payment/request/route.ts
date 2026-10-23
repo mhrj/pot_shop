@@ -185,18 +185,8 @@ export async function POST(req: Request) {
     fallbackTotals: totals,
   });
 
-  const shippingCarrier = parsed.data.shippingCarrier?.trim() || 'پست پیشتاز';
-  let shippingToman = pishtazShippingToman;
-
-  if (pishtazShippingToman > 0) {
-    if (shippingCarrier === 'پست عادی') {
-      shippingToman = Math.max(25000, Math.round((pishtazShippingToman * 0.7) / 1000) * 1000);
-    } else if (shippingCarrier === 'تیپاکس') {
-      shippingToman = Math.max(45000, Math.round((pishtazShippingToman * 1.25) / 1000) * 1000);
-    } else if (shippingCarrier === 'پیک موتوری') {
-      shippingToman = Math.max(40000, Math.round((pishtazShippingToman * 1.2) / 1000) * 1000);
-    }
-  }
+  const shippingCarrier = 'پست پیشتاز';
+  const shippingToman = pishtazShippingToman;
 
   const totalToman = totals.payableToman + shippingToman;
 

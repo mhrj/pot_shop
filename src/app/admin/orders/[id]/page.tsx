@@ -9,7 +9,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import ItemColorBadge from '@/components/ui/ItemColorBadge';
 import PrintInvoiceButton from '@/components/orders/PrintInvoiceButton';
 import BundleDetailsAccordion from '@/components/orders/BundleDetailsAccordion';
-import { isOrderStatus, ORDER_STATUS_LABELS, TIMELINE, formatCarrierName } from '@/lib/orders';
+import { isOrderStatus, ORDER_STATUS_LABELS, TIMELINE, formatCarrierName, getNextShippingDay } from '@/lib/orders';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -176,6 +176,10 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           <div className="mt-3 pt-2.5 border-t border-soil-900/5 flex items-center justify-between text-xs print:text-[10px]">
             <span className="text-soil-700/70">شرکت حمل و نقل:</span>
             <span className="font-bold text-soil-900">{formatCarrierName(order.shippingCarrier)}</span>
+          </div>
+          <div className="mt-2 flex items-center justify-between text-xs print:text-[10px]">
+            <span className="text-soil-700/70">تاریخ تقریبی ارسال:</span>
+            <span className="font-bold text-soil-900">{getNextShippingDay(order.createdAt)}</span>
           </div>
         </section>
 
