@@ -130,12 +130,15 @@ function extractTomanPrice(data: any): number | null {
     if (!item || typeof item !== "object") return;
     if (typeof item.price === "number") candidatePrices.push(item.price);
     if (typeof item.cost === "number") candidatePrices.push(item.cost);
+    if (typeof item.amount === "number") candidatePrices.push(item.amount);
     if (typeof item.total_cost === "number")
       candidatePrices.push(item.total_cost);
     if (typeof item.total_price === "number")
       candidatePrices.push(item.total_price);
     if (typeof item.totalPrice === "number")
       candidatePrices.push(item.totalPrice);
+    if (typeof item.total_amount === "number")
+      candidatePrices.push(item.total_amount);
     if (typeof item.shipping_price === "number")
       candidatePrices.push(item.shipping_price);
     if (typeof item.shipping_rate === "number")
@@ -337,27 +340,8 @@ export async function calculatePostexShipping(
       process.env.POSTEX_API_URL ||
       "https://api.postex.ir/api/v1/shipping/quotes";
 
-    // Diagnostic call to retrieve available shipping methods
-    const shippingMethods = await getPostexShippingMethods(apiKey);
-    const firstValidMethod = shippingMethods.find(
-      (m) => m.isActive && m.courierCode && m.courierServiceCode,
-    );
-
-    const requestedCourier =
-      typeof originCityOrParams === "object" &&
-      originCityOrParams !== null &&
-      originCityOrParams.courier
-        ? originCityOrParams.courier
-        : null;
-
-    const courierCode =
-      requestedCourier?.courier_code ||
-      firstValidMethod?.courierCode ||
-      "POSTEX_EXPRESS";
-    const serviceType =
-      requestedCourier?.service_type ||
-      firstValidMethod?.courierServiceCode ||
-      "DGX_GOLD";
+    // Optional diagnostic call to inspect available shipping methods
+    // await getPostexShippingMethods(apiKey);
 
     const rawFrom =
       explicitFromCityCode ??
@@ -385,8 +369,8 @@ export async function calculatePostexShipping(
       collection_type: "courier_drop_off",
       from_city_code: fromCityCode,
       courier: {
-        courier_code: courierCode,
-        service_type: serviceType,
+        courier_code: "IR_POST",
+        service_type: "EXPRESS",
       },
       parcels: [
         {
