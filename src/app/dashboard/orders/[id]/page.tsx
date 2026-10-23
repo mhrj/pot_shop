@@ -5,12 +5,13 @@ import { requireUser } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { allowedTransitions, ORDER_STATUS_LABELS, isOrderStatus, TIMELINE, formatCarrierName, getNextShippingDay } from '@/lib/orders';
+import { allowedTransitions, ORDER_STATUS_LABELS, isOrderStatus, TIMELINE, formatCarrierName, getNextShippingDay, getNextShippingDate } from '@/lib/orders';
 import { channelLabel } from '@/lib/analytics';
 import CancelOrderButton from '@/components/dashboard/CancelOrderButton';
 import ItemColorBadge from '@/components/ui/ItemColorBadge';
 import PrintInvoiceButton from '@/components/orders/PrintInvoiceButton';
 import BundleDetailsAccordion from '@/components/orders/BundleDetailsAccordion';
+import ShippingScheduleNotice from '@/components/ui/ShippingScheduleNotice';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -134,6 +135,9 @@ export default async function CustomerOrderPage({ params }: Props) {
               );
             })}
           </ol>
+          <div className="mt-4 print:hidden">
+            <ShippingScheduleNotice compact={true} />
+          </div>
         </div>
       )}
 
@@ -318,9 +322,9 @@ export default async function CustomerOrderPage({ params }: Props) {
                 </dd>
               </div>
               <div className="flex justify-between gap-3">
-                <dt className="text-soil-700/70">تاریخ تقریبی ارسال:</dt>
+                <dt className="text-soil-700/70">تاریخ تقریبی تحویل به پست:</dt>
                 <dd className="font-bold text-soil-900">
-                  {getNextShippingDay(order.createdAt)}
+                  {formatDateFa(getNextShippingDate(order.createdAt))}
                 </dd>
               </div>
               <div className="pt-2 border-t border-soil-900/5 print:pt-1">

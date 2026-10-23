@@ -76,7 +76,7 @@ export default async function CartPage() {
               ادامه فرآیند خرید
             </Link>
             <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700">
-              📦 توجه: مرسولات فقط در روزهای <strong>شنبه</strong> و <strong>چهارشنبه</strong> ارسال میشوند.
+              📦 توجه: مرسولات فقط در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال میشوند.
             </div>
           </div>
         </aside>

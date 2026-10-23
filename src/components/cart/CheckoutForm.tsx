@@ -7,6 +7,7 @@ import { formatToman, formatWeight, toFa } from "@/lib/format";
 import { numberToWordsFa } from "@/lib/number-to-words";
 import { resolveCityCode } from "@/lib/postex";
 import ItemColorBadge from "@/components/ui/ItemColorBadge";
+import ShippingScheduleNotice from "@/components/ui/ShippingScheduleNotice";
 
 type Address = {
   id: string;
@@ -404,10 +405,6 @@ export default function CheckoutForm({
               ))}
             </ul>
           )}
-
-          <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700">
-            📦 توجه: مرسولات فقط در روزهای <strong>شنبه</strong> و <strong>چهارشنبه</strong> ارسال میشوند.
-          </div>
         </fieldset>
 
         {error && (
@@ -431,6 +428,8 @@ export default function CheckoutForm({
               ? "در حال محاسبه هزینه ارسال…"
               : "پرداخت با زرینپال"}
         </button>
+
+        <ShippingScheduleNotice compact={true} className="mt-3" />
 
         <p className="text-center text-[11px] leading-6 text-soil-700/55">
           پس از تأیید، مبلغ از حساب شما کسر و کد پیگیری شاپرک نمایش داده می‌شود.

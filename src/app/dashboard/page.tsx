@@ -7,6 +7,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import AddressBook from '@/components/dashboard/AddressBook';
 import ReorderButton from '@/components/dashboard/ReorderButton';
 import { formatCarrierName } from '@/lib/orders';
+import ShippingScheduleNotice from '@/components/ui/ShippingScheduleNotice';
 
 export default async function DashboardPage() {
   const user = await requireUser();
@@ -42,6 +43,10 @@ export default async function DashboardPage() {
           </button>
         </form>
       </header>
+
+      <div className="mt-6">
+        <ShippingScheduleNotice />
+      </div>
 
       <section className="mt-10">
         <h2 className="text-lg font-black text-soil-900">سفارش‌های من</h2>
