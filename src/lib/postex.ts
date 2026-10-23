@@ -311,13 +311,11 @@ export async function calculatePostexShipping(
     const fromCityCode = resolveCityCode(rawFrom);
     const toCityCode = resolveCityCode(rawTo);
 
-    // Postex API requires total_weight as an integer (System.Int64) in GRAMS (e.g. 1000 for 1kg).
-    // If a weight in kg (< 25) was passed, convert it to grams.
-    const effectiveWeightGrams =
-      weight > 0 && weight < 25
-        ? Math.round(weight * 1000)
-        : Math.round(weight);
-    const totalWeight = Math.max(100, effectiveWeightGrams);
+    // Convert weight from grams to kilograms (e.g. 8700g -> 8.7kg)
+    const totalWeight =
+      weight >= 25
+        ? Number((weight / 1000).toFixed(2))
+        : Number(weight.toFixed(2));
 
     const requestBody = {
       collection_type: "courier_drop_off",
