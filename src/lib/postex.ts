@@ -6,8 +6,8 @@ export type PostexCalculationParams = {
   weightGrams?: number;
   fallbackTotals?: CartTotals;
   collection_type?: string;
-  from_city_code?: number;
-  to_city_code?: number;
+  from_city_code?: number | string;
+  to_city_code?: number | string;
   courier?: any;
   parcels?: any[];
 };
@@ -66,9 +66,17 @@ const CITY_CODE_MAP: Record<string, number> = {
   یزد: 585,
 };
 
-export function resolveCityCode(cityName?: string): number {
-  if (!cityName) return 1;
-  const trimmed = cityName.trim();
+export function resolveCityCode(cityName?: string | number): number {
+  if (cityName === undefined || cityName === null) return 1;
+  if (typeof cityName === "number") {
+    return !isNaN(cityName) && cityName > 0 ? Math.round(cityName) : 1;
+  }
+  const trimmed = String(cityName).trim();
+  if (!trimmed) return 1;
+  if (/^\d+$/.test(trimmed)) {
+    const parsed = parseInt(trimmed, 10);
+    return parsed > 0 ? parsed : 1;
+  }
   for (const [key, code] of Object.entries(CITY_CODE_MAP)) {
     if (trimmed.includes(key) || key.includes(trimmed)) {
       return code;
@@ -235,7 +243,7 @@ export async function calculatePostexShipping(
   let destination = destinationCity ?? "تهران";
   let weight = weightGrams ?? 1000;
   let totals = fallbackTotals;
-  let explicitFromCityCode: number | undefined;
+  let explicitFromCityCode: number | string | undefined;
 
   if (typeof originCityOrParams === "object" && originCityOrParams !== null) {
     originCity = originCityOrParams.originCity ?? "";
@@ -287,17 +295,29 @@ export async function calculatePostexShipping(
       process.env.POSTEX_API_URL ||
       "https://api.postex.ir/api/v1/shipping/quotes";
 
-    const fromCityCode =
-      explicitFromCityCode ||
-      (typeof originCityOrParams === "object" &&
-        originCityOrParams !== null &&
-        originCityOrParams.from_city_code) ||
-      resolveCityCode(originCity);
-    const toCityCode =
-      (typeof originCityOrParams === "object" &&
-        originCityOrParams !== null &&
-        originCityOrParams.to_city_code) ||
-      resolveCityCode(destination);
+    const rawFrom =
+      explicitFromCityCode ??
+      (typeof originCityOrParams === "object" && originCityOrParams !== null
+        ? originCityOrParams.from_city_code
+        : undefined) ??
+      originCity;
+
+    const rawTo =
+      (typeof originCityOrParams === "object" && originCityOrParams !== null
+        ? originCityOrParams.to_city_code
+        : undefined) ??
+      destination;
+
+    const fromCityCode = resolveCityCode(rawFrom);
+    const toCityCode = resolveCityCode(rawTo);
+
+    // Postex API requires total_weight as an integer (System.Int64) in GRAMS (e.g. 1000 for 1kg).
+    // If a weight in kg (< 25) was passed, convert it to grams.
+    const effectiveWeightGrams =
+      weight > 0 && weight < 25
+        ? Math.round(weight * 1000)
+        : Math.round(weight);
+    const totalWeight = Math.max(100, effectiveWeightGrams);
 
     const requestBody = {
       collection_type: "courier_drop_off",
@@ -314,9 +334,9 @@ export async function calculatePostexShipping(
             length: 20,
             width: 20,
             height: 20,
-            total_weight: Math.max(100, Math.round(weight)),
+            total_weight: totalWeight,
             total_value: totals?.payableToman
-              ? totals.payableToman * 10
+              ? Math.round(totals.payableToman * 10)
               : 1_000_000,
             box_type_id: 1,
           },
@@ -329,6 +349,9 @@ export async function calculatePostexShipping(
       },
     };
 
+    const payloadString = JSON.stringify(requestBody);
+    console.log("[postex] Outgoing request payload:", payloadString);
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -337,13 +360,22 @@ export async function calculatePostexShipping(
         Authorization: `Bearer ${apiKey}`,
         "x-api-key": apiKey,
       },
-      body: JSON.stringify(requestBody),
+      body: payloadString,
       signal: AbortSignal.timeout(6000), // 6-second timeout
     });
 
     if (!response.ok) {
-      console.warn(
-        `[postex] API returned HTTP ${response.status}, falling back to calcShippingToman`,
+      const errorText = await response.text().catch(() => "");
+      let parsedError: any = null;
+      try {
+        parsedError = JSON.parse(errorText);
+      } catch {
+        // Not JSON
+      }
+
+      console.error(
+        `[postex] API returned HTTP ${response.status} error response:`,
+        parsedError ? JSON.stringify(parsedError, null, 2) : errorText || "(empty response)",
       );
       return calcShippingToman(defaultFallbackTotals, destination);
     }
@@ -359,10 +391,11 @@ export async function calculatePostexShipping(
       "[postex] Could not parse valid shipping price from response, falling back to calcShippingToman",
     );
     return calcShippingToman(defaultFallbackTotals, destination);
-  } catch (error) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    console.warn(
-      `[postex] Failed to calculate shipping rate: ${message}. Using fallback.`,
+    console.error(
+      `[postex] Failed to calculate shipping rate: ${message}. Full error:`,
+      error,
     );
     return calcShippingToman(defaultFallbackTotals, destination);
   }
