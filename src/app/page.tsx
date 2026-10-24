@@ -163,39 +163,46 @@ export default async function HomePage() {
       <Container className="mt-16 grid gap-6 md:grid-cols-3">
         {[
           {
-            t: 'خاک',
-            d: 'انتخاب متریال درست: از خاک‌های تخصصی و کودهای مغذی تا سفال نفس‌کش و سرامیک لعاب‌دار.',
+            title: 'خاک',
+            subtitle: 'بستر مناسب برای هر گیاه',
+            description:
+              'خاکهای مختلف، کاربردهای متفاوتی دارند. با توجه به نیاز گیاه به رطوبت، هوادهی و زهکشی، بستر مناسبتری برای رشد آن انتخاب کنید.',
             icon: '🏺',
             card: 'bg-dust-200',
             accent: 'border-t-dust-400',
           },
           {
-            t: 'ریشه',
-            d: 'زهکشی اصولی و حجم کافی خاک، ریشه را از پوسیدگی حفظ می‌کند. ما ابزار و بستر مناسب را برای شما فراهم کرده‌ایم.',
+            title: 'ریشه',
+            subtitle: 'گلدان مناسب، شروعی بهتر',
+            description:
+              'اندازه گلدان، فضای ریشه و خروج آب اضافی در سلامت گیاه اهمیت دارند. گلدانی انتخاب کنید که با اندازه و نیاز گیاهتان متناسب باشد.',
             icon: '🪴',
             card: 'bg-flora-100',
             accent: 'border-t-flora-300',
           },
           {
-            t: 'رویش',
-            d: 'بعد از آن، فقط تماشا کنید. فضای خالی‌تان با انتخاب‌های درست ما زنده شده است.',
+            title: 'رویش',
+            subtitle: 'از کاشت تا مراقبت روزمره',
+            description:
+              'با انتخاب گلدان، خاک و لوازم مناسب، برای رسیدگی به گیاهانتان آمادهتر باشید؛ چه در حال شروع باشید و چه بخواهید مجموعهتان را گسترش دهید.',
             icon: '🌸',
             card: 'bg-flora-300/50',
             accent: 'border-t-flora-500',
           },
-        ].map((s) => (
+        ].map((card) => (
           <div
-            key={s.t}
-            className={`flex flex-col rounded-pot border-t-4 ${s.accent} ${s.card} p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_44px_-16px_rgba(62,39,35,0.32)]`}
+            key={card.title}
+            className={`flex flex-col h-full rounded-pot border-t-4 ${card.accent} ${card.card} p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_44px_-16px_rgba(62,39,35,0.32)]`}
           >
             <span
               aria-hidden
               className="grid size-12 place-items-center rounded-2xl bg-white/60 text-2xl"
             >
-              {s.icon}
+              {card.icon}
             </span>
-            <h3 className="mt-5 text-xl font-black text-soil-900">{s.t}</h3>
-            <p className="mt-3 text-sm leading-7 text-soil-700/80">{s.d}</p>
+            <h3 className="mt-5 text-xl font-black text-soil-900">{card.title}</h3>
+            <p className="mt-2 text-sm font-bold text-flora-700">{card.subtitle}</p>
+            <p className="mt-3 text-xs leading-6 text-soil-700/80">{card.description}</p>
           </div>
         ))}
       </Container>

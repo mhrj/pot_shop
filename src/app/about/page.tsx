@@ -43,10 +43,39 @@ export default async function AboutPage() {
         {content.about_title.body}
       </h1>
 
-      {/* `whitespace-pre-line` keeps the paragraph breaks the admin types into
-          the textarea; without it the whole story collapses into one block. */}
-      <div className="mt-6 max-w-3xl text-sm leading-8 whitespace-pre-line text-soil-700/85">
-        {content.about_body.body}
+      {/* Split paragraphs so the story has clear spacing, the lead title stands out,
+          and the concluding brand tagline is rendered in bold. */}
+      <div className="mt-6 max-w-3xl space-y-5 text-sm leading-8 text-soil-700/85">
+        {content.about_body.body
+          .split(/\n{2,}/)
+          .map((paragraph) => paragraph.trim())
+          .filter(Boolean)
+          .map((paragraph, index, array) => {
+            const isFirst = index === 0 && paragraph.length < 60;
+            const isLast = index === array.length - 1;
+
+            if (isFirst) {
+              return (
+                <p key={index} className="text-base font-bold text-soil-900 leading-8">
+                  {paragraph}
+                </p>
+              );
+            }
+
+            if (isLast) {
+              return (
+                <p key={index} className="pt-2 font-bold text-soil-900 leading-8">
+                  <strong>{paragraph}</strong>
+                </p>
+              );
+            }
+
+            return (
+              <p key={index} className="whitespace-pre-line">
+                {paragraph}
+              </p>
+            );
+          })}
       </div>
 
       {contact.length > 0 && (

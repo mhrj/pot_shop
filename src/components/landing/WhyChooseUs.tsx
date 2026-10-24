@@ -2,59 +2,65 @@ import Container from '@/components/ui/Container';
 
 const ADVANTAGES = [
   {
-    tag: 'تنفسی و طبیعی',
-    title: 'خاک رس معدنی و ساختار تنفسی',
+    tag: 'گلدان و دکور',
+    title: 'از دکور تا نگهداری گیاه',
     description:
-      'دیواره‌های سفالی خالص به دلیل منافذ ریز طبیعی، دی‌اکسید کربن اضافی را دفع و ریشه گیاه را در خنک‌ترین دمای ممکن حفظ می‌کنند.',
+      'گلدانهای سفالی، سرامیکی و دکوراتیو در طرحها و اندازههای متنوع؛ برای زیباتر کردن فضای خانه و انتخاب بستری مناسب برای گیاهان.',
     color: 'from-dust-100 to-dust-200/80',
     border: 'border-dust-300/80',
     iconBg: 'bg-dust-300 text-soil-900',
+    action: 'مشاهده گلدان‌ها',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 10h12m-1 0l-1.2 8.4a2 2 0 01-1.98 1.6h-3.64a2 2 0 01-1.98-1.6L7 10" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 10V5m0 0a3.5 3.5 0 013.5 3.5c0 1.5-1.5 2.5-3.5 2.5m0-6a3.5 3.5 0 00-3.5 3.5c0 1.5 1.5 2.5 3.5 2.5" />
       </svg>
     ),
   },
   {
-    tag: 'مقاومت حرارتی',
-    title: 'پخت ۱۰۵۰ درجه کوره سفالگری',
+    tag: 'خاک و بستر رشد',
+    title: 'هر گیاه، خاک مناسب خودش',
     description:
-      'هر قطعه ساعت‌ها در دمای کنترل‌شده پخته می‌شود تا در برابر یخبندان زمستان، تابش مستقیم آفتاب و شوک‌های حرارتی کاملاً مقاوم باشد.',
+      'از خاکهای عمومی تا ترکیبهای مخصوص گیاهان مختلف، بستری متناسب با نیاز ریشه، میزان رطوبت و شرایط رشد گیاه انتخاب کنید.',
     color: 'from-flora-100/70 to-flora-200/50',
     border: 'border-flora-300/60',
     iconBg: 'bg-flora-200 text-flora-900',
+    action: 'انواع خاک و بستر',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3.5L2.5 8.5 12 13.5l9.5-5L12 3.5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.5 12.5L12 17.5l9.5-5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.5 16.5L12 21.5l9.5-5" />
       </svg>
     ),
   },
   {
-    tag: 'لعاب باکیفیت',
-    title: 'لعاب سنگی بدون ترک و تغییر رنگ',
+    tag: 'لوازم نگهداری',
+    title: 'همهچیز برای رسیدگی بهتر',
     description:
-      'فرمولاسیون لعاب‌های سنگی و نیمه‌مات ما فاقد هرگونه سرب و مواد سمی است، رسوب آب به خود نمی‌گیرد و با دستمال مرطوب مثل روز اول می‌درخشد.',
+      'ابزار و لوازم کاربردی موردنیاز برای کاشت، تعویض گلدان و مراقبت روزمره از گیاهان را یکجا پیدا کنید.',
     color: 'from-white to-dust-100/70',
     border: 'border-soil-900/10',
     iconBg: 'bg-soil-100 text-soil-900',
+    action: 'مشاهده ابزارها',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.32l-3.276 3.277a1.5 1.5 0 01-2.122 0l-.707-.707a1.5 1.5 0 010-2.122l3.277-3.276a4.5 4.5 0 00-6.32 4.486c.048.58.024 1.193-.14 1.743" />
       </svg>
     ),
   },
   {
-    tag: 'پایداری فیزیکی',
-    title: 'تراز وزنی ضد واژگونی گیاه',
+    tag: 'انتخاب محصول',
+    title: 'انتخابی متناسب با نیاز شما',
     description:
-      'نسبت ضخامت کف به دیواره به‌گونه‌ای ریخته‌گری شده که مرکز ثقل پایینی ایجاد کرده و مانع از افتادن گیاهان سنگین آپارتمانی می‌شود.',
+      'برای انتخاب گلدان و خاک، به نوع گیاه، اندازه ریشه، زهکشی و شرایط نگهداری توجه کنید تا خریدی متناسب با نیازتان داشته باشید.',
     color: 'from-flora-200/40 to-flora-300/30',
     border: 'border-flora-400/40',
     iconBg: 'bg-flora-300 text-flora-950',
+    action: 'راهنمای انتخاب',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
   },
@@ -76,11 +82,11 @@ export default function WhyChooseUs() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {ADVANTAGES.map((adv) => (
             <div
               key={adv.title}
-              className={`group flex flex-col justify-between rounded-3xl border ${adv.border} bg-gradient-to-b ${adv.color} p-7 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-soil-900/8`}
+              className={`group flex flex-col justify-between rounded-3xl border ${adv.border} bg-gradient-to-b ${adv.color} p-7 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-soil-900/8 text-right`}
             >
               <div>
                 <div className="flex items-center justify-between">
@@ -92,17 +98,17 @@ export default function WhyChooseUs() {
                   </span>
                 </div>
 
-                <h3 className="mt-6 text-lg font-black text-soil-900">
+                <h3 className="mt-6 text-lg font-black text-soil-900 text-right leading-tight">
                   {adv.title}
                 </h3>
-                <p className="mt-3 text-xs leading-6 text-soil-700/85">
+                <p className="mt-3 text-xs leading-6 sm:text-sm sm:leading-7 text-soil-700/85 text-right">
                   {adv.description}
                 </p>
               </div>
 
-              <div className="mt-6 flex items-center gap-1.5 text-[11px] font-bold text-flora-800 opacity-80 group-hover:opacity-100">
-                <span>تضمین اصالت متریال</span>
-                <span className="transition duration-300 group-hover:translate-x-1">←</span>
+              <div className="mt-6 flex items-center gap-1.5 text-[11px] font-bold text-flora-800 opacity-80 transition duration-300 group-hover:opacity-100">
+                <span>{adv.action}</span>
+                <span className="transition duration-300 group-hover:-translate-x-1">←</span>
               </div>
             </div>
           ))}
