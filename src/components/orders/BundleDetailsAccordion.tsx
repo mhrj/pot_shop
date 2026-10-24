@@ -1,8 +1,9 @@
-import { toFa } from '@/lib/format';
+import { toFa, formatToman } from '@/lib/format';
 import { parseBundleItems, type BundleItem } from '@/lib/product-features';
 
 type Props = {
   bundleSize: number;
+  bundleCount?: number;
   colorData?: unknown;
   productBundleItems?: unknown;
   className?: string;
@@ -68,11 +69,14 @@ function parseItemColorData(raw: unknown): {
 
 export default function BundleDetailsAccordion({
   bundleSize,
+  bundleCount = 1,
   colorData,
   productBundleItems,
   className = '',
 }: Props) {
   if (bundleSize <= 1) return null;
+
+  const count = Math.max(1, bundleCount);
 
   const parsedColorData = parseItemColorData(colorData);
 
@@ -142,6 +146,10 @@ export default function BundleDetailsAccordion({
           if (bItem.heightCm) dimParts.push(`ارتفاع ${toFa(bItem.heightCm)}`);
           const dimsText = dimParts.length > 0 ? `(${dimParts.join(' × ')} سانتی‌متر)` : null;
 
+          const effectiveWeight = (bItem.weightGrams || 0) * count;
+          const rawPrice = bItem.price ?? bItem.priceToman ?? 0;
+          const effectivePrice = rawPrice * count;
+
           return (
             <div
               key={idx}
@@ -162,6 +170,16 @@ export default function BundleDetailsAccordion({
                 {bItem.material && (
                   <span className="text-[11px] text-soil-700/60">
                     · جنس: {bItem.material}
+                  </span>
+                )}
+                {effectiveWeight > 0 && (
+                  <span className="text-[11px] text-soil-700/60">
+                    · وزن: {toFa(effectiveWeight)} گرم{count > 1 ? ` (${toFa(count)} بسته)` : ''}
+                  </span>
+                )}
+                {effectivePrice > 0 && (
+                  <span className="text-[11px] text-soil-700/60">
+                    · ارزش: {formatToman(effectivePrice)}{count > 1 ? ` (${toFa(count)} بسته)` : ''}
                   </span>
                 )}
               </div>

@@ -98,6 +98,7 @@ export default async function EditProductPage({ params }: Props) {
             isActive: product.isActive,
             isFeatured: product.isFeatured,
             allowBatchDiscount: product.allowBatchDiscount,
+            isFragile: product.isFragile,
             // The column is untyped JSON, so it is normalised on the way in as
             // well as on the way out — a malformed row must not break the form.
             features: parseFeatures(product.features),

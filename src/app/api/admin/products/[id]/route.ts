@@ -69,6 +69,7 @@ const schema = z.object({
   isActive: z.boolean(),
   isFeatured: z.boolean(),
   allowBatchDiscount: z.boolean().optional().default(true),
+  isFragile: z.boolean().optional().default(false),
   // Display-only extras the admin names themselves; the semantic flags above
   // are separate columns because pricing and catalogue queries read them.
   features: z
@@ -152,6 +153,7 @@ export async function PATCH(req: Request, { params }: Params) {
         isActive: data.isActive,
         isFeatured: data.isFeatured,
         allowBatchDiscount: data.allowBatchDiscount,
+        isFragile: data.isFragile,
         // Replaced wholesale, like images/tiers/tags above — the array the form
         // submits *is* the feature list, so there is nothing to merge.
         features: data.features,

@@ -67,6 +67,7 @@ const schema = z.object({
   isActive: z.boolean(),
   isFeatured: z.boolean(),
   allowBatchDiscount: z.boolean().optional().default(true),
+  isFragile: z.boolean().optional().default(false),
   // Display-only extras the admin names themselves; the semantic flags above
   // are separate columns because pricing and catalogue queries read them.
   features: z
@@ -134,6 +135,7 @@ export async function POST(req: Request) {
       isActive: data.isActive,
       isFeatured: data.isFeatured,
       allowBatchDiscount: data.allowBatchDiscount,
+      isFragile: data.isFragile,
       features: data.features,
       images: {
         create: data.images.map((url, i) => ({ url, sortOrder: i, alt: data.name })),

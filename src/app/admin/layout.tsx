@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { requireAdmin } from '@/lib/auth';
 import GlobalSearch from '@/components/admin/GlobalSearch';
 
 const NAV = [
@@ -13,7 +14,8 @@ const NAV = [
   { href: '/admin/settings', label: 'تنظیمات' },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  await requireAdmin();
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 print:max-w-full print:p-0 print:m-0">
       <div className="grid gap-8 lg:grid-cols-12 print:block">

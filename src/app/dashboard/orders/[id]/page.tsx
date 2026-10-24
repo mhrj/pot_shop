@@ -224,6 +224,7 @@ export default async function CustomerOrderPage({ params }: Props) {
                       {isBundle && (
                         <BundleDetailsAccordion
                           bundleSize={bundleSize}
+                          bundleCount={displayQty}
                           colorData={item.colorData}
                           productBundleItems={item.product?.bundleItems}
                         />

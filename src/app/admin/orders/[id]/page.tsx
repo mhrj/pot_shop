@@ -56,7 +56,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
   const currentIndex = (TIMELINE as readonly string[]).indexOf(status);
 
   return (
-    <div className="space-y-6 print:space-y-2 print:max-w-full print:p-0 print:m-0">
+    <div className="space-y-6 print:space-y-2 print:max-w-full print:p-0 print:m-0 invoice-container">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-soil-900/10 pb-5 print:pb-2 print:gap-2">
         <div>
           <div className="flex items-center gap-2">
@@ -76,11 +76,11 @@ export default async function AdminOrderDetailPage({ params }: Props) {
       </div>
 
       {isCanceled ? (
-        <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700 print:mt-2 print:p-2">
+        <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700 print:mt-1 print:p-1.5 print:text-xs">
           این سفارش لغو شده است.
         </p>
       ) : (
-        <ol className="grid gap-3 grid-cols-2 sm:grid-cols-4 print:flex print:flex-row print:justify-between print:gap-2 print:p-1.5 print:rounded-lg print:border print:border-soil-900/10 print:bg-dust-50/50 print:text-xs">
+        <ol className="grid gap-3 grid-cols-2 sm:grid-cols-4 print:hidden">
           {TIMELINE.map((step, index) => {
             const isCurrent = index === currentIndex;
             const isDone = currentIndex >= 0 && index < currentIndex;
@@ -276,6 +276,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                       {isBundle && (
                         <BundleDetailsAccordion
                           bundleSize={bundleSize}
+                          bundleCount={displayQty}
                           colorData={i.colorData}
                           productBundleItems={i.product?.bundleItems}
                         />

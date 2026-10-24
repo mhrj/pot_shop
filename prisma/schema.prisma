@@ -126,6 +126,7 @@ model Product {
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)
   allowBatchDiscount Boolean @default(true)
+  isFragile     Boolean  @default(false)
 
   // Admin-defined display-only features, stored as [{ label, enabled }].
   // JSON rather than a table because the shopkeeper owns the whole list: it is

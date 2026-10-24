@@ -84,6 +84,7 @@ export default async function NewProductPage() {
             isActive: true,
             isFeatured: false,
             allowBatchDiscount: true,
+            isFragile: false,
             features: [],
             images: [''],
             tagIds: [],

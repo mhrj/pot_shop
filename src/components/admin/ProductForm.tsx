@@ -34,6 +34,7 @@ export type ProductFormData = {
   isActive: boolean;
   isFeatured: boolean;
   allowBatchDiscount?: boolean;
+  isFragile?: boolean;
   features: ProductFeature[];
   images: string[];
   tagIds: string[];
@@ -98,9 +99,11 @@ export default function ProductForm({
     categoryId: initial.categoryId ?? '',
     unitsPerCarton: 1,
     bundleSize: initial.bundleSize ?? 1,
+    minOrderQuantity: initial.minOrderQuantity ?? 1,
     bundleItems: initial.bundleItems ?? [],
     colorOptions: initial.colorOptions ?? [],
     allowBatchDiscount: initial.allowBatchDiscount ?? true,
+    isFragile: initial.isFragile ?? false,
   });
 
   const initialIsBundle = Boolean(
@@ -443,6 +446,7 @@ export default function ProductForm({
             : null,
         colorOptions: form.colorOptions ?? [],
         allowBatchDiscount: form.allowBatchDiscount ?? true,
+        isFragile: form.isFragile ?? false,
         tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
       };
@@ -706,6 +710,15 @@ export default function ProductForm({
               className="accent-flora-700"
             />
             نمایش در صفحه اصلی
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={form.isFragile ?? false}
+              onChange={(e) => update('isFragile', e.target.checked)}
+              className="accent-flora-700"
+            />
+            کالای شکستنی (Fragile)
           </label>
         </div>
 

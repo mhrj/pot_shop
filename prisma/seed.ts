@@ -72,6 +72,10 @@ async function main() {
     { name: 'سفال', slug: 'clay' },
     { name: 'سرامیک', slug: 'ceramic' },
     { name: 'بتن', slug: 'concrete' },
+    { name: 'گلدان و دکور', slug: 'pots-decor' },
+    { name: 'خاک و بستر کشت', slug: 'soil-growth' },
+    { name: 'لوازم نگهداری', slug: 'tools-care' },
+    { name: 'انتخاب محصول', slug: 'product-guide' },
   ];
 
   const categoryMap = new Map<string, string>();

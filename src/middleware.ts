@@ -17,6 +17,28 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const session = token ? await verifySessionToken(token) : null;
 
+  const isMaintenance = process.env.MAINTENANCE_MODE === 'true';
+  const hasBypass = req.cookies.get('bypass')?.value === 'true' || session?.role === 'ADMIN';
+
+  // Maintenance mode protection
+  if (isMaintenance) {
+    const isMaintenancePage = pathname === '/maintenance';
+    const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/');
+    const isLoginRoute = pathname === '/login';
+
+    if (!hasBypass && !isMaintenancePage && !isAdminRoute && !isLoginRoute) {
+      const url = req.nextUrl.clone();
+      url.pathname = '/maintenance';
+      url.search = '';
+      return NextResponse.redirect(url);
+    }
+  } else if (pathname === '/maintenance') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/';
+    url.search = '';
+    return NextResponse.redirect(url);
+  }
+
   const isProtected =
     PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`)) &&
     !PUBLIC_CHECKOUT.some((p) => pathname === p || pathname.startsWith(`${p}/`));

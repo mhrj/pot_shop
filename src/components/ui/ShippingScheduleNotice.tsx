@@ -38,7 +38,7 @@ export default function ShippingScheduleNotice({
             <span>برنامه ارسال سفارشات:</span>
           </div>
           <p className="text-amber-800/90 leading-6">
-            سفارشهای شما تنها در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال میشوند. سفارشهایی که تا ساعت <strong>۱۰ صبح</strong> این روزها ثبت شوند، در همان روز تحویل پست داده میشوند.
+            سفارش‌های شما تنها در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال می‌شوند. سفارش‌هایی که تا ساعت <strong>۱۰ صبح</strong> این روزها ثبت شوند، در همان روز تحویل پست داده می‌شوند.
           </p>
         </div>
       </div>
