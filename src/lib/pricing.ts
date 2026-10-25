@@ -67,9 +67,13 @@ export const DEFAULT_TIERS: Tier[] = [
   { minQuantity: 20, unitPriceToman: 105000, label: 'عمده' },
 ];
 
-export function resolveTier(tiers: Tier[], qty: number): Tier {
-  if (!tiers.length) {
-    return { minQuantity: 1, unitPriceToman: 0, label: 'خرده' };
+export function resolveTier(
+  tiers: Tier[] | null | undefined,
+  qty: number,
+  fallbackUnitPrice: number = 0,
+): Tier {
+  if (!tiers || !tiers.length) {
+    return { minQuantity: 1, unitPriceToman: fallbackUnitPrice, label: 'تک‌فروشی' };
   }
   const sorted = [...tiers].sort((a, b) => a.minQuantity - b.minQuantity);
   let active = sorted[0];
@@ -77,11 +81,12 @@ export function resolveTier(tiers: Tier[], qty: number): Tier {
   return active;
 }
 
-export function resolveUnitPrice(tiers: Tier[], qty: number): number {
-  return resolveTier(tiers, qty).unitPriceToman;
+export function resolveUnitPrice(tiers: Tier[] | null | undefined, qty: number, fallbackUnitPrice = 0): number {
+  return resolveTier(tiers, qty, fallbackUnitPrice).unitPriceToman;
 }
 
-export function nextTierHint(tiers: Tier[], qty: number) {
+export function nextTierHint(tiers: Tier[] | null | undefined, qty: number) {
+  if (!tiers || !tiers.length) return null;
   const sorted = [...tiers].sort((a, b) => a.minQuantity - b.minQuantity);
   const current = resolveTier(sorted, qty);
   const next = sorted.find((t) => t.minQuantity > qty);
@@ -158,7 +163,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
       lineWeightGrams,
       unitsPerCarton: product.unitsPerCarton ?? 1,
       cartons,
-      tierLabel: 'خرده',
+      tierLabel: 'تک‌فروشی',
       nextTier: null,
       colorData: colorData ?? null,
     };
@@ -166,10 +171,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
 
   // With allowBatchDiscount enabled:
   if (isBundle) {
-    const tier = resolveTier(
-      tiers.length ? tiers : [{ minQuantity: 1, unitPriceToman: product.basePriceToman }],
-      bundleCount,
-    );
+    const tier = resolveTier(tiers, bundleCount, product.basePriceToman);
     const packagePrice = tier.unitPriceToman;
     const lineTotalToman = packagePrice * bundleCount;
     const unitToman = Math.round(packagePrice / bundleSize);
@@ -202,10 +204,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
     };
   }
 
-  const tier = resolveTier(
-    tiers.length ? tiers : [{ minQuantity: 1, unitPriceToman: product.basePriceToman }],
-    qty,
-  );
+  const tier = resolveTier(tiers, qty, product.basePriceToman);
 
   const unitToman = tier.unitPriceToman;
   const lineTotalToman = unitToman * qty;

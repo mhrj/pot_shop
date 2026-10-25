@@ -250,6 +250,42 @@ export default function ProductForm({
     }
   }
 
+  function handleAddTier() {
+    setForm((f) => {
+      const sorted = [...f.tiers].sort((a, b) => a.minQuantity - b.minQuantity);
+      const lastTier = sorted[sorted.length - 1];
+      const nextMinQty = lastTier
+        ? lastTier.minQuantity < 5
+          ? 5
+          : lastTier.minQuantity < 20
+          ? 20
+          : lastTier.minQuantity + 10
+        : 1;
+      const lastPrice = lastTier ? lastTier.unitPriceToman : f.basePriceToman;
+      const nextPrice = Math.max(1000, Math.round(lastPrice * 0.9));
+      return {
+        ...f,
+        tiers: [
+          ...f.tiers,
+          { minQuantity: nextMinQty, unitPriceToman: nextPrice, label: '' },
+        ],
+      };
+    });
+    if (fieldErrors.tiers) {
+      setFieldErrors((prev) => ({ ...prev, tiers: '' }));
+    }
+  }
+
+  function handleRemoveTier(index: number) {
+    setForm((f) => ({
+      ...f,
+      tiers: f.tiers.filter((_, i) => i !== index),
+    }));
+    if (fieldErrors.tiers) {
+      setFieldErrors((prev) => ({ ...prev, tiers: '' }));
+    }
+  }
+
   // One-click add: every feature arrives already enabled. There is no per-row
   // toggle any more, so a duplicate label is silently ignored rather than
   // flipping an existing chip's state.
@@ -390,13 +426,21 @@ export default function ProductForm({
       newErrors.images = 'حداقل یک تصویر برای محصول الزامی است';
     }
 
-    if (!form.tiers.some((t) => t.minQuantity === 1)) {
-      newErrors.tiers = 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود';
-    } else if (
-      (form.allowBatchDiscount ?? true) &&
-      form.tiers.some((t) => t.minQuantity > 1 && t.unitPriceToman > form.basePriceToman)
-    ) {
-      newErrors.tiers = 'خطا: قیمت پله‌های بعدی باید کمتر از قیمت پایه باشد';
+    if (form.allowBatchDiscount ?? true) {
+      if (!form.tiers.length) {
+        newErrors.tiers = 'حداقل یک پله قیمت الزامی است';
+      } else if (!form.tiers.some((t) => t.minQuantity === 1)) {
+        newErrors.tiers = 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود';
+      } else {
+        const quantities = form.tiers.map((t) => t.minQuantity);
+        if (new Set(quantities).size !== quantities.length) {
+          newErrors.tiers = 'تعداد حداقل هر پله باید یکتا باشد (تکراری نباشد)';
+        } else if (
+          form.tiers.some((t) => t.minQuantity > 1 && t.unitPriceToman > form.basePriceToman)
+        ) {
+          newErrors.tiers = 'خطا: قیمت پله‌های بعدی باید کمتر از قیمت پایه باشد';
+        }
+      }
     }
 
     if (isBundleActive) {
@@ -449,6 +493,15 @@ export default function ProductForm({
         isFragile: form.isFragile ?? false,
         tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
+        tiers: (form.allowBatchDiscount ?? true)
+          ? form.tiers
+              .map((t) => ({
+                minQuantity: Math.max(1, Math.floor(Number(t.minQuantity)) || 1),
+                unitPriceToman: Math.max(0, Math.floor(Number(t.unitPriceToman)) || 0),
+                label: t.label?.trim() || '',
+              }))
+              .sort((a, b) => a.minQuantity - b.minQuantity)
+          : [],
       };
       const res = await fetch(url, {
         method: isNew ? 'POST' : 'PATCH',
@@ -1321,7 +1374,17 @@ export default function ProductForm({
             <input
               type="checkbox"
               checked={form.allowBatchDiscount ?? true}
-              onChange={(e) => update('allowBatchDiscount', e.target.checked)}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                update('allowBatchDiscount', checked);
+                if (!checked && fieldErrors.tiers) {
+                  setFieldErrors((prev) => {
+                    const next = { ...prev };
+                    delete next.tiers;
+                    return next;
+                  });
+                }
+              }}
               className="accent-flora-700 size-4"
             />
             فعالسازی تخفیف پلهای (عمده)
@@ -1349,14 +1412,26 @@ export default function ProductForm({
 
         {(form.allowBatchDiscount ?? true) && (
           <div className="pt-2">
-            <div className="mb-3 space-y-1">
-              <h3 className="text-xs font-bold text-soil-900">
-                پله‌های قیمت عمده و بسته‌ای (تومان)
-              </h3>
-              <p className="text-[11px] text-soil-700/60">
-                تعیین حداقل تعداد و قیمت واحد برای هر سطح خرید
-              </p>
-              <p className="mt-1 text-xs font-semibold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200/60 inline-block">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="space-y-1">
+                <h3 className="text-xs font-bold text-soil-900">
+                  پله‌های قیمت عمده و بسته‌ای (تومان)
+                </h3>
+                <p className="text-[11px] text-soil-700/60">
+                  تعیین حداقل تعداد و قیمت واحد برای هر سطح خرید
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddTier}
+                className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer"
+              >
+                + افزودن پله جدید
+              </button>
+            </div>
+
+            <div className="mb-3">
+              <p className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200/60 inline-block">
                 💡 قیمت‌ها باید با افزایش تعداد، کاهش پیدا کنند (تخفیف عمده).
               </p>
             </div>
@@ -1369,43 +1444,108 @@ export default function ProductForm({
             )}
 
             <div className="space-y-3">
-              {form.tiers.map((t, i) => (
-                <div key={i} className="grid gap-3 sm:grid-cols-3">
-                  <label className="block">
-                    <span className={labelCls}>حداقل تعداد</span>
-                    <input
-                      type="number"
-                      value={t.minQuantity}
-                      onChange={(e) => updateTier(i, { minQuantity: Number(e.target.value) })}
-                      className={inputCls}
-                    />
-                  </label>
-                  <label className="block">
-                    <span className={labelCls}>
-                      {isBundleActive ? 'قیمت هر بسته در این پله' : 'قیمت هر عدد'}
-                    </span>
-                    <input
-                      type="number"
-                      value={t.unitPriceToman}
-                      onChange={(e) => updateTier(i, { unitPriceToman: Number(e.target.value) })}
-                      className={inputCls}
-                    />
-                    {t.unitPriceToman >= 1000 && (
-                      <span className="block mt-1 text-[11px] text-soil-700/60 font-medium">
-                        ({numberToWordsFa(t.unitPriceToman)} تومان)
-                      </span>
+              {form.tiers.map((t, i) => {
+                const discountPercent =
+                  form.basePriceToman > 0
+                    ? Math.round(((form.basePriceToman - t.unitPriceToman) / form.basePriceToman) * 100)
+                    : 0;
+                const isOverBase = form.basePriceToman > 0 && t.unitPriceToman > form.basePriceToman;
+
+                return (
+                  <div
+                    key={i}
+                    className="flex flex-col gap-3 rounded-xl border border-soil-900/10 bg-dust-50/50 p-4 sm:flex-row sm:items-start"
+                  >
+                    <div className="grid flex-1 gap-3 sm:grid-cols-3">
+                      <label className="block">
+                        <span className={labelCls}>حداقل تعداد</span>
+                        <input
+                          type="number"
+                          min={1}
+                          value={t.minQuantity}
+                          onChange={(e) =>
+                            updateTier(i, {
+                              minQuantity: Math.max(1, Math.floor(Number(e.target.value) || 1)),
+                            })
+                          }
+                          className={inputCls}
+                        />
+                      </label>
+                      <label className="block">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className={labelCls}>
+                            {isBundleActive ? 'قیمت هر بسته در این پله' : 'قیمت هر عدد'}
+                          </span>
+                          {form.basePriceToman > 0 && (
+                            <span
+                              className={`text-xs font-bold ${
+                                isOverBase
+                                  ? 'text-red-600'
+                                  : discountPercent > 0
+                                  ? 'text-emerald-700'
+                                  : 'text-soil-700/60'
+                              }`}
+                            >
+                              ({toFa(discountPercent)}٪ تخفیف)
+                            </span>
+                          )}
+                        </div>
+                        <input
+                          type="number"
+                          min={0}
+                          step={1000}
+                          value={t.unitPriceToman}
+                          onChange={(e) =>
+                            updateTier(i, {
+                              unitPriceToman: Math.max(0, Math.floor(Number(e.target.value) || 0)),
+                            })
+                          }
+                          className={inputCls}
+                        />
+                        {t.unitPriceToman >= 1000 && (
+                          <span className="block mt-1 text-[11px] text-soil-700/60 font-medium">
+                            ({numberToWordsFa(t.unitPriceToman)} تومان)
+                          </span>
+                        )}
+                      </label>
+                      <label className="block">
+                        <span className={labelCls}>برچسب</span>
+                        <input
+                          value={t.label}
+                          placeholder="مثلاً: خرده، بسته‌ای، عمده"
+                          onChange={(e) => updateTier(i, { label: e.target.value })}
+                          className={inputCls}
+                        />
+                      </label>
+                    </div>
+
+                    {form.tiers.length > 1 && (
+                      <div className="pt-1 sm:pt-6 sm:self-start">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTier(i)}
+                          className="inline-flex items-center gap-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-xs font-bold text-red-700 transition hover:bg-red-100 cursor-pointer"
+                        >
+                          <svg
+                            className="size-3.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                          <span>حذف</span>
+                        </button>
+                      </div>
                     )}
-                  </label>
-                  <label className="block">
-                    <span className={labelCls}>برچسب</span>
-                    <input
-                      value={t.label}
-                      onChange={(e) => updateTier(i, { label: e.target.value })}
-                      className={inputCls}
-                    />
-                  </label>
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
             <FormError message={fieldErrors.tiers} />
           </div>

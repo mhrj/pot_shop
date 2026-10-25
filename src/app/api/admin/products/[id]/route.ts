@@ -16,15 +16,22 @@ const tierSchema = z.object({
 
 const tiersSchema = z
   .array(tierSchema)
-  .min(1, 'حداقل یک پله قیمت الزامی است')
-  .max(5, 'حداکثر ۵ پله قیمت مجاز است')
-  // The pricing engine falls back to the *lowest* tier when a quantity is below
-  // every threshold, so a catalogue whose first tier starts at 5 would sell
-  // single units at the 5-unit price — silently under the product's own base
-  // price. A tier at 1 is what makes a single unit's price explicit.
-  .refine((tiers) => tiers.some((t) => t.minQuantity === 1), {
+  .max(15, 'حداکثر ۱۵ پله قیمت مجاز است')
+  .default([])
+  // A tier at 1 is what makes a single unit's price explicit when tiers are configured.
+  .refine((tiers) => tiers.length === 0 || tiers.some((t) => t.minQuantity === 1), {
     message: 'یکی از پله‌های قیمت باید از تعداد ۱ شروع شود',
-  });
+  })
+  .refine(
+    (tiers) => {
+      if (tiers.length === 0) return true;
+      const qtys = tiers.map((t) => t.minQuantity);
+      return new Set(qtys).size === qtys.length;
+    },
+    {
+      message: 'تعداد حداقل هر پله باید یکتا باشد (تکراری نباشد)',
+    },
+  );
 
 const colorOptionSchema = z.union([
   z.object({

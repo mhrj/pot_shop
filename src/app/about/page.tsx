@@ -24,18 +24,6 @@ export const metadata: Metadata = {
 export default async function AboutPage() {
   const content = await getContentMap();
 
-  // `toFa` is applied to the fields a shopkeeper types as numbers — a phone
-  // number, opening hours, a street address — so ASCII digits an admin enters
-  // render as Persian ones. It is deliberately *not* applied to the email: an
-  // address like `shop2024@example.com` would come back with mangled digits.
-  const contact = [
-    { label: 'نشانی', value: toFa(content.address.body) },
-    { label: 'تلفن', value: toFa(content.phone.body), ltr: true },
-    { label: 'ایمیل', value: content.email.body.trim(), ltr: true },
-    { label: 'ساعات کاری', value: toFa(content.hours.body) },
-    // A key the admin has cleared should disappear, not leave a labelled blank.
-  ].filter((row) => row.value.length > 0);
-
   return (
     <Container className="py-12 lg:py-16">
       <p className="text-xs font-bold text-flora-700">پات استور</p>
@@ -78,31 +66,48 @@ export default async function AboutPage() {
           })}
       </div>
 
-      {contact.length > 0 && (
-        <section className="mt-12 max-w-3xl rounded-pot border border-soil-900/10 bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
-          <h2 className="text-lg font-black text-soil-900">راه‌های تماس</h2>
-          <p className="mt-2 text-xs text-soil-700/70">
-            برای سفارش عمده، مشاوره انتخاب گلدان یا پیگیری سفارش، از این راه‌ها در دسترس ما هستید.
-          </p>
+      <section className="mt-12 w-full max-w-3xl rounded-pot border border-soil-900/10 bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
+        <h2 className="text-xl font-black text-soil-900">راههای تماس</h2>
+        <p className="mt-2 text-sm text-soil-700/70">
+          برای سفارش عمده، مشاوره انتخاب گلدان یا پیگیری سفارش، از این راهها در دسترس ما هستید.
+        </p>
 
-          <dl className="mt-6 grid gap-6 sm:grid-cols-2">
-            {contact.map((row) => (
-              <div key={row.label}>
-                <dt className="text-xs font-bold text-soil-700/60">{row.label}</dt>
-                {/* `dir="ltr"` on the value only: a phone number or an email is
-                    read left-to-right even in an RTL page, and without it the
-                    trailing characters jump to the wrong end. */}
-                <dd
-                  className="mt-1.5 font-bold text-soil-900"
-                  dir={row.ltr ? 'ltr' : undefined}
-                >
-                  {row.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      )}
+        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+          
+          {/* Address */}
+          <div className="flex flex-col text-right">
+            <span className="text-xs font-bold text-soil-700/60 mb-1">نشانی</span>
+            <span className="text-sm font-bold text-soil-900 leading-6">
+              {content.address.body}
+            </span>
+          </div>
+
+          {/* Phone */}
+          <div className="flex flex-col text-right">
+            <span className="text-xs font-bold text-soil-700/60 mb-1">تلفن</span>
+            <span className="text-sm font-bold text-soil-900" dir="ltr">
+              {toFa(content.phone.body)}
+            </span>
+          </div>
+
+          {/* Email */}
+          <div className="flex flex-col text-right">
+            <span className="text-xs font-bold text-soil-700/60 mb-1">ایمیل</span>
+            <span className="text-sm font-bold text-soil-900" dir="ltr">
+              {content.email.body}
+            </span>
+          </div>
+
+          {/* Hours */}
+          <div className="flex flex-col text-right">
+            <span className="text-xs font-bold text-soil-700/60 mb-1">ساعات کاری</span>
+            <span className="text-sm font-bold text-soil-900">
+              {toFa(content.hours.body)}
+            </span>
+          </div>
+
+        </div>
+      </section>
     </Container>
   );
 }

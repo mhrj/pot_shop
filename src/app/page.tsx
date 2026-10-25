@@ -56,11 +56,112 @@ async function getLandingImages() {
   >;
 }
 
+async function getWholesaleHighlight() {
+  const products = await prisma.product.findMany({
+    where: {
+      isActive: true,
+      allowBatchDiscount: true,
+      tiers: { some: {} },
+    },
+    select: {
+      id: true,
+      name: true,
+      basePriceToman: true,
+      tiers: {
+        orderBy: { minQuantity: 'asc' },
+        select: {
+          minQuantity: true,
+          unitPriceToman: true,
+          label: true,
+        },
+      },
+    },
+  });
+
+  let maxDiscount = 0;
+  let maxDiscountMinQty = 20;
+  let bestProduct: (typeof products)[number] | null = null;
+  let bestProductMaxDiscount = 0;
+
+  for (const product of products) {
+    if (!product.basePriceToman || product.basePriceToman <= 0) continue;
+
+    let productHighestDiscount = 0;
+    for (const tier of product.tiers) {
+      if (tier.minQuantity > 1 && tier.unitPriceToman < product.basePriceToman) {
+        const discountPercent = Math.round(
+          ((product.basePriceToman - tier.unitPriceToman) / product.basePriceToman) * 100,
+        );
+        if (discountPercent > maxDiscount) {
+          maxDiscount = discountPercent;
+          maxDiscountMinQty = tier.minQuantity;
+        }
+        if (discountPercent > productHighestDiscount) {
+          productHighestDiscount = discountPercent;
+        }
+      }
+    }
+
+    if (productHighestDiscount > bestProductMaxDiscount && product.tiers.length > 1) {
+      bestProductMaxDiscount = productHighestDiscount;
+      bestProduct = product;
+    }
+  }
+
+  // If no product with valid tier discounts exists in the store
+  if (!bestProduct || bestProductMaxDiscount <= 0 || !bestProduct.tiers.length) {
+    return {
+      hasWholesaleTiers: false,
+      maxDiscount: 0,
+      maxDiscountMinQty: 0,
+      sampleProductName: null,
+      tableRows: [] as Array<{ q: string; p: number; d: string }>,
+    };
+  }
+
+  const sampleBasePrice = bestProduct.basePriceToman;
+  const sampleTiers = bestProduct.tiers;
+
+  // Build dynamic table rows based on tier data of top discounted product
+  const tableRows = sampleTiers.map((tier, idx) => {
+    const nextTier = sampleTiers[idx + 1];
+    let qtyLabel = '';
+    if (!nextTier) {
+      qtyLabel = `${toFa(tier.minQuantity)} به بالا`;
+    } else if (nextTier.minQuantity - 1 === tier.minQuantity) {
+      qtyLabel = `${toFa(tier.minQuantity)} عدد`;
+    } else {
+      qtyLabel = `${toFa(tier.minQuantity)} تا ${toFa(nextTier.minQuantity - 1)}`;
+    }
+
+    const discountPercent =
+      sampleBasePrice > 0
+        ? Math.round(((sampleBasePrice - tier.unitPriceToman) / sampleBasePrice) * 100)
+        : 0;
+    const discountText = discountPercent > 0 ? `${toFa(discountPercent)}٪` : '—';
+
+    return {
+      q: qtyLabel,
+      p: tier.unitPriceToman,
+      d: discountText,
+    };
+  });
+
+  return {
+    hasWholesaleTiers: true,
+    maxDiscount,
+    maxDiscountMinQty,
+    sampleProductName: bestProduct.name,
+    tableRows,
+  };
+}
+
 export default async function HomePage() {
-  const [products, landing, content] = await Promise.all([
+  const [products, landing, content, wholesaleHighlight] = await Promise.all([
     getFeatured(),
     getLandingImages(),
     getContentMap(),
+    getWholesaleHighlight(),
   ]);
   const heroImage = landing.hero;
   const journeyImage = landing.journey;
@@ -273,7 +374,9 @@ export default async function HomePage() {
               </p>
               <ul className="mt-8 space-y-4 text-sm">
                 {[
-                  'تخفیف تا ۳۰٪ روی سفارش‌های بالای ۲۰ عدد',
+                  wholesaleHighlight.maxDiscount > 0
+                    ? `تخفیف تا ${toFa(wholesaleHighlight.maxDiscount)}٪ روی سفارش‌های بالای ${toFa(wholesaleHighlight.maxDiscountMinQty)} عدد`
+                    : 'قیمت‌گذاری شفاف و بهینه برای سفارش‌های خرد و عمده',
                   'بسته‌بندی استاندارد، ایمن و مقاوم',
                   'فاکتور رسمی و امکان تسویه اعتباری',
                   'پشتیبانی اختصاصی و پیگیری سفارش',
@@ -286,40 +389,55 @@ export default async function HomePage() {
               </ul>
             </div>
 
-            <div className="rounded-pot bg-flora-950/60 p-6 backdrop-blur">
-              <table className="w-full text-sm">
-                <caption className="sr-only">ماتریس نمونه قیمت پله‌ای</caption>
-                <thead>
-                  <tr className="text-flora-100/60">
-                    <th scope="col" className="pb-3 text-start font-medium">
-                      تعداد
-                    </th>
-                    <th scope="col" className="pb-3 text-start font-medium">
-                      قیمت هر عدد
-                    </th>
-                    <th scope="col" className="pb-3 text-start font-medium">
-                      تخفیف
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-flora-100/10">
-                  {[
-                    { q: '۱ تا ۴', p: 150000, d: '—' },
-                    { q: '۵ تا ۱۹', p: 127500, d: '۱۵٪' },
-                    { q: '۲۰ به بالا', p: 105000, d: '۳۰٪' },
-                  ].map((r) => (
-                    <tr key={r.q}>
-                      <td className="py-4 text-flora-100/90">{r.q}</td>
-                      <td className="py-4 font-bold text-white">{formatToman(r.p)}</td>
-                      <td className="py-4 text-flora-300">{r.d}</td>
+            {wholesaleHighlight.hasWholesaleTiers ? (
+              <div className="rounded-pot bg-flora-950/60 p-6 backdrop-blur">
+                <table className="w-full text-sm">
+                  <caption className="sr-only">ماتریس نمونه قیمت پله‌ای</caption>
+                  <thead>
+                    <tr className="text-flora-100/60">
+                      <th scope="col" className="pb-3 text-start font-medium">
+                        تعداد
+                      </th>
+                      <th scope="col" className="pb-3 text-start font-medium">
+                        قیمت هر عدد
+                      </th>
+                      <th scope="col" className="pb-3 text-start font-medium">
+                        تخفیف
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              <p className="mt-5 text-[11px] leading-6 text-flora-100/50">
-                * قیمت‌ها نمونه است. ماتریس واقعی هر محصول در صفحه آن قابل مشاهده است.
-              </p>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-flora-100/10">
+                    {wholesaleHighlight.tableRows.map((r) => (
+                      <tr key={r.q}>
+                        <td className="py-4 text-flora-100/90">{r.q}</td>
+                        <td className="py-4 font-bold text-white">{formatToman(r.p)}</td>
+                        <td className="py-4 text-flora-300">{r.d}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="mt-5 text-[11px] leading-6 text-flora-100/50">
+                  * قیمت‌ها {wholesaleHighlight.sampleProductName ? `نمونه بر اساس «${wholesaleHighlight.sampleProductName}» است` : 'نمونه است'}. ماتریس واقعی هر محصول در صفحه آن قابل مشاهده است.
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-pot bg-flora-950/60 p-8 backdrop-blur text-center flex flex-col items-center justify-center min-h-64">
+                <span className="text-3xl mb-3">📞</span>
+                <p className="text-base font-bold text-white mb-2">
+                  برای اطلاع از قیمت‌های عمده با ما تماس بگیرید
+                </p>
+                <p className="text-xs text-flora-100/70 mb-6 leading-6 max-w-xs">
+                  امکان استعلام قیمت بر اساس تیراژ اختصاصی، بسته‌بندی سفارشی و صدور پیش‌فاکتور رسمی
+                </p>
+                <Link
+                  href="#wholesale-inquiry"
+                  className="inline-flex items-center gap-2 rounded-full bg-flora-500/25 border border-flora-300/30 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-flora-500/40"
+                >
+                  <span>استعلام و مشاوره عمده</span>
+                  <span>←</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </Container>
@@ -330,7 +448,12 @@ export default async function HomePage() {
     <main>
       <DustToFlora
         hero={hero}
-        trustBar={<TrustBar />}
+        trustBar={
+          <TrustBar
+            maxDiscount={wholesaleHighlight.maxDiscount}
+            maxDiscountMinQty={wholesaleHighlight.maxDiscountMinQty}
+          />
+        }
         whyChooseUs={<WhyChooseUs />}
         catalog={catalog}
         journey={journey}
