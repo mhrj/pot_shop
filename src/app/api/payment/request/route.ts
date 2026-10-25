@@ -146,6 +146,7 @@ export async function POST(req: Request) {
         sku: i.product.sku,
         name: i.product.name,
         basePriceToman: i.product.basePriceToman,
+        salePriceToman: i.product.salePriceToman,
         weightGrams: i.product.weightGrams,
         unitsPerCarton: i.product.unitsPerCarton,
         bundleSize: i.product.bundleSize,

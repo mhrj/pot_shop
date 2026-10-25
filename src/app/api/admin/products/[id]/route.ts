@@ -73,6 +73,12 @@ const schema = z.object({
   minOrderQuantity: z.number({ invalid_type_error: 'حداقل سفارش باید عدد باشد' }).int('حداقل سفارش باید عدد صحیح باشد').min(1, 'حداقل سفارش باید حداقل ۱ باشد').default(1),
   bundleItems: z.array(bundleItemSchema).max(50, 'حداکثر ۵۰ آیتم در بسته مجاز است').optional().nullable(),
   basePriceToman: z.number({ invalid_type_error: 'قیمت پایه باید عدد باشد' }).int('قیمت پایه باید عدد صحیح باشد').min(1000, 'قیمت پایه باید حداقل ۱,۰۰۰ تومان باشد'),
+  salePriceToman: z
+    .number({ invalid_type_error: 'قیمت با تخفیف ویژه باید عدد باشد' })
+    .int('قیمت با تخفیف ویژه باید عدد صحیح باشد')
+    .min(1000, 'قیمت تخفیف ویژه باید حداقل ۱,۰۰۰ تومان باشد')
+    .optional()
+    .nullable(),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
   allowBatchDiscount: z.boolean().optional().default(true),
@@ -86,7 +92,13 @@ const schema = z.object({
   images: z.array(persistedImageUrlSchema, { required_error: 'حداقل یک تصویر الزامی است' }).min(1, 'حداقل یک تصویر الزامی است').max(10, 'حداکثر ۱۰ تصویر مجاز است'),
   tagIds: z.array(z.string().cuid('شناسه برچسب نامعتبر است')).max(20, 'حداکثر ۲۰ برچسب مجاز است').optional().default([]),
   tiers: tiersSchema,
-});
+}).refine(
+  (data) => !data.salePriceToman || data.salePriceToman < data.basePriceToman,
+  {
+    message: 'قیمت با تخفیف ویژه باید کمتر از قیمت پایه باشد',
+    path: ['salePriceToman'],
+  },
+);
 
 async function ensureAdmin() {
   // Re-reads the account so a demoted or deactivated admin loses API access
@@ -157,6 +169,7 @@ export async function PATCH(req: Request, { params }: Params) {
         minOrderQuantity: data.minOrderQuantity ?? 1,
         bundleItems: data.bundleItems && data.bundleItems.length > 0 ? (data.bundleItems as any) : null,
         basePriceToman: data.basePriceToman,
+        salePriceToman: data.salePriceToman && data.salePriceToman > 0 ? data.salePriceToman : null,
         isActive: data.isActive,
         isFeatured: data.isFeatured,
         allowBatchDiscount: data.allowBatchDiscount,

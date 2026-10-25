@@ -136,6 +136,7 @@ model Product {
   features      Json?
 
   basePriceToman Int
+  salePriceToman Int?
 
   images        ProductImage[]
   tiers         PriceTier[]

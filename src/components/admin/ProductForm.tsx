@@ -31,6 +31,7 @@ export type ProductFormData = {
   minOrderQuantity?: number;
   bundleItems: BundleItem[] | null;
   basePriceToman: number;
+  salePriceToman?: number | null;
   isActive: boolean;
   isFeatured: boolean;
   allowBatchDiscount?: boolean;
@@ -104,6 +105,7 @@ export default function ProductForm({
     colorOptions: initial.colorOptions ?? [],
     allowBatchDiscount: initial.allowBatchDiscount ?? true,
     isFragile: initial.isFragile ?? false,
+    salePriceToman: initial.salePriceToman ?? null,
   });
 
   const initialIsBundle = Boolean(
@@ -417,6 +419,12 @@ export default function ProductForm({
       newErrors.basePriceToman = 'قیمت پایه باید حداقل ۱,۰۰۰ تومان باشد';
     }
 
+    if (form.salePriceToman !== undefined && form.salePriceToman !== null && form.salePriceToman > 0) {
+      if (form.salePriceToman >= form.basePriceToman) {
+        newErrors.salePriceToman = 'قیمت با تخفیف ویژه باید کمتر از قیمت پایه باشد';
+      }
+    }
+
     if (form.stock < 0) {
       newErrors.stock = 'موجودی نمی‌تواند منفی باشد';
     }
@@ -491,6 +499,7 @@ export default function ProductForm({
         colorOptions: form.colorOptions ?? [],
         allowBatchDiscount: form.allowBatchDiscount ?? true,
         isFragile: form.isFragile ?? false,
+        salePriceToman: form.salePriceToman && form.salePriceToman > 0 ? form.salePriceToman : null,
         tagIds: [...new Set(form.tagIds)],
         images: form.images.filter((u) => u.trim().length > 0),
         tiers: (form.allowBatchDiscount ?? true)
@@ -1408,6 +1417,35 @@ export default function ProductForm({
             </span>
           )}
           <FormError message={fieldErrors.basePriceToman} />
+        </label>
+
+        <label className="block max-w-sm">
+          <span className={labelCls}>قیمت با تخفیف ویژه (اختیاری)</span>
+          <p className="mt-0.5 text-[11px] text-soil-700/60 leading-5">
+            اگر این فیلد را پر کنید، قیمت پایه به عنوان قیمت خط‌خورده و این قیمت به عنوان قیمت نهایی نمایش داده می‌شود.
+          </p>
+          <input
+            type="number"
+            value={form.salePriceToman ?? ''}
+            onChange={(e) => {
+              const val = e.target.value === '' ? null : Number(e.target.value);
+              update('salePriceToman', val);
+            }}
+            placeholder="مثلاً: ۹۵۰۰۰ (کمتر از قیمت پایه)"
+            min={1000}
+            className={fieldCls(fieldErrors.salePriceToman)}
+          />
+          {form.salePriceToman && form.salePriceToman >= 1000 && (
+            <span className="block mt-1.5 text-xs text-red-600 font-medium">
+              {formatToman(form.salePriceToman)} ({numberToWordsFa(form.salePriceToman)} تومان)
+              {form.basePriceToman > form.salePriceToman && (
+                <span className="ms-2 font-bold text-emerald-700">
+                  ({toFa(Math.round(((form.basePriceToman - form.salePriceToman) / form.basePriceToman) * 100))}٪ تخفیف)
+                </span>
+              )}
+            </span>
+          )}
+          <FormError message={fieldErrors.salePriceToman} />
         </label>
 
         {(form.allowBatchDiscount ?? true) && (

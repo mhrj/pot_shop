@@ -115,6 +115,12 @@ export default async function ProductPage({ params }: Params) {
         { k: 'واحد فروش', v: 'تک‌عددی' },
       ];
 
+  const hasSale =
+    typeof product.salePriceToman === 'number' &&
+    product.salePriceToman > 0 &&
+    product.salePriceToman < product.basePriceToman;
+  const effectiveBasePrice = hasSale ? product.salePriceToman! : product.basePriceToman;
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -125,8 +131,8 @@ export default async function ProductPage({ params }: Params) {
     offers: {
       '@type': 'AggregateOffer',
       priceCurrency: 'IRR',
-      lowPrice: (product.tiers.at(-1)?.unitPriceToman ?? product.basePriceToman) * 10,
-      highPrice: product.basePriceToman * 10,
+      lowPrice: Math.min(product.tiers.at(-1)?.unitPriceToman ?? effectiveBasePrice, effectiveBasePrice) * 10,
+      highPrice: effectiveBasePrice * 10,
       offerCount: product.tiers.length || 1,
       availability:
         product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
@@ -238,6 +244,7 @@ export default async function ProductPage({ params }: Params) {
                   id: product.id,
                   name: product.name,
                   basePriceToman: product.basePriceToman,
+                  salePriceToman: product.salePriceToman,
                   weightGrams: product.weightGrams,
                   unitsPerCarton: product.unitsPerCarton,
                   stock: product.stock,

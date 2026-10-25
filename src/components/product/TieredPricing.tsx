@@ -96,6 +96,7 @@ type Props = {
     id: string;
     name: string;
     basePriceToman: number;
+    salePriceToman?: number | null;
     weightGrams: number;
     unitsPerCarton?: number;
     stock: number;
@@ -262,30 +263,47 @@ export default function TieredPricing({
     }
   }, [isBundle, maxCount, count]);
 
+  const hasSale =
+    typeof product.salePriceToman === 'number' &&
+    product.salePriceToman > 0 &&
+    product.salePriceToman < product.basePriceToman;
+  const effectiveBasePrice = hasSale ? product.salePriceToman! : product.basePriceToman;
+
   const sorted = useMemo(
-    () => [...tiers].sort((a, b) => a.minQuantity - b.minQuantity),
-    [tiers],
+    () =>
+      [...tiers]
+        .sort((a, b) => a.minQuantity - b.minQuantity)
+        .map((t) => ({
+          ...t,
+          unitPriceToman: Math.min(t.unitPriceToman, effectiveBasePrice),
+        })),
+    [tiers, effectiveBasePrice],
   );
 
   const { packagePrice, unitEquivalent, total, savings, percent, tierLabel, hint } =
     useMemo(() => {
       const basePackagePrice = product.basePriceToman;
       if (!allowBatch) {
-        const pkgPrice = basePackagePrice;
+        const pkgPrice = effectiveBasePrice;
         const tot = pkgPrice * count;
+        const save = Math.max(0, (basePackagePrice - pkgPrice) * count);
+        const pct =
+          basePackagePrice > 0
+            ? Math.round(((basePackagePrice - pkgPrice) / basePackagePrice) * 100)
+            : 0;
         return {
           packagePrice: pkgPrice,
           unitEquivalent: Math.round(pkgPrice / bundleSize),
           total: tot,
-          savings: 0,
-          percent: 0,
-          tierLabel: 'خرده',
+          savings: save,
+          percent: pct,
+          tierLabel: hasSale ? 'تخفیف ویژه' : 'خرده',
           hint: null,
         };
       }
 
-      const t = resolveTier(sorted, count);
-      const pkgPrice = t.unitPriceToman || basePackagePrice;
+      const t = resolveTier(sorted, count, effectiveBasePrice);
+      const pkgPrice = Math.min(t.unitPriceToman || effectiveBasePrice, effectiveBasePrice);
       const tot = pkgPrice * count;
       const save = Math.max(0, (basePackagePrice - pkgPrice) * count);
       const pct =
@@ -299,10 +317,10 @@ export default function TieredPricing({
         total: tot,
         savings: save,
         percent: pct,
-        tierLabel: t.label ?? 'خرده',
+        tierLabel: t.label ?? (hasSale ? 'تخفیف ویژه' : 'خرده'),
         hint: nextTierHint(sorted, count),
       };
-    }, [allowBatch, count, sorted, product.basePriceToman, bundleSize]);
+    }, [allowBatch, count, sorted, product.basePriceToman, effectiveBasePrice, hasSale, bundleSize]);
 
   const totalUnits = isBundle ? count * bundleSize : count;
   const singleBundleWeight = isBundle
@@ -807,7 +825,17 @@ export default function TieredPricing({
               {isBundle ? 'قیمت پکیج (در این پله)' : 'قیمت هر عدد'}
             </dt>
             <dd className="mt-1">
-              <span className="text-xl font-black text-soil-900">
+              {hasSale && (
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="text-xs font-bold line-through text-soil-700/50">
+                    {formatToman(product.basePriceToman)}
+                  </span>
+                  <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-black text-white">
+                    تخفیف ویژه
+                  </span>
+                </div>
+              )}
+              <span className={`text-xl font-black ${hasSale ? 'text-red-600' : 'text-soil-900'}`}>
                 {formatToman(packagePrice)}
               </span>
               {packagePrice > 0 && (
@@ -825,6 +853,11 @@ export default function TieredPricing({
           <div>
             <dt className="text-soil-700/70">مبلغ کل</dt>
             <dd className="mt-1">
+              {hasSale && (
+                <div className="mb-1 text-xs font-bold line-through text-soil-700/50">
+                  {formatToman(product.basePriceToman * count)}
+                </div>
+              )}
               <span className="text-xl font-black text-flora-900">
                 {formatToman(total)}
               </span>
@@ -865,7 +898,7 @@ export default function TieredPricing({
           </div>
         </dl>
 
-        {allowBatch && savings > 0 && (
+        {(allowBatch || hasSale) && savings > 0 && (
           <motion.p
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
@@ -894,7 +927,7 @@ export default function TieredPricing({
           0,
         );
         const totalValue = itemSum * count;
-        const activePkgPrice = packagePrice || product.basePriceToman;
+        const activePkgPrice = packagePrice || effectiveBasePrice;
         const totalPackagePrice = activePkgPrice * count;
         const totalSavings = totalValue - totalPackagePrice;
 

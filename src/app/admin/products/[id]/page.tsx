@@ -95,6 +95,7 @@ export default async function EditProductPage({ params }: Props) {
             minOrderQuantity: product.minOrderQuantity,
             bundleItems: parseBundleItems(product.bundleItems, product.stock),
             basePriceToman: product.basePriceToman,
+            salePriceToman: product.salePriceToman,
             isActive: product.isActive,
             isFeatured: product.isFeatured,
             allowBatchDiscount: product.allowBatchDiscount,

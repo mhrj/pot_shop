@@ -11,6 +11,7 @@ export type ProductCardData = {
   material?: string | null;
   diameterCm?: number | null;
   basePriceToman: number;
+  salePriceToman?: number | null;
   stock: number;
   bundleSize?: number | null;
   allowBatchDiscount?: boolean;
@@ -31,17 +32,22 @@ export default function ProductCard({ product, className = '' }: Props) {
   const bundleSize = product.bundleSize && product.bundleSize > 1 ? product.bundleSize : 1;
   const isBundle = bundleSize > 1;
 
+  const hasSale =
+    typeof product.salePriceToman === 'number' &&
+    product.salePriceToman > 0 &&
+    product.salePriceToman < product.basePriceToman;
+
   // Tiers and pricing
   const tiers = product.tiers ?? [];
   const bestTier = tiers[0] ?? {
     minQuantity: 1,
-    unitPriceToman: product.basePriceToman,
+    unitPriceToman: hasSale ? product.salePriceToman! : product.basePriceToman,
     label: 'خرده',
   };
   const hasTierDiscount =
     product.allowBatchDiscount !== false &&
     tiers.length > 1 &&
-    tiers.some((t) => t.unitPriceToman < product.basePriceToman);
+    tiers.some((t) => t.unitPriceToman < (hasSale ? product.salePriceToman! : product.basePriceToman));
 
   // Color options count (only for single products, bundles pick colors on product page)
   const colors: ColorOption[] = !isBundle ? parseColorOptions(product.colorOptions, product.stock) : [];
@@ -80,7 +86,7 @@ export default function ProductCard({ product, className = '' }: Props) {
         {/* Gradient Overlay for contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/5 pointer-events-none" />
 
-        {/* Dynamic Badges (Start Corner) */}
+        {/* Dynamic Badges (Start Corner / Right in RTL) */}
         <div className="absolute top-2 start-2 md:top-3 md:start-3 flex flex-col gap-1 z-10">
           {isBundle && (
             <span className="rounded-lg md:rounded-xl bg-flora-900 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
@@ -94,12 +100,19 @@ export default function ProductCard({ product, className = '' }: Props) {
           )}
         </div>
 
-        {/* Out of Stock Badge (End Corner) */}
-        {soldOut && (
-          <span className="absolute top-2 end-2 md:top-3 end-3 rounded-lg md:rounded-xl bg-soil-900/85 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black backdrop-blur-xs z-10">
-            ناموجود
-          </span>
-        )}
+        {/* Top-left Badges (Left Corner) */}
+        <div className="absolute top-2 left-2 md:top-3 md:left-3 flex flex-col gap-1 z-10 items-start">
+          {hasSale && (
+            <span className="rounded-lg md:rounded-xl bg-red-500 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
+              تخفیف ویژه
+            </span>
+          )}
+          {soldOut && (
+            <span className="rounded-lg md:rounded-xl bg-soil-900/85 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black backdrop-blur-xs">
+              ناموجود
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Product Details Content */}
@@ -120,9 +133,20 @@ export default function ProductCard({ product, className = '' }: Props) {
         {/* Price & Label Row */}
         <div className="mt-3 md:mt-4 flex items-end justify-between gap-2 border-t border-soil-900/5 pt-2 md:pt-3">
           <div>
-            <div className="text-base md:text-lg font-black text-flora-900">
-              {formatToman(bestTier.unitPriceToman)}
-            </div>
+            {hasSale ? (
+              <div>
+                <span className="text-xs text-soil-700/50 line-through">
+                  {formatToman(product.basePriceToman)}
+                </span>
+                <div className="text-base md:text-lg font-black text-red-600">
+                  {formatToman(product.salePriceToman!)}
+                </div>
+              </div>
+            ) : (
+              <div className="text-base md:text-lg font-black text-flora-900">
+                {formatToman(bestTier.unitPriceToman)}
+              </div>
+            )}
             <div className="text-[10px] md:text-[11px] text-soil-700/60">
               {isBundle
                 ? `قیمت هر ست`

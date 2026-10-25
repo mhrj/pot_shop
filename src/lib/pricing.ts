@@ -111,6 +111,7 @@ type PriceInput = {
     sku?: string | null;
     name: string;
     basePriceToman: number;
+    salePriceToman?: number | null;
     weightGrams: number;
     unitsPerCarton?: number;
     bundleSize?: number;
@@ -129,6 +130,12 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
   const qty = Math.max(bundleSize, Math.floor(quantity));
   const allowBatch = product.allowBatchDiscount !== false;
 
+  const hasSale =
+    typeof product.salePriceToman === 'number' &&
+    product.salePriceToman > 0 &&
+    product.salePriceToman < product.basePriceToman;
+  const effectiveBasePrice = hasSale ? product.salePriceToman! : product.basePriceToman;
+
   const bundleCount = isBundle ? Math.max(1, Math.round(qty / bundleSize)) : qty;
   const baseUnitPrice = Math.round(product.basePriceToman / bundleSize);
   const listUnitToman = baseUnitPrice;
@@ -139,11 +146,15 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
   const cartons = Math.ceil(qty / Math.max(1, product.unitsPerCarton ?? 1));
   const bundleLabel = isBundle ? `ست ${toFa(bundleSize)} عددی` : null;
 
-  // If allowBatchDiscount is false, unit price is baseUnitPrice and user is charged for number of bundles
+  // If allowBatchDiscount is false, unit price is based on effectiveBasePrice
   if (!allowBatch) {
+    const unitToman = isBundle ? Math.round(effectiveBasePrice / bundleSize) : effectiveBasePrice;
     const lineTotalToman = isBundle
-      ? Math.round(product.basePriceToman * (qty / bundleSize))
-      : listUnitToman * qty;
+      ? Math.round(effectiveBasePrice * (qty / bundleSize))
+      : unitToman * qty;
+    const lineSavingsToman = Math.max(0, (listUnitToman - unitToman) * qty);
+    const savingsPercent =
+      listUnitToman > 0 ? Math.round(((listUnitToman - unitToman) / listUnitToman) * 100) : 0;
 
     return {
       productId: product.id,
@@ -155,15 +166,15 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
       bundleLabel,
       bundleItems: product.bundleItems ?? null,
       listUnitToman,
-      unitToman: listUnitToman,
+      unitToman,
       lineTotalToman,
-      lineSavingsToman: 0,
-      savingsPercent: 0,
+      lineSavingsToman,
+      savingsPercent,
       weightGrams: singleBundleWeight,
       lineWeightGrams,
       unitsPerCarton: product.unitsPerCarton ?? 1,
       cartons,
-      tierLabel: 'تک‌فروشی',
+      tierLabel: hasSale ? 'تخفیف ویژه' : 'تک‌فروشی',
       nextTier: null,
       colorData: colorData ?? null,
     };
@@ -171,8 +182,8 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
 
   // With allowBatchDiscount enabled:
   if (isBundle) {
-    const tier = resolveTier(tiers, bundleCount, product.basePriceToman);
-    const packagePrice = tier.unitPriceToman;
+    const tier = resolveTier(tiers, bundleCount, effectiveBasePrice);
+    const packagePrice = Math.min(tier.unitPriceToman, effectiveBasePrice);
     const lineTotalToman = packagePrice * bundleCount;
     const unitToman = Math.round(packagePrice / bundleSize);
     const fullListTotal = product.basePriceToman * bundleCount;
@@ -198,15 +209,14 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
       lineWeightGrams,
       unitsPerCarton: product.unitsPerCarton ?? 1,
       cartons,
-      tierLabel: tier.label ?? CHANNEL_LABEL[resolveChannel(qty)],
+      tierLabel: tier.label ?? (hasSale ? 'تخفیف ویژه' : CHANNEL_LABEL[resolveChannel(qty)]),
       nextTier: nextTierHint(tiers, bundleCount),
       colorData: colorData ?? null,
     };
   }
 
-  const tier = resolveTier(tiers, qty, product.basePriceToman);
-
-  const unitToman = tier.unitPriceToman;
+  const tier = resolveTier(tiers, qty, effectiveBasePrice);
+  const unitToman = Math.min(tier.unitPriceToman, effectiveBasePrice);
   const lineTotalToman = unitToman * qty;
   const lineSavingsToman = Math.max(0, (listUnitToman - unitToman) * qty);
   const savingsPercent =
@@ -233,7 +243,7 @@ export function priceLine({ product, tiers, quantity, colorData }: PriceInput): 
     lineWeightGrams,
     unitsPerCarton: product.unitsPerCarton ?? 1,
     cartons,
-    tierLabel: tier.label ?? CHANNEL_LABEL[resolveChannel(qty)],
+    tierLabel: tier.label ?? (hasSale ? 'تخفیف ویژه' : CHANNEL_LABEL[resolveChannel(qty)]),
     nextTier: nextTierHint(tiers, qty),
     colorData: colorData ?? null,
   };

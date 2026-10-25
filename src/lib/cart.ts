@@ -40,6 +40,7 @@ export async function getCartTotals(userId: string): Promise<CartTotals> {
           slug: i.product.slug,
           name: i.product.name,
           basePriceToman: i.product.basePriceToman,
+          salePriceToman: i.product.salePriceToman,
           weightGrams: i.product.weightGrams,
           unitsPerCarton: i.product.unitsPerCarton,
           bundleSize: i.product.bundleSize,

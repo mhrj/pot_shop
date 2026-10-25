@@ -81,6 +81,7 @@ export default async function NewProductPage() {
             minOrderQuantity: 1,
             bundleItems: null,
             basePriceToman: 150000,
+            salePriceToman: null,
             isActive: true,
             isFeatured: false,
             allowBatchDiscount: true,
