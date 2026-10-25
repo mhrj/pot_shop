@@ -8,6 +8,7 @@ const NAV = [
   { href: '/admin/categories', label: 'دسته‌بندی‌ها' },
   { href: '/admin/tags', label: 'برچسب‌ها' },
   { href: '/admin/colors', label: 'رنگ‌ها' },
+  { href: '/admin/articles', label: 'مقالات' },
   { href: '/admin/content', label: 'محتوای فروشگاه' },
   { href: '/admin/orders', label: 'سفارش‌ها' },
   { href: '/admin/users', label: 'کاربران' },

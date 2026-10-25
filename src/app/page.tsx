@@ -375,7 +375,7 @@ export default async function HomePage() {
               <ul className="mt-8 space-y-4 text-sm">
                 {[
                   wholesaleHighlight.maxDiscount > 0
-                    ? `تخفیف تا ${toFa(wholesaleHighlight.maxDiscount)}٪ روی سفارش‌های بالای ${toFa(wholesaleHighlight.maxDiscountMinQty)} عدد`
+                    ? `تخفیف پله‌ای تا ${toFa(wholesaleHighlight.maxDiscount)}٪ متناسب با تعداد سفارش`
                     : 'قیمت‌گذاری شفاف و بهینه برای سفارش‌های خرد و عمده',
                   'بسته‌بندی استاندارد، ایمن و مقاوم',
                   'فاکتور رسمی و امکان تسویه اعتباری',
@@ -451,7 +451,6 @@ export default async function HomePage() {
         trustBar={
           <TrustBar
             maxDiscount={wholesaleHighlight.maxDiscount}
-            maxDiscountMinQty={wholesaleHighlight.maxDiscountMinQty}
           />
         }
         whyChooseUs={<WhyChooseUs />}

@@ -18,12 +18,20 @@ export const revalidate = 3600;
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let products: Array<{ slug: string; updatedAt: Date }> = [];
+  let articles: Array<{ slug: string; updatedAt: Date }> = [];
   try {
-    products = await prisma.product.findMany({
-      where: { isActive: true },
-      select: { slug: true, updatedAt: true },
-      orderBy: { updatedAt: 'desc' },
-    });
+    [products, articles] = await Promise.all([
+      prisma.product.findMany({
+        where: { isActive: true },
+        select: { slug: true, updatedAt: true },
+        orderBy: { updatedAt: 'desc' },
+      }),
+      prisma.article.findMany({
+        where: { isPublished: true },
+        select: { slug: true, updatedAt: true },
+        orderBy: { updatedAt: 'desc' },
+      }),
+    ]);
   } catch {
     // DB unreachable at build time
   }
@@ -42,6 +50,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/articles`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/login`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -50,6 +64,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...products.map((product) => ({
       url: `${baseUrl}/products/${product.slug}`,
       lastModified: product.updatedAt,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    })),
+    ...articles.map((article) => ({
+      url: `${baseUrl}/articles/${article.slug}`,
+      lastModified: article.updatedAt,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     })),

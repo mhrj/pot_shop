@@ -57,18 +57,19 @@ const ADVANTAGES = [
     ),
   },
   {
-    tag: 'انتخاب محصول',
-    title: 'انتخابی متناسب با نیاز شما',
+    tag: 'راهنمای جامع',
+    title: 'راهنمای انتخاب و نگهداری',
     slug: 'product-guide',
     description:
-      'برای انتخاب گلدان و خاک، به نوع گیاه، اندازه ریشه، زهکشی و شرایط نگهداری توجه کنید تا خریدی متناسب با نیازتان داشته باشید.',
+      'با مطالعه مقالات کارشناسان ما، بهترین گلدان و خاک را برای گیاه خود انتخاب کنید.',
     color: 'from-flora-200/40 to-flora-300/30',
     border: 'border-flora-400/40',
     iconBg: 'bg-flora-300 text-flora-950',
-    action: 'راهنمای انتخاب',
+    action: 'مطالعه مقالات',
+    href: '/articles',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
       </svg>
     ),
   },
@@ -89,7 +90,7 @@ export default function WhyChooseUs() {
 
         <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {ADVANTAGES.map((adv) => {
-            const isClickable = adv.slug !== 'product-guide' && Boolean(adv.href);
+            const isClickable = Boolean(adv.href);
 
             const cardBody = (
               <div

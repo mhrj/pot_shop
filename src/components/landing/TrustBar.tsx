@@ -3,15 +3,9 @@ import { toFa } from '@/lib/format';
 
 type TrustBarProps = {
   maxDiscount?: number;
-  maxDiscountMinQty?: number;
 };
 
-export default function TrustBar({ maxDiscount = 0, maxDiscountMinQty = 20 }: TrustBarProps) {
-  const dynamicDiscountDesc =
-    maxDiscount > 0
-      ? `محاسبه شفاف تخفیف روی سفارش‌های بالای ${toFa(maxDiscountMinQty)} عدد — تا ${toFa(maxDiscount)}٪ تخفیف`
-      : 'محاسبه شفاف قیمت برای سفارش‌های خرد و عمده';
-
+export default function TrustBar({ maxDiscount = 0 }: TrustBarProps) {
   const pillars = [
     {
       title: 'ضمانت سلامت تحویل',
@@ -33,7 +27,9 @@ export default function TrustBar({ maxDiscount = 0, maxDiscountMinQty = 20 }: Tr
     },
     {
       title: 'تخفیف پله‌ای خودکار',
-      description: dynamicDiscountDesc,
+      badge: maxDiscount > 0 ? `تا ${toFa(maxDiscount)}٪ تخفیف` : undefined,
+      description:
+        'با افزایش تعداد سفارش، قیمت هر واحد کاهش پیدا می‌کند. تخفیف‌ها به صورت شفاف در صفحه هر محصول درج شده است.',
       icon: (
         <svg className="size-6 text-flora-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
@@ -62,8 +58,15 @@ export default function TrustBar({ maxDiscount = 0, maxDiscountMinQty = 20 }: Tr
                 key={pillar.title}
                 className="group flex flex-col items-center text-center p-3 transition duration-300 hover:-translate-y-1 sm:items-start sm:text-start lg:px-5"
               >
-                <div className="grid size-12 place-items-center rounded-2xl bg-flora-100/90 shadow-sm transition duration-300 group-hover:scale-110 group-hover:bg-flora-200">
-                  {pillar.icon}
+                <div className="flex items-center justify-between w-full">
+                  <div className="grid size-12 place-items-center rounded-2xl bg-flora-100/90 shadow-sm transition duration-300 group-hover:scale-110 group-hover:bg-flora-200">
+                    {pillar.icon}
+                  </div>
+                  {pillar.badge && (
+                    <span className="rounded-full bg-flora-100 px-2.5 py-0.5 text-[11px] font-bold text-flora-900 border border-flora-300/40">
+                      {pillar.badge}
+                    </span>
+                  )}
                 </div>
                 <h3 className="mt-4 text-base font-black text-soil-900">
                   {pillar.title}

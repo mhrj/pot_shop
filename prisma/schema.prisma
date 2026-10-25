@@ -436,3 +436,20 @@ model StoreSettings {
   originCity      String   @default("تهران")
   updatedAt       DateTime @updatedAt
 }
+
+model Article {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String?  // Short summary for the list page
+  content     String   // Rich HTML content
+  coverImage  String?  // URL to the main image
+  tags        String[] // Array of tags for filtering
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, createdAt])
+  @@index([slug])
+}
+
