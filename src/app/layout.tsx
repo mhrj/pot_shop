@@ -3,6 +3,7 @@ import { Vazirmatn } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
+import TestBanner from '@/components/layout/TestBanner';
 import PersianChatbot from '@/components/chatbot/PersianChatbot';
 import PageViewTracker from '@/components/analytics/PageViewTracker';
 import { getContentMap } from '@/lib/content';
@@ -68,6 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           it, because the body is only as tall as its content. */}
       <body className="flex min-h-dvh flex-col bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950">
         <PageViewTracker />
+        <TestBanner />
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <footer className="border-t border-soil-900/10 bg-white/80 print:hidden no-print">
