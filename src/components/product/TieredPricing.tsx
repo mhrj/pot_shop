@@ -544,7 +544,7 @@ export default function TieredPricing({
                         })();
 
                         return (
-                          <div key={hex} className="flex flex-col items-center gap-1 min-w-[36px]">
+                          <div key={hex} className="flex flex-col items-center gap-1 min-w-9">
                             <button
                               type="button"
                               onClick={() => colorCtx?.setSelectedBundleColor(idx, hex)}
@@ -564,7 +564,7 @@ export default function TieredPricing({
                               {/* Red diagonal line if out of stock */}
                               {isOutOfStock && (
                                 <span className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
-                                  <span className="w-[140%] h-[2px] bg-red-600 rotate-45 transform" />
+                                  <span className="w-[140%] h-0.5 bg-red-600 rotate-45 transform" />
                                 </span>
                               )}
                               {isLight && !isSelected && (

@@ -56,7 +56,7 @@ export default function RichTextEditor({
     editorProps: {
       attributes: {
         class:
-          'min-h-[320px] max-h-[650px] overflow-y-auto px-4 py-3 text-soil-900 focus:outline-none leading-relaxed text-sm md:text-base font-normal',
+          'min-h-80 max-h-[650px] overflow-y-auto px-4 py-3 text-soil-900 focus:outline-none leading-relaxed text-sm md:text-base font-normal',
         dir: 'rtl',
       },
     },

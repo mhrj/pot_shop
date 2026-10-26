@@ -374,10 +374,10 @@ export default async function AdminPage() {
                   <span className="font-bold text-soil-900">{f.label}</span>
                   <span className="text-soil-700/70">{toFa(f.count)} سفارش</span>
                 </div>
-                <div className="mt-1.5 h-2 w-full overflow-hidden rounded-[4px] bg-dust-100">
+                <div className="mt-1.5 h-2 w-full overflow-hidden rounded bg-dust-100">
                   <div
                     style={{ width: `${(f.count / maxFulfillment) * 100}%` }}
-                    className="h-full rounded-[4px] bg-flora-500"
+                    className="h-full rounded bg-flora-500"
                   />
                 </div>
               </li>

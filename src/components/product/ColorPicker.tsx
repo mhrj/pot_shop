@@ -179,7 +179,7 @@ function ColorSwatchRow({
                 {/* Red diagonal line if out of stock */}
                 {isOutOfStock && (
                   <span className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
-                    <span className="w-[140%] h-[2px] bg-red-600 rotate-45 transform" />
+                    <span className="w-[140%] h-0.5 bg-red-600 rotate-45 transform" />
                   </span>
                 )}
 

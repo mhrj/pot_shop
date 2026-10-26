@@ -253,7 +253,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           >
             {categorySlug && <input type="hidden" name="category" value={categorySlug} />}
             <div className="flex flex-wrap items-end gap-4">
-              <label className="min-w-[14rem] flex-1 text-xs font-bold text-soil-700/80">
+              <label className="min-w-56 flex-1 text-xs font-bold text-soil-700/80">
                 جست‌وجو
                 <input
                   type="search"

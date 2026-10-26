@@ -150,7 +150,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
           {/* Cover Image */}
           {article.coverImage && (
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl border border-soil-900/10 shadow-lg shadow-soil-900/5 mb-10 bg-dust-100">
+            <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-soil-900/10 shadow-lg shadow-soil-900/5 mb-10 bg-dust-100">
               <Image
                 src={article.coverImage}
                 alt={article.title}

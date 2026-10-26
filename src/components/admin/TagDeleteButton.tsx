@@ -35,7 +35,7 @@ export default function TagDeleteButton({
   };
 
   return (
-    <div className="flex max-w-[18rem] flex-col items-end gap-1">
+    <div className="flex max-w-72 flex-col items-end gap-1">
       <button
         type="button"
         onClick={() => setIsConfirmOpen(true)}

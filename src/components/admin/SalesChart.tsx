@@ -70,7 +70,7 @@ export default function SalesChart({
                   </div>
                   <div
                     style={{ height: `${heightPct}%` }}
-                    className="w-full rounded-t-[4px] bg-flora-700/80 transition group-hover:bg-flora-700"
+                    className="w-full rounded-t bg-flora-700/80 transition group-hover:bg-flora-700"
                   />
                 </div>
               );

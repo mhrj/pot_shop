@@ -70,7 +70,7 @@ export default function VisitsChart({
                   </div>
                   <div
                     style={{ height: `${heightPct}%` }}
-                    className="w-full rounded-t-[4px] bg-dust-400 transition hover:bg-dust-500 group-hover:bg-flora-700"
+                    className="w-full rounded-t bg-dust-400 transition hover:bg-dust-500 group-hover:bg-flora-700"
                   />
                 </div>
               );
