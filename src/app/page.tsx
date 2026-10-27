@@ -231,14 +231,14 @@ export default async function HomePage() {
 
         {/* 2. Hero Image */}
         <div className="order-2 lg:order-1 lg:col-span-5 w-full flex justify-center mt-8 mb-8 lg:mt-0 lg:mb-0">
-          <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none aspect-square lg:aspect-4/5 mx-auto">
+          <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none mx-auto aspect-square lg:aspect-4/5">
             <Image
               src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723'}
               alt={heroImage?.alt ?? 'گلدان سفالی دست‌ساز با گیاه سبز'}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-contain mix-blend-multiply [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]"
+              className="object-cover [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent),linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [mask-composite:intersect] [-webkit-mask-composite:destination-in]"
             />
           </div>
         </div>
