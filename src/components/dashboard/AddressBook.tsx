@@ -107,6 +107,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
           editingId === a.id ? (
             <li key={a.id} className="sm:col-span-2">
               <AddressForm
+                idPrefix={`address-book-edit-${a.id}`}
                 address={a}
                 onSaved={upsert}
                 onCancel={() => setEditingId(null)}
@@ -173,7 +174,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
       </ul>
 
       {adding ? (
-        <AddressForm onSaved={upsert} onCancel={addresses.length > 0 ? () => setAdding(false) : undefined} />
+        <AddressForm idPrefix="address-book-add" onSaved={upsert} onCancel={addresses.length > 0 ? () => setAdding(false) : undefined} />
       ) : (
         <button
           type="button"

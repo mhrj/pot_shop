@@ -70,10 +70,12 @@ export default function AddressForm({
   address,
   onSaved,
   onCancel,
+  idPrefix = 'address',
 }: {
   address?: AddressRecord;
   onSaved: (address: AddressRecord) => void;
   onCancel?: () => void;
+  idPrefix?: string;
 }) {
   const editing = Boolean(address);
   const [form, setForm] = useState<FormState>(() => toFormState(address));
@@ -196,10 +198,13 @@ export default function AddressForm({
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-xs font-bold text-soil-700/80">
-          نام و نام خانوادگی
-          <span className="text-red-500 ms-0.5">*</span>
+        <div className="block">
+          <label htmlFor={`${idPrefix}-fullName`} className="block text-xs font-bold text-soil-700/80">
+            نام و نام خانوادگی
+            <span className="text-red-500 ms-0.5">*</span>
+          </label>
           <input
+            id={`${idPrefix}-fullName`}
             name="fullName"
             value={form.fullName}
             onChange={handleChange}
@@ -211,12 +216,15 @@ export default function AddressForm({
             placeholder="مثلاً مریم رضایی"
           />
           <FormError message={errors.fullName} />
-        </label>
+        </div>
 
-        <label className="text-xs font-bold text-soil-700/80">
-          شماره همراه
-          <span className="text-red-500 ms-0.5">*</span>
+        <div className="block">
+          <label htmlFor={`${idPrefix}-phone`} className="block text-xs font-bold text-soil-700/80">
+            شماره همراه
+            <span className="text-red-500 ms-0.5">*</span>
+          </label>
           <input
+            id={`${idPrefix}-phone`}
             name="phone"
             value={form.phone}
             onChange={handleChange}
@@ -232,10 +240,11 @@ export default function AddressForm({
             placeholder="09121234567"
           />
           {phoneError && <p className="mt-1 text-xs font-bold text-red-600">{phoneError}</p>}
-        </label>
+        </div>
 
         <div className="sm:col-span-2">
           <ProvinceCitySelect
+            idPrefix={`${idPrefix}-region`}
             value={{ province: form.province, city: form.city }}
             onChange={(val) => {
               setForm((current) => ({
@@ -260,10 +269,13 @@ export default function AddressForm({
           />
         </div>
 
-        <label className="text-xs font-bold text-soil-700/80">
-          کد پستی
-          <span className="text-red-500 ms-0.5">*</span>
+        <div className="block">
+          <label htmlFor={`${idPrefix}-postalCode`} className="block text-xs font-bold text-soil-700/80">
+            کد پستی
+            <span className="text-red-500 ms-0.5">*</span>
+          </label>
           <input
+            id={`${idPrefix}-postalCode`}
             name="postalCode"
             value={form.postalCode}
             onChange={handleChange}
@@ -278,11 +290,14 @@ export default function AddressForm({
             placeholder="1234567890"
           />
           <FormError message={errors.postalCode} />
-        </label>
+        </div>
 
-        <label className="text-xs font-bold text-soil-700/80">
-          برچسب آدرس
+        <div className="block">
+          <label htmlFor={`${idPrefix}-label`} className="block text-xs font-bold text-soil-700/80">
+            برچسب آدرس
+          </label>
           <select
+            id={`${idPrefix}-label`}
             name="label"
             value={form.label}
             onChange={handleChange}
@@ -292,13 +307,16 @@ export default function AddressForm({
             <option value="WORK">محل کار</option>
             <option value="OTHER">سایر</option>
           </select>
-        </label>
+        </div>
       </div>
 
-      <label className="block text-xs font-bold text-soil-700/80">
-        آدرس دقیق
-        <span className="text-red-500 ms-0.5">*</span>
+      <div className="block">
+        <label htmlFor={`${idPrefix}-line1`} className="block text-xs font-bold text-soil-700/80">
+          آدرس دقیق
+          <span className="text-red-500 ms-0.5">*</span>
+        </label>
         <input
+          id={`${idPrefix}-line1`}
           name="line1"
           value={form.line1}
           onChange={handleChange}
@@ -310,29 +328,35 @@ export default function AddressForm({
           placeholder="خیابان ولیعصر، کوچه ..."
         />
         <FormError message={errors.line1} />
-      </label>
+      </div>
 
-      <label className="block text-xs font-bold text-soil-700/80">
-        واحد / پلاک / توضیحات بیشتر
+      <div className="block">
+        <label htmlFor={`${idPrefix}-line2`} className="block text-xs font-bold text-soil-700/80">
+          واحد / پلاک / توضیحات بیشتر
+        </label>
         <input
+          id={`${idPrefix}-line2`}
           name="line2"
           value={form.line2}
           onChange={handleChange}
           className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
           placeholder="پلاک ۱۲، طبقه ۳"
         />
-      </label>
+      </div>
 
-      <label className="flex items-center gap-2 text-xs font-bold text-soil-700/80">
+      <div className="flex items-center gap-2">
         <input
+          id={`${idPrefix}-isDefault`}
           type="checkbox"
           name="isDefault"
           checked={form.isDefault}
           onChange={handleChange}
           className="h-4 w-4 accent-flora-700"
         />
-        این آدرس پیش‌فرض باشد
-      </label>
+        <label htmlFor={`${idPrefix}-isDefault`} className="text-xs font-bold text-soil-700/80 cursor-pointer">
+          این آدرس پیش‌فرض باشد
+        </label>
+      </div>
 
       {error && (
         <p role="alert" className="rounded-xl bg-red-50 px-3 py-2 text-xs font-bold text-red-700">

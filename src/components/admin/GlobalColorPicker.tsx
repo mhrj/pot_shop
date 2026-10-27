@@ -143,9 +143,13 @@ export default function GlobalColorPicker({
                   <span className="font-bold text-soil-900">{name}</span>
                   <span className="font-mono text-[10px] text-soil-700/60 dir-ltr">{color.hexCode}</span>
 
-                  <label className="flex items-center gap-1.5 text-[11px] text-soil-700 font-medium border-r border-soil-900/10 pr-2 mr-1">
-                    <span>موجودی:</span>
+                  <div className="flex items-center gap-1.5 text-[11px] text-soil-700 font-medium border-r border-soil-900/10 pr-2 mr-1">
+                    <label htmlFor={`color-stock-${color.hexCode.replace('#', '')}`}>
+                      موجودی:
+                    </label>
                     <input
+                      id={`color-stock-${color.hexCode.replace('#', '')}`}
+                      name={`colorStock_${color.hexCode.replace('#', '')}`}
                       type="number"
                       min={0}
                       value={color.stock}
@@ -155,7 +159,7 @@ export default function GlobalColorPicker({
                       }}
                       className="w-16 rounded-lg border border-soil-900/15 bg-dust-50/70 px-1.5 py-0.5 text-center text-xs font-bold text-soil-900 outline-none focus:border-flora-500 focus:bg-white focus:ring-1 focus:ring-flora-500"
                     />
-                  </label>
+                  </div>
 
                   <button
                     type="button"

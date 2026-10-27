@@ -220,7 +220,7 @@ export default function CheckoutForm({
   if (addressList.length === 0) {
     return (
       <div className="space-y-4">
-        <AddressForm onSaved={handleCreated} />
+        <AddressForm idPrefix="checkout-first-address" onSaved={handleCreated} />
       </div>
     );
   }
@@ -230,12 +230,14 @@ export default function CheckoutForm({
       <div className="space-y-4 lg:col-span-7">
         {editingAddressId && currentAddress ? (
           <AddressForm
+            idPrefix="checkout-edit-address"
             address={currentAddress}
             onSaved={handleAddressUpdated}
             onCancel={() => setEditingAddressId(null)}
           />
         ) : showForm ? (
           <AddressForm
+            idPrefix="checkout-add-address"
             onSaved={handleCreated}
             onCancel={() => setShowForm(false)}
           />
@@ -248,7 +250,7 @@ export default function CheckoutForm({
             <ul className="space-y-3">
               {addressList.map((a) => (
                 <li key={a.id}>
-                  <label
+                  <div
                     className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
                       selectedId === a.id
                         ? "border-flora-500 bg-flora-100/40 ring-1 ring-flora-500/20"
@@ -256,6 +258,7 @@ export default function CheckoutForm({
                     }`}
                   >
                     <input
+                      id={`checkout-address-${a.id}`}
                       type="radio"
                       name="addressId"
                       value={a.id}
@@ -263,7 +266,10 @@ export default function CheckoutForm({
                       onChange={(e) => setSelectedId(e.target.value)}
                       className="mt-1 accent-flora-700"
                     />
-                    <div className="flex-1">
+                    <label
+                      htmlFor={`checkout-address-${a.id}`}
+                      className="flex-1 cursor-pointer"
+                    >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-bold text-soil-900">
@@ -297,8 +303,8 @@ export default function CheckoutForm({
                         کد پستی: <span dir="ltr">{a.postalCode}</span> · تلفن:{" "}
                         <span dir="ltr">{a.phone}</span>
                       </p>
-                    </div>
-                  </label>
+                    </label>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -377,21 +383,22 @@ export default function CheckoutForm({
               {(shippingOptions.filter((opt) => opt.carrier === 'پست پیشتاز').length > 0
                 ? shippingOptions.filter((opt) => opt.carrier === 'پست پیشتاز')
                 : getDefaultShippingOptions(effectiveShippingToman)
-              ).map((opt) => (
+              ).map((opt, idx) => (
                 <li key={opt.carrier}>
-                  <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-flora-500 bg-flora-100/40 p-3.5 shadow-2xs ring-1 ring-flora-500/20">
+                  <div className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-flora-500 bg-flora-100/40 p-3.5 shadow-2xs ring-1 ring-flora-500/20">
                     <div className="flex items-center gap-3">
                       <input
+                        id={`carrier-${idx}`}
                         type="radio"
                         name="shippingCarrier"
-                        value="پست پیشتاز"
+                        value={opt.carrier || "پست پیشتاز"}
                         checked={true}
                         readOnly
                         className="accent-flora-700"
                       />
-                      <span className="text-xs sm:text-sm font-bold text-soil-900">
+                      <label htmlFor={`carrier-${idx}`} className="text-xs sm:text-sm font-bold text-soil-900 cursor-pointer">
                         {opt.label || 'پست پیشتاز'}
-                      </span>
+                      </label>
                     </div>
                     <span className="text-xs sm:text-sm font-black text-soil-900 shrink-0">
                       {opt.costToman === 0 ? (
@@ -400,7 +407,7 @@ export default function CheckoutForm({
                         formatToman(opt.costToman)
                       )}
                     </span>
-                  </label>
+                  </div>
                 </li>
               ))}
             </ul>

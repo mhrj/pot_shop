@@ -111,11 +111,13 @@ export default function RegisterPage() {
         </p>
 
         <div className="mt-7 space-y-4">
-          <label className="block">
-            <span className="text-xs font-bold text-soil-900">
+          <div className="block">
+            <label htmlFor="register-fullName" className="block text-xs font-bold text-soil-900">
               نام کامل <span className="text-red-600">*</span>
-            </span>
+            </label>
             <input
+              id="register-fullName"
+              name="fullName"
               value={form.fullName}
               onChange={(e) => {
                 setForm((prev) => ({ ...prev, fullName: e.target.value }));
@@ -128,19 +130,22 @@ export default function RegisterPage() {
               }`}
             />
             <FormError message={errors.fullName} />
-          </label>
+          </div>
 
-          <label className="block">
-            <span className="text-xs font-bold text-soil-900">
+          <div className="block">
+            <label htmlFor="register-phone" className="block text-xs font-bold text-soil-900">
               شماره موبایل <span className="text-red-600">*</span>
-            </span>
+            </label>
             <input
+              id="register-phone"
+              name="phone"
               value={form.phone}
               onChange={(e) => {
                 setForm((prev) => ({ ...prev, phone: e.target.value.trim() }));
                 if (errors.phone) setErrors((prev) => ({ ...prev, phone: '' }));
               }}
               dir="ltr"
+              type="tel"
               autoComplete="tel"
               placeholder="09121234567"
               className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none transition ${
@@ -150,13 +155,15 @@ export default function RegisterPage() {
               }`}
             />
             <FormError message={errors.phone} />
-          </label>
+          </div>
 
-          <label className="block">
-            <span className="text-xs font-bold text-soil-900">
+          <div className="block">
+            <label htmlFor="register-email" className="block text-xs font-bold text-soil-900">
               ایمیل <span className="text-xs font-normal text-soil-700/60">(اختیاری)</span>
-            </span>
+            </label>
             <input
+              id="register-email"
+              name="email"
               type="email"
               value={form.email}
               onChange={(e) => {
@@ -173,13 +180,15 @@ export default function RegisterPage() {
               }`}
             />
             <FormError message={errors.email} />
-          </label>
+          </div>
 
-          <label className="block">
-            <span className="text-xs font-bold text-soil-900">
+          <div className="block">
+            <label htmlFor="register-password" className="block text-xs font-bold text-soil-900">
               رمز عبور <span className="text-red-600">*</span>
-            </span>
+            </label>
             <PasswordInput
+              id="register-password"
+              name="password"
               value={form.password}
               onChange={(e) => {
                 setForm((prev) => ({ ...prev, password: e.target.value }));
@@ -193,13 +202,15 @@ export default function RegisterPage() {
             <span className="mt-1.5 block text-[11px] text-soil-700/60">
               حداقل ۸ نویسه، شامل حرف بزرگ، حرف کوچک، عدد و نماد
             </span>
-          </label>
+          </div>
 
-          <label className="block">
-            <span className="text-xs font-bold text-soil-900">
+          <div className="block">
+            <label htmlFor="register-confirmPassword" className="block text-xs font-bold text-soil-900">
               تأیید رمز عبور <span className="text-red-600">*</span>
-            </span>
+            </label>
             <PasswordInput
+              id="register-confirmPassword"
+              name="confirmPassword"
               value={form.confirmPassword}
               onChange={(e) => {
                 setForm((prev) => ({ ...prev, confirmPassword: e.target.value }));
@@ -210,7 +221,7 @@ export default function RegisterPage() {
               className="mt-2"
             />
             <FormError message={errors.confirmPassword} />
-          </label>
+          </div>
         </div>
 
         {error && (

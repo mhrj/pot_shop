@@ -233,9 +233,13 @@ function LoginForm() {
         {/* Tab 1: Password Login */}
         {tab === 'password' && (
           <form noValidate onSubmit={handlePasswordSubmit} className="mt-6 space-y-4">
-            <label className="block">
-              <span className="text-xs font-bold text-soil-900">شماره موبایل یا ایمیل</span>
+            <div className="block">
+              <label htmlFor="login-identifier" className="block text-xs font-bold text-soil-900">
+                شماره موبایل یا ایمیل
+              </label>
               <input
+                id="login-identifier"
+                name="identifier"
                 value={identifier}
                 onChange={(e) => {
                   setIdentifier(e.target.value);
@@ -247,11 +251,15 @@ function LoginForm() {
                 placeholder="09121234567 یا email@example.com"
                 className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-sm outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
               />
-            </label>
+            </div>
 
-            <label className="block">
-              <span className="text-xs font-bold text-soil-900">رمز عبور</span>
+            <div className="block">
+              <label htmlFor="login-password" className="block text-xs font-bold text-soil-900">
+                رمز عبور
+              </label>
               <PasswordInput
+                id="login-password"
+                name="password"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -262,7 +270,7 @@ function LoginForm() {
                 autoComplete="current-password"
                 className="mt-2"
               />
-            </label>
+            </div>
 
             {fieldError && (
               <p role="alert" className="text-xs font-bold text-red-600">
@@ -297,9 +305,13 @@ function LoginForm() {
           <div className="mt-6">
             {otpStep === 'phone' ? (
               <form noValidate onSubmit={handleRequestOtp} className="space-y-4">
-                <label className="block">
-                  <span className="text-xs font-bold text-soil-900">شماره موبایل</span>
+                <div className="block">
+                  <label htmlFor="login-otp-phone" className="block text-xs font-bold text-soil-900">
+                    شماره موبایل
+                  </label>
                   <input
+                    id="login-otp-phone"
+                    name="otpPhone"
                     type="tel"
                     value={otpPhone}
                     onChange={(e) => {
@@ -315,7 +327,7 @@ function LoginForm() {
                   <span className="mt-1.5 block text-[11px] text-soil-700/60">
                     کد یکبار مصرف ۵ رقمی به این شماره ارسال خواهد شد.
                   </span>
-                </label>
+                </div>
 
                 {fieldError && (
                   <p role="alert" className="text-xs font-bold text-red-600">
@@ -358,9 +370,13 @@ function LoginForm() {
                   </button>
                 </div>
 
-                <label className="block">
-                  <span className="text-xs font-bold text-soil-900">کد تایید ۵ رقمی</span>
+                <div className="block">
+                  <label htmlFor="login-otp-code" className="block text-xs font-bold text-soil-900">
+                    کد تایید ۵ رقمی
+                  </label>
                   <input
+                    id="login-otp-code"
+                    name="otpCode"
                     type="text"
                     inputMode="numeric"
                     maxLength={5}
@@ -375,7 +391,7 @@ function LoginForm() {
                     autoFocus
                     className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-center text-xl font-bold tracking-[0.4em] outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                   />
-                </label>
+                </div>
 
                 {fieldError && (
                   <p role="alert" className="text-xs font-bold text-red-600">

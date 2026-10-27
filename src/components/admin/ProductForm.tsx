@@ -578,19 +578,27 @@ export default function ProductForm({
       <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
         <h2 className="mb-4 text-sm font-black text-soil-900">اطلاعات پایه</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="block sm:col-span-2">
-            <span className={labelCls}>نام محصول *</span>
+          <div className="block sm:col-span-2">
+            <label htmlFor="product-name" className={labelCls}>
+              نام محصول *
+            </label>
             <input
+              id="product-name"
+              name="name"
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
               className={fieldCls(fieldErrors.name)}
             />
             <FormError message={fieldErrors.name} />
-          </label>
+          </div>
 
-          <label className="block">
-            <span className={labelCls}>اسلاگ (انگلیسی) *</span>
+          <div className="block">
+            <label htmlFor="product-slug" className={labelCls}>
+              اسلاگ (انگلیسی) *
+            </label>
             <input
+              id="product-slug"
+              name="slug"
               value={form.slug}
               onChange={(e) => update('slug', e.target.value)}
               dir="ltr"
@@ -598,22 +606,30 @@ export default function ProductForm({
               className={fieldCls(fieldErrors.slug)}
             />
             <FormError message={fieldErrors.slug} />
-          </label>
+          </div>
 
-          <label className="block">
-            <span className={labelCls}>کد کالا (SKU)</span>
+          <div className="block">
+            <label htmlFor="product-sku" className={labelCls}>
+              کد کالا (SKU)
+            </label>
             <input
+              id="product-sku"
+              name="sku"
               value={form.sku ?? ''}
               onChange={(e) => update('sku', e.target.value)}
               dir="ltr"
               placeholder="POT-101"
               className={`${inputCls} font-mono`}
             />
-          </label>
+          </div>
 
-          <label className={`block ${isBundleActive ? 'sm:col-span-2' : ''}`}>
-            <span className={labelCls}>دسته‌بندی</span>
+          <div className={`block ${isBundleActive ? 'sm:col-span-2' : ''}`}>
+            <label htmlFor="product-categoryId" className={labelCls}>
+              دسته‌بندی
+            </label>
             <select
+              id="product-categoryId"
+              name="categoryId"
               value={form.categoryId ?? ''}
               onChange={(e) => {
                 const val = e.target.value;
@@ -639,39 +655,51 @@ export default function ProductForm({
                 ابتدا یک دسته‌بندی ایجاد کنید.
               </p>
             )}
-          </label>
+          </div>
 
           {!isBundleActive && (
-            <label className="block">
-              <span className={labelCls}>متریال *</span>
+            <div className="block">
+              <label htmlFor="product-material" className={labelCls}>
+                متریال *
+              </label>
               <input
+                id="product-material"
+                name="material"
                 value={form.material}
                 onChange={(e) => update('material', e.target.value)}
                 className={fieldCls(fieldErrors.material)}
               />
               <FormError message={fieldErrors.material} />
-            </label>
+            </div>
           )}
 
-          <label className="block sm:col-span-2">
-            <span className={labelCls}>توضیح کوتاه</span>
+          <div className="block sm:col-span-2">
+            <label htmlFor="product-shortDesc" className={labelCls}>
+              توضیح کوتاه
+            </label>
             <input
+              id="product-shortDesc"
+              name="shortDesc"
               value={form.shortDesc}
               onChange={(e) => update('shortDesc', e.target.value)}
               className={inputCls}
             />
-          </label>
+          </div>
 
-          <label className="block sm:col-span-2">
-            <span className={labelCls}>توضیحات کامل *</span>
+          <div className="block sm:col-span-2">
+            <label htmlFor="product-description" className={labelCls}>
+              توضیحات کامل *
+            </label>
             <textarea
+              id="product-description"
+              name="description"
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
               rows={5}
               className={fieldCls(fieldErrors.description)}
             />
             <FormError message={fieldErrors.description} />
-          </label>
+          </div>
         </div>
       </section>
 
@@ -680,42 +708,56 @@ export default function ProductForm({
         <div className="grid gap-4 sm:grid-cols-3">
           {!isBundleActive && (
             <>
-              <label className="block">
-                <span className={labelCls}>رنگ</span>
+              <div className="block">
+                <label htmlFor="product-color" className={labelCls}>
+                  رنگ
+                </label>
                 <input
+                  id="product-color"
+                  name="color"
                   value={form.color}
                   onChange={(e) => update('color', e.target.value)}
                   className={inputCls}
                 />
-              </label>
-              <label className="block">
-                <span className={labelCls}>قطر (cm)</span>
+              </div>
+              <div className="block">
+                <label htmlFor="product-diameterCm" className={labelCls}>
+                  قطر (cm)
+                </label>
                 <input
+                  id="product-diameterCm"
+                  name="diameterCm"
                   type="number"
                   step="0.5"
                   value={form.diameterCm}
                   onChange={(e) => update('diameterCm', Number(e.target.value))}
                   className={inputCls}
                 />
-              </label>
-              <label className="block">
-                <span className={labelCls}>ارتفاع (cm)</span>
+              </div>
+              <div className="block">
+                <label htmlFor="product-heightCm" className={labelCls}>
+                  ارتفاع (cm)
+                </label>
                 <input
+                  id="product-heightCm"
+                  name="heightCm"
                   type="number"
                   step="0.5"
                   value={form.heightCm}
                   onChange={(e) => update('heightCm', Number(e.target.value))}
                   className={inputCls}
                 />
-              </label>
+              </div>
             </>
           )}
-          <label className="block">
-            <span className={labelCls}>
+          <div className="block">
+            <label htmlFor="product-weightGrams" className={labelCls}>
               {isBundleActive ? 'وزن کل بسته (گرم) *' : 'وزن (گرم)'}
-            </span>
+            </label>
             <div className="relative">
               <input
+                id="product-weightGrams"
+                name="weightGrams"
                 type="number"
                 readOnly={isBundleActive}
                 value={isBundleActive ? bundleWeightSum : form.weightGrams}
@@ -732,56 +774,76 @@ export default function ProductForm({
                 </span>
               )}
             </div>
-          </label>
-          <label className="block">
-            <span className={labelCls}>موجودی</span>
+          </div>
+          <div className="block">
+            <label htmlFor="product-stock" className={labelCls}>
+              موجودی
+            </label>
             <input
+              id="product-stock"
+              name="stock"
               type="number"
               value={form.stock}
               onChange={(e) => update('stock', Number(e.target.value))}
               className={fieldCls(fieldErrors.stock)}
             />
             <FormError message={fieldErrors.stock} />
-          </label>
-          <label className="block">
-            <span className={labelCls}>حداقل تعداد سفارش (MOQ)</span>
+          </div>
+          <div className="block">
+            <label htmlFor="product-minOrderQuantity" className={labelCls}>
+              حداقل تعداد سفارش (MOQ)
+            </label>
             <input
+              id="product-minOrderQuantity"
+              name="minOrderQuantity"
               type="number"
               min={1}
               value={form.minOrderQuantity ?? 1}
               onChange={(e) => update('minOrderQuantity', Number(e.target.value) || 1)}
               className={inputCls}
             />
-          </label>
+          </div>
         </div>
         <div className="mt-4 flex flex-wrap gap-5 text-xs">
-          <label className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <input
+              id="product-isActive"
+              name="isActive"
               type="checkbox"
               checked={form.isActive}
               onChange={(e) => update('isActive', e.target.checked)}
               className="accent-flora-700"
             />
-            فعال
-          </label>
-          <label className="flex items-center gap-2">
+            <label htmlFor="product-isActive" className="cursor-pointer">
+              فعال
+            </label>
+          </div>
+          <div className="flex items-center gap-2">
             <input
+              id="product-isFeatured"
+              name="isFeatured"
               type="checkbox"
               checked={form.isFeatured}
               onChange={(e) => update('isFeatured', e.target.checked)}
               className="accent-flora-700"
             />
-            نمایش در صفحه اصلی
-          </label>
-          <label className="flex items-center gap-2">
+            <label htmlFor="product-isFeatured" className="cursor-pointer">
+              نمایش در صفحه اصلی
+            </label>
+          </div>
+          <div className="flex items-center gap-2">
             <input
+              id="product-isFragile"
+              name="isFragile"
               type="checkbox"
               checked={form.isFragile ?? false}
               onChange={(e) => update('isFragile', e.target.checked)}
               className="accent-flora-700"
             />
-            کالای شکستنی (Fragile)
-          </label>
+            <label htmlFor="product-isFragile" className="cursor-pointer">
+              کالای شکستنی (Fragile)
+            </label>
+          </div>
         </div>
 
         {/* Color Options for single product (HIDDEN when bundle is active) */}
@@ -812,24 +874,32 @@ export default function ProductForm({
               اگر این محصول شامل چند گلدان یا آیتم است و به عنوان یک پکیج فروخته می‌شود، این گزینه را فعال کنید.
             </p>
           </div>
-          <label className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2.5 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
+          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2.5 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
             <input
+              id="product-isBundleActive"
+              name="isBundleActive"
               type="checkbox"
               checked={isBundleActive}
               onChange={(e) => handleToggleBundle(e.target.checked)}
               className="accent-flora-700 size-4"
             />
-            این محصول یک بسته (Bundle) است
-          </label>
+            <label htmlFor="product-isBundleActive" className="cursor-pointer">
+              این محصول یک بسته (Bundle) است
+            </label>
+          </div>
         </div>
 
         {isBundleActive && (
           <div className="space-y-5">
             <div className="max-w-xs">
-              <label className="block">
-                <span className={labelCls}>تعداد اقلام در بسته</span>
+              <div className="block">
+                <label htmlFor="product-bundleItemsCount" className={labelCls}>
+                  تعداد اقلام در بسته
+                </label>
                 <div className="relative mt-1.5">
                   <input
+                    id="product-bundleItemsCount"
+                    name="bundleItemsCount"
                     type="number"
                     readOnly
                     value={(form.bundleItems ?? []).length}
@@ -839,7 +909,7 @@ export default function ProductForm({
                     محاسبه خودکار بر اساس اقلام
                   </span>
                 </div>
-              </label>
+              </div>
             </div>
 
             {(form.bundleItems ?? []).length < 2 && (
@@ -943,8 +1013,12 @@ export default function ProductForm({
                       <span className="text-xs font-bold text-soil-900">آیتم شماره {toFa(idx + 1)}</span>
                       {catalogProducts.length > 0 && (
                         <div className="flex items-center gap-1.5">
-                          <label className="text-[11px] text-soil-700/70">تکمیل از محصولات:</label>
+                          <label htmlFor={`bundle-item-product-${idx}`} className="text-[11px] text-soil-700/70">
+                            تکمیل از محصولات:
+                          </label>
                           <select
+                            id={`bundle-item-product-${idx}`}
+                            name={`bundleItemProduct_${idx}`}
                             value={item.productId ?? ''}
                             onChange={(e) => {
                               const selectedId = e.target.value;
@@ -993,9 +1067,13 @@ export default function ProductForm({
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-                    <label className="block sm:col-span-2">
-                      <span className="text-xs font-medium text-soil-700/80">نام آیتم / گلدان *</span>
+                    <div className="block sm:col-span-2">
+                      <label htmlFor={`bundle-item-title-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                        نام آیتم / گلدان *
+                      </label>
                       <input
+                        id={`bundle-item-title-${idx}`}
+                        name={`bundleItemTitle_${idx}`}
                         type="text"
                         placeholder="مثلاً گلدان استوانه‌ای سایز ۱"
                         value={item.title}
@@ -1006,11 +1084,15 @@ export default function ProductForm({
                         }}
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
-                    </label>
+                    </div>
 
-                    <label className="block sm:col-span-2">
-                      <span className="text-xs font-medium text-soil-700/80">توضیحات کوتاه آیتم</span>
+                    <div className="block sm:col-span-2">
+                      <label htmlFor={`bundle-item-description-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                        توضیحات کوتاه آیتم
+                      </label>
                       <input
+                        id={`bundle-item-description-${idx}`}
+                        name={`bundleItemDescription_${idx}`}
                         type="text"
                         placeholder="مثلاً لعاب براق دست‌ساز"
                         value={item.description ?? ''}
@@ -1021,11 +1103,15 @@ export default function ProductForm({
                         }}
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
-                    </label>
+                    </div>
 
-                    <label className="block sm:col-span-2">
-                      <span className="text-xs font-medium text-soil-700/80">قیمت تک‌فروشی این آیتم (تومان)</span>
+                    <div className="block sm:col-span-2">
+                      <label htmlFor={`bundle-item-price-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                        قیمت تک‌فروشی این آیتم (تومان)
+                      </label>
                       <input
+                        id={`bundle-item-price-${idx}`}
+                        name={`bundleItemPrice_${idx}`}
                         type="number"
                         step="1000"
                         min="0"
@@ -1043,11 +1129,15 @@ export default function ProductForm({
                         }}
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
-                    </label>
+                    </div>
 
-                    <label className="block">
-                      <span className="text-xs font-medium text-soil-700/80">متریال</span>
+                    <div className="block">
+                      <label htmlFor={`bundle-item-material-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                        متریال
+                      </label>
                       <input
+                        id={`bundle-item-material-${idx}`}
+                        name={`bundleItemMaterial_${idx}`}
                         type="text"
                         placeholder="مثلاً سفال"
                         value={item.material ?? ''}
@@ -1058,11 +1148,15 @@ export default function ProductForm({
                         }}
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
-                    </label>
+                    </div>
 
-                    <label className="block">
-                      <span className="text-xs font-medium text-soil-700/80">قطر (cm)</span>
+                    <div className="block">
+                      <label htmlFor={`bundle-item-diameter-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                        قطر (cm)
+                      </label>
                       <input
+                        id={`bundle-item-diameter-${idx}`}
+                        name={`bundleItemDiameter_${idx}`}
                         type="number"
                         step="0.5"
                         min="0"
@@ -1078,11 +1172,15 @@ export default function ProductForm({
                         }}
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
-                    </label>
+                    </div>
 
-                    <label className="block">
-                      <span className="text-xs font-medium text-soil-700/80">ارتفاع (cm)</span>
+                    <div className="block">
+                      <label htmlFor={`bundle-item-height-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                        ارتفاع (cm)
+                      </label>
                       <input
+                        id={`bundle-item-height-${idx}`}
+                        name={`bundleItemHeight_${idx}`}
                         type="number"
                         step="0.5"
                         min="0"
@@ -1098,11 +1196,15 @@ export default function ProductForm({
                         }}
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
-                    </label>
+                    </div>
 
-                    <label className="block">
-                      <span className="text-xs font-medium text-soil-700/80">وزن (گرم)</span>
+                    <div className="block">
+                      <label htmlFor={`bundle-item-weight-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                        وزن (گرم)
+                      </label>
                       <input
+                        id={`bundle-item-weight-${idx}`}
+                        name={`bundleItemWeight_${idx}`}
                         type="number"
                         step="1"
                         min="0"
@@ -1118,7 +1220,7 @@ export default function ProductForm({
                         }}
                         className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
-                    </label>
+                    </div>
 
                     {/* Bundle Item Color Options */}
                     <div className="col-span-full border-t border-soil-900/10 pt-3">
@@ -1162,7 +1264,12 @@ export default function ProductForm({
         </p>
 
         <div className="flex gap-2">
+          <label htmlFor="product-featureInput" className="sr-only">
+            نام ویژگی جدید
+          </label>
           <input
+            id="product-featureInput"
+            name="featureInput"
             list="known-feature-labels"
             value={featureInput}
             onChange={(e) => setFeatureInput(e.target.value)}
@@ -1299,7 +1406,12 @@ export default function ProductForm({
                 </div>
 
                 <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                  <label htmlFor={`product-image-url-${i}`} className="sr-only">
+                    {`آدرس اینترنتی تصویر ${toFa(i + 1)}`}
+                  </label>
                   <input
+                    id={`product-image-url-${i}`}
+                    name={`imageUrl_${i}`}
                     value={url}
                     onChange={(e) => {
                       const next = [...form.images];
@@ -1311,8 +1423,10 @@ export default function ProductForm({
                     placeholder="/uploads/product/example.jpg"
                     className={`${inputCls} flex-1`}
                   />
-                  <label className="cursor-pointer rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700">
+                  <label htmlFor={`product-image-file-${i}`} className="cursor-pointer rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700">
                     <input
+                      id={`product-image-file-${i}`}
+                      name={`imageFile_${i}`}
                       type="file"
                       accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
                       className="hidden"
@@ -1379,8 +1493,10 @@ export default function ProductForm({
               تعیین قیمت پایه و در صورت نیاز، فعال‌سازی تخفیف‌های پله‌ای برای خریدهای تعداد بالا
             </p>
           </div>
-          <label className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
+          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
             <input
+              id="product-allowBatchDiscount"
+              name="allowBatchDiscount"
               type="checkbox"
               checked={form.allowBatchDiscount ?? true}
               onChange={(e) => {
@@ -1396,15 +1512,19 @@ export default function ProductForm({
               }}
               className="accent-flora-700 size-4"
             />
-            فعالسازی تخفیف پلهای (عمده)
-          </label>
+            <label htmlFor="product-allowBatchDiscount" className="cursor-pointer">
+              فعالسازی تخفیف پلهای (عمده)
+            </label>
+          </div>
         </div>
 
-        <label className="block max-w-sm">
-          <span className={labelCls}>
+        <div className="block max-w-sm">
+          <label htmlFor="product-basePriceToman" className={labelCls}>
             {isBundleActive ? 'قیمت فروش نهایی این پکیج (تومان) *' : 'قیمت هر عدد (تومان) *'}
-          </span>
+          </label>
           <input
+            id="product-basePriceToman"
+            name="basePriceToman"
             type="number"
             value={form.basePriceToman}
             onChange={(e) => update('basePriceToman', Number(e.target.value))}
@@ -1417,14 +1537,18 @@ export default function ProductForm({
             </span>
           )}
           <FormError message={fieldErrors.basePriceToman} />
-        </label>
+        </div>
 
-        <label className="block max-w-sm">
-          <span className={labelCls}>قیمت با تخفیف ویژه (اختیاری)</span>
+        <div className="block max-w-sm">
+          <label htmlFor="product-salePriceToman" className={labelCls}>
+            قیمت با تخفیف ویژه (اختیاری)
+          </label>
           <p className="mt-0.5 text-[11px] text-soil-700/60 leading-5">
             اگر این فیلد را پر کنید، قیمت پایه به عنوان قیمت خط‌خورده و این قیمت به عنوان قیمت نهایی نمایش داده می‌شود.
           </p>
           <input
+            id="product-salePriceToman"
+            name="salePriceToman"
             type="number"
             value={form.salePriceToman ?? ''}
             onChange={(e) => {
@@ -1446,7 +1570,7 @@ export default function ProductForm({
             </span>
           )}
           <FormError message={fieldErrors.salePriceToman} />
-        </label>
+        </div>
 
         {(form.allowBatchDiscount ?? true) && (
           <div className="pt-2">
@@ -1495,9 +1619,13 @@ export default function ProductForm({
                     className="flex flex-col gap-3 rounded-xl border border-soil-900/10 bg-dust-50/50 p-4 sm:flex-row sm:items-start"
                   >
                     <div className="grid flex-1 gap-3 sm:grid-cols-3">
-                      <label className="block">
-                        <span className={labelCls}>حداقل تعداد</span>
+                      <div className="block">
+                        <label htmlFor={`tier-min-qty-${i}`} className={labelCls}>
+                          حداقل تعداد
+                        </label>
                         <input
+                          id={`tier-min-qty-${i}`}
+                          name={`tierMinQuantity_${i}`}
                           type="number"
                           min={1}
                           value={t.minQuantity}
@@ -1508,12 +1636,12 @@ export default function ProductForm({
                           }
                           className={inputCls}
                         />
-                      </label>
-                      <label className="block">
+                      </div>
+                      <div className="block">
                         <div className="flex items-center justify-between gap-1">
-                          <span className={labelCls}>
+                          <label htmlFor={`tier-unit-price-${i}`} className={labelCls}>
                             {isBundleActive ? 'قیمت هر بسته در این پله' : 'قیمت هر عدد'}
-                          </span>
+                          </label>
                           {form.basePriceToman > 0 && (
                             <span
                               className={`text-xs font-bold ${
@@ -1529,6 +1657,8 @@ export default function ProductForm({
                           )}
                         </div>
                         <input
+                          id={`tier-unit-price-${i}`}
+                          name={`tierUnitPrice_${i}`}
                           type="number"
                           min={0}
                           step={1000}
@@ -1545,16 +1675,20 @@ export default function ProductForm({
                             ({numberToWordsFa(t.unitPriceToman)} تومان)
                           </span>
                         )}
-                      </label>
-                      <label className="block">
-                        <span className={labelCls}>برچسب</span>
+                      </div>
+                      <div className="block">
+                        <label htmlFor={`tier-label-${i}`} className={labelCls}>
+                          برچسب
+                        </label>
                         <input
+                          id={`tier-label-${i}`}
+                          name={`tierLabel_${i}`}
                           value={t.label}
                           placeholder="مثلاً: خرده، بسته‌ای، عمده"
                           onChange={(e) => updateTier(i, { label: e.target.value })}
                           className={inputCls}
                         />
-                      </label>
+                      </div>
                     </div>
 
                     {form.tiers.length > 1 && (
