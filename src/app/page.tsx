@@ -175,22 +175,30 @@ export default async function HomePage() {
         <div className="absolute top-44 right-1/4 w-65 h-65 bg-dust-300/35 blur-[100px] rounded-full pointer-events-none" />
       </div>
 
-      <Container className="grid gap-6 lg:grid-cols-12 lg:items-center lg:gap-12">
-        <div className="flex flex-col items-center text-center lg:col-span-7 lg:items-start lg:text-right order-1 lg:order-2">
-          <span className="inline-flex items-center gap-2 rounded-full border border-dust-300/70 bg-dust-100/70 px-4 py-1.5 text-xs font-medium text-soil-700 backdrop-blur">
-            <span className="size-1.5 rounded-full bg-dust-400" />
-            از خاک خالی، تا رویش سبز
-          </span>
+      <Container className="flex flex-col lg:grid lg:grid-cols-12 lg:items-center lg:gap-12">
+        {/* On desktop, this wrapper groups text, buttons, and stats into a single 7-column flex container.
+            On mobile, `contents` dissolves the wrapper so its children participate directly in the parent
+            flex column with order-1 (text), order-3 (buttons), and order-4 (stats), while the hero image
+            sits between them at order-2. */}
+        <div className="contents lg:flex lg:flex-col lg:col-span-7 lg:items-start lg:text-right lg:order-2">
+          {/* 1. Badge, H1, Subtitle */}
+          <div className="order-1 lg:order-1 flex flex-col items-center text-center lg:items-start lg:text-right">
+            <span className="inline-flex items-center gap-2 rounded-full border border-dust-300/70 bg-dust-100/70 px-4 py-1.5 text-xs font-medium text-soil-700 backdrop-blur">
+              <span className="size-1.5 rounded-full bg-dust-400" />
+              از خاک خالی، تا رویش سبز
+            </span>
 
-          <HeroTitle
-            title={content.home_hero_title?.body || 'به فضاهای خالی، جان بدهیم.'}
-            subtitle={content.home_hero_subtitle.body}
-          />
+            <HeroTitle
+              title={content.home_hero_title?.body || 'به فضاهای خالی، جان بدهیم.'}
+              subtitle={content.home_hero_subtitle.body}
+            />
+          </div>
 
-          <div className="mt-8 flex flex-col gap-3 w-full sm:flex-row sm:justify-center lg:justify-start">
+          {/* 3. Action Buttons */}
+          <div className="order-3 lg:order-2 w-full flex flex-col sm:flex-row gap-3 mt-8">
             <Link
               href="#catalog"
-              className="group relative inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
+              className="group relative inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
             >
               <span className="inline-block transition duration-300 group-hover:rotate-12 group-hover:scale-125">
                 🌱
@@ -199,36 +207,38 @@ export default async function HomePage() {
             </Link>
             <Link
               href="#wholesale-inquiry"
-              className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-soil-900/15 bg-white/70 px-7 py-3.5 text-sm font-bold text-soil-900 backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white hover:border-soil-900/35 hover:shadow-xl hover:shadow-soil-900/10 active:scale-[0.98]"
+              className="group inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full border border-soil-900/15 bg-white/70 px-7 py-3.5 text-sm font-bold text-soil-900 backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white hover:border-soil-900/35 hover:shadow-xl hover:shadow-soil-900/10 active:scale-[0.98]"
             >
               <span>خرید عمده و استعلام قیمت</span>
               <span className="text-flora-700 transition duration-300 group-hover:translate-x-1">←</span>
             </Link>
           </div>
 
-          <dl className="grid grid-cols-3 divide-x divide-x-reverse divide-soil-900/10 mt-8 w-full max-w-sm mx-auto border-t border-soil-900/10 pt-6 lg:mx-0 lg:max-w-lg">
+          {/* 4. Stats */}
+          <dl className="order-4 lg:order-3 flex justify-center gap-6 sm:gap-10 mt-10 w-full lg:grid lg:grid-cols-3 lg:border-t lg:border-soil-900/10 lg:pt-7 lg:divide-x lg:divide-x-reverse lg:divide-soil-900/10 lg:max-w-lg lg:mx-0 lg:mt-12">
             {[
               { k: '۴۲+', v: 'مدل گلدان' },
               { k: '۳۱', v: 'استان تحت پوشش' },
               { k: '۱۲٬۰۰۰+', v: 'سفارش موفق' },
             ].map((s) => (
               <div key={s.v} className="px-2 text-center">
-                <dt className="text-2xl font-black text-soil-900">{s.k}</dt>
-                <dd className="mt-1 text-xs text-soil-700/70">{s.v}</dd>
+                <dt className="text-xl lg:text-2xl font-black text-soil-900">{s.k}</dt>
+                <dd className="mt-1 text-[10px] lg:text-xs text-soil-700/70">{s.v}</dd>
               </div>
             ))}
           </dl>
         </div>
 
-        <div className="w-full lg:col-span-5 order-2 lg:order-1">
-          <div className="relative w-full max-w-80 sm:max-w-100 mx-auto mt-10 lg:max-w-none lg:mt-0 aspect-square lg:aspect-4/5">
+        {/* 2. Hero Image */}
+        <div className="order-2 lg:order-1 lg:col-span-5 w-full flex justify-center mt-8 mb-8 lg:mt-0 lg:mb-0">
+          <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none aspect-square lg:aspect-4/5 mx-auto">
             <Image
               src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723'}
               alt={heroImage?.alt ?? 'گلدان سفالی دست‌ساز با گیاه سبز'}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-contain mix-blend-multiply [mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]"
+              className="object-contain mix-blend-multiply [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]"
             />
           </div>
         </div>
