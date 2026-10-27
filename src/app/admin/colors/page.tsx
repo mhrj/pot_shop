@@ -15,8 +15,8 @@ export default async function AdminColorsPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-black text-soil-900">پالت رنگ‌های فروشگاه</h1>
-          <p className="mt-1 text-sm text-soil-700/70">
+          <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">پالت رنگ‌های فروشگاه</h1>
+          <p className="mt-1 text-sm text-soil-700/70 dark:text-dust-300/70">
             مدیریت رنگ‌های استاندارد برای استفاده در محصولات و پکیج‌ها ({toFa(colors.length)} رنگ)
           </p>
         </div>
@@ -25,10 +25,10 @@ export default async function AdminColorsPage() {
       <NewColorForm />
 
       <div className="mt-8">
-        <h2 className="mb-3 text-sm font-bold text-soil-900">رنگ‌های ثبت‌شده</h2>
+        <h2 className="mb-3 text-sm font-bold text-soil-900 dark:text-dust-50">رنگ‌های ثبت‌شده</h2>
         {colors.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-soil-900/15 bg-white p-8 text-center">
-            <p className="text-sm text-soil-700/60">هنوز رنگی در سیستم ثبت نشده است.</p>
+          <div className="rounded-2xl border border-dashed border-soil-900/15 bg-white p-8 text-center dark:border-dust-50/20 dark:bg-flora-900">
+            <p className="text-sm text-soil-700/60 dark:text-dust-300/60">هنوز رنگی در سیستم ثبت نشده است.</p>
           </div>
         ) : (
           <div className="grid gap-3">

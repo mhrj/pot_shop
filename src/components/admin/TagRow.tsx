@@ -71,7 +71,7 @@ export default function TagRow({ tag }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-2xl border border-soil-900/10 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-2 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4 sm:flex-row sm:items-center sm:justify-between">
       {isEditing ? (
         <form onSubmit={handleSave} className="flex flex-1 flex-wrap items-center gap-2">
           <input
@@ -79,13 +79,13 @@ export default function TagRow({ tag }: Props) {
             onChange={(e) => setName(e.target.value)}
             disabled={pending}
             required
-            className="w-full max-w-xs rounded-xl border border-soil-900/15 px-3 py-1.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+            className="w-full max-w-xs rounded-xl border border-soil-900/15 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 px-3 py-1.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
             placeholder="نام جدید برچسب"
           />
           <button
             type="submit"
             disabled={pending || !name.trim()}
-            className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50"
+            className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-50"
           >
             {pending ? 'در حال ذخیره…' : 'ذخیره'}
           </button>
@@ -97,7 +97,7 @@ export default function TagRow({ tag }: Props) {
               setError(null);
             }}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 px-3 py-2 text-xs font-bold text-soil-700 transition hover:bg-dust-50"
+            className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 px-3 py-2 text-xs font-bold text-soil-700 dark:text-dust-200 transition hover:bg-dust-50 dark:hover:bg-flora-800"
           >
             انصراف
           </button>
@@ -105,12 +105,12 @@ export default function TagRow({ tag }: Props) {
       ) : (
         <div>
           <div className="flex items-center gap-2">
-            <p className="font-bold text-soil-900">{tag.name}</p>
+            <p className="font-bold text-soil-900 dark:text-dust-50">{tag.name}</p>
             {tag.slug.toLowerCase() !== tag.name.toLowerCase() && (
-              <span className="font-mono text-[11px] text-soil-700/50 dir-ltr">({tag.slug})</span>
+              <span className="font-mono text-[11px] text-soil-700/50 dark:text-dust-200/50 dir-ltr">({tag.slug})</span>
             )}
           </div>
-          <p className="mt-1 text-xs text-soil-700/60">
+          <p className="mt-1 text-xs text-soil-700/60 dark:text-dust-200/60">
             {toFa(tag._count.products)} محصول مرتبط
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function TagRow({ tag }: Props) {
             type="button"
             onClick={() => setIsEditing(true)}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700 disabled:opacity-50"
+            className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-3 py-2 text-xs font-bold text-soil-900 dark:text-dust-100 transition hover:border-flora-700 dark:hover:border-flora-400 hover:text-flora-700 dark:hover:text-flora-400 disabled:opacity-50"
           >
             ویرایش نام
           </button>
@@ -131,14 +131,14 @@ export default function TagRow({ tag }: Props) {
           type="button"
           onClick={() => setIsConfirmOpen(true)}
           disabled={pending}
-          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
+          className="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-3 py-2 text-xs font-bold text-red-700 dark:text-red-400 transition hover:bg-red-100 dark:hover:bg-red-900/50 disabled:opacity-50 cursor-pointer"
         >
           {pending ? 'در حال حذف…' : 'حذف'}
         </button>
       </div>
 
       {error && (
-        <p role="alert" className="w-full text-xs font-bold text-red-600 sm:order-last">
+        <p role="alert" className="w-full text-xs font-bold text-red-600 dark:text-red-400 sm:order-last">
           {error}
         </p>
       )}

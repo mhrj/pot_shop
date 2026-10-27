@@ -43,14 +43,14 @@ export type ProductFormData = {
 };
 
 const inputCls =
-  'mt-1.5 w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20';
-const labelCls = 'text-xs font-bold text-soil-900';
+  'mt-1.5 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20';
+const labelCls = 'text-xs font-bold text-soil-900 dark:text-dust-200';
 
 function fieldCls(errorMsg?: string) {
-  return `mt-1.5 w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition ${
+  return `mt-1.5 w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 ${
     errorMsg
       ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-      : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+      : 'border-soil-900/15 dark:border-dust-50/20 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
   }`;
 }
 
@@ -575,8 +575,8 @@ export default function ProductForm({
 
   return (
     <form noValidate onSubmit={submit} className="space-y-6">
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-        <h2 className="mb-4 text-sm font-black text-soil-900">اطلاعات پایه</h2>
+      <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
+        <h2 className="mb-4 text-sm font-black text-soil-900 dark:text-dust-50">اطلاعات پایه</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="block sm:col-span-2">
             <label htmlFor="product-name" className={labelCls}>
@@ -703,8 +703,8 @@ export default function ProductForm({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-        <h2 className="mb-4 text-sm font-black text-soil-900">مشخصات فنی</h2>
+      <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
+        <h2 className="mb-4 text-sm font-black text-soil-900 dark:text-dust-50">مشخصات فنی</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {!isBundleActive && (
             <>
@@ -866,15 +866,15 @@ export default function ProductForm({
         )}
       </section>
 
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-soil-900/10 pb-4">
+      <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-soil-900/10 dark:border-dust-50/10 pb-4">
           <div>
-            <h2 className="text-sm font-black text-soil-900">تنظیمات بسته (Bundle)</h2>
-            <p className="mt-1 text-xs text-soil-700/60">
+            <h2 className="text-sm font-black text-soil-900 dark:text-dust-50">تنظیمات بسته (Bundle)</h2>
+            <p className="mt-1 text-xs text-soil-700/60 dark:text-dust-200/60">
               اگر این محصول شامل چند گلدان یا آیتم است و به عنوان یک پکیج فروخته می‌شود، این گزینه را فعال کنید.
             </p>
           </div>
-          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2.5 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
+          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 px-4 py-2.5 text-xs font-bold text-soil-900 dark:text-dust-50 cursor-pointer transition hover:bg-dust-100 dark:hover:bg-flora-800">
             <input
               id="product-isBundleActive"
               name="isBundleActive"
@@ -903,9 +903,9 @@ export default function ProductForm({
                     type="number"
                     readOnly
                     value={(form.bundleItems ?? []).length}
-                    className="w-full rounded-xl border border-soil-900/10 bg-dust-100/70 px-3 py-2.5 text-sm font-bold text-soil-900 cursor-not-allowed outline-none"
+                    className="w-full rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-100/70 dark:bg-flora-950 px-3 py-2.5 text-sm font-bold text-soil-900 dark:text-dust-50 cursor-not-allowed outline-none"
                   />
-                  <span className="absolute left-3 top-2.5 text-[11px] text-soil-700/60 select-none">
+                  <span className="absolute left-3 top-2.5 text-[11px] text-soil-700/60 dark:text-dust-200/60 select-none">
                     محاسبه خودکار بر اساس اقلام
                   </span>
                 </div>
@@ -913,7 +913,7 @@ export default function ProductForm({
             </div>
 
             {(form.bundleItems ?? []).length < 2 && (
-              <div className="rounded-xl border border-amber-500/20 bg-amber-50/70 px-4 py-3 text-xs text-amber-900">
+              <div className="rounded-xl border border-amber-500/20 dark:border-amber-500/30 bg-amber-50/70 dark:bg-amber-950/40 px-4 py-3 text-xs text-amber-900 dark:text-amber-200">
                 <span>⚠️ توجه: برای اینکه این محصول یک بسته معتبر باشد، باید حداقل ۲ آیتم به لیست زیر اضافه کنید.</span>
               </div>
             )}
@@ -932,47 +932,47 @@ export default function ProductForm({
               const isOverpriced = totalValue > 0 && finalPrice > totalValue;
 
               return (
-                <div className="rounded-2xl border border-soil-900/10 bg-dust-50/80 p-5 space-y-4">
+                <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50/80 dark:bg-flora-950/80 p-5 space-y-4">
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
-                      <span className="text-soil-700/70 block text-xs mb-1">مجموع ارزش اقلام:</span>
-                      <strong className="text-sm sm:text-base font-black text-soil-900">
+                    <div className="rounded-xl bg-white dark:bg-flora-900 p-3.5 border border-soil-900/5 dark:border-dust-50/10 shadow-xs dark:shadow-none">
+                      <span className="text-soil-700/70 dark:text-dust-200/70 block text-xs mb-1">مجموع ارزش اقلام:</span>
+                      <strong className="text-sm sm:text-base font-black text-soil-900 dark:text-dust-50">
                         {formatToman(totalValue)}
                       </strong>
                     </div>
-                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
-                      <span className="text-soil-700/70 block text-xs mb-1">قیمت فروش نهایی:</span>
-                      <strong className="text-sm sm:text-base font-black text-flora-900">
+                    <div className="rounded-xl bg-white dark:bg-flora-900 p-3.5 border border-soil-900/5 dark:border-dust-50/10 shadow-xs dark:shadow-none">
+                      <span className="text-soil-700/70 dark:text-dust-200/70 block text-xs mb-1">قیمت فروش نهایی:</span>
+                      <strong className="text-sm sm:text-base font-black text-flora-900 dark:text-flora-300">
                         {formatToman(finalPrice)}
                       </strong>
                     </div>
-                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
-                      <span className="text-soil-700/70 block text-xs mb-1">تخفیف پکیج:</span>
+                    <div className="rounded-xl bg-white dark:bg-flora-900 p-3.5 border border-soil-900/5 dark:border-dust-50/10 shadow-xs dark:shadow-none">
+                      <span className="text-soil-700/70 dark:text-dust-200/70 block text-xs mb-1">تخفیف پکیج:</span>
                       <strong
                         className={`text-sm sm:text-base font-black ${
-                          discount >= 0 ? 'text-emerald-700' : 'text-red-700'
+                          discount >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
                         }`}
                       >
                         {formatToman(Math.max(0, discount))}
                       </strong>
                     </div>
-                    <div className="rounded-xl bg-white p-3.5 border border-soil-900/5 shadow-xs">
-                      <span className="text-soil-700/70 block text-xs mb-1">درصد تخفیف:</span>
-                      <strong className="text-sm sm:text-base font-black text-emerald-700">
+                    <div className="rounded-xl bg-white dark:bg-flora-900 p-3.5 border border-soil-900/5 dark:border-dust-50/10 shadow-xs dark:shadow-none">
+                      <span className="text-soil-700/70 dark:text-dust-200/70 block text-xs mb-1">درصد تخفیف:</span>
+                      <strong className="text-sm sm:text-base font-black text-emerald-700 dark:text-emerald-400">
                         {toFa(discountPercent)}٪
                       </strong>
                     </div>
                   </div>
 
                   {isOverpriced && (
-                    <div className="flex items-center gap-2 rounded-xl bg-red-100/90 px-4 py-2.5 text-xs font-bold text-red-800 border border-red-200">
+                    <div className="flex items-center gap-2 rounded-xl bg-red-100/90 dark:bg-red-950/60 px-4 py-2.5 text-xs font-bold text-red-800 dark:text-red-200 border border-red-200 dark:border-red-900/40">
                       <span>⚠️</span>
                       <span>قیمت فروش پکیج نمی‌تواند بیشتر از مجموع ارزش اقلام باشد.</span>
                     </div>
                   )}
 
                   {form.tiers.some((t) => t.minQuantity > 1 && t.unitPriceToman > form.basePriceToman) && (
-                    <div className="flex items-center gap-2 rounded-xl bg-red-100/90 px-4 py-2.5 text-xs font-bold text-red-800 border border-red-200">
+                    <div className="flex items-center gap-2 rounded-xl bg-red-100/90 dark:bg-red-950/60 px-4 py-2.5 text-xs font-bold text-red-800 dark:text-red-200 border border-red-200 dark:border-red-900/40">
                       <span>⚠️</span>
                       <span>خطا: قیمت پله‌های بعدی باید کمتر از قیمت پایه باشد.</span>
                     </div>
@@ -984,10 +984,10 @@ export default function ProductForm({
             {/* Repeater Header */}
             <div className="flex items-center justify-between pt-2">
               <div>
-                <h3 className="text-xs font-bold text-soil-900">
+                <h3 className="text-xs font-bold text-soil-900 dark:text-dust-50">
                   محتویات بسته ({toFa((form.bundleItems ?? []).length)} آیتم)
                 </h3>
-                <p className="mt-0.5 text-[11px] text-soil-700/60">
+                <p className="mt-0.5 text-[11px] text-soil-700/60 dark:text-dust-200/60">
                   مشخصات هر گلدان یا آیتم موجود در این پکیج را وارد کنید.
                 </p>
               </div>
@@ -1006,14 +1006,14 @@ export default function ProductForm({
               {(form.bundleItems ?? []).map((item, idx) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-soil-900/10 bg-dust-50/70 p-4 space-y-3"
+                  className="rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50/70 dark:bg-flora-950/70 p-4 space-y-3"
                 >
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-xs font-bold text-soil-900">آیتم شماره {toFa(idx + 1)}</span>
+                      <span className="text-xs font-bold text-soil-900 dark:text-dust-50">آیتم شماره {toFa(idx + 1)}</span>
                       {catalogProducts.length > 0 && (
                         <div className="flex items-center gap-1.5">
-                          <label htmlFor={`bundle-item-product-${idx}`} className="text-[11px] text-soil-700/70">
+                          <label htmlFor={`bundle-item-product-${idx}`} className="text-[11px] text-soil-700/70 dark:text-dust-200/70">
                             تکمیل از محصولات:
                           </label>
                           <select
@@ -1044,7 +1044,7 @@ export default function ProductForm({
                               }
                               update('bundleItems', next);
                             }}
-                            className="rounded-lg border border-soil-900/15 bg-white px-2 py-1 text-xs text-soil-900 outline-none focus:border-flora-500"
+                            className="rounded-lg border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-2 py-1 text-xs text-soil-900 dark:text-dust-50 outline-none focus:border-flora-500"
                           >
                             <option value="">-- انتخاب گلدان از فروشگاه --</option>
                             {catalogProducts.map((p) => (
@@ -1068,7 +1068,7 @@ export default function ProductForm({
 
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
                     <div className="block sm:col-span-2">
-                      <label htmlFor={`bundle-item-title-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                      <label htmlFor={`bundle-item-title-${idx}`} className="block text-xs font-medium text-soil-700/80 dark:text-dust-200">
                         نام آیتم / گلدان *
                       </label>
                       <input
@@ -1082,12 +1082,12 @@ export default function ProductForm({
                           next[idx] = { ...next[idx], title: e.target.value };
                           update('bundleItems', next);
                         }}
-                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </div>
 
                     <div className="block sm:col-span-2">
-                      <label htmlFor={`bundle-item-description-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                      <label htmlFor={`bundle-item-description-${idx}`} className="block text-xs font-medium text-soil-700/80 dark:text-dust-200">
                         توضیحات کوتاه آیتم
                       </label>
                       <input
@@ -1101,12 +1101,12 @@ export default function ProductForm({
                           next[idx] = { ...next[idx], description: e.target.value };
                           update('bundleItems', next);
                         }}
-                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </div>
 
                     <div className="block sm:col-span-2">
-                      <label htmlFor={`bundle-item-price-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                      <label htmlFor={`bundle-item-price-${idx}`} className="block text-xs font-medium text-soil-700/80 dark:text-dust-200">
                         قیمت تک‌فروشی این آیتم (تومان)
                       </label>
                       <input
@@ -1127,12 +1127,12 @@ export default function ProductForm({
                           };
                           update('bundleItems', next);
                         }}
-                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </div>
 
                     <div className="block">
-                      <label htmlFor={`bundle-item-material-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                      <label htmlFor={`bundle-item-material-${idx}`} className="block text-xs font-medium text-soil-700/80 dark:text-dust-200">
                         متریال
                       </label>
                       <input
@@ -1146,12 +1146,12 @@ export default function ProductForm({
                           next[idx] = { ...next[idx], material: e.target.value };
                           update('bundleItems', next);
                         }}
-                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </div>
 
                     <div className="block">
-                      <label htmlFor={`bundle-item-diameter-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                      <label htmlFor={`bundle-item-diameter-${idx}`} className="block text-xs font-medium text-soil-700/80 dark:text-dust-200">
                         قطر (cm)
                       </label>
                       <input
@@ -1170,12 +1170,12 @@ export default function ProductForm({
                           };
                           update('bundleItems', next);
                         }}
-                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </div>
 
                     <div className="block">
-                      <label htmlFor={`bundle-item-height-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                      <label htmlFor={`bundle-item-height-${idx}`} className="block text-xs font-medium text-soil-700/80 dark:text-dust-200">
                         ارتفاع (cm)
                       </label>
                       <input
@@ -1194,12 +1194,12 @@ export default function ProductForm({
                           };
                           update('bundleItems', next);
                         }}
-                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </div>
 
                     <div className="block">
-                      <label htmlFor={`bundle-item-weight-${idx}`} className="block text-xs font-medium text-soil-700/80">
+                      <label htmlFor={`bundle-item-weight-${idx}`} className="block text-xs font-medium text-soil-700/80 dark:text-dust-200">
                         وزن (گرم)
                       </label>
                       <input
@@ -1218,17 +1218,17 @@ export default function ProductForm({
                           };
                           update('bundleItems', next);
                         }}
-                        className="mt-1 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                        className="mt-1 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
                       />
                     </div>
 
                     {/* Bundle Item Color Options */}
-                    <div className="col-span-full border-t border-soil-900/10 pt-3">
+                    <div className="col-span-full border-t border-soil-900/10 dark:border-dust-50/10 pt-3">
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                        <span className="text-xs font-bold text-soil-900">
+                        <span className="text-xs font-bold text-soil-900 dark:text-dust-50">
                           رنگ‌های این آیتم ({toFa((item.colorOptions ?? []).length)} رنگ)
                         </span>
-                        <span className="text-[11px] text-soil-700/60">
+                        <span className="text-[11px] text-soil-700/60 dark:text-dust-200/60">
                           مشتری در صفحه محصول می‌تواند برای این آیتم از بین این رنگ‌ها انتخاب کند.
                         </span>
                       </div>
@@ -1246,7 +1246,7 @@ export default function ProductForm({
               ))}
 
               {(form.bundleItems ?? []).length === 0 && (
-                <p className="text-xs text-soil-700/50">
+                <p className="text-xs text-soil-700/50 dark:text-dust-200/50">
                   هنوز آیتمی به محتویات بسته اضافه نشده است. برای تعریف اقلام دکمه «+ افزودن آیتم» را بزنید.
                 </p>
               )}
@@ -1255,9 +1255,9 @@ export default function ProductForm({
         )}
       </section>
 
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-        <h2 className="mb-2 text-sm font-black text-soil-900">ویژگی‌های نمایشی</h2>
-        <p className="mb-4 text-xs text-soil-700/60">
+      <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
+        <h2 className="mb-2 text-sm font-black text-soil-900 dark:text-dust-50">ویژگی‌های نمایشی</h2>
+        <p className="mb-4 text-xs text-soil-700/60 dark:text-dust-200/60">
           {isBundleActive
             ? 'این ویژگی‌ها مربوط به کل بسته است (مثلاً بسته‌بندی ضد ضربه). برای مشخصات هر گلدان، از توضیحات همان آیتم در پایین استفاده کنید.'
             : 'این ویژگی‌ها فقط برای نمایش در صفحه محصول هستند و روی عملکرد سیستم اثر ندارند.'}
@@ -1306,7 +1306,7 @@ export default function ProductForm({
             {form.features.map((f, i) => (
               <li
                 key={`${f.label}-${i}`}
-                className="flex items-center gap-2 rounded-full border border-flora-500/30 bg-flora-100/50 px-3 py-1.5 text-xs font-bold text-soil-900"
+                className="flex items-center gap-2 rounded-full border border-flora-500/30 dark:border-flora-500/20 bg-flora-100/50 dark:bg-flora-800/60 px-3 py-1.5 text-xs font-bold text-soil-900 dark:text-dust-50"
               >
                 <span className="size-1.5 rounded-full bg-flora-500" />
                 <span>{f.label}</span>
@@ -1314,7 +1314,7 @@ export default function ProductForm({
                   type="button"
                   onClick={() => removeFeature(i)}
                   aria-label={`حذف ${f.label}`}
-                  className="ms-1 rounded-full text-soil-700/50 transition hover:text-red-600"
+                  className="ms-1 rounded-full text-soil-700/50 dark:text-dust-200/50 transition hover:text-red-600 dark:hover:text-red-400"
                 >
                   ✕
                 </button>
@@ -1324,24 +1324,24 @@ export default function ProductForm({
         )}
 
         {form.features.length === 0 && (
-          <p className="mt-3 text-xs text-soil-700/50">
+          <p className="mt-3 text-xs text-soil-700/50 dark:text-dust-200/50">
             هنوز ویژگی‌ای اضافه نشده است.
           </p>
         )}
       </section>
 
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
+      <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
         <div className="mb-2 flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-black text-soil-900">تصاویر محصول</h2>
-            <p className="mt-1 text-xs text-soil-700/60">
-              تصاویر در فضای محلی سرور ذخیره می‌شوند (<code className="font-mono text-soil-900">/public/uploads</code>). نسبت ابعاد با بزرگنمایی مناسب حفظ می‌شود.
+            <h2 className="text-sm font-black text-soil-900 dark:text-dust-50">تصاویر محصول</h2>
+            <p className="mt-1 text-xs text-soil-700/60 dark:text-dust-200/60">
+              تصاویر در فضای محلی سرور ذخیره می‌شوند (<code className="font-mono text-soil-900 dark:text-dust-50">/public/uploads</code>). نسبت ابعاد با بزرگنمایی مناسب حفظ می‌شود.
             </p>
           </div>
           <button
             type="button"
             onClick={() => update('images', [...form.images, ''])}
-            className="text-xs font-bold text-flora-700 hover:text-flora-900"
+            className="text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200"
           >
             + افزودن تصویر
           </button>
@@ -1354,9 +1354,9 @@ export default function ProductForm({
             const isUploading = uploading[i];
 
             return (
-              <div key={i} className="rounded-xl border border-soil-900/10 bg-dust-50 p-4">
+              <div key={i} className="rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 p-4">
                 {/* Image preview area with comfortable height and aspect ratio preservation */}
-                <div className="relative mb-3 flex min-h-60 h-80 w-full items-center justify-center overflow-hidden rounded-xl border border-soil-900/10 bg-white p-2">
+                <div className="relative mb-3 flex min-h-60 h-80 w-full items-center justify-center overflow-hidden rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-2">
                   {url && !hasError && (
                     <img
                       src={url}
@@ -1368,23 +1368,23 @@ export default function ProductForm({
                   )}
 
                   {url && hasError && (
-                    <div className="flex flex-col items-center justify-center p-6 text-center text-xs text-red-600">
+                    <div className="flex flex-col items-center justify-center p-6 text-center text-xs text-red-600 dark:text-red-400">
                       <span className="text-3xl mb-2">⚠️</span>
                       <p className="font-bold">تصویر در این مسیر یافت نشد یا قابل نمایش نیست</p>
-                      <p className="mt-1 text-[11px] text-soil-700/60 dir-ltr font-mono">{url}</p>
+                      <p className="mt-1 text-[11px] text-soil-700/60 dark:text-dust-200/60 dir-ltr font-mono">{url}</p>
                     </div>
                   )}
 
                   {!url && !isUploading && (
-                    <div className="flex flex-col items-center justify-center text-xs text-soil-700/50">
+                    <div className="flex flex-col items-center justify-center text-xs text-soil-700/50 dark:text-dust-200/50">
                       <span className="text-3xl mb-2">🖼️</span>
                       <span>هنوز تصویری انتخاب یا آپلود نشده است</span>
                     </div>
                   )}
 
                   {isUploading && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/85 backdrop-blur-sm text-xs font-bold text-soil-900">
-                      <div className="mb-2 size-8 animate-spin rounded-full border-3 border-flora-700 border-t-transparent" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/85 dark:bg-flora-900/85 backdrop-blur-sm text-xs font-bold text-soil-900 dark:text-dust-50">
+                      <div className="mb-2 size-8 animate-spin rounded-full border-3 border-flora-700 dark:border-flora-400 border-t-transparent" />
                       <span>در حال اعتبارسنجی و آپلود تصویر…</span>
                     </div>
                   )}
@@ -1398,7 +1398,7 @@ export default function ProductForm({
                         update('images', next);
                         setImageErrors((prev) => ({ ...prev, [i]: false }));
                       }}
-                      className="absolute top-3 end-3 rounded-lg bg-soil-900/70 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur transition hover:bg-red-700"
+                      className="absolute top-3 end-3 rounded-lg bg-soil-900/70 dark:bg-black/70 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur transition hover:bg-red-700"
                     >
                       پاک کردن تصویر
                     </button>
@@ -1423,7 +1423,7 @@ export default function ProductForm({
                     placeholder="/uploads/product/example.jpg"
                     className={`${inputCls} flex-1`}
                   />
-                  <label htmlFor={`product-image-file-${i}`} className="cursor-pointer rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700">
+                  <label htmlFor={`product-image-file-${i}`} className="cursor-pointer rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-4 py-2.5 text-center text-xs font-bold text-soil-900 dark:text-dust-50 transition hover:border-flora-700 hover:text-flora-700 dark:hover:border-flora-400 dark:hover:text-flora-300">
                     <input
                       id={`product-image-file-${i}`}
                       name={`imageFile_${i}`}
@@ -1441,7 +1441,7 @@ export default function ProductForm({
                     <button
                       type="button"
                       onClick={() => update('images', form.images.filter((_, j) => j !== i))}
-                      className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-bold text-red-700 transition hover:bg-red-100"
+                      className="shrink-0 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/40 px-3.5 py-2.5 text-xs font-bold text-red-700 dark:text-red-300 transition hover:bg-red-100 dark:hover:bg-red-900/60"
                     >
                       حذف ردیف
                     </button>
@@ -1453,10 +1453,10 @@ export default function ProductForm({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5">
-        <h2 className="mb-4 text-sm font-black text-soil-900">برچسب‌ها</h2>
+      <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
+        <h2 className="mb-4 text-sm font-black text-soil-900 dark:text-dust-50">برچسب‌ها</h2>
         {allTags.length === 0 ? (
-          <p className="text-xs text-soil-700/70">هنوز برچسبی ثبت نشده است.</p>
+          <p className="text-xs text-soil-700/70 dark:text-dust-200/70">هنوز برچسبی ثبت نشده است.</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {allTags.map((tag) => {
@@ -1472,7 +1472,7 @@ export default function ProductForm({
                   }}
                   className={
                     'rounded-full px-3 py-1.5 text-xs font-bold transition ' +
-                    (active ? 'bg-flora-900 text-white' : 'bg-dust-100 text-soil-700 hover:bg-dust-200')
+                    (active ? 'bg-flora-900 text-white dark:bg-flora-800' : 'bg-dust-100 dark:bg-flora-950 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800')
                   }
                 >
                   {tag.name}
@@ -1483,17 +1483,17 @@ export default function ProductForm({
         )}
       </section>
 
-      <section className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-soil-900/10 pb-4">
+      <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-soil-900/10 dark:border-dust-50/10 pb-4">
           <div>
-            <h2 className="text-sm font-black text-soil-900">
+            <h2 className="text-sm font-black text-soil-900 dark:text-dust-50">
               قیمت‌گذاری محصول
             </h2>
-            <p className="mt-1 text-xs text-soil-700/60">
+            <p className="mt-1 text-xs text-soil-700/60 dark:text-dust-200/60">
               تعیین قیمت پایه و در صورت نیاز، فعال‌سازی تخفیف‌های پله‌ای برای خریدهای تعداد بالا
             </p>
           </div>
-          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 bg-dust-50 px-4 py-2 text-xs font-bold text-soil-900 cursor-pointer transition hover:bg-dust-100">
+          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 px-4 py-2 text-xs font-bold text-soil-900 dark:text-dust-50 cursor-pointer transition hover:bg-dust-100 dark:hover:bg-flora-800">
             <input
               id="product-allowBatchDiscount"
               name="allowBatchDiscount"
@@ -1532,7 +1532,7 @@ export default function ProductForm({
             className={fieldCls(fieldErrors.basePriceToman)}
           />
           {form.basePriceToman >= 1000 && (
-            <span className="block mt-1.5 text-xs text-soil-700/80 font-medium">
+            <span className="block mt-1.5 text-xs text-soil-700/80 dark:text-dust-200 font-medium">
               {formatToman(form.basePriceToman)} ({numberToWordsFa(form.basePriceToman)} تومان)
             </span>
           )}
@@ -1543,7 +1543,7 @@ export default function ProductForm({
           <label htmlFor="product-salePriceToman" className={labelCls}>
             قیمت با تخفیف ویژه (اختیاری)
           </label>
-          <p className="mt-0.5 text-[11px] text-soil-700/60 leading-5">
+          <p className="mt-0.5 text-[11px] text-soil-700/60 dark:text-dust-200/60 leading-5">
             اگر این فیلد را پر کنید، قیمت پایه به عنوان قیمت خط‌خورده و این قیمت به عنوان قیمت نهایی نمایش داده می‌شود.
           </p>
           <input
@@ -1560,10 +1560,10 @@ export default function ProductForm({
             className={fieldCls(fieldErrors.salePriceToman)}
           />
           {form.salePriceToman && form.salePriceToman >= 1000 && (
-            <span className="block mt-1.5 text-xs text-red-600 font-medium">
+            <span className="block mt-1.5 text-xs text-red-600 dark:text-red-400 font-medium">
               {formatToman(form.salePriceToman)} ({numberToWordsFa(form.salePriceToman)} تومان)
               {form.basePriceToman > form.salePriceToman && (
-                <span className="ms-2 font-bold text-emerald-700">
+                <span className="ms-2 font-bold text-emerald-700 dark:text-emerald-400">
                   ({toFa(Math.round(((form.basePriceToman - form.salePriceToman) / form.basePriceToman) * 100))}٪ تخفیف)
                 </span>
               )}
@@ -1576,10 +1576,10 @@ export default function ProductForm({
           <div className="pt-2">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <div className="space-y-1">
-                <h3 className="text-xs font-bold text-soil-900">
+                <h3 className="text-xs font-bold text-soil-900 dark:text-dust-50">
                   پله‌های قیمت عمده و بسته‌ای (تومان)
                 </h3>
-                <p className="text-[11px] text-soil-700/60">
+                <p className="text-[11px] text-soil-700/60 dark:text-dust-200/60">
                   تعیین حداقل تعداد و قیمت واحد برای هر سطح خرید
                 </p>
               </div>
@@ -1593,13 +1593,13 @@ export default function ProductForm({
             </div>
 
             <div className="mb-3">
-              <p className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200/60 inline-block">
+              <p className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-lg border border-emerald-200/60 dark:border-emerald-800/40 inline-block">
                 💡 قیمت‌ها باید با افزایش تعداد، کاهش پیدا کنند (تخفیف عمده).
               </p>
             </div>
 
             {form.tiers.some((t) => t.minQuantity > 1 && t.unitPriceToman > form.basePriceToman) && (
-              <div className="mb-3 flex items-center gap-2 rounded-xl border border-red-300 bg-red-100/90 px-4 py-2.5 text-xs font-bold text-red-800">
+              <div className="mb-3 flex items-center gap-2 rounded-xl border border-red-300 dark:border-red-900/40 bg-red-100/90 dark:bg-red-950/60 px-4 py-2.5 text-xs font-bold text-red-800 dark:text-red-200">
                 <span>⚠️</span>
                 <span>خطا: قیمت پله‌های بعدی باید کمتر از قیمت پایه باشد.</span>
               </div>
@@ -1616,7 +1616,7 @@ export default function ProductForm({
                 return (
                   <div
                     key={i}
-                    className="flex flex-col gap-3 rounded-xl border border-soil-900/10 bg-dust-50/50 p-4 sm:flex-row sm:items-start"
+                    className="flex flex-col gap-3 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50/50 dark:bg-flora-950/50 p-4 sm:flex-row sm:items-start"
                   >
                     <div className="grid flex-1 gap-3 sm:grid-cols-3">
                       <div className="block">
@@ -1646,10 +1646,10 @@ export default function ProductForm({
                             <span
                               className={`text-xs font-bold ${
                                 isOverBase
-                                  ? 'text-red-600'
+                                  ? 'text-red-600 dark:text-red-400'
                                   : discountPercent > 0
-                                  ? 'text-emerald-700'
-                                  : 'text-soil-700/60'
+                                  ? 'text-emerald-700 dark:text-emerald-400'
+                                  : 'text-soil-700/60 dark:text-dust-200/60'
                               }`}
                             >
                               ({toFa(discountPercent)}٪ تخفیف)
@@ -1671,7 +1671,7 @@ export default function ProductForm({
                           className={inputCls}
                         />
                         {t.unitPriceToman >= 1000 && (
-                          <span className="block mt-1 text-[11px] text-soil-700/60 font-medium">
+                          <span className="block mt-1 text-[11px] text-soil-700/60 dark:text-dust-200/60 font-medium">
                             ({numberToWordsFa(t.unitPriceToman)} تومان)
                           </span>
                         )}
@@ -1743,7 +1743,7 @@ export default function ProductForm({
             type="button"
             onClick={() => setIsDeleteModalOpen(true)}
             disabled={pending}
-            className="rounded-xl border border-red-200 bg-red-50 px-6 py-3 text-sm font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
+            className="rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/40 px-6 py-3 text-sm font-bold text-red-700 dark:text-red-300 transition hover:bg-red-100 dark:hover:bg-red-900/60 disabled:opacity-50 cursor-pointer"
           >
             حذف محصول
           </button>

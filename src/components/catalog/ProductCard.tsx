@@ -56,10 +56,10 @@ export default function ProductCard({ product, className = '' }: Props) {
   return (
     <Link
       href={`/products/${product.slug}`}
-      className={`group block overflow-hidden rounded-2xl md:rounded-3xl bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-soil-900/5 ${className}`}
+      className={`group block overflow-hidden rounded-2xl md:rounded-3xl bg-white dark:bg-flora-900/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-soil-900/5 dark:border-dust-100/10 ${className}`}
     >
       {/* Product Image Wrapper */}
-      <div className="relative aspect-square overflow-hidden bg-dust-100">
+      <div className="relative aspect-square overflow-hidden bg-dust-100 dark:bg-flora-950">
         {product.images[0] ? (
           <Image
             src={product.images[0].url}
@@ -71,7 +71,7 @@ export default function ProductCard({ product, className = '' }: Props) {
             }`}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-dust-100 text-soil-700/30">
+          <div className="flex h-full w-full items-center justify-center bg-dust-100 dark:bg-flora-950 text-soil-700/30 dark:text-dust-300/30">
             <svg className="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -89,12 +89,12 @@ export default function ProductCard({ product, className = '' }: Props) {
         {/* Dynamic Badges (Start Corner / Right in RTL) */}
         <div className="absolute top-2 start-2 md:top-3 md:start-3 flex flex-col gap-1 z-10">
           {isBundle && (
-            <span className="rounded-lg md:rounded-xl bg-flora-900 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
+            <span className="rounded-lg md:rounded-xl bg-flora-900 dark:bg-flora-700 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
               ست {toFa(bundleSize)} عددی
             </span>
           )}
           {hasTierDiscount && (
-            <span className="rounded-lg md:rounded-xl bg-amber-600 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
+            <span className="rounded-lg md:rounded-xl bg-amber-600 dark:bg-amber-700 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
               تخفیف عمده
             </span>
           )}
@@ -103,7 +103,7 @@ export default function ProductCard({ product, className = '' }: Props) {
         {/* Top-left Badges (Left Corner) */}
         <div className="absolute top-2 left-2 md:top-3 md:left-3 flex flex-col gap-1 z-10 items-start">
           {hasSale && (
-            <span className="rounded-lg md:rounded-xl bg-red-500 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
+            <span className="rounded-lg md:rounded-xl bg-red-500 dark:bg-red-600 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
               تخفیف ویژه
             </span>
           )}
@@ -118,36 +118,36 @@ export default function ProductCard({ product, className = '' }: Props) {
       {/* Product Details Content */}
       <div className="p-3 md:p-4.5">
         {/* Title */}
-        <h3 className="text-sm md:text-base font-bold text-soil-900 transition-colors group-hover:text-flora-800 line-clamp-1 md:line-clamp-2">
+        <h3 className="text-sm md:text-base font-bold text-soil-900 dark:text-dust-50 transition-colors group-hover:text-flora-800 dark:group-hover:text-flora-300 line-clamp-1 md:line-clamp-2">
           {product.name}
         </h3>
 
         {/* Description or Material specs */}
         {(product.shortDesc || product.material) && (
-          <p className="mt-1 text-[11px] md:text-xs text-soil-700/70 line-clamp-1">
+          <p className="mt-1 text-[11px] md:text-xs text-soil-700/70 dark:text-dust-200/70 line-clamp-1">
             {product.shortDesc || product.material}
             {product.diameterCm ? ` · قطر ${toFa(product.diameterCm)} سانتی‌متر` : ''}
           </p>
         )}
 
         {/* Price & Label Row */}
-        <div className="mt-3 md:mt-4 flex items-end justify-between gap-2 border-t border-soil-900/5 pt-2 md:pt-3">
+        <div className="mt-3 md:mt-4 flex items-end justify-between gap-2 border-t border-soil-900/5 dark:border-dust-100/10 pt-2 md:pt-3">
           <div>
             {hasSale ? (
               <div>
-                <span className="text-xs text-soil-700/50 line-through">
+                <span className="text-xs text-soil-700/50 dark:text-dust-300/50 line-through">
                   {formatToman(product.basePriceToman)}
                 </span>
-                <div className="text-base md:text-lg font-black text-red-600">
+                <div className="text-base md:text-lg font-black text-red-600 dark:text-red-400">
                   {formatToman(product.salePriceToman!)}
                 </div>
               </div>
             ) : (
-              <div className="text-base md:text-lg font-black text-flora-900">
+              <div className="text-base md:text-lg font-black text-flora-900 dark:text-flora-300">
                 {formatToman(bestTier.unitPriceToman)}
               </div>
             )}
-            <div className="text-[10px] md:text-[11px] text-soil-700/60">
+            <div className="text-[10px] md:text-[11px] text-soil-700/60 dark:text-dust-300/60">
               {isBundle
                 ? `قیمت هر ست`
                 : bestTier.minQuantity > 1
@@ -158,12 +158,12 @@ export default function ProductCard({ product, className = '' }: Props) {
 
           <div className="flex flex-wrap items-center justify-end gap-1.5 shrink-0">
             {hasMultipleColors && (
-              <span className="rounded-full bg-dust-100 px-2 py-0.5 text-[10px] font-medium text-soil-700/60">
+              <span className="rounded-full bg-dust-100 dark:bg-flora-800/80 px-2 py-0.5 text-[10px] font-medium text-soil-700/60 dark:text-dust-200/80">
                 شامل {toFa(colors.length)} رنگ
               </span>
             )}
             {bestTier.label && (
-              <span className="rounded-md md:rounded-lg bg-dust-100 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold text-soil-700">
+              <span className="rounded-md md:rounded-lg bg-dust-100 dark:bg-flora-800 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold text-soil-700 dark:text-dust-200">
                 {bestTier.label}
               </span>
             )}

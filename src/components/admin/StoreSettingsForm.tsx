@@ -70,11 +70,11 @@ export default function StoreSettingsForm({
     <form
       noValidate
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-soil-900/10 bg-white p-6 shadow-sm space-y-6"
+      className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-6 shadow-sm dark:shadow-none space-y-6"
     >
       <div>
-        <h2 className="text-base font-black text-soil-900">مبدا ارسال سفارشات (انبار مرکزی)</h2>
-        <p className="mt-1 text-xs leading-6 text-soil-700/70">
+        <h2 className="text-base font-black text-soil-900 dark:text-dust-50">مبدا ارسال سفارشات (انبار مرکزی)</h2>
+        <p className="mt-1 text-xs leading-6 text-soil-700/70 dark:text-dust-200/70">
           استان و شهر کارگاه یا انبار مرکزی فروشگاه را مشخص کنید. محاسبات نرخ حمل و نقل شرکت ملی پست
           و تیپاکس در سامانه ارسال (پستکس) بر اساس فاصله این مبدا تا آدرس مشتری انجام می‌شود.
         </p>
@@ -99,10 +99,10 @@ export default function StoreSettingsForm({
         </div>
 
         {city && (
-          <div className="flex items-center gap-2 rounded-xl bg-dust-50 border border-soil-900/10 px-4 py-3 text-xs text-soil-800">
-            <span className="font-bold">شناسه مبدا در سامانه ارسال (پستکس):</span>
-            <span className="font-black text-flora-700 dir-ltr">{toFa(cityCode)}</span>
-            <span className="text-soil-700/60 font-normal">
+          <div className="flex items-center gap-2 rounded-xl bg-dust-50 dark:bg-flora-950 border border-soil-900/10 dark:border-dust-50/10 px-4 py-3 text-xs text-soil-800 dark:text-dust-200">
+            <span className="font-bold text-soil-900 dark:text-dust-50">شناسه مبدا در سامانه ارسال (پستکس):</span>
+            <span className="font-black text-flora-700 dark:text-flora-300 dir-ltr">{toFa(cityCode)}</span>
+            <span className="text-soil-700/60 dark:text-dust-200/60 font-normal">
               ({province} — {city})
             </span>
           </div>
@@ -112,7 +112,7 @@ export default function StoreSettingsForm({
       {error && (
         <div
           role="alert"
-          className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-xs font-bold text-red-700"
+          className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 px-4 py-3 text-xs font-bold text-red-700 dark:text-red-400"
         >
           {error}
         </div>
@@ -121,9 +121,9 @@ export default function StoreSettingsForm({
       {success && (
         <div
           role="status"
-          className="rounded-xl bg-flora-50 border border-flora-200 px-4 py-3 text-xs font-bold text-flora-800 flex items-center gap-2"
+          className="rounded-xl bg-flora-50 dark:bg-flora-950/50 border border-flora-200 dark:border-flora-800/50 px-4 py-3 text-xs font-bold text-flora-800 dark:text-flora-300 flex items-center gap-2"
         >
-          <svg className="w-4 h-4 text-flora-700 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 text-flora-700 dark:text-flora-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -138,7 +138,7 @@ export default function StoreSettingsForm({
         <button
           type="submit"
           disabled={loading}
-          className="rounded-2xl bg-flora-900 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 transition hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
+          className="rounded-2xl bg-flora-900 dark:bg-flora-800 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
         >
           {loading ? 'در حال ذخیره…' : 'ذخیره تنظیمات'}
         </button>

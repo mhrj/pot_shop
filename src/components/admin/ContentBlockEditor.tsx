@@ -64,18 +64,18 @@ export default function ContentBlockEditor({
   };
 
   return (
-    <form onSubmit={handleSave} className="rounded-2xl border border-soil-900/10 bg-white p-5">
+    <form onSubmit={handleSave} className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
       <div className="flex items-center justify-between">
         <label className="block flex-1">
-          <span className="text-xs font-bold text-soil-900">{fieldLabel}</span>
-          <span className="ms-2 font-mono text-[10px] text-soil-700/40 dir-ltr">({blockKey})</span>
+          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">{fieldLabel}</span>
+          <span className="ms-2 font-mono text-[10px] text-soil-700/40 dark:text-dust-200/40 dir-ltr">({blockKey})</span>
         </label>
         {value !== defaultValue && (
           <button
             type="button"
             onClick={handleResetToDefault}
             disabled={pending}
-            className="text-[11px] font-bold text-soil-700/60 transition hover:text-soil-900"
+            className="text-[11px] font-bold text-soil-700/60 dark:text-dust-200/60 transition hover:text-soil-900 dark:hover:text-dust-50"
           >
             بازگردانی به پیش‌فرض
           </button>
@@ -89,14 +89,14 @@ export default function ContentBlockEditor({
             onChange={(e) => setValue(e.target.value)}
             disabled={pending}
             rows={rows}
-            className="w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm leading-7 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+            className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm leading-7 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
           />
         ) : (
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
             disabled={pending}
-            className="w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+            className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
           />
         )}
       </div>
@@ -105,16 +105,16 @@ export default function ContentBlockEditor({
         <button
           type="submit"
           disabled={pending || !value.trim()}
-          className="rounded-xl bg-flora-900 px-5 py-2 text-xs font-black text-white transition hover:bg-flora-700 disabled:opacity-50"
+          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-5 py-2 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-50"
         >
           {pending ? 'در حال ذخیره…' : 'ذخیره تغییرات'}
         </button>
 
         {status === 'success' && (
-          <span className="text-xs font-bold text-flora-700">✓ با موفقیت ذخیره و منتشر شد</span>
+          <span className="text-xs font-bold text-flora-700 dark:text-flora-400">✓ با موفقیت ذخیره و منتشر شد</span>
         )}
         {status === 'error' && (
-          <span className="text-xs font-bold text-red-600">{errorMsg}</span>
+          <span className="text-xs font-bold text-red-600 dark:text-red-400">{errorMsg}</span>
         )}
       </div>
     </form>

@@ -242,8 +242,8 @@ export default function CheckoutForm({
             onCancel={() => setShowForm(false)}
           />
         ) : (
-          <fieldset className="rounded-2xl border border-soil-900/10 bg-white p-5">
-            <legend className="px-2 text-sm font-black text-soil-900">
+          <fieldset className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
+            <legend className="px-2 text-sm font-black text-soil-900 dark:text-dust-50">
               آدرس ارسال
             </legend>
 
@@ -253,8 +253,8 @@ export default function CheckoutForm({
                   <div
                     className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
                       selectedId === a.id
-                        ? "border-flora-500 bg-flora-100/40 ring-1 ring-flora-500/20"
-                        : "border-soil-900/10 hover:border-soil-900/25"
+                        ? "border-flora-500 bg-flora-100/40 dark:bg-flora-900/60 ring-1 ring-flora-500/20 dark:ring-flora-500/30"
+                        : "border-soil-900/10 dark:border-dust-50/10 hover:border-soil-900/25 dark:hover:border-dust-50/30"
                     }`}
                   >
                     <input
@@ -272,11 +272,11 @@ export default function CheckoutForm({
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-soil-900">
+                          <span className="text-sm font-bold text-soil-900 dark:text-dust-50">
                             {a.fullName}
                           </span>
                           {a.isDefault && (
-                            <span className="rounded-full bg-flora-100 px-2 py-0.5 text-[10px] font-bold text-flora-700">
+                            <span className="rounded-full bg-flora-100 dark:bg-flora-800/80 px-2 py-0.5 text-[10px] font-bold text-flora-700 dark:text-flora-200">
                               پیش‌فرض
                             </span>
                           )}
@@ -289,17 +289,17 @@ export default function CheckoutForm({
                               e.stopPropagation();
                               setEditingAddressId(a.id);
                             }}
-                            className="rounded-lg border border-soil-900/15 bg-white px-2.5 py-1 text-xs font-bold text-soil-800 transition hover:border-soil-900/30 hover:bg-dust-50 cursor-pointer shadow-2xs"
+                            className="rounded-lg border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-2.5 py-1 text-xs font-bold text-soil-800 dark:text-dust-100 transition hover:border-soil-900/30 hover:bg-dust-50 dark:hover:bg-flora-900 cursor-pointer shadow-2xs"
                           >
                             ویرایش
                           </button>
                         )}
                       </div>
-                      <p className="mt-1.5 text-xs leading-6 text-soil-700/80">
+                      <p className="mt-1.5 text-xs leading-6 text-soil-700/80 dark:text-dust-200/80">
                         {a.province}، {a.city}، {a.line1}
                         {a.line2 ? `، ${a.line2}` : ""}
                       </p>
-                      <p className="mt-1 text-xs text-soil-700/60">
+                      <p className="mt-1 text-xs text-soil-700/60 dark:text-dust-200/60">
                         کد پستی: <span dir="ltr">{a.postalCode}</span> · تلفن:{" "}
                         <span dir="ltr">{a.phone}</span>
                       </p>
@@ -315,20 +315,20 @@ export default function CheckoutForm({
           <button
             type="button"
             onClick={() => setShowForm(true)}
-            className="w-full rounded-2xl border border-soil-900/10 bg-white px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50 cursor-pointer"
+            className="w-full rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 px-6 py-3 text-sm font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-50 dark:hover:bg-flora-800 cursor-pointer"
           >
             + افزودن آدرس جدید
           </button>
         )}
 
         {/* Shipping carrier selection */}
-        <fieldset className="rounded-2xl border border-soil-900/10 bg-white p-5">
-          <legend className="flex items-center gap-2 px-2 text-sm font-black text-soil-900">
+        <fieldset className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
+          <legend className="flex items-center gap-2 px-2 text-sm font-black text-soil-900 dark:text-dust-50">
             <span>روش و شرکت حمل و نقل</span>
             {calculatingShipping && (
-              <span className="inline-flex items-center gap-1.5 text-xs text-flora-700 font-normal">
+              <span className="inline-flex items-center gap-1.5 text-xs text-flora-700 dark:text-flora-400 font-normal">
                 <svg
-                  className="h-3.5 w-3.5 animate-spin text-flora-700"
+                  className="h-3.5 w-3.5 animate-spin text-flora-700 dark:text-flora-400"
                   viewBox="0 0 24 24"
                   fill="none"
                 >
@@ -351,14 +351,14 @@ export default function CheckoutForm({
             )}
           </legend>
 
-          <p className="mb-3 text-xs text-soil-700/70">
+          <p className="mb-3 text-xs text-soil-700/70 dark:text-dust-200/70">
             روش ارسال مرسوله خود را انتخاب کنید:
           </p>
 
           {calculatingShipping ? (
-            <div className="flex flex-col items-center justify-center py-8 text-soil-700/60">
+            <div className="flex flex-col items-center justify-center py-8 text-soil-700/60 dark:text-dust-200/60">
               <svg
-                className="h-8 w-8 animate-spin text-flora-700 mb-2"
+                className="h-8 w-8 animate-spin text-flora-700 dark:text-flora-400 mb-2"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -385,7 +385,7 @@ export default function CheckoutForm({
                 : getDefaultShippingOptions(effectiveShippingToman)
               ).map((opt, idx) => (
                 <li key={opt.carrier}>
-                  <div className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-flora-500 bg-flora-100/40 p-3.5 shadow-2xs ring-1 ring-flora-500/20">
+                  <div className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-flora-500 bg-flora-100/40 dark:bg-flora-900/60 p-3.5 shadow-2xs ring-1 ring-flora-500/20 dark:ring-flora-500/30">
                     <div className="flex items-center gap-3">
                       <input
                         id={`carrier-${idx}`}
@@ -396,13 +396,13 @@ export default function CheckoutForm({
                         readOnly
                         className="accent-flora-700"
                       />
-                      <label htmlFor={`carrier-${idx}`} className="text-xs sm:text-sm font-bold text-soil-900 cursor-pointer">
+                      <label htmlFor={`carrier-${idx}`} className="text-xs sm:text-sm font-bold text-soil-900 dark:text-dust-50 cursor-pointer">
                         {opt.label || 'پست پیشتاز'}
                       </label>
                     </div>
-                    <span className="text-xs sm:text-sm font-black text-soil-900 shrink-0">
+                    <span className="text-xs sm:text-sm font-black text-soil-900 dark:text-dust-50 shrink-0">
                       {opt.costToman === 0 ? (
-                        <span className="text-flora-700">رایگان</span>
+                        <span className="text-flora-700 dark:text-flora-400">رایگان</span>
                       ) : (
                         formatToman(opt.costToman)
                       )}
@@ -417,7 +417,7 @@ export default function CheckoutForm({
         {error && (
           <p
             role="alert"
-            className="rounded-xl bg-red-50 px-4 py-3 text-xs font-bold text-red-700"
+            className="rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/40 px-4 py-3 text-xs font-bold text-red-700 dark:text-red-300"
           >
             {error}
           </p>
@@ -438,16 +438,16 @@ export default function CheckoutForm({
 
         <ShippingScheduleNotice compact={true} className="mt-3" />
 
-        <p className="text-center text-[11px] leading-6 text-soil-700/55">
+        <p className="text-center text-[11px] leading-6 text-soil-700/55 dark:text-dust-200/55">
           پس از تأیید، مبلغ از حساب شما کسر و کد پیگیری شاپرک نمایش داده می‌شود.
         </p>
       </div>
 
       <aside className="lg:col-span-5">
-        <div className="rounded-2xl bg-white p-6 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] lg:sticky lg:top-24">
-          <h2 className="font-black text-soil-900">خلاصه سفارش</h2>
+        <div className="rounded-2xl bg-white dark:bg-flora-900 dark:border dark:border-dust-50/10 p-6 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-none lg:sticky lg:top-24">
+          <h2 className="font-black text-soil-900 dark:text-dust-50">خلاصه سفارش</h2>
 
-          <ul className="mt-4 space-y-3 text-xs text-soil-700/80">
+          <ul className="mt-4 space-y-3 text-xs text-soil-700/80 dark:text-dust-200/80">
             {totals.lines.map((l) => (
               <li
                 key={l.productId}
@@ -455,33 +455,33 @@ export default function CheckoutForm({
               >
                 <div>
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-bold text-soil-900">{l.name}</span>
+                    <span className="font-bold text-soil-900 dark:text-dust-50">{l.name}</span>
                     <ItemColorBadge colorData={l.colorData} />
                   </div>
-                  <span className="text-[11px] text-soil-700/70 block mt-0.5">
+                  <span className="text-[11px] text-soil-700/70 dark:text-dust-200/70 block mt-0.5">
                     {toFa(l.quantity)} عدد{" "}
                     {l.bundleSize > 1
                       ? `(معادل ${toFa(Math.round(l.quantity / l.bundleSize))} بسته)`
                       : ""}
                   </span>
                 </div>
-                <span className="shrink-0 font-bold text-soil-900">
+                <span className="shrink-0 font-bold text-soil-900 dark:text-dust-50">
                   {formatToman(l.lineTotalToman)}
                 </span>
               </li>
             ))}
           </ul>
 
-          <dl className="mt-5 space-y-3 border-t border-soil-900/10 pt-5 text-sm">
-            <div className="flex justify-between">
+          <dl className="mt-5 space-y-3 border-t border-soil-900/10 dark:border-dust-50/10 pt-5 text-sm">
+            <div className="flex justify-between text-soil-900 dark:text-dust-50">
               <dt>جمع کالاها</dt>
               <dd>{formatToman(totals.subtotalToman)}</dd>
             </div>
-            <div className="flex justify-between text-flora-700">
+            <div className="flex justify-between text-flora-700 dark:text-flora-300">
               <dt>تخفیف پله‌ای</dt>
               <dd>−{formatToman(totals.discountToman)}</dd>
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center text-soil-900 dark:text-dust-50">
               <dt className="flex items-center gap-1.5">
                 <span>
                   هزینه ارسال{" "}
@@ -490,14 +490,14 @@ export default function CheckoutForm({
                     : ""}
                 </span>
                 {calculatingShipping && (
-                  <span className="text-[10px] text-flora-700 animate-pulse font-normal">
+                  <span className="text-[10px] text-flora-700 dark:text-flora-400 animate-pulse font-normal">
                     (در حال محاسبه…)
                   </span>
                 )}
               </dt>
               <dd>
                 {calculatingShipping ? (
-                  <span className="text-soil-700/60 text-xs">…</span>
+                  <span className="text-soil-700/60 dark:text-dust-200/60 text-xs">…</span>
                 ) : effectiveShippingToman === 0 ? (
                   "رایگان"
                 ) : (
@@ -505,16 +505,16 @@ export default function CheckoutForm({
                 )}
               </dd>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-soil-900 dark:text-dust-50">
               <dt>وزن تقریبی</dt>
               <dd>{formatWeight(totals.totalWeightGrams)}</dd>
             </div>
-            <div className="flex justify-between border-t border-soil-900/10 pt-3 text-base font-black">
+            <div className="flex justify-between border-t border-soil-900/10 dark:border-dust-50/10 pt-3 text-base font-black text-soil-900 dark:text-dust-50">
               <dt>قابل پرداخت</dt>
               <dd className="text-end">
                 <div>
                   {calculatingShipping ? (
-                    <span className="text-soil-700/60 text-sm">
+                    <span className="text-soil-700/60 dark:text-dust-200/60 text-sm">
                       در حال محاسبه…
                     </span>
                   ) : (
@@ -522,7 +522,7 @@ export default function CheckoutForm({
                   )}
                 </div>
                 {!calculatingShipping && grandTotalToman >= 1000 && (
-                  <div className="text-[11px] font-normal text-soil-700/70 mt-0.5">
+                  <div className="text-[11px] font-normal text-soil-700/70 dark:text-dust-200/70 mt-0.5">
                     ({numberToWordsFa(grandTotalToman)} تومان)
                   </div>
                 )}

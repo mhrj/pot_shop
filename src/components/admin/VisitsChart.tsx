@@ -24,31 +24,31 @@ export default function VisitsChart({
   const max = Math.max(...points.map((p) => p.viewsCount), 1);
 
   return (
-    <figure className="rounded-2xl border border-soil-900/10 bg-white p-6">
+    <figure className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-6">
       <figcaption className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-base font-black text-soil-900">
+          <h2 className="text-base font-black text-soil-900 dark:text-dust-50">
             بازدیدهای ۷ روز گذشته
           </h2>
-          <p className="mt-1.5 text-sm text-soil-700/70">
+          <p className="mt-1.5 text-sm text-soil-700/70 dark:text-dust-200/70">
             مجموع بازدیدهای این بازه:{' '}
-            <b className="text-soil-900">{toFa(total)} بازدید</b>
+            <b className="text-soil-900 dark:text-dust-50">{toFa(total)} بازدید</b>
           </p>
         </div>
         {peak && peak.viewsCount > 0 && (
-          <p className="text-xs text-soil-700/60">
+          <p className="text-xs text-soil-700/60 dark:text-dust-200/60">
             بیشترین روز: {peak.label} · {toFa(peak.viewsCount)} بازدید
           </p>
         )}
       </figcaption>
 
       {total === 0 ? (
-        <p className="mt-6 rounded-xl border border-dashed border-soil-900/15 px-5 py-10 text-center text-sm text-soil-700/70">
+        <p className="mt-6 rounded-xl border border-dashed border-soil-900/15 dark:border-dust-50/15 px-5 py-10 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
           در ۷ روز گذشته هنوز بازدیدی ثبت نشده است.
         </p>
       ) : (
         <>
-          <div className="mt-6 flex h-40 items-end gap-2 border-b border-soil-900/10 pb-1">
+          <div className="mt-6 flex h-40 items-end gap-2 border-b border-soil-900/10 dark:border-dust-50/10 pb-1">
             {points.map((p) => {
               const heightPct = Math.max(3, (p.viewsCount / max) * 100);
               return (
@@ -58,10 +58,10 @@ export default function VisitsChart({
                 >
                   <div
                     role="tooltip"
-                    className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-lg bg-soil-900 px-2.5 py-1.5 text-center text-[10px] leading-5 whitespace-nowrap text-white shadow-lg group-hover:block"
+                    className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-lg bg-soil-900 dark:bg-flora-950 dark:border dark:border-dust-50/10 px-2.5 py-1.5 text-center text-[10px] leading-5 whitespace-nowrap text-white shadow-lg group-hover:block"
                   >
                     <span className="block font-bold">{p.label}</span>
-                    <span className="block text-flora-100/90 font-medium">
+                    <span className="block text-flora-100/90 dark:text-flora-300 font-medium">
                       {toFa(p.viewsCount)} بازدید کل
                     </span>
                     <span className="block text-dust-200/80">
@@ -70,7 +70,7 @@ export default function VisitsChart({
                   </div>
                   <div
                     style={{ height: `${heightPct}%` }}
-                    className="w-full rounded-t bg-dust-400 transition hover:bg-dust-500 group-hover:bg-flora-700"
+                    className="w-full rounded-t bg-dust-400 dark:bg-flora-700/50 transition hover:bg-dust-500 dark:hover:bg-flora-600 group-hover:bg-flora-700 dark:group-hover:bg-flora-500"
                   />
                 </div>
               );
@@ -81,7 +81,7 @@ export default function VisitsChart({
             {points.map((p) => (
               <span
                 key={p.key}
-                className="flex-1 text-center text-[10px] font-medium text-soil-700/60 truncate"
+                className="flex-1 text-center text-[10px] font-medium text-soil-700/60 dark:text-dust-200/60 truncate"
               >
                 {p.label}
               </span>
@@ -89,23 +89,23 @@ export default function VisitsChart({
           </div>
 
           <details className="mt-5">
-            <summary className="cursor-pointer text-xs font-bold text-flora-700 hover:text-flora-900">
+            <summary className="cursor-pointer text-xs font-bold text-flora-700 dark:text-flora-400 hover:text-flora-900 dark:hover:text-flora-300">
               نمایش جدول آمار ۷ روز
             </summary>
             <table className="mt-3 w-full text-xs">
-              <thead className="text-soil-700/60 border-b border-soil-900/10">
+              <thead className="text-soil-700/60 dark:text-dust-200/60 border-b border-soil-900/10 dark:border-dust-50/10">
                 <tr>
                   <th scope="col" className="py-2 text-start font-medium">تاریخ</th>
                   <th scope="col" className="py-2 text-start font-medium">بازدید کل</th>
                   <th scope="col" className="py-2 text-start font-medium">کاربر یکتا</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-soil-900/5">
+              <tbody className="divide-y divide-soil-900/5 dark:divide-dust-50/5">
                 {points.map((p) => (
-                  <tr key={p.key} className="hover:bg-dust-50/60">
-                    <td className="py-2 font-medium text-soil-900">{p.label}</td>
-                    <td className="py-2 text-soil-800">{toFa(p.viewsCount)}</td>
-                    <td className="py-2 text-flora-800 font-bold">{toFa(p.uniqueVisitors)}</td>
+                  <tr key={p.key} className="hover:bg-dust-50/60 dark:hover:bg-flora-800/40">
+                    <td className="py-2 font-medium text-soil-900 dark:text-dust-50">{p.label}</td>
+                    <td className="py-2 text-soil-800 dark:text-dust-200">{toFa(p.viewsCount)}</td>
+                    <td className="py-2 text-flora-800 dark:text-flora-300 font-bold">{toFa(p.uniqueVisitors)}</td>
                   </tr>
                 ))}
               </tbody>

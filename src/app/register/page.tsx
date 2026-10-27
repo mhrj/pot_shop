@@ -103,17 +103,17 @@ export default function RegisterPage() {
       <form
         noValidate
         onSubmit={handleSubmit}
-        className="w-full max-w-lg rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]"
+        className="w-full max-w-lg rounded-pot border border-transparent bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none"
       >
-        <h1 className="text-2xl font-black text-soil-900">ثبت‌نام مشتری</h1>
-        <p className="mt-2 text-sm text-soil-700/70">
+        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">ثبت‌نام مشتری</h1>
+        <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
           برای اولین بار در پات استور، حساب جدید بسازید.
         </p>
 
         <div className="mt-7 space-y-4">
           <div className="block">
-            <label htmlFor="register-fullName" className="block text-xs font-bold text-soil-900">
-              نام کامل <span className="text-red-600">*</span>
+            <label htmlFor="register-fullName" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+              نام کامل <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <input
               id="register-fullName"
@@ -123,18 +123,18 @@ export default function RegisterPage() {
                 setForm((prev) => ({ ...prev, fullName: e.target.value }));
                 if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: '' }));
               }}
-              className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none transition ${
+              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 ${
                 errors.fullName
-                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500/80'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:focus:border-flora-400'
               }`}
             />
             <FormError message={errors.fullName} />
           </div>
 
           <div className="block">
-            <label htmlFor="register-phone" className="block text-xs font-bold text-soil-900">
-              شماره موبایل <span className="text-red-600">*</span>
+            <label htmlFor="register-phone" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+              شماره موبایل <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <input
               id="register-phone"
@@ -148,18 +148,18 @@ export default function RegisterPage() {
               type="tel"
               autoComplete="tel"
               placeholder="09121234567"
-              className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none transition ${
+              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 ${
                 errors.phone
-                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500/80'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:focus:border-flora-400'
               }`}
             />
             <FormError message={errors.phone} />
           </div>
 
           <div className="block">
-            <label htmlFor="register-email" className="block text-xs font-bold text-soil-900">
-              ایمیل <span className="text-xs font-normal text-soil-700/60">(اختیاری)</span>
+            <label htmlFor="register-email" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+              ایمیل <span className="text-xs font-normal text-soil-700/60 dark:text-dust-200/60">(اختیاری)</span>
             </label>
             <input
               id="register-email"
@@ -173,18 +173,18 @@ export default function RegisterPage() {
               autoComplete="email"
               dir="ltr"
               placeholder="example@mail.com"
-              className={`mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none transition ${
+              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 ${
                 errors.email
-                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500/80'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:focus:border-flora-400'
               }`}
             />
             <FormError message={errors.email} />
           </div>
 
           <div className="block">
-            <label htmlFor="register-password" className="block text-xs font-bold text-soil-900">
-              رمز عبور <span className="text-red-600">*</span>
+            <label htmlFor="register-password" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+              رمز عبور <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <PasswordInput
               id="register-password"
@@ -199,14 +199,14 @@ export default function RegisterPage() {
               className="mt-2"
             />
             <FormError message={errors.password} />
-            <span className="mt-1.5 block text-[11px] text-soil-700/60">
+            <span className="mt-1.5 block text-[11px] text-soil-700/60 dark:text-dust-200/60">
               حداقل ۸ نویسه، شامل حرف بزرگ، حرف کوچک، عدد و نماد
             </span>
           </div>
 
           <div className="block">
-            <label htmlFor="register-confirmPassword" className="block text-xs font-bold text-soil-900">
-              تأیید رمز عبور <span className="text-red-600">*</span>
+            <label htmlFor="register-confirmPassword" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+              تأیید رمز عبور <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <PasswordInput
               id="register-confirmPassword"
@@ -225,7 +225,7 @@ export default function RegisterPage() {
         </div>
 
         {error && (
-          <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-xs font-bold text-red-700">
+          <p role="alert" className="mt-4 rounded-xl border border-transparent bg-red-50 px-4 py-3 text-xs font-bold text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300">
             {error}
           </p>
         )}
@@ -233,14 +233,14 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50"
+          className="mt-6 w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
         >
           {loading ? 'در حال ثبت‌نام…' : 'ثبت‌نام'}
         </button>
 
-        <p className="mt-5 text-center text-sm text-soil-700/70">
+        <p className="mt-5 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
           قبلاً ثبت‌نام کرده‌اید؟{' '}
-          <a href="/login" className="font-bold text-flora-700 hover:text-flora-900">
+          <a href="/login" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
             وارد شوید
           </a>
         </p>

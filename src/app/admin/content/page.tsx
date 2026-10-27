@@ -102,8 +102,8 @@ export default async function AdminContentPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-black text-soil-900">محتوای متنی فروشگاه</h1>
-        <p className="mt-2 text-sm text-soil-700/70">
+        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">محتوای متنی فروشگاه</h1>
+        <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
           متن‌های تجاری و کسب‌وکار فروشگاه را در این صفحه ویرایش و منتشر کنید. برچسب‌ها و ساختار بخش‌ها ثابت باقی می‌مانند.
         </p>
       </div>
@@ -111,9 +111,9 @@ export default async function AdminContentPage() {
       <div className="space-y-8">
         {CONTENT_SECTIONS.map((section) => (
           <section key={section.title} className="space-y-4">
-            <div className="border-b border-soil-900/10 pb-2">
-              <h2 className="text-base font-black text-soil-900">{section.title}</h2>
-              <p className="mt-1 text-xs text-soil-700/60">{section.description}</p>
+            <div className="border-b border-soil-900/10 dark:border-dust-50/10 pb-2">
+              <h2 className="text-base font-black text-soil-900 dark:text-dust-50">{section.title}</h2>
+              <p className="mt-1 text-xs text-soil-700/60 dark:text-dust-200/60">{section.description}</p>
             </div>
 
             <div className="grid gap-4">

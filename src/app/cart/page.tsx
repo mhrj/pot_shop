@@ -14,10 +14,10 @@ export default async function CartPage() {
   if (totals.lines.length === 0) {
     return (
       <Container className="py-20 text-center">
-        <h1 className="text-2xl font-black text-soil-900">سبد خرید خالی است</h1>
+        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">سبد خرید خالی است</h1>
         <Link
           href="/products"
-          className="mt-6 inline-block rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white"
+          className="mt-6 inline-block rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-flora-900/20"
         >
           مشاهده محصولات
         </Link>
@@ -33,7 +33,7 @@ export default async function CartPage() {
 
   return (
     <Container className="py-12">
-      <h1 className="text-2xl font-black text-soil-900">سبد خرید</h1>
+      <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">سبد خرید</h1>
       <div className="mt-8 grid gap-8 lg:grid-cols-12">
         <ul className="space-y-4 lg:col-span-8">
           {totals.lines.map((l) => (
@@ -42,14 +42,14 @@ export default async function CartPage() {
         </ul>
 
         <aside className="lg:col-span-4">
-          <div className="sticky top-6 rounded-2xl bg-white p-6 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
-            <h2 className="font-black text-soil-900">خلاصه سفارش</h2>
-            <dl className="mt-4 space-y-3 text-sm">
+          <div className="sticky top-6 rounded-2xl bg-white dark:bg-flora-900 dark:border dark:border-dust-50/10 p-6 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-none">
+            <h2 className="font-black text-soil-900 dark:text-dust-50">خلاصه سفارش</h2>
+            <dl className="mt-4 space-y-3 text-sm text-soil-900 dark:text-dust-50">
               <div className="flex justify-between">
                 <dt>جمع کالاها</dt>
                 <dd>{formatToman(totals.subtotalToman)}</dd>
               </div>
-              <div className="flex justify-between text-flora-700">
+              <div className="flex justify-between text-flora-700 dark:text-flora-300">
                 <dt>تخفیف پله‌ای</dt>
                 <dd>−{formatToman(totals.discountToman)}</dd>
               </div>
@@ -57,12 +57,12 @@ export default async function CartPage() {
                 <dt>وزن کل</dt>
                 <dd>{formatWeight(totals.totalWeightGrams)}</dd>
               </div>
-              <div className="flex justify-between border-t pt-3 text-base font-black">
+              <div className="flex justify-between border-t border-soil-900/10 dark:border-dust-50/10 pt-3 text-base font-black">
                 <dt>قابل پرداخت</dt>
                 <dd className="text-end">
                   <div>{formatToman(totals.payableToman)}</div>
                   {totals.payableToman >= 1000 && (
-                    <div className="text-[11px] font-normal text-soil-700/70 mt-0.5">
+                    <div className="text-[11px] font-normal text-soil-700/70 dark:text-dust-200/70 mt-0.5">
                       ({numberToWordsFa(totals.payableToman)} تومان)
                     </div>
                   )}
@@ -75,7 +75,7 @@ export default async function CartPage() {
             >
               ادامه فرآیند خرید
             </Link>
-            <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700">
+            <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/40 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-200">
               📦 توجه: مرسولات فقط در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال می‌شوند.
             </div>
           </div>

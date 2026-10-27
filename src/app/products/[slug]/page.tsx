@@ -146,8 +146,8 @@ export default async function ProductPage({ params }: Params) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <nav aria-label="مسیر" className="mb-8 flex items-center gap-1.5 text-xs text-soil-700/60">
-        <Link href="/" className="hover:text-soil-900 transition">
+      <nav aria-label="مسیر" className="mb-8 flex items-center gap-1.5 text-xs text-soil-700/60 dark:text-dust-200/60">
+        <Link href="/" className="hover:text-soil-900 dark:hover:text-dust-50 transition">
           خانه
         </Link>
         <span>/</span>
@@ -155,7 +155,7 @@ export default async function ProductPage({ params }: Params) {
           <>
             <Link
               href={`/products?category=${encodeURIComponent(product.category.slug)}`}
-              className="hover:text-soil-900 transition"
+              className="hover:text-soil-900 dark:hover:text-dust-50 transition"
             >
               {product.category.name}
             </Link>
@@ -163,13 +163,13 @@ export default async function ProductPage({ params }: Params) {
           </>
         ) : (
           <>
-            <Link href="/products" className="hover:text-soil-900 transition">
+            <Link href="/products" className="hover:text-soil-900 dark:hover:text-dust-50 transition">
               گلدان‌ها
             </Link>
             <span>/</span>
           </>
         )}
-        <span className="text-soil-900 font-bold">{product.name}</span>
+        <span className="text-soil-900 dark:text-dust-50 font-bold">{product.name}</span>
       </nav>
 
       <ProductColorProvider>
@@ -199,23 +199,23 @@ export default async function ProductPage({ params }: Params) {
 
           <div className="lg:col-span-6">
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <h1 className="text-3xl font-black text-soil-900 sm:text-4xl">{product.name}</h1>
+              <h1 className="text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl">{product.name}</h1>
               {product.sku && (
-                <span className="rounded-lg border border-soil-900/10 bg-dust-50 px-2.5 py-1 text-xs font-medium text-soil-700/80">
+                <span className="rounded-lg border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-900 px-2.5 py-1 text-xs font-medium text-soil-700/80 dark:text-dust-200/80">
                   کد کالا:{' '}
-                  <span dir="ltr" className="font-mono font-bold text-soil-900">
+                  <span dir="ltr" className="font-mono font-bold text-soil-900 dark:text-dust-50">
                     {product.sku}
                   </span>
                 </span>
               )}
             </div>
             {product.shortDesc && (
-              <p className="mt-4 leading-8 text-soil-700/85">{product.shortDesc}</p>
+              <p className="mt-4 leading-8 text-soil-700/85 dark:text-dust-200/85">{product.shortDesc}</p>
             )}
 
             <div className="mt-6 flex flex-wrap gap-2">
               {!isBundle && (
-                <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
+                <span className="rounded-full bg-dust-100 dark:bg-flora-900/60 px-3 py-1 text-xs font-bold text-soil-700 dark:text-dust-200">
                   {product.material}
                 </span>
               )}
@@ -228,12 +228,12 @@ export default async function ProductPage({ params }: Params) {
                 <Link
                   key={entry.tag.id}
                   href={`/products?tag=${encodeURIComponent(entry.tag.slug)}`}
-                  className="rounded-full bg-flora-100 px-3 py-1 text-xs font-bold text-flora-700 transition hover:bg-flora-200"
+                  className="rounded-full bg-flora-100 dark:bg-flora-800/80 px-3 py-1 text-xs font-bold text-flora-700 dark:text-flora-200 transition hover:bg-flora-200 dark:hover:bg-flora-700"
                 >
                   {entry.tag.name}
                 </Link>
               ))}
-              <span className="rounded-full bg-dust-100 px-3 py-1 text-xs font-bold text-soil-700">
+              <span className="rounded-full bg-dust-100 dark:bg-flora-900/60 px-3 py-1 text-xs font-bold text-soil-700 dark:text-dust-200">
                 موجودی: {toFa(product.stock)} عدد
               </span>
             </div>
@@ -266,12 +266,12 @@ export default async function ProductPage({ params }: Params) {
 
           {specs.length > 0 && (
             <section className="mt-10">
-              <h2 className="text-lg font-black text-soil-900">مشخصات فنی</h2>
-              <dl className="mt-4 divide-y divide-soil-900/5 overflow-hidden rounded-2xl border border-soil-900/10">
+              <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">مشخصات فنی</h2>
+              <dl className="mt-4 divide-y divide-soil-900/5 dark:divide-dust-50/10 overflow-hidden rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900">
                 {specs.map((s) => (
                   <div key={s.k} className="flex justify-between gap-4 px-5 py-3.5 text-sm">
-                    <dt className="text-soil-700/70">{s.k}</dt>
-                    <dd className="font-bold text-soil-900">{s.v}</dd>
+                    <dt className="text-soil-700/70 dark:text-dust-200/70">{s.k}</dt>
+                    <dd className="font-bold text-soil-900 dark:text-dust-50">{s.v}</dd>
                   </div>
                 ))}
               </dl>
@@ -280,12 +280,12 @@ export default async function ProductPage({ params }: Params) {
 
           {enabledFeatures.length > 0 && (
             <section className="mt-10">
-              <h2 className="text-lg font-black text-soil-900">ویژگی‌ها</h2>
+              <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">ویژگی‌ها</h2>
               <ul className="mt-4 space-y-2">
                 {enabledFeatures.map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm">
                     <span className="mt-2 size-1.5 shrink-0 rounded-full bg-flora-500" />
-                    <span className="text-soil-700/85">{f.label}</span>
+                    <span className="text-soil-700/85 dark:text-dust-200/85">{f.label}</span>
                   </li>
                 ))}
               </ul>
@@ -293,8 +293,8 @@ export default async function ProductPage({ params }: Params) {
           )}
 
           <section className="mt-10">
-            <h2 className="text-lg font-black text-soil-900">درباره این گلدان</h2>
-            <div className="mt-4 text-sm leading-8 whitespace-pre-line text-soil-700/85">
+            <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">درباره این گلدان</h2>
+            <div className="mt-4 text-sm leading-8 whitespace-pre-line text-soil-700/85 dark:text-dust-200/85">
               {product.description}
             </div>
           </section>

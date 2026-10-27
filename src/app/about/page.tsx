@@ -26,14 +26,14 @@ export default async function AboutPage() {
 
   return (
     <Container className="py-12 lg:py-16">
-      <p className="text-xs font-bold text-flora-700">پات استور</p>
-      <h1 className="mt-2 text-3xl font-black text-soil-900 sm:text-4xl">
+      <p className="text-xs font-bold text-flora-700 dark:text-flora-400">پات استور</p>
+      <h1 className="mt-2 text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl">
         {content.about_title.body}
       </h1>
 
       {/* Split paragraphs so the story has clear spacing, the lead title stands out,
           and the concluding brand tagline is rendered in bold. */}
-      <div className="mt-6 max-w-3xl space-y-5 text-sm leading-8 text-soil-700/85">
+      <div className="mt-6 max-w-3xl space-y-5 text-sm leading-8 text-soil-700/85 dark:text-dust-200/85">
         {content.about_body.body
           .split(/\n{2,}/)
           .map((paragraph) => paragraph.trim())
@@ -44,7 +44,7 @@ export default async function AboutPage() {
 
             if (isFirst) {
               return (
-                <p key={index} className="text-base font-bold text-soil-900 leading-8">
+                <p key={index} className="text-base font-bold text-soil-900 dark:text-dust-50 leading-8">
                   {paragraph}
                 </p>
               );
@@ -52,7 +52,7 @@ export default async function AboutPage() {
 
             if (isLast) {
               return (
-                <p key={index} className="pt-2 font-bold text-soil-900 leading-8">
+                <p key={index} className="pt-2 font-bold text-soil-900 dark:text-dust-50 leading-8">
                   <strong>{paragraph}</strong>
                 </p>
               );
@@ -66,9 +66,9 @@ export default async function AboutPage() {
           })}
       </div>
 
-      <section className="mt-12 w-full max-w-3xl rounded-pot border border-soil-900/10 bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
-        <h2 className="text-xl font-black text-soil-900">راه های تماس</h2>
-        <p className="mt-2 text-sm text-soil-700/70">
+      <section className="mt-12 w-full max-w-3xl rounded-pot border border-soil-900/10 bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none">
+        <h2 className="text-xl font-black text-soil-900 dark:text-dust-50">راه های تماس</h2>
+        <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
           برای سفارش عمده، مشاوره انتخاب گلدان یا پیگیری سفارش، از این راه ها در دسترس هستیم.
         </p>
 
@@ -76,32 +76,32 @@ export default async function AboutPage() {
           
           {/* Address */}
           <div className="flex flex-col text-right">
-            <span className="text-xs font-bold text-soil-700/60 mb-1">نشانی</span>
-            <span className="text-sm font-bold text-soil-900 leading-6">
+            <span className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60 mb-1">نشانی</span>
+            <span className="text-sm font-bold text-soil-900 dark:text-dust-50 leading-6">
               {content.address.body}
             </span>
           </div>
 
           {/* Phone */}
           <div className="flex flex-col text-right">
-            <span className="text-xs font-bold text-soil-700/60 mb-1">تلفن</span>
-            <span className="text-sm font-bold text-soil-900" dir="ltr">
+            <span className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60 mb-1">تلفن</span>
+            <span className="text-sm font-bold text-soil-900 dark:text-dust-50" dir="ltr">
               {toFa(content.phone.body)}
             </span>
           </div>
 
           {/* Email */}
           <div className="flex flex-col text-right">
-            <span className="text-xs font-bold text-soil-700/60 mb-1">ایمیل</span>
-            <span className="text-sm font-bold text-soil-900" dir="ltr">
+            <span className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60 mb-1">ایمیل</span>
+            <span className="text-sm font-bold text-soil-900 dark:text-dust-50" dir="ltr">
               {content.email.body}
             </span>
           </div>
 
           {/* Hours */}
           <div className="flex flex-col text-right">
-            <span className="text-xs font-bold text-soil-700/60 mb-1">ساعات کاری</span>
-            <span className="text-sm font-bold text-soil-900">
+            <span className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60 mb-1">ساعات کاری</span>
+            <span className="text-sm font-bold text-soil-900 dark:text-dust-50">
               {toFa(content.hours.body)}
             </span>
           </div>

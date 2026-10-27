@@ -67,8 +67,8 @@ export default async function EditProductPage({ params }: Props) {
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-soil-900">ویرایش محصول</h1>
-      <p className="mt-2 text-sm text-soil-700/70">{product.name}</p>
+      <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">ویرایش محصول</h1>
+      <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">{product.name}</p>
       <div className="mt-6">
         <ProductForm
           knownLabels={knownLabels}

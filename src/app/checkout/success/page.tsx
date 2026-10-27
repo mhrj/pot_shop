@@ -34,28 +34,28 @@ export default async function SuccessPage({ searchParams }: Props) {
   if (!isPaid) {
     return (
       <Container className="flex min-h-dvh items-center justify-center py-16">
-        <div className="w-full max-w-xl rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] sm:p-12">
-          <div className="grid size-16 place-items-center rounded-full bg-amber-100 text-3xl">
+        <div className="w-full max-w-xl rounded-pot border border-transparent bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none sm:p-12">
+          <div className="grid size-16 place-items-center rounded-full bg-amber-100 text-3xl dark:bg-amber-950/60">
             ⏳
           </div>
 
-          <h1 className="mt-6 text-2xl font-black text-soil-900 sm:text-3xl">
+          <h1 className="mt-6 text-2xl font-black text-soil-900 dark:text-dust-50 sm:text-3xl">
             پرداخت هنوز تکمیل نشده است
           </h1>
-          <p className="mt-3 text-sm leading-7 text-soil-700/80">
+          <p className="mt-3 text-sm leading-7 text-soil-700/80 dark:text-dust-200/80">
             وضعیت سفارش در سیستم ثبت شده و در صورت موفقیت‌آمیز بودن پرداخت، اطلاعات آن در این صفحه به‌روزرسانی می‌شود.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700"
+              className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
             >
               پیگیری سفارش
             </Link>
             <Link
               href="/cart"
-              className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
+              className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
             >
               بازگشت به سبد
             </Link>
@@ -67,53 +67,53 @@ export default async function SuccessPage({ searchParams }: Props) {
 
   return (
     <Container className="flex min-h-dvh items-center justify-center py-16">
-      <div className="w-full max-w-2xl rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] sm:p-12">
-        <div className="grid size-16 place-items-center rounded-full bg-flora-100 text-3xl">
+      <div className="w-full max-w-2xl rounded-pot border border-transparent bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none sm:p-12">
+        <div className="grid size-16 place-items-center rounded-full bg-flora-100 text-3xl dark:bg-flora-800/80 dark:text-flora-200">
           ✓
         </div>
 
-        <h1 className="mt-6 text-2xl font-black text-soil-900 sm:text-3xl">
+        <h1 className="mt-6 text-2xl font-black text-soil-900 dark:text-dust-50 sm:text-3xl">
           پرداخت با موفقیت انجام شد
         </h1>
-        <p className="mt-3 text-sm leading-7 text-soil-700/80">
+        <p className="mt-3 text-sm leading-7 text-soil-700/80 dark:text-dust-200/80">
           از خرید شما سپاسگزاریم. سفارش شما ثبت شد و پس از آماده‌سازی ارسال خواهد شد.
         </p>
 
-        <dl className="mt-8 divide-y divide-soil-900/5 overflow-hidden rounded-2xl border border-soil-900/10 text-sm">
+        <dl className="mt-8 divide-y divide-soil-900/5 overflow-hidden rounded-2xl border border-soil-900/10 text-sm dark:divide-dust-50/10 dark:border-dust-50/10">
           <div className="flex justify-between gap-4 px-5 py-4">
-            <dt className="text-soil-700/70">شماره سفارش</dt>
-            <dd className="font-bold text-soil-900">{toFa(orderNumber ?? '—')}</dd>
+            <dt className="text-soil-700/70 dark:text-dust-200/70">شماره سفارش</dt>
+            <dd className="font-bold text-soil-900 dark:text-dust-50">{toFa(orderNumber ?? '—')}</dd>
           </div>
           {isOwner && order && (
             <>
               <div className="flex justify-between gap-4 px-5 py-4">
-                <dt className="text-soil-700/70">کد پیگیری پرداخت (شاپرک)</dt>
-                <dd className="font-mono font-bold text-flora-900" dir="ltr">
+                <dt className="text-soil-700/70 dark:text-dust-200/70">کد پیگیری پرداخت (شاپرک)</dt>
+                <dd className="font-mono font-bold text-flora-900 dark:text-flora-300" dir="ltr">
                   {toFa(order.refId ?? ref_id ?? '—')}
                 </dd>
               </div>
               <div className="flex justify-between gap-4 px-5 py-4">
-                <dt className="text-soil-700/70">مبلغ پرداخت‌شده</dt>
-                <dd className="font-bold text-soil-900">{formatToman(order.totalToman)}</dd>
+                <dt className="text-soil-700/70 dark:text-dust-200/70">مبلغ پرداخت‌شده</dt>
+                <dd className="font-bold text-soil-900 dark:text-dust-50">{formatToman(order.totalToman)}</dd>
               </div>
               <div className="flex justify-between gap-4 px-5 py-4">
-                <dt className="text-soil-700/70">تاریخ</dt>
-                <dd className="font-bold text-soil-900">
+                <dt className="text-soil-700/70 dark:text-dust-200/70">تاریخ</dt>
+                <dd className="font-bold text-soil-900 dark:text-dust-50">
                   {formatDateFa(order.paidAt ?? order.createdAt)}
                 </dd>
               </div>
               <div className="flex justify-between gap-4 px-5 py-4">
-                <dt className="text-soil-700/70">تعداد اقلام</dt>
-                <dd className="font-bold text-soil-900">{toFa(order.items.length)} قلم</dd>
+                <dt className="text-soil-700/70 dark:text-dust-200/70">تعداد اقلام</dt>
+                <dd className="font-bold text-soil-900 dark:text-dust-50">{toFa(order.items.length)} قلم</dd>
               </div>
             </>
           )}
         </dl>
 
         {!isOwner && (
-          <p className="mt-4 text-[11px] leading-6 text-soil-700/60">
+          <p className="mt-4 text-[11px] leading-6 text-soil-700/60 dark:text-dust-200/60">
             جزئیات این سفارش فقط برای صاحب حساب نمایش داده می‌شود.{' '}
-            <Link href="/login" className="font-bold text-flora-700 underline">
+            <Link href="/login" className="font-bold text-flora-700 underline dark:text-flora-400">
               ورود به حساب
             </Link>
           </p>
@@ -122,13 +122,13 @@ export default async function SuccessPage({ searchParams }: Props) {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/dashboard"
-            className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700"
+            className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
           >
             پیگیری سفارش
           </Link>
           <Link
             href="/"
-            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
+            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
           >
             بازگشت به فروشگاه
           </Link>

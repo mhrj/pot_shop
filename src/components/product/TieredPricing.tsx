@@ -479,17 +479,17 @@ export default function TieredPricing({
       {isBundle &&
         product.bundleItems &&
         product.bundleItems.some((it) => (it.colorOptions ?? []).length > 0) && (
-          <div className="rounded-2xl border border-soil-900/10 bg-white p-5 space-y-4">
+          <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5 space-y-4">
             <div>
-              <h3 className="text-sm font-black text-soil-900">
+              <h3 className="text-sm font-black text-soil-900 dark:text-dust-50">
                 انتخاب رنگ برای اقلام بسته
               </h3>
-              <p className="mt-0.5 text-xs text-soil-700/60">
+              <p className="mt-0.5 text-xs text-soil-700/60 dark:text-dust-200/60">
                 برای هر گلدان موجود در این پکیج، رنگ مورد نظر خود را مشخص کنید:
               </p>
             </div>
 
-            <div className="space-y-4 divide-y divide-soil-900/5">
+            <div className="space-y-4 divide-y divide-soil-900/5 dark:divide-dust-50/5">
               {product.bundleItems.map((item, idx) => {
                 const itemColors = item.colorOptions ?? [];
                 if (itemColors.length === 0) return null;
@@ -501,14 +501,14 @@ export default function TieredPricing({
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
                         <span className={`font-bold transition-colors ${
-                          limitingItem?.itemIndex === idx ? 'text-amber-950 font-black' : 'text-soil-900'
+                          limitingItem?.itemIndex === idx ? 'text-amber-950 dark:text-amber-300 font-black' : 'text-soil-900 dark:text-dust-50'
                         }`}>
                           رنگ {item.title || `گلدان ${toFa(idx + 1)}`}
                         </span>
                         {limitingItem?.itemIndex === idx && (
                           <span
                             title={`این آیتم سقف سفارش را به ${toFa(limitingItem.stock)} عدد محدود کرده است`}
-                            className="inline-flex items-center gap-1 rounded-full bg-amber-100/90 border border-amber-300/80 px-2 py-0.5 text-[10px] font-bold text-amber-900 shadow-2xs"
+                            className="inline-flex items-center gap-1 rounded-full bg-amber-100/90 dark:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/60 px-2 py-0.5 text-[10px] font-bold text-amber-900 dark:text-amber-200 shadow-2xs"
                           >
                             <span>⚠️</span>
                             <span>محدودیت موجودی ({toFa(limitingItem.stock)} عدد)</span>
@@ -516,15 +516,15 @@ export default function TieredPricing({
                         )}
                       </div>
                       {selectedHex ? (
-                        <div className="flex items-center gap-1.5 text-soil-700/80 font-mono text-[11px] dir-ltr">
+                        <div className="flex items-center gap-1.5 text-soil-700/80 dark:text-dust-200/80 font-mono text-[11px] dir-ltr">
                           <span
-                            className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
+                            className="size-3.5 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-2xs"
                             style={{ backgroundColor: selectedHex }}
                           />
                           <span>{selectedHex}</span>
                         </div>
                       ) : (
-                        <span className="text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
+                        <span className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-full font-medium">
                           انتخاب الزامی
                         </span>
                       )}
@@ -550,7 +550,7 @@ export default function TieredPricing({
                               onClick={() => colorCtx?.setSelectedBundleColor(idx, hex)}
                               title={`موجودی: ${toFa(colorOpt.stock)} عدد`}
                               aria-label={`رنگ ${hex}${isOutOfStock ? ' (ناموجود)' : ` - موجودی: ${toFa(colorOpt.stock)} عدد`}`}
-                              className={`group relative size-7 shrink-0 rounded-full transition-all focus:outline-none border border-soil-900/20 ${
+                              className={`group relative size-7 shrink-0 rounded-full transition-all focus:outline-none border border-soil-900/20 dark:border-dust-50/20 ${
                                 isOutOfStock
                                   ? 'opacity-35 cursor-not-allowed'
                                   : 'cursor-pointer hover:scale-105'
@@ -568,7 +568,7 @@ export default function TieredPricing({
                                 </span>
                               )}
                               {isLight && !isSelected && (
-                                <span className="absolute inset-0 rounded-full border border-soil-900/25 pointer-events-none" />
+                                <span className="absolute inset-0 rounded-full border border-soil-900/25 dark:border-dust-50/30 pointer-events-none" />
                               )}
                               {isSelected && (
                                 <span
@@ -585,8 +585,8 @@ export default function TieredPricing({
                             <span
                               className={`text-[10px] leading-tight select-none text-center ${
                                 colorOpt.stock > 0
-                                  ? 'text-soil-700/80 font-medium'
-                                  : 'text-red-600 font-bold'
+                                  ? 'text-soil-700/80 dark:text-dust-300 font-medium'
+                                  : 'text-red-600 dark:text-red-400 font-bold'
                               }`}
                             >
                               {colorOpt.stock > 0 ? `${toFa(colorOpt.stock)} عدد` : 'ناموجود'}
@@ -603,11 +603,11 @@ export default function TieredPricing({
         )}
 
       {allowBatch && sorted.length > 0 && (
-        <div className="overflow-hidden rounded-2xl border border-soil-900/10 bg-white">
+        <div className="overflow-hidden rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900">
           <table className="w-full text-sm">
             <caption className="sr-only">ماتریس قیمت بر اساس تعداد</caption>
-            <thead className="bg-dust-50">
-              <tr className="text-soil-700/70">
+            <thead className="bg-dust-50 dark:bg-flora-950">
+              <tr className="text-soil-700/70 dark:text-dust-200/70">
                 <th scope="col" className="px-4 py-3 text-start font-medium">
                   {isBundle ? 'تعداد بسته' : 'تعداد'}
                 </th>
@@ -617,7 +617,7 @@ export default function TieredPricing({
                 <th scope="col" className="px-4 py-3 text-start font-medium">تخفیف</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-soil-900/5">
+            <tbody className="divide-y divide-soil-900/5 dark:divide-dust-50/5">
               {sorted.map((t, i) => {
                 const isActive =
                   count >= t.minQuantity &&
@@ -634,19 +634,19 @@ export default function TieredPricing({
                 return (
                   <tr
                     key={t.minQuantity}
-                    className={isActive ? 'bg-flora-100/60' : undefined}
+                    className={isActive ? 'bg-flora-100/60 dark:bg-flora-800/40' : undefined}
                     aria-current={isActive ? 'true' : undefined}
                   >
-                    <td className="px-4 py-3.5 font-medium text-soil-900">
+                    <td className="px-4 py-3.5 font-medium text-soil-900 dark:text-dust-50">
                       {rangeEnd
                         ? `${toFa(t.minQuantity)} تا ${toFa(rangeEnd)} ${isBundle ? 'بسته' : 'عدد'}`
                         : `${toFa(t.minQuantity)} ${isBundle ? 'بسته' : 'عدد'} به بالا`}
                     </td>
-                    <td className="px-4 py-3.5 font-bold text-flora-900">
+                    <td className="px-4 py-3.5 font-bold text-flora-900 dark:text-flora-300">
                       <div>
                         <span>{formatToman(t.unitPriceToman)}</span>
                         {t.unitPriceToman >= 1000 && (
-                          <span className="block text-[11px] font-normal text-soil-700/70">
+                          <span className="block text-[11px] font-normal text-soil-700/70 dark:text-dust-200/70">
                             ({numberToWordsFa(t.unitPriceToman)} تومان)
                           </span>
                         )}
@@ -654,9 +654,9 @@ export default function TieredPricing({
                     </td>
                     <td className="px-4 py-3.5">
                       {off > 0 ? (
-                        <span className="font-bold text-emerald-600">{toFa(off)}٪</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">{toFa(off)}٪</span>
                       ) : (
-                        <span className="text-dust-400">—</span>
+                        <span className="text-dust-400 dark:text-dust-500">—</span>
                       )}
                     </td>
                   </tr>
@@ -667,13 +667,13 @@ export default function TieredPricing({
         </div>
       )}
 
-      <div className="rounded-2xl border border-soil-900/10 bg-white p-5">
+      <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
         <div className="flex items-center justify-between gap-4">
-          <div className="text-sm font-bold text-soil-900">
+          <div className="text-sm font-bold text-soil-900 dark:text-dust-50">
             {isBundle ? (
               <span>
                 تعداد بسته: {toFa(count)} بسته{' '}
-                <span className="font-normal text-xs text-soil-700/70">
+                <span className="font-normal text-xs text-soil-700/70 dark:text-dust-200/70">
                   (شامل {toFa(totalUnits)} عدد گلدان)
                 </span>
               </span>
@@ -683,13 +683,13 @@ export default function TieredPricing({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-1">
+          <div className="flex items-center gap-1 rounded-full border border-soil-900/10 dark:border-dust-50/20 dark:bg-flora-950 p-1">
             <button
               type="button"
               onClick={() => setCount((c) => clamp(c - 1))}
               disabled={count <= minCount}
               aria-label={isBundle ? 'کاهش تعداد بسته' : 'کاهش تعداد'}
-              className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
+              className="grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-100 dark:hover:bg-flora-900 disabled:opacity-35"
             >
               −
             </button>
@@ -702,7 +702,7 @@ export default function TieredPricing({
               value={count}
               onChange={(e) => setCount(clamp(Number(e.target.value)))}
               aria-label={isBundle ? 'تعداد بسته سفارش' : 'تعداد سفارش'}
-              className="w-16 border-0 bg-transparent text-center text-base font-black text-soil-900 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-16 border-0 bg-transparent text-center text-base font-black text-soil-900 dark:text-dust-50 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
             />
             <motion.button
               type="button"
@@ -710,8 +710,8 @@ export default function TieredPricing({
               animate={shakePlus ? { x: [-5, 5, -5, 5, -2, 2, 0] } : { x: 0 }}
               transition={{ duration: 0.35 }}
               aria-label={isBundle ? 'افزایش تعداد بسته' : 'افزایش تعداد'}
-              className={`grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 transition hover:bg-dust-100 ${
-                count >= maxCount ? 'opacity-40 hover:bg-red-50' : ''
+              className={`grid size-9 place-items-center rounded-full text-lg font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-100 dark:hover:bg-flora-900 ${
+                count >= maxCount ? 'opacity-40 hover:bg-red-50 dark:hover:bg-red-950/40' : ''
               }`}
             >
               +
@@ -725,7 +725,7 @@ export default function TieredPricing({
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              className="mt-2 text-xs font-bold text-red-600 flex items-center gap-1"
+              className="mt-2 text-xs font-bold text-red-600 dark:text-red-400 flex items-center gap-1"
             >
               <span>⚠️</span>
               <span>موجودی کافی نیست</span>
@@ -734,12 +734,12 @@ export default function TieredPricing({
         </AnimatePresence>
 
         {count >= maxCount && maxCount > 0 && (
-          <div className="mt-2.5 flex flex-col sm:flex-row items-start sm:items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50 px-3.5 py-2.5 text-xs font-semibold text-amber-900 leading-relaxed">
+          <div className="mt-2.5 flex flex-col sm:flex-row items-start sm:items-center gap-2 rounded-xl border border-amber-200/80 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/50 px-3.5 py-2.5 text-xs font-semibold text-amber-900 dark:text-amber-200 leading-relaxed">
             <span className="shrink-0 text-sm">⚠️</span>
             <span className="flex-1 break-words">
               {limitingItem ? (
                 <>
-                  محدودیت موجودی: رنگ <strong className="font-bold text-amber-950">{limitingItem.colorName}</strong> برای <strong className="font-bold text-amber-950">{limitingItem.itemName}</strong> تنها <strong className="font-bold text-amber-950">{toFa(limitingItem.stock)} عدد</strong> موجود دارد.
+                  محدودیت موجودی: رنگ <strong className="font-bold text-amber-950 dark:text-amber-100">{limitingItem.colorName}</strong> برای <strong className="font-bold text-amber-950 dark:text-amber-100">{limitingItem.itemName}</strong> تنها <strong className="font-bold text-amber-950 dark:text-amber-100">{toFa(limitingItem.stock)} عدد</strong> موجود دارد.
                 </>
               ) : isBundle ? (
                 <>
@@ -760,7 +760,7 @@ export default function TieredPricing({
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              className="mt-2.5 flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2 text-xs font-bold text-amber-800"
+              className="mt-2.5 flex items-center gap-1.5 rounded-xl border border-amber-300 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/50 px-3.5 py-2 text-xs font-bold text-amber-800 dark:text-amber-200"
             >
               <span>ℹ️</span>
               <span>{colorStockWarning}</span>
@@ -778,8 +778,8 @@ export default function TieredPricing({
                 className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                   count >= t.minQuantity &&
                   resolveTier(sorted, count).minQuantity === t.minQuantity
-                    ? 'bg-flora-900 text-white'
-                    : 'bg-dust-100 text-soil-700 hover:bg-dust-200'
+                    ? 'bg-flora-900 text-white dark:bg-flora-700'
+                    : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
                 }`}
               >
                 {t.label ?? 'پله'} · {toFa(t.minQuantity)}+ {isBundle ? 'بسته' : ''}
@@ -796,17 +796,17 @@ export default function TieredPricing({
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               onClick={() => setCount(clamp(hint.minQuantity))}
-              className="mt-4 block w-full rounded-xl bg-dust-100 px-4 py-3 text-start text-xs leading-6 text-soil-700 transition hover:bg-dust-200"
+              className="mt-4 block w-full rounded-xl bg-dust-100 dark:bg-flora-900/50 px-4 py-3 text-start text-xs leading-6 text-soil-700 dark:text-dust-200 transition hover:bg-dust-200 dark:hover:bg-flora-800"
             >
-              <span className="font-bold text-dust-500">
+              <span className="font-bold text-dust-500 dark:text-dust-400">
                 {toFa(hint.minQuantity - count)} {isBundle ? 'بسته' : 'عدد'} دیگر
               </span>{' '}
               اضافه کن و هر {isBundle ? 'بسته' : 'عدد'} را{' '}
-              <span className="font-bold">
+              <span className="font-bold text-soil-900 dark:text-dust-50">
                 {formatToman(hint.unitPriceToman - packagePrice)}
               </span>{' '}
               ارزان‌تر بخر — مجموعاً{' '}
-              <span className="font-bold text-flora-700">
+              <span className="font-bold text-flora-700 dark:text-flora-400">
                 {formatToman(hint.saveMoreToman)}
               </span>{' '}
               بیشتر صرفه‌جویی کن.
@@ -817,17 +817,17 @@ export default function TieredPricing({
 
       <motion.div
         layout
-        className="rounded-2xl border border-flora-500/20 bg-flora-100/40 p-5"
+        className="rounded-2xl border border-flora-500/20 dark:border-flora-500/30 bg-flora-100/40 dark:bg-flora-900/60 p-5"
       >
         <dl className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <dt className="text-soil-700/70">
+            <dt className="text-soil-700/70 dark:text-dust-200/70">
               {isBundle ? 'قیمت پکیج (در این پله)' : 'قیمت هر عدد'}
             </dt>
             <dd className="mt-1">
               {hasSale && (
                 <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-xs font-bold line-through text-soil-700/50">
+                  <span className="text-xs font-bold line-through text-soil-700/50 dark:text-dust-200/50">
                     {formatToman(product.basePriceToman)}
                   </span>
                   <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-black text-white">
@@ -835,52 +835,52 @@ export default function TieredPricing({
                   </span>
                 </div>
               )}
-              <span className={`text-xl font-black ${hasSale ? 'text-red-600' : 'text-soil-900'}`}>
+              <span className={`text-xl font-black ${hasSale ? 'text-red-600 dark:text-red-400' : 'text-soil-900 dark:text-dust-50'}`}>
                 {formatToman(packagePrice)}
               </span>
               {packagePrice > 0 && (
-                <span className="block text-xs font-semibold text-soil-700/80 mt-0.5">
+                <span className="block text-xs font-semibold text-soil-700/80 dark:text-dust-200/80 mt-0.5">
                   ({numberToWordsFa(packagePrice)} تومان)
                 </span>
               )}
               {isBundle && (
-                <span className="block text-xs font-normal text-soil-700/70 mt-1">
+                <span className="block text-xs font-normal text-soil-700/70 dark:text-dust-200/70 mt-1">
                   (معادل {formatToman(unitEquivalent)} تومان برای هر عدد)
                 </span>
               )}
             </dd>
           </div>
           <div>
-            <dt className="text-soil-700/70">مبلغ کل</dt>
+            <dt className="text-soil-700/70 dark:text-dust-200/70">مبلغ کل</dt>
             <dd className="mt-1">
               {hasSale && (
-                <div className="mb-1 text-xs font-bold line-through text-soil-700/50">
+                <div className="mb-1 text-xs font-bold line-through text-soil-700/50 dark:text-dust-200/50">
                   {formatToman(product.basePriceToman * count)}
                 </div>
               )}
-              <span className="text-xl font-black text-flora-900">
+              <span className="text-xl font-black text-flora-900 dark:text-flora-300">
                 {formatToman(total)}
               </span>
               {total > 0 && (
-                <span className="block text-xs font-semibold text-flora-800/80 mt-0.5">
+                <span className="block text-xs font-semibold text-flora-800/80 dark:text-flora-200/80 mt-0.5">
                   ({numberToWordsFa(total)} تومان)
                 </span>
               )}
             </dd>
           </div>
           <div>
-            <dt className="text-soil-700/70">وزن تقریبی</dt>
-            <dd className="mt-1 font-bold text-soil-900">
+            <dt className="text-soil-700/70 dark:text-dust-200/70">وزن تقریبی</dt>
+            <dd className="mt-1 font-bold text-soil-900 dark:text-dust-50">
               {formatWeight(totalWeight)}
             </dd>
           </div>
           <div>
-            <dt className="text-soil-700/70">تعداد کل</dt>
-            <dd className="mt-1 font-bold text-soil-900">
+            <dt className="text-soil-700/70 dark:text-dust-200/70">تعداد کل</dt>
+            <dd className="mt-1 font-bold text-soil-900 dark:text-dust-50">
               {isBundle ? (
                 <>
                   {toFa(count)} بسته
-                  <span className="block text-xs text-soil-700/60 mt-1">
+                  <span className="block text-xs text-soil-700/60 dark:text-dust-200/60 mt-1">
                     (شامل {toFa(totalUnits)} عدد گلدان)
                   </span>
                 </>
@@ -888,7 +888,7 @@ export default function TieredPricing({
                 <>
                   {toFa(count)} عدد
                   {product.minOrderQuantity && product.minOrderQuantity > 1 ? (
-                    <span className="block text-xs text-soil-700/60 mt-1">
+                    <span className="block text-xs text-soil-700/60 dark:text-dust-200/60 mt-1">
                       (حداقل سفارش: {toFa(product.minOrderQuantity)} عدد)
                     </span>
                   ) : null}
@@ -902,7 +902,7 @@ export default function TieredPricing({
           <motion.p
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 flex items-center gap-2 rounded-xl bg-flora-500/15 px-4 py-2.5 text-xs font-bold text-flora-700"
+            className="mt-4 flex items-center gap-2 rounded-xl bg-flora-500/15 dark:bg-flora-500/25 px-4 py-2.5 text-xs font-bold text-flora-700 dark:text-flora-300"
           >
             <span className="grid size-5 place-items-center rounded-full bg-flora-500 text-[11px] text-white">
               ✓
@@ -912,7 +912,7 @@ export default function TieredPricing({
         )}
 
         {isColorStockLimited && (
-          <p className="mt-3.5 flex items-center gap-1.5 rounded-xl border border-amber-300/80 bg-amber-50/80 px-3.5 py-2 text-xs font-bold text-amber-800">
+          <p className="mt-3.5 flex items-center gap-1.5 rounded-xl border border-amber-300/80 dark:border-amber-800/50 bg-amber-50/80 dark:bg-amber-950/50 px-3.5 py-2 text-xs font-bold text-amber-800 dark:text-amber-200">
             <span>ℹ️</span>
             <span>توجه: موجودی رنگهای انتخاب شده محدود است.</span>
           </p>
@@ -932,47 +932,47 @@ export default function TieredPricing({
         const totalSavings = totalValue - totalPackagePrice;
 
         return (
-          <details className="group rounded-2xl border border-soil-900/10 bg-white">
-            <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 [&::-webkit-details-marker]:hidden">
+          <details className="group rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900">
+            <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-black text-soil-900 dark:text-dust-50 [&::-webkit-details-marker]:hidden">
               <span>مشاهده محتویات این بسته ({toFa(items.length)} آیتم)</span>
-              <span className="transition-transform group-open:rotate-180 text-soil-700/60">▼</span>
+              <span className="transition-transform group-open:rotate-180 text-soil-700/60 dark:text-dust-200/60">▼</span>
             </summary>
-            <div className="border-t border-soil-900/10 p-4">
+            <div className="border-t border-soil-900/10 dark:border-dust-50/10 p-4">
               <div className="space-y-2">
                 {items.map((item, i) => {
                   const itemPrice = item.price ?? item.priceToman;
                   return (
                     <div
                       key={i}
-                      className="rounded-xl border border-soil-900/10 bg-dust-50/60 p-3.5 transition-colors hover:bg-dust-50"
+                      className="rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50/60 dark:bg-flora-950/60 p-3.5 transition-colors hover:bg-dust-50 dark:hover:bg-flora-950"
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <p className="text-sm font-bold text-soil-900">{item.title}</p>
+                        <p className="text-sm font-bold text-soil-900 dark:text-dust-50">{item.title}</p>
                         {itemPrice && itemPrice > 0 ? (
-                          <span className="text-xs font-bold text-flora-800 shrink-0">
+                          <span className="text-xs font-bold text-flora-800 dark:text-flora-300 shrink-0">
                             {formatToman(itemPrice)}
                           </span>
                         ) : null}
                       </div>
-                      <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-soil-700/70">
+                      <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-soil-700/70 dark:text-dust-200/70">
                         {item.material && (
                           <span>
-                            جنس: <strong className="text-soil-900">{item.material}</strong>
+                            جنس: <strong className="text-soil-900 dark:text-dust-50">{item.material}</strong>
                           </span>
                         )}
                         {item.diameterCm > 0 && (
                           <span>
-                            قطر: <strong className="text-soil-900">{toFa(item.diameterCm)} سانتی‌متر</strong>
+                            قطر: <strong className="text-soil-900 dark:text-dust-50">{toFa(item.diameterCm)} سانتی‌متر</strong>
                           </span>
                         )}
                         {item.heightCm > 0 && (
                           <span>
-                            ارتفاع: <strong className="text-soil-900">{toFa(item.heightCm)} سانتی‌متر</strong>
+                            ارتفاع: <strong className="text-soil-900 dark:text-dust-50">{toFa(item.heightCm)} سانتی‌متر</strong>
                           </span>
                         )}
                         {item.weightGrams > 0 && (
                           <span>
-                            وزن: <strong className="text-soil-900">{toFa(item.weightGrams)} گرم</strong>
+                            وزن: <strong className="text-soil-900 dark:text-dust-50">{toFa(item.weightGrams)} گرم</strong>
                           </span>
                         )}
                       </div>
@@ -982,30 +982,30 @@ export default function TieredPricing({
               </div>
 
               {/* Summary Box with totalValue and totalPackagePrice */}
-              <div className="mt-4 rounded-xl border border-soil-900/10 bg-dust-100/70 p-4 space-y-2 text-xs">
+              <div className="mt-4 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-100/70 dark:bg-flora-950/70 p-4 space-y-2 text-xs">
                 {totalValue > 0 && (
-                  <div className="flex items-center justify-between text-soil-700/70">
+                  <div className="flex items-center justify-between text-soil-700/70 dark:text-dust-200/70">
                     <span>ارزش تک‌فروشی {toFa(count)} بسته:</span>
-                    <span className={totalSavings > 0 ? 'line-through text-soil-700/50' : 'font-bold text-soil-900'}>
+                    <span className={totalSavings > 0 ? 'line-through text-soil-700/50 dark:text-dust-200/50' : 'font-bold text-soil-900 dark:text-dust-50'}>
                       {formatToman(totalValue)}
                     </span>
                   </div>
                 )}
-                <div className="flex items-center justify-between text-soil-900">
+                <div className="flex items-center justify-between text-soil-900 dark:text-dust-50">
                   <span className="font-bold">قیمت فروش {toFa(count)} بسته:</span>
                   <div className="text-end">
-                    <span className="text-sm font-black text-soil-900">
+                    <span className="text-sm font-black text-soil-900 dark:text-dust-50">
                       {formatToman(totalPackagePrice)}
                     </span>
                     {totalPackagePrice >= 1000 && (
-                      <span className="block text-[11px] font-medium text-soil-700/70">
+                      <span className="block text-[11px] font-medium text-soil-700/70 dark:text-dust-200/70">
                         ({numberToWordsFa(totalPackagePrice)} تومان)
                       </span>
                     )}
                   </div>
                 </div>
                 {totalSavings > 0 && (
-                  <div className="flex items-center justify-between rounded-lg bg-emerald-100/90 p-2.5 font-bold text-emerald-800">
+                  <div className="flex items-center justify-between rounded-lg bg-emerald-100/90 dark:bg-emerald-950/60 p-2.5 font-bold text-emerald-800 dark:text-emerald-300">
                     <span className="flex items-center gap-1.5">
                       <span>🌱</span>
                       <span>شما {formatToman(totalSavings)} صرفه‌جویی می‌کنید!</span>
@@ -1025,17 +1025,17 @@ export default function TieredPricing({
             (c) => c.hexCode.toUpperCase() === colorCtx.selectedColor?.toUpperCase(),
           );
           return (
-            <div className="flex items-center gap-2 rounded-xl bg-dust-50 px-3.5 py-2 text-xs border border-soil-900/10">
-              <span className="text-soil-700/70">رنگ انتخابی:</span>
+            <div className="flex items-center gap-2 rounded-xl bg-dust-50 dark:bg-flora-950 px-3.5 py-2 text-xs border border-soil-900/10 dark:border-dust-50/10">
+              <span className="text-soil-700/70 dark:text-dust-200/70">رنگ انتخابی:</span>
               <span
-                className="size-4 rounded-full border border-soil-900/20 shadow-2xs"
+                className="size-4 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-2xs"
                 style={{ backgroundColor: colorCtx.selectedColor }}
               />
-              <span className="font-mono text-soil-900 font-bold dir-ltr">
+              <span className="font-mono text-soil-900 dark:text-dust-50 font-bold dir-ltr">
                 {colorCtx.selectedColor}
               </span>
               {opt && (
-                <span className={opt.stock > 0 ? "text-soil-700/60 font-medium" : "text-red-600 font-bold"}>
+                <span className={opt.stock > 0 ? "text-soil-700/60 dark:text-dust-300 font-medium" : "text-red-600 dark:text-red-400 font-bold"}>
                   ({opt.stock > 0 ? `موجودی: ${toFa(opt.stock)} عدد` : 'ناموجود'})
                 </span>
               )}
@@ -1043,8 +1043,8 @@ export default function TieredPricing({
           );
         })()}
         {isBundle && Object.keys(colorCtx?.selectedBundleColors ?? {}).length > 0 && (
-          <div className="rounded-xl bg-dust-50 p-3 text-xs border border-soil-900/10 space-y-1.5">
-            <span className="font-bold text-soil-900 block">رنگ‌های انتخابی اقلام بسته:</span>
+          <div className="rounded-xl bg-dust-50 dark:bg-flora-950 p-3 text-xs border border-soil-900/10 dark:border-dust-50/10 space-y-1.5">
+            <span className="font-bold text-soil-900 dark:text-dust-50 block">رنگ‌های انتخابی اقلام بسته:</span>
             <div className="flex flex-wrap gap-2">
               {Object.entries(colorCtx?.selectedBundleColors ?? {}).map(([idxStr, hex]) => {
                 const i = Number(idxStr);
@@ -1056,15 +1056,15 @@ export default function TieredPricing({
                 return (
                   <span
                     key={idxStr}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-soil-900/10 px-2 py-1 text-[11px]"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-flora-900 border border-soil-900/10 dark:border-dust-50/10 px-2 py-1 text-[11px]"
                   >
-                    <span className="text-soil-700">{itName}:</span>
+                    <span className="text-soil-700 dark:text-dust-200">{itName}:</span>
                     <span
-                      className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
+                      className="size-3.5 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-2xs"
                       style={{ backgroundColor: hex }}
                     />
                     {opt && (
-                      <span className={opt.stock > 0 ? "text-soil-700/60 font-medium" : "text-red-600 font-bold"}>
+                      <span className={opt.stock > 0 ? "text-soil-700/60 dark:text-dust-300 font-medium" : "text-red-600 dark:text-red-400 font-bold"}>
                         ({opt.stock > 0 ? toFa(opt.stock) : 'ناموجود'})
                       </span>
                     )}
@@ -1092,14 +1092,14 @@ export default function TieredPricing({
                   : `افزودن ${toFa(count)} عدد به سبد — ${formatToman(total)}`}
         </button>
 
-        <div className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700 text-center">
+        <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/40 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-200 text-center">
           📦 توجه: مرسولات فقط در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال می‌شوند.
         </div>
 
         {error && (
           <p
             role="alert"
-            className="rounded-xl bg-red-50 px-4 py-3 text-xs font-bold text-red-700"
+            className="rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/40 px-4 py-3 text-xs font-bold text-red-700 dark:text-red-300"
           >
             {error}
           </p>

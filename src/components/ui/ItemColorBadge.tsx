@@ -83,8 +83,8 @@ export default function ItemColorBadge({ colorData, className = '' }: Props) {
 
   if (bundleColors && Object.keys(bundleColors).length > 0) {
     return (
-      <div className={`flex flex-wrap items-center gap-1.5 text-[11px] text-soil-700 ${className}`}>
-        <span className="text-[10px] text-soil-700/60 font-medium">رنگ‌ها:</span>
+      <div className={`flex flex-wrap items-center gap-1.5 text-[11px] text-soil-700 dark:text-dust-200 ${className}`}>
+        <span className="text-[10px] text-soil-700/60 dark:text-dust-200/60 font-medium">رنگ‌ها:</span>
         {Object.entries(bundleColors).map(([idx, item]) => {
           const num = Number(idx);
           const label = !isNaN(num) ? `گلدان ${toFa(num + 1)}` : idx;
@@ -92,11 +92,11 @@ export default function ItemColorBadge({ colorData, className = '' }: Props) {
           return (
             <span
               key={idx}
-              className="inline-flex items-center gap-1 rounded-md border border-soil-900/10 bg-dust-50 px-1.5 py-0.5"
+              className="inline-flex items-center gap-1 rounded-md border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 px-1.5 py-0.5"
             >
               <span className="text-[10px]">{label}:</span>
               <span
-                className="size-2.5 rounded-full border border-soil-900/20 shadow-2xs shrink-0"
+                className="size-2.5 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-2xs shrink-0"
                 style={{ backgroundColor: item.hex }}
                 title={item.hex}
               />
@@ -112,18 +112,18 @@ export default function ItemColorBadge({ colorData, className = '' }: Props) {
     const colorName = resolveColorName(singleColor, singleColorName ?? undefined);
     return (
       <span
-        className={`inline-flex items-center gap-1.5 text-xs text-soil-700/80 ${className}`}
+        className={`inline-flex items-center gap-1.5 text-xs text-soil-700/80 dark:text-dust-200/80 ${className}`}
       >
-        <span className="text-soil-700/70">رنگ:</span>
+        <span className="text-soil-700/70 dark:text-dust-200/70">رنگ:</span>
         <span
-          className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs shrink-0"
+          className="size-3.5 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-2xs shrink-0"
           style={{ backgroundColor: singleColor }}
           title={singleColor}
         />
         {colorName ? (
-          <span className="font-bold text-soil-900">{colorName}</span>
+          <span className="font-bold text-soil-900 dark:text-dust-50">{colorName}</span>
         ) : (
-          <span className="font-mono text-[11px] dir-ltr font-bold text-soil-800">
+          <span className="font-mono text-[11px] dir-ltr font-bold text-soil-800 dark:text-dust-100">
             {singleColor}
           </span>
         )}

@@ -43,8 +43,8 @@ export default async function AdminOrdersPage({
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-soil-900">سفارش‌ها</h1>
-      <p className="mt-2 text-sm text-soil-700/70">
+      <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">سفارش‌ها</h1>
+      <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
         {toFa(orders.length)} سفارش در این نمایش
       </p>
 
@@ -56,8 +56,8 @@ export default async function AdminOrdersPage({
             className={
               'rounded-full px-3.5 py-1.5 text-xs font-bold transition ' +
               (active === f.key
-                ? 'bg-flora-900 text-white'
-                : 'bg-dust-100 text-soil-700 hover:bg-dust-200')
+                ? 'bg-flora-900 text-white dark:bg-flora-800'
+                : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800')
             }
           >
             {f.label}
@@ -66,14 +66,14 @@ export default async function AdminOrdersPage({
       </div>
 
       {orders.length === 0 ? (
-        <p className="mt-8 rounded-2xl border border-dashed border-soil-900/15 px-6 py-12 text-center text-sm text-soil-700/70">
+        <p className="mt-8 rounded-2xl border border-dashed border-soil-900/15 dark:border-dust-50/20 px-6 py-12 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
           سفارشی در این دسته یافت نشد.
         </p>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-2xl border border-soil-900/10 bg-white">
+        <div className="mt-6 overflow-hidden rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-dust-50 text-soil-700/70">
+              <thead className="bg-dust-50 dark:bg-flora-950 text-soil-700/70 dark:text-dust-200/70">
                 <tr>
                   <th className="px-4 py-3 text-start font-medium">شماره</th>
                   <th className="px-4 py-3 text-start font-medium">مشتری</th>
@@ -85,30 +85,30 @@ export default async function AdminOrdersPage({
                   <th className="px-4 py-3 text-start font-medium"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-soil-900/5">
+              <tbody className="divide-y divide-soil-900/5 dark:divide-dust-50/10">
                 {orders.map((o) => (
                   <tr key={o.id}>
-                    <td className="px-4 py-3.5 font-mono text-xs">{toFa(o.orderNumber)}</td>
-                    <td className="px-4 py-3.5">
+                    <td className="px-4 py-3.5 font-mono text-xs text-soil-900 dark:text-dust-50">{toFa(o.orderNumber)}</td>
+                    <td className="px-4 py-3.5 text-soil-900 dark:text-dust-50">
                       {o.user.fullName ?? toFa(o.user.phone ?? '—')}
                     </td>
-                    <td className="px-4 py-3.5 text-xs text-soil-700/70">
+                    <td className="px-4 py-3.5 text-xs text-soil-700/70 dark:text-dust-200/70">
                       {toFa(o._count.items)} قلم
                     </td>
-                    <td className="px-4 py-3.5 font-bold">{formatToman(o.totalToman)}</td>
+                    <td className="px-4 py-3.5 font-bold text-soil-900 dark:text-dust-50">{formatToman(o.totalToman)}</td>
                     <td className="px-4 py-3.5">
                       <StatusBadge kind="payment" value={o.paymentStatus} />
                     </td>
                     <td className="px-4 py-3.5">
                       <OrderStatusBadge status={o.status} />
                     </td>
-                    <td className="px-4 py-3.5 text-xs text-soil-700/60">
+                    <td className="px-4 py-3.5 text-xs text-soil-700/60 dark:text-dust-200/60">
                       {formatDateFa(o.createdAt)}
                     </td>
                     <td className="px-4 py-3.5">
                       <Link
                         href={'/admin/orders/' + o.id}
-                        className="text-xs font-bold text-flora-700 hover:text-flora-900"
+                        className="text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200"
                       >
                         مدیریت ←
                       </Link>

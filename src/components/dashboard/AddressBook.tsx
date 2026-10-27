@@ -97,7 +97,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
   return (
     <div className="space-y-4">
       {error && (
-        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-xs font-bold text-red-700">
+        <p role="alert" className="rounded-xl border border-transparent bg-red-50 px-4 py-3 text-xs font-bold text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </p>
       )}
@@ -116,27 +116,27 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
           ) : (
             <li
               key={a.id}
-              className="flex flex-col rounded-2xl border border-soil-900/10 bg-white p-5 text-sm"
+              className="flex flex-col rounded-2xl border border-soil-900/10 bg-white p-5 text-sm dark:border-dust-50/10 dark:bg-flora-900"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-bold text-soil-900">{a.fullName}</span>
+                <span className="font-bold text-soil-900 dark:text-dust-50">{a.fullName}</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="rounded-full bg-dust-100 px-2.5 py-0.5 text-[10px] font-bold text-soil-700">
+                  <span className="rounded-full bg-dust-100 px-2.5 py-0.5 text-[10px] font-bold text-soil-700 dark:bg-flora-800 dark:text-dust-200">
                     {LABEL_TEXT[a.label]}
                   </span>
                   {a.isDefault && (
-                    <span className="rounded-full bg-flora-100 px-2.5 py-0.5 text-[10px] font-bold text-flora-700">
+                    <span className="rounded-full border border-transparent bg-flora-100 px-2.5 py-0.5 text-[10px] font-bold text-flora-700 dark:border-flora-800 dark:bg-flora-950 dark:text-flora-300">
                       پیش‌فرض
                     </span>
                   )}
                 </div>
               </div>
 
-              <p className="mt-2 grow leading-7 text-soil-700/80">
+              <p className="mt-2 grow leading-7 text-soil-700/80 dark:text-dust-200/80">
                 {a.province}، {a.city}، {a.line1}
                 {a.line2 ? `، ${a.line2}` : ''}
               </p>
-              <p className="mt-2 text-xs text-soil-700/60">
+              <p className="mt-2 text-xs text-soil-700/60 dark:text-dust-200/60">
                 کد پستی: <span dir="ltr">{a.postalCode}</span> · تلفن:{' '}
                 <span dir="ltr">{a.phone}</span>
               </p>
@@ -145,7 +145,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
                 <button
                   type="button"
                   onClick={() => setEditingId(a.id)}
-                  className="rounded-full bg-dust-100 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-200"
+                  className="rounded-full bg-dust-100 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-200 dark:bg-flora-800 dark:text-dust-50 dark:hover:bg-flora-700"
                 >
                   ویرایش
                 </button>
@@ -154,7 +154,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
                     type="button"
                     onClick={() => makeDefault(a)}
                     disabled={busyId === a.id}
-                    className="rounded-full border border-soil-900/15 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-50 disabled:opacity-50"
+                    className="rounded-full border border-soil-900/15 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-50 disabled:opacity-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
                   >
                     {busyId === a.id ? 'در حال تغییر…' : 'انتخاب به‌عنوان پیش‌فرض'}
                   </button>
@@ -163,7 +163,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
                   type="button"
                   onClick={() => setAddressToDelete(a)}
                   disabled={busyId === a.id}
-                  className="rounded-full border border-red-200 bg-red-50 px-3.5 py-2 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
+                  className="cursor-pointer rounded-full border border-red-200 bg-red-50 px-3.5 py-2 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/60"
                 >
                   حذف
                 </button>
@@ -179,7 +179,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
         <button
           type="button"
           onClick={() => setAdding(true)}
-          className="w-full rounded-2xl border border-dashed border-soil-900/20 px-6 py-3.5 text-sm font-bold text-soil-900 transition hover:bg-dust-50 cursor-pointer"
+          className="w-full cursor-pointer rounded-2xl border border-dashed border-soil-900/20 px-6 py-3.5 text-sm font-bold text-soil-900 transition hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-900"
         >
           + افزودن آدرس جدید
         </button>

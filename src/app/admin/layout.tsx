@@ -21,8 +21,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 print:max-w-full print:p-0 print:m-0">
       <div className="grid gap-8 lg:grid-cols-12 print:block">
         <aside className="lg:col-span-3 print:hidden no-print">
-          <nav className="sticky top-6 rounded-2xl border border-soil-900/10 bg-white p-4">
-            <p className="px-3 pb-3 text-[11px] font-bold uppercase tracking-wider text-soil-700/50">
+          <nav className="sticky top-6 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-950 p-4">
+            <p className="px-3 pb-3 text-[11px] font-bold uppercase tracking-wider text-soil-700/50 dark:text-dust-200/50">
               پنل مدیریت
             </p>
             <GlobalSearch />
@@ -31,7 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 <li key={n.href}>
                   <Link
                     href={n.href}
-                    className="block rounded-xl px-3 py-2.5 text-sm font-bold text-soil-900 transition hover:bg-dust-100"
+                    className="block rounded-xl px-3 py-2.5 text-sm font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-100 dark:hover:bg-flora-900"
                   >
                     {n.label}
                   </Link>

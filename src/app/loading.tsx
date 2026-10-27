@@ -12,7 +12,7 @@ export default function Loading() {
       className="flex min-h-[65vh] flex-col items-center justify-center py-20 px-4"
     >
       <PixelPlantLoader size={80} />
-      <p className="mt-4 text-xs md:text-sm font-medium text-soil-700/70 tracking-wide animate-pulse">
+      <p className="mt-4 text-xs md:text-sm font-medium text-soil-700/70 dark:text-dust-200/70 tracking-wide animate-pulse">
         در حال بارگذاری...
       </p>
     </div>

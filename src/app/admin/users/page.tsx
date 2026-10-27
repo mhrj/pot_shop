@@ -51,8 +51,8 @@ export default async function AdminUsersPage({ searchParams }: Props) {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-soil-900">مدیریت کاربران</h1>
-          <p className="mt-1 text-sm text-soil-700/70">
+          <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">مدیریت کاربران</h1>
+          <p className="mt-1 text-sm text-soil-700/70 dark:text-dust-200/70">
             {toFa(totalUsers)} کاربر ثبت‌نام شده در فروشگاه
           </p>
         </div>
@@ -60,44 +60,44 @@ export default async function AdminUsersPage({ searchParams }: Props) {
 
       {/* Stats summary */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-soil-900/10 bg-white p-4">
-          <p className="text-xs font-bold text-soil-700/60">تعداد کاربران</p>
-          <p className="mt-2 text-xl font-black text-soil-900">{toFa(totalUsers)} نفر</p>
+        <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4">
+          <p className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60">تعداد کاربران</p>
+          <p className="mt-2 text-xl font-black text-soil-900 dark:text-dust-50">{toFa(totalUsers)} نفر</p>
         </div>
-        <div className="rounded-2xl border border-soil-900/10 bg-white p-4">
-          <p className="text-xs font-bold text-soil-700/60">مدیران سیستم</p>
-          <p className="mt-2 text-xl font-black text-amber-700">{toFa(totalAdmins)} مدیر</p>
+        <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4">
+          <p className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60">مدیران سیستم</p>
+          <p className="mt-2 text-xl font-black text-amber-700 dark:text-amber-400">{toFa(totalAdmins)} مدیر</p>
         </div>
-        <div className="rounded-2xl border border-soil-900/10 bg-white p-4">
-          <p className="text-xs font-bold text-soil-700/60">مجموع خرید موفق</p>
-          <p className="mt-2 text-xl font-black text-flora-800">{formatToman(overallSpent)}</p>
+        <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4">
+          <p className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60">مجموع خرید موفق</p>
+          <p className="mt-2 text-xl font-black text-flora-800 dark:text-flora-300">{formatToman(overallSpent)}</p>
         </div>
       </div>
 
       {/* Search Bar */}
       <form
         method="GET"
-        className="flex items-center gap-2 rounded-2xl border border-soil-900/10 bg-white p-2"
+        className="flex items-center gap-2 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-2"
       >
-        <span className="ps-2 text-soil-700/50">🔍</span>
+        <span className="ps-2 text-soil-700/50 dark:text-dust-200/50">🔍</span>
         <input
           type="text"
           name="q"
           defaultValue={query}
           placeholder="جستجو با نام، شماره همراه یا ایمیل..."
-          className="flex-1 bg-transparent px-2 py-1.5 text-sm text-soil-900 placeholder:text-soil-700/50 outline-none"
+          className="flex-1 bg-transparent px-2 py-1.5 text-sm text-soil-900 dark:text-dust-50 placeholder:text-soil-700/50 dark:placeholder:text-dust-200/40 outline-none"
         />
         {query && (
           <Link
             href="/admin/users"
-            className="rounded-xl px-3 py-1.5 text-xs font-medium text-soil-700/70 hover:bg-dust-100"
+            className="rounded-xl px-3 py-1.5 text-xs font-medium text-soil-700/70 dark:text-dust-200/70 hover:bg-dust-100 dark:hover:bg-flora-800"
           >
             پاک کردن
           </Link>
         )}
         <button
           type="submit"
-          className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-800"
+          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-800 dark:hover:bg-flora-700"
         >
           جستجو
         </button>
@@ -105,20 +105,20 @@ export default async function AdminUsersPage({ searchParams }: Props) {
 
       {/* Users Table */}
       {users.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-soil-900/15 bg-white p-12 text-center text-sm text-soil-700/70">
+        <div className="rounded-2xl border border-dashed border-soil-900/15 dark:border-dust-50/15 bg-white dark:bg-flora-900 p-12 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
           <p className="text-3xl mb-2">👤</p>
-          <p className="font-bold">کاربری یافت نشد.</p>
+          <p className="font-bold text-soil-900 dark:text-dust-50">کاربری یافت نشد.</p>
           {query && (
-            <p className="mt-1 text-xs text-soil-700/50">
+            <p className="mt-1 text-xs text-soil-700/50 dark:text-dust-200/50">
               با جستجوی عبارت «{query}» موردی یافت نشد.
             </p>
           )}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-soil-900/10 bg-white shadow-xs">
+        <div className="overflow-hidden rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 shadow-xs dark:shadow-none">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-soil-900/10 bg-dust-50 text-soil-700/70">
+              <thead className="border-b border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 text-soil-700/70 dark:text-dust-200/70">
                 <tr>
                   <th className="px-4 py-3.5 text-start font-medium">کاربر</th>
                   <th className="px-4 py-3.5 text-start font-medium">شماره تماس</th>
@@ -130,7 +130,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                   <th className="px-4 py-3.5 text-start font-medium"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-soil-900/5">
+              <tbody className="divide-y divide-soil-900/5 dark:divide-dust-50/5">
                 {users.map((user) => {
                   const paidSpent = user.orders
                     .filter((o) => o.paymentStatus === 'PAID')
@@ -139,32 +139,32 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                   return (
                     <tr
                       key={user.id}
-                      className="group cursor-pointer transition hover:bg-dust-50/70"
+                      className="group cursor-pointer transition hover:bg-dust-50/70 dark:hover:bg-flora-800/40"
                     >
                       <td className="px-4 py-3.5">
                         <Link
                           href={`/admin/users/${user.id}`}
                           className="flex items-center gap-3"
                         >
-                          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-dust-200 text-xs font-bold text-soil-700">
+                          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-dust-200 dark:bg-flora-800 text-xs font-bold text-soil-700 dark:text-dust-200">
                             {user.fullName ? user.fullName[0] : '؟'}
                           </div>
                           <div>
-                            <p className="font-bold text-soil-900 group-hover:text-flora-800 transition">
+                            <p className="font-bold text-soil-900 dark:text-dust-50 group-hover:text-flora-800 dark:group-hover:text-flora-300 transition">
                               {user.fullName || 'بدون نام'}
                             </p>
-                            <span className="text-[11px] text-soil-700/50">
+                            <span className="text-[11px] text-soil-700/50 dark:text-dust-200/50">
                               عضویت: {formatDateFa(user.createdAt)}
                             </span>
                           </div>
                         </Link>
                       </td>
-                      <td className="px-4 py-3.5 font-mono text-xs" dir="ltr">
+                      <td className="px-4 py-3.5 font-mono text-xs text-soil-800 dark:text-dust-200" dir="ltr">
                         <Link href={`/admin/users/${user.id}`}>
                           {user.phone ? toFa(user.phone) : '—'}
                         </Link>
                       </td>
-                      <td className="px-4 py-3.5 font-mono text-xs text-soil-700/80" dir="ltr">
+                      <td className="px-4 py-3.5 font-mono text-xs text-soil-700/80 dark:text-dust-200/80" dir="ltr">
                         <Link href={`/admin/users/${user.id}`}>
                           {user.email || '—'}
                         </Link>
@@ -174,8 +174,8 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                           <span
                             className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
                               user.role === 'ADMIN'
-                                ? 'bg-amber-100 text-amber-800'
-                                : 'bg-dust-100 text-soil-700'
+                                ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                                : 'bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200'
                             }`}
                           >
                             {user.role === 'ADMIN' ? 'مدیر' : 'مشتری'}
@@ -187,20 +187,20 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                           <span
                             className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
                               user.isActive
-                                ? 'bg-flora-100 text-flora-800'
-                                : 'bg-red-100 text-red-700'
+                                ? 'bg-flora-100 text-flora-800 dark:bg-flora-900/60 dark:text-flora-300'
+                                : 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-400'
                             }`}
                           >
                             {user.isActive ? 'فعال' : 'غیرفعال'}
                           </span>
                         </Link>
                       </td>
-                      <td className="px-4 py-3.5 text-xs font-medium text-soil-700">
+                      <td className="px-4 py-3.5 text-xs font-medium text-soil-700 dark:text-dust-300">
                         <Link href={`/admin/users/${user.id}`}>
                           {toFa(user._count.orders)} سفارش
                         </Link>
                       </td>
-                      <td className="px-4 py-3.5 font-bold text-soil-900">
+                      <td className="px-4 py-3.5 font-bold text-soil-900 dark:text-dust-50">
                         <Link href={`/admin/users/${user.id}`}>
                           {paidSpent > 0 ? formatToman(paidSpent) : '۰ تومان'}
                         </Link>
@@ -208,7 +208,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                       <td className="px-4 py-3.5 text-left">
                         <Link
                           href={`/admin/users/${user.id}`}
-                          className="inline-flex items-center text-xs font-bold text-flora-700 hover:text-flora-900"
+                          className="inline-flex items-center text-xs font-bold text-flora-700 dark:text-flora-400 hover:text-flora-900 dark:hover:text-flora-300"
                         >
                           جزئیات ←
                         </Link>

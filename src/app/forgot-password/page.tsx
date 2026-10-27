@@ -68,14 +68,14 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-7xl items-center justify-center px-4 py-16 md:px-8">
-      <form noValidate onSubmit={submit} className="w-full max-w-md rounded-pot bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
-        <h1 className="text-2xl font-black text-soil-900">بازیابی رمز عبور با پیامک</h1>
-        <p className="mt-2 text-sm text-soil-700/70">
+      <form noValidate onSubmit={submit} className="w-full max-w-md rounded-pot border border-transparent bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none">
+        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">بازیابی رمز عبور با پیامک</h1>
+        <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
           شماره موبایل ثبت‌شده در حساب خود را وارد کنید تا کد تایید ۵ رقمی برایتان پیامک شود.
         </p>
 
         <label className="mt-6 block">
-          <span className="text-xs font-bold text-soil-900">شماره موبایل</span>
+          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">شماره موبایل</span>
           <input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -84,28 +84,28 @@ export default function ForgotPasswordPage() {
             dir="ltr"
             placeholder="09123456789"
             autoComplete="tel"
-            className="mt-2 w-full rounded-xl border border-soil-900/15 px-4 py-3 text-right text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+            className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-right text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
           />
         </label>
 
         {error && (
-          <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-xs font-bold text-red-700">{error}</p>
+          <p role="alert" className="mt-4 rounded-xl border border-transparent bg-red-50 px-4 py-3 text-xs font-bold text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300">{error}</p>
         )}
 
         {message && (
-          <p className="mt-4 rounded-xl bg-flora-100 px-4 py-3 text-xs font-bold text-flora-700">{message}</p>
+          <p className="mt-4 rounded-xl border border-transparent bg-flora-100 px-4 py-3 text-xs font-bold text-flora-700 dark:border-flora-800 dark:bg-flora-950 dark:text-flora-300">{message}</p>
         )}
 
         <button
           type="submit"
           disabled={loading || cooldown > 0}
-          className="mt-6 w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50"
+          className="mt-6 w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
         >
           {loading ? 'در حال ارسال کد…' : cooldown > 0 ? `امکان ارسال مجدد تا (${toFa(cooldown)}) ثانیه` : 'ارسال کد تایید پیامکی'}
         </button>
 
-        <p className="mt-5 text-center text-sm text-soil-700/70">
-          <Link href="/login" className="font-bold text-flora-700 hover:text-flora-900">بازگشت به ورود</Link>
+        <p className="mt-5 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
+          <Link href="/login" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">بازگشت به ورود</Link>
         </p>
       </form>
     </main>

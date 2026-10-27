@@ -68,7 +68,7 @@ export default function DustToFlora({
 
   if (reduce) {
     return (
-      <div className="bg-dust-50">
+      <div className="bg-dust-50 dark:bg-flora-950">
         {hero}
         {trustBar}
         {whyChooseUs}
@@ -81,17 +81,17 @@ export default function DustToFlora({
   }
 
   return (
-    <motion.div ref={ref} style={{ backgroundColor }} className="relative">
+    <motion.div ref={ref} style={{ backgroundColor }} className="relative dark:!bg-flora-950">
       {/* Sunlight Breathing Overlay */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 animate-[breathe_10s_ease-in-out_infinite] motion-reduce:animate-none bg-[radial-gradient(circle_at_top_left,rgba(255,235,200,0.4),transparent_60%)] mix-blend-soft-light"
+        className="pointer-events-none fixed inset-0 -z-10 animate-[breathe_10s_ease-in-out_infinite] motion-reduce:animate-none bg-[radial-gradient(circle_at_top_left,rgba(255,235,200,0.4),transparent_60%)] mix-blend-soft-light dark:hidden"
       />
 
       <motion.div
         aria-hidden
         style={{ opacity: soilVeilOpacity, scale: textureScale }}
-        className="pointer-events-none fixed inset-0 -z-10 origin-center"
+        className="pointer-events-none fixed inset-0 -z-10 origin-center dark:hidden"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(200,109,81,0.18),transparent_55%),radial-gradient(circle_at_75%_65%,rgba(62,39,35,0.14),transparent_60%)]" />
         <svg
@@ -108,7 +108,7 @@ export default function DustToFlora({
       <motion.div
         aria-hidden
         style={{ opacity: floraVeilOpacity }}
-        className="pointer-events-none fixed inset-0 -z-10"
+        className="pointer-events-none fixed inset-0 -z-10 dark:opacity-30"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(64,145,108,0.45),transparent_62%),radial-gradient(circle_at_15%_30%,rgba(116,198,157,0.22),transparent_55%)]" />
       </motion.div>

@@ -65,7 +65,7 @@ export default function ProvinceCitySelect({
       {/* Province Select */}
       <label
         htmlFor={`${idPrefix}-province`}
-        className="block text-xs font-bold text-soil-700/80"
+        className="block text-xs font-bold text-soil-700/80 dark:text-dust-200"
       >
         <span>{provinceLabel}</span>
         {required && <span className="text-red-500 ms-0.5">*</span>}
@@ -76,17 +76,17 @@ export default function ProvinceCitySelect({
           onChange={handleProvinceChange}
           required={required}
           disabled={disabled}
-          className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition cursor-pointer ${
+          className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition cursor-pointer ${
             errorProvince
               ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-soil-900/10 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
-          <option value="" disabled>
+          <option value="" disabled className="dark:bg-flora-950 dark:text-dust-50">
             {provincePlaceholder}
           </option>
           {IRAN_PROVINCES.map((p) => (
-            <option key={p.name} value={p.name}>
+            <option key={p.name} value={p.name} className="dark:bg-flora-950 dark:text-dust-50">
               {p.name}
             </option>
           ))}
@@ -97,7 +97,7 @@ export default function ProvinceCitySelect({
       {/* City Select */}
       <label
         htmlFor={`${idPrefix}-city`}
-        className="block text-xs font-bold text-soil-700/80"
+        className="block text-xs font-bold text-soil-700/80 dark:text-dust-200"
       >
         <span>{cityLabel}</span>
         {required && <span className="text-red-500 ms-0.5">*</span>}
@@ -108,23 +108,23 @@ export default function ProvinceCitySelect({
           onChange={handleCityChange}
           required={required}
           disabled={isCityDisabled}
-          className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition cursor-pointer ${
+          className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition cursor-pointer ${
             errorCity
               ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-soil-900/10 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
-          <option value="" disabled>
+          <option value="" disabled className="dark:bg-flora-950 dark:text-dust-50">
             {value.province ? cityPlaceholder : 'ابتدا استان را انتخاب کنید'}
           </option>
           {availableCities.map((cityName) => (
-            <option key={cityName} value={cityName}>
+            <option key={cityName} value={cityName} className="dark:bg-flora-950 dark:text-dust-50">
               {cityName}
             </option>
           ))}
           {/* If the current city is not in the list (legacy custom city), keep it visible as an option */}
           {value.city && !availableCities.includes(value.city) && (
-            <option value={value.city}>{value.city}</option>
+            <option value={value.city} className="dark:bg-flora-950 dark:text-dust-50">{value.city}</option>
           )}
         </select>
         <FormError message={errorCity} />

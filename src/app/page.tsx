@@ -171,8 +171,8 @@ export default async function HomePage() {
     <section className="relative flex min-h-auto items-center overflow-hidden pt-10 pb-16 md:min-h-[85dvh] lg:pt-24">
       {/* Background Decorative Orbs */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-75 h-75 bg-flora-300/20 blur-[100px] rounded-full pointer-events-none" />
-        <div className="absolute top-44 right-1/4 w-65 h-65 bg-dust-300/35 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-75 h-75 bg-flora-300/20 dark:bg-flora-600/20 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-44 right-1/4 w-65 h-65 bg-dust-300/35 dark:bg-flora-900/40 blur-[100px] rounded-full pointer-events-none" />
       </div>
 
       <Container className="flex flex-col lg:grid lg:grid-cols-12 lg:items-center lg:gap-12">
@@ -183,8 +183,8 @@ export default async function HomePage() {
         <div className="contents lg:flex lg:flex-col lg:col-span-7 lg:items-start lg:text-right lg:order-2">
           {/* 1. Badge, H1, Subtitle */}
           <div className="order-1 lg:order-1 flex flex-col items-center text-center lg:items-start lg:text-right">
-            <span className="inline-flex items-center gap-2 rounded-full border border-dust-300/70 bg-dust-100/70 px-4 py-1.5 text-xs font-medium text-soil-700 backdrop-blur">
-              <span className="size-1.5 rounded-full bg-dust-400" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-dust-300/70 bg-dust-100/70 dark:border-dust-100/20 dark:bg-flora-900/70 px-4 py-1.5 text-xs font-medium text-soil-700 dark:text-dust-200 backdrop-blur">
+              <span className="size-1.5 rounded-full bg-dust-400 dark:bg-flora-400" />
               از خاک خالی، تا رویش سبز
             </span>
 
@@ -207,23 +207,23 @@ export default async function HomePage() {
             </Link>
             <Link
               href="#wholesale-inquiry"
-              className="group inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full border border-soil-900/15 bg-white/70 px-7 py-3.5 text-sm font-bold text-soil-900 backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white hover:border-soil-900/35 hover:shadow-xl hover:shadow-soil-900/10 active:scale-[0.98]"
+              className="group inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full border border-soil-900/15 bg-white/70 dark:border-dust-100/20 dark:bg-flora-900/70 px-7 py-3.5 text-sm font-bold text-soil-900 dark:text-dust-50 backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white dark:hover:bg-flora-800 hover:border-soil-900/35 dark:hover:border-dust-100/30 hover:shadow-xl hover:shadow-soil-900/10 active:scale-[0.98]"
             >
               <span>خرید عمده و استعلام قیمت</span>
-              <span className="text-flora-700 transition duration-300 group-hover:translate-x-1">←</span>
+              <span className="text-flora-700 dark:text-flora-300 transition duration-300 group-hover:translate-x-1">←</span>
             </Link>
           </div>
 
           {/* 4. Stats */}
-          <dl className="order-4 lg:order-3 flex justify-center gap-6 sm:gap-10 mt-10 w-full lg:grid lg:grid-cols-3 lg:border-t lg:border-soil-900/10 lg:pt-7 lg:divide-x lg:divide-x-reverse lg:divide-soil-900/10 lg:max-w-lg lg:mx-0 lg:mt-12">
+          <dl className="order-4 lg:order-3 flex justify-center gap-6 sm:gap-10 mt-10 w-full lg:grid lg:grid-cols-3 lg:border-t lg:border-soil-900/10 dark:lg:border-dust-100/10 lg:pt-7 lg:divide-x lg:divide-x-reverse lg:divide-soil-900/10 dark:lg:divide-dust-100/10 lg:max-w-lg lg:mx-0 lg:mt-12">
             {[
               { k: '۴۲+', v: 'مدل گلدان' },
               { k: '۳۱', v: 'استان تحت پوشش' },
               { k: '۱۲٬۰۰۰+', v: 'سفارش موفق' },
             ].map((s) => (
               <div key={s.v} className="px-2 text-center">
-                <dt className="text-xl lg:text-2xl font-black text-soil-900">{s.k}</dt>
-                <dd className="mt-1 text-[10px] lg:text-xs text-soil-700/70">{s.v}</dd>
+                <dt className="text-xl lg:text-2xl font-black text-soil-900 dark:text-dust-50">{s.k}</dt>
+                <dd className="mt-1 text-[10px] lg:text-xs text-soil-700/70 dark:text-dust-300/70">{s.v}</dd>
               </div>
             ))}
           </dl>
@@ -231,14 +231,14 @@ export default async function HomePage() {
 
         {/* 2. Hero Image */}
         <div className="order-2 lg:order-1 lg:col-span-5 w-full flex justify-center mt-8 mb-8 lg:mt-0 lg:mb-0">
-          <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none mx-auto aspect-square lg:aspect-4/5">
+          <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none mx-auto aspect-square lg:aspect-4/5 bg-transparent">
             <Image
               src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723'}
               alt={heroImage?.alt ?? 'گلدان سفالی دست‌ساز با گیاه سبز'}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent),linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [mask-composite:intersect] [-webkit-mask-composite:destination-in]"
+              className="object-cover [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent),linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [mask-composite:intersect] [-webkit-mask-composite:destination-in] dark:brightness-[0.8] dark:contrast-[1.1] dark:opacity-90 dark:mix-blend-lighten"
             />
           </div>
         </div>
@@ -249,34 +249,29 @@ export default async function HomePage() {
   const journey = (
     <section className="py-24">
       <Container className="max-w-3xl text-center">
-        <h2 className="text-3xl font-black text-soil-900 sm:text-4xl">
+        <h2 className="text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl">
           {content.about_title.body}
         </h2>
-        <p className="mt-5 leading-8 text-soil-700/85">
+        <p className="mt-5 leading-8 text-soil-700/85 dark:text-dust-200/85">
           {content.about_body.body}
         </p>
       </Container>
 
       {journeyImage && (
         <Container className="mt-16">
-          <div className="relative aspect-21/9 overflow-hidden rounded-pot bg-dust-200 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
+          <div className="relative aspect-21/9 overflow-hidden rounded-pot bg-dust-200 dark:bg-flora-900 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.5)] border border-transparent dark:border-dust-100/10">
             <Image
               src={journeyImage.url}
               alt={journeyImage.alt ?? 'مسیر ساخت گلدان از خاک تا رویش'}
               fill
               sizes="(max-width: 1024px) 100vw, 80vw"
-              className="object-cover"
+              className="object-cover dark:brightness-[0.85] dark:contrast-[1.05]"
             />
           </div>
         </Container>
       )}
 
-      {/* Three equal cards on one baseline. The previous version pushed the
-          middle card down with an inline `marginTop`, which read as a mistake
-          rather than a design choice, and left the three boxes at visibly
-          different heights. The grid stretches its items, so the cards match
-          without any offset, and `flex-col` keeps each card's content flowing
-          from the top so the headings stay aligned across the row. */}
+      {/* Three equal cards on one baseline. */}
       <Container className="mt-16 grid gap-6 md:grid-cols-3">
         {[
           {
@@ -285,8 +280,8 @@ export default async function HomePage() {
             description:
               'خاک‌های مختلف، کاربردهای متفاوتی دارند. با توجه به نیاز گیاه به رطوبت، هوادهی و زهکشی، بستر مناسب‌تری برای رشد آن انتخاب کنید.',
             icon: '🏺',
-            card: 'bg-dust-200',
-            accent: 'border-t-dust-400',
+            card: 'bg-dust-200 dark:bg-flora-900',
+            accent: 'border-t-dust-400 dark:border-t-flora-400',
           },
           {
             title: 'ریشه',
@@ -294,8 +289,8 @@ export default async function HomePage() {
             description:
               'اندازه گلدان، فضای ریشه و خروج آب اضافی در سلامت گیاه اهمیت دارند. گلدانی انتخاب کنید که با اندازه و نیاز گیاهتان متناسب باشد.',
             icon: '🪴',
-            card: 'bg-flora-100',
-            accent: 'border-t-flora-300',
+            card: 'bg-flora-100 dark:bg-flora-900',
+            accent: 'border-t-flora-300 dark:border-t-flora-400',
           },
           {
             title: 'رویش',
@@ -303,23 +298,23 @@ export default async function HomePage() {
             description:
               'با انتخاب گلدان، خاک و لوازم مناسب، برای رسیدگی به گیاهانتان آماده‌تر باشید؛ چه در حال شروع باشید و چه بخواهید مجموعه‌تان را گسترش دهید.',
             icon: '🌸',
-            card: 'bg-flora-300/50',
-            accent: 'border-t-flora-500',
+            card: 'bg-flora-300/50 dark:bg-flora-900',
+            accent: 'border-t-flora-500 dark:border-t-flora-400',
           },
         ].map((card) => (
           <div
             key={card.title}
-            className={`flex flex-col h-full rounded-pot border-t-4 ${card.accent} ${card.card} p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_44px_-16px_rgba(62,39,35,0.32)]`}
+            className={`flex flex-col h-full rounded-pot border-t-4 border border-soil-900/5 dark:border-dust-100/10 ${card.accent} ${card.card} p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.5)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_44px_-16px_rgba(62,39,35,0.32)] dark:hover:shadow-[0_22px_44px_-16px_rgba(0,0,0,0.7)]`}
           >
             <span
               aria-hidden
-              className="grid size-12 place-items-center rounded-2xl bg-white/60 text-2xl"
+              className="grid size-12 place-items-center rounded-2xl bg-white/60 dark:bg-white/10 text-2xl"
             >
               {card.icon}
             </span>
-            <h3 className="mt-5 text-xl font-black text-soil-900">{card.title}</h3>
-            <p className="mt-2 text-sm font-bold text-flora-700">{card.subtitle}</p>
-            <p className="mt-3 text-xs leading-6 text-soil-700/80">{card.description}</p>
+            <h3 className="mt-5 text-xl font-black text-soil-900 dark:text-dust-50">{card.title}</h3>
+            <p className="mt-2 text-sm font-bold text-flora-700 dark:text-flora-300">{card.subtitle}</p>
+            <p className="mt-3 text-xs leading-6 text-soil-700/80 dark:text-dust-200/80">{card.description}</p>
           </div>
         ))}
       </Container>
@@ -331,10 +326,10 @@ export default async function HomePage() {
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-black text-soil-900 sm:text-4xl">پرفروش‌ترین‌ها</h2>
-            <p className="mt-3 text-soil-700/80">قیمت پله‌ای — هرچه بیشتر، ارزان‌تر.</p>
+            <h2 className="text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl">پرفروش‌ترین‌ها</h2>
+            <p className="mt-3 text-soil-700/80 dark:text-dust-200/80">قیمت پله‌ای — هرچه بیشتر، ارزان‌تر.</p>
           </div>
-          <Link href="/products" className="text-sm font-bold text-flora-700 hover:text-flora-900">
+          <Link href="/products" className="text-sm font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-100">
             همه محصولات
           </Link>
         </div>
@@ -361,7 +356,7 @@ export default async function HomePage() {
   const trust = (
     <section id="wholesale" className="scroll-mt-24 py-24">
       <Container>
-        <div className="relative overflow-hidden rounded-pot bg-flora-900 p-10 text-flora-100 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] sm:p-14">
+        <div className="relative overflow-hidden rounded-pot bg-flora-900 border border-transparent dark:border-dust-100/10 p-10 text-flora-100 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.5)] sm:p-14">
           {ctaImage && (
             <>
               <Image
@@ -406,7 +401,7 @@ export default async function HomePage() {
             </div>
 
             {wholesaleHighlight.hasWholesaleTiers ? (
-              <div className="rounded-pot bg-flora-950/60 p-6 backdrop-blur">
+              <div className="rounded-pot bg-flora-950/60 border border-transparent dark:border-dust-100/10 p-6 backdrop-blur">
                 <table className="w-full text-sm">
                   <caption className="sr-only">ماتریس نمونه قیمت پله‌ای</caption>
                   <thead>
@@ -437,7 +432,7 @@ export default async function HomePage() {
                 </p>
               </div>
             ) : (
-              <div className="rounded-pot bg-flora-950/60 p-8 backdrop-blur text-center flex flex-col items-center justify-center min-h-64">
+              <div className="rounded-pot bg-flora-950/60 border border-transparent dark:border-dust-100/10 p-8 backdrop-blur text-center flex flex-col items-center justify-center min-h-64">
                 <span className="text-3xl mb-3">📞</span>
                 <p className="text-base font-bold text-white mb-2">
                   برای اطلاع از قیمت‌های عمده با ما تماس بگیرید

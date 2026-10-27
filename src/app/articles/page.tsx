@@ -48,31 +48,31 @@ export default async function ArticlesPage({ searchParams }: Props) {
   });
 
   return (
-    <main className="py-12 md:py-16">
+    <main className="py-12 md:py-16 dark:bg-flora-950">
       <Container>
         {/* Page Header */}
         <div className="max-w-3xl">
-          <span className="inline-block rounded-full bg-flora-100 px-3.5 py-1 text-xs font-bold text-flora-900 border border-flora-300/40">
+          <span className="inline-block rounded-full bg-flora-100 dark:bg-flora-900/60 px-3.5 py-1 text-xs font-bold text-flora-900 dark:text-flora-200 border border-flora-300/40 dark:border-flora-500/30">
             دانشنامه و وبلاگ پات استور
           </span>
-          <h1 className="mt-4 text-3xl font-black text-soil-900 sm:text-4xl lg:text-5xl">
+          <h1 className="mt-4 text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl lg:text-5xl">
             راهنمای انتخاب و نگهداری
           </h1>
-          <p className="mt-4 text-base leading-8 text-soil-700/80 sm:text-lg">
+          <p className="mt-4 text-base leading-8 text-soil-700/80 dark:text-dust-200/80 sm:text-lg">
             آموزش‌های تخصصی برای انتخاب گلدان استاندارد، ترکیب خاک ایده‌آل و روش‌های علمی مراقبت از گیاهان آپارتمانی.
           </p>
         </div>
 
         {/* Tag Filters Row */}
         {allTags.length > 0 && (
-          <div className="mt-10 flex flex-wrap items-center gap-2 border-b border-soil-900/10 pb-6">
-            <span className="text-xs font-bold text-soil-700/60 ml-2">دسته‌بندی موضوعی:</span>
+          <div className="mt-10 flex flex-wrap items-center gap-2 border-b border-soil-900/10 dark:border-dust-50/10 pb-6">
+            <span className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60 ml-2">دسته‌بندی موضوعی:</span>
             <Link
               href="/articles"
               className={`rounded-full px-4 py-1.5 text-xs font-bold transition ${
                 !currentTag
-                  ? 'bg-soil-900 text-white shadow-sm'
-                  : 'bg-dust-100 text-soil-700 hover:bg-dust-200'
+                  ? 'bg-soil-900 text-white dark:bg-flora-800 shadow-sm'
+                  : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
               }`}
             >
               همه مقالات ({toFa(allPublished.length)})
@@ -84,7 +84,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                 className={`rounded-full px-4 py-1.5 text-xs font-bold transition ${
                   currentTag === t
                     ? 'bg-flora-800 text-white shadow-sm'
-                    : 'bg-dust-100 text-soil-700 hover:bg-dust-200'
+                    : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
                 }`}
               >
                 #{t}
@@ -95,8 +95,8 @@ export default async function ArticlesPage({ searchParams }: Props) {
 
         {/* Articles Grid */}
         {articles.length === 0 ? (
-          <div className="mt-16 rounded-3xl border border-dashed border-soil-900/15 bg-white p-12 text-center">
-            <p className="text-base font-bold text-soil-900">
+          <div className="mt-16 rounded-3xl border border-dashed border-soil-900/15 dark:border-dust-50/15 bg-white dark:bg-flora-900 p-12 text-center">
+            <p className="text-base font-bold text-soil-900 dark:text-dust-50">
               {currentTag
                 ? `مقاله‌ای با برچسب «${currentTag}» یافت نشد.`
                 : 'در حال حاضر مقاله‌ای منتشر نشده است.'}
@@ -104,7 +104,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
             {currentTag && (
               <Link
                 href="/articles"
-                className="mt-4 inline-block text-xs font-bold text-flora-700 hover:underline"
+                className="mt-4 inline-block text-xs font-bold text-flora-700 dark:text-flora-300 hover:underline"
               >
                 ← مشاهده همه مقالات
               </Link>
@@ -122,12 +122,12 @@ export default async function ArticlesPage({ searchParams }: Props) {
               return (
                 <article
                   key={article.id}
-                  className="group flex flex-col overflow-hidden rounded-3xl border border-soil-900/10 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-soil-900/5 hover:border-soil-900/20"
+                  className="group flex flex-col overflow-hidden rounded-3xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 shadow-sm dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-soil-900/5 dark:hover:border-dust-50/20"
                 >
                   {/* Cover Image */}
                   <Link
                     href={`/articles/${article.slug}`}
-                    className="relative aspect-[16/10] w-full overflow-hidden bg-dust-100"
+                    className="relative aspect-[16/10] w-full overflow-hidden bg-dust-100 dark:bg-flora-950"
                   >
                     {article.coverImage ? (
                       <Image
@@ -138,7 +138,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       />
                     ) : (
-                      <div className="grid h-full w-full place-items-center bg-gradient-to-br from-flora-100/50 to-dust-200/50 text-4xl">
+                      <div className="grid h-full w-full place-items-center bg-gradient-to-br from-flora-100/50 to-dust-200/50 dark:from-flora-900/50 dark:to-flora-950/50 text-4xl">
                         🪴
                       </div>
                     )}
@@ -148,35 +148,35 @@ export default async function ArticlesPage({ searchParams }: Props) {
                   <div className="flex flex-1 flex-col justify-between p-6">
                     <div>
                       {/* Meta info */}
-                      <div className="flex items-center justify-between text-[11px] font-bold text-soil-700/60 mb-3">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-soil-700/60 dark:text-dust-200/60 mb-3">
                         <span>{formattedDate}</span>
-                        <span className="rounded-full bg-flora-50 px-2 py-0.5 text-flora-800">
+                        <span className="rounded-full bg-flora-50 dark:bg-flora-950/70 px-2 py-0.5 text-flora-800 dark:text-flora-300">
                           راهنمای آموزشی
                         </span>
                       </div>
 
                       {/* Title */}
-                      <h2 className="text-lg font-black text-soil-900 leading-snug group-hover:text-flora-800 transition">
+                      <h2 className="text-lg font-black text-soil-900 dark:text-dust-50 leading-snug group-hover:text-flora-800 dark:group-hover:text-flora-300 transition">
                         <Link href={`/articles/${article.slug}`}>{article.title}</Link>
                       </h2>
 
                       {/* Excerpt */}
                       {article.excerpt && (
-                        <p className="mt-3 line-clamp-3 text-xs leading-6 text-soil-700/80">
+                        <p className="mt-3 line-clamp-3 text-xs leading-6 text-soil-700/80 dark:text-dust-200/80">
                           {article.excerpt}
                         </p>
                       )}
                     </div>
 
                     {/* Bottom: Tags & Link */}
-                    <div className="mt-6 pt-4 border-t border-soil-900/5">
+                    <div className="mt-6 pt-4 border-t border-soil-900/5 dark:border-dust-50/10">
                       {article.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mb-3">
                           {article.tags.slice(0, 3).map((tag) => (
                             <Link
                               key={tag}
                               href={`/articles?tag=${encodeURIComponent(tag)}`}
-                              className="rounded-full bg-dust-100 px-2.5 py-0.5 text-[10px] font-bold text-soil-700 hover:bg-dust-200 transition"
+                              className="rounded-full bg-dust-100 dark:bg-flora-950 px-2.5 py-0.5 text-[10px] font-bold text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition"
                             >
                               #{tag}
                             </Link>
@@ -186,7 +186,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
 
                       <Link
                         href={`/articles/${article.slug}`}
-                        className="inline-flex items-center gap-1 text-xs font-bold text-flora-800 group-hover:text-flora-700 transition"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-flora-800 dark:text-flora-300 group-hover:text-flora-700 dark:group-hover:text-flora-200 transition"
                       >
                         <span>مطالعه کامل مقاله</span>
                         <span className="transition-transform duration-300 group-hover:-translate-x-1">

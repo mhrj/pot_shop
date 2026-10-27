@@ -67,16 +67,16 @@ export default function OrderStatusForm({
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border border-soil-900/10 bg-white p-5">
-      <h2 className="text-sm font-black text-soil-900">به‌روزرسانی وضعیت و مرسوله</h2>
+    <form onSubmit={submit} className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
+      <h2 className="text-sm font-black text-soil-900 dark:text-dust-50">به‌روزرسانی وضعیت و مرسوله</h2>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-3">
         <label className="block">
-          <span className="text-xs font-bold text-soil-900">وضعیت سفارش</span>
+          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">وضعیت سفارش</span>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-flora-500"
+            className="mt-1.5 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm outline-none focus:border-flora-500"
           >
             {STATUSES.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
@@ -85,11 +85,11 @@ export default function OrderStatusForm({
         </label>
 
         <label className="block">
-          <span className="text-xs font-bold text-soil-900">شرکت حمل و نقل</span>
+          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">شرکت حمل و نقل</span>
           <select
             value={carrier}
             onChange={(e) => setCarrier(e.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-flora-500"
+            className="mt-1.5 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm outline-none focus:border-flora-500"
           >
             {CARRIERS.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -98,7 +98,7 @@ export default function OrderStatusForm({
         </label>
 
         <label className="block">
-          <span className="text-xs font-bold text-soil-900">
+          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">
             کد رهگیری {carrier || 'مرسوله'}
           </span>
           <input
@@ -107,9 +107,9 @@ export default function OrderStatusForm({
             dir="ltr"
             placeholder={status === 'SHIPPED' ? 'کد رهگیری (در صورت خالی بودن خودکار ایجاد می‌شود)' : 'کد رهگیری'}
             aria-describedby="tracking-hint"
-            className="mt-1.5 w-full rounded-xl border border-soil-900/15 bg-white px-3 py-2.5 text-sm text-soil-900 outline-none focus:border-flora-500"
+            className="mt-1.5 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm outline-none focus:border-flora-500"
           />
-          <span id="tracking-hint" className="mt-1.5 block text-[11px] text-soil-700/60">
+          <span id="tracking-hint" className="mt-1.5 block text-[11px] text-soil-700/60 dark:text-dust-200/60">
             {status === 'SHIPPED' && !tracking
               ? 'در صورت خالی ماندن، کد سیستمی ایجاد می‌شود'
               : 'کد رهگیری صادرشده توسط شرکت پست یا باربری'}

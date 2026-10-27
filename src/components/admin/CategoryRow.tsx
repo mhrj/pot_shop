@@ -71,7 +71,7 @@ export default function CategoryRow({ category }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-2xl border border-soil-900/10 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-2 rounded-2xl border border-soil-900/10 bg-white p-4 sm:flex-row sm:items-center sm:justify-between dark:border-dust-50/10 dark:bg-flora-900">
       {isEditing ? (
         <form onSubmit={handleSave} className="flex flex-1 flex-wrap items-center gap-2">
           <input
@@ -79,13 +79,13 @@ export default function CategoryRow({ category }: Props) {
             onChange={(e) => setName(e.target.value)}
             disabled={pending}
             required
-            className="w-full max-w-xs rounded-xl border border-soil-900/15 px-3 py-1.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+            className="w-full max-w-xs rounded-xl border border-soil-900/15 bg-white px-3 py-1.5 text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
             placeholder="نام جدید دسته‌بندی"
           />
           <button
             type="submit"
             disabled={pending || !name.trim()}
-            className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50"
+            className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
           >
             {pending ? 'در حال ذخیره…' : 'ذخیره'}
           </button>
@@ -97,15 +97,15 @@ export default function CategoryRow({ category }: Props) {
               setError(null);
             }}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 px-3 py-2 text-xs font-bold text-soil-700 transition hover:bg-dust-50"
+            className="rounded-xl border border-soil-900/15 px-3 py-2 text-xs font-bold text-soil-700 transition hover:bg-dust-50 cursor-pointer dark:border-dust-50/20 dark:text-dust-200 dark:hover:bg-flora-800"
           >
             انصراف
           </button>
         </form>
       ) : (
         <div>
-          <p className="font-bold text-soil-900">{category.name}</p>
-          <p className="mt-1 text-xs text-soil-700/60">
+          <p className="font-bold text-soil-900 dark:text-dust-50">{category.name}</p>
+          <p className="mt-1 text-xs text-soil-700/60 dark:text-dust-300/60">
             {toFa(category._count.products)} محصول
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function CategoryRow({ category }: Props) {
             type="button"
             onClick={() => setIsEditing(true)}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700 disabled:opacity-50"
+            className="rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700 disabled:opacity-50 cursor-pointer dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:hover:border-flora-400 dark:hover:text-flora-300"
           >
             ویرایش نام
           </button>
@@ -126,14 +126,14 @@ export default function CategoryRow({ category }: Props) {
           type="button"
           onClick={() => setIsConfirmOpen(true)}
           disabled={pending}
-          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
+          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/60"
         >
           {pending ? 'در حال حذف…' : 'حذف'}
         </button>
       </div>
 
       {error && (
-        <p role="alert" className="w-full text-xs font-bold text-red-600 sm:order-last">
+        <p role="alert" className="w-full text-xs font-bold text-red-600 sm:order-last dark:text-red-400">
           {error}
         </p>
       )}

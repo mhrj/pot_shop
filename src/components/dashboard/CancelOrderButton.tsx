@@ -36,12 +36,12 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
         type="button"
         onClick={() => setIsConfirmOpen(true)}
         disabled={loading}
-        className="rounded-full border border-red-200 bg-red-50 px-5 py-2.5 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
+        className="rounded-full border border-red-200 bg-red-50 px-5 py-2.5 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/60 cursor-pointer"
       >
         {loading ? 'در حال لغو…' : 'لغو سفارش'}
       </button>
       {error && (
-        <p role="alert" className="text-[11px] leading-5 font-bold text-red-600">
+        <p role="alert" className="text-[11px] leading-5 font-bold text-red-600 dark:text-red-400">
           {error}
         </p>
       )}

@@ -94,37 +94,37 @@ function ColorSwatchRow({
     : null;
 
   return (
-    <div className="rounded-2xl border border-soil-900/10 bg-white p-4 space-y-3">
+    <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className={`text-xs font-bold ${isLimiting ? 'text-amber-950 font-black' : 'text-soil-900'}`}>{label}</span>
+          <span className={`text-xs font-bold ${isLimiting ? 'text-amber-950 dark:text-amber-300 font-black' : 'text-soil-900 dark:text-dust-50'}`}>{label}</span>
           {isLimiting && (
             <span
               title={limitingStock !== undefined && limitingStock !== null ? `این آیتم سقف سفارش را به ${toFa(limitingStock)} عدد محدود کرده است` : undefined}
-              className="inline-flex items-center gap-1 rounded-full bg-amber-100/90 border border-amber-300/80 px-2 py-0.5 text-[10px] font-bold text-amber-900 shadow-2xs"
+              className="inline-flex items-center gap-1 rounded-full bg-amber-100/90 dark:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/60 px-2 py-0.5 text-[10px] font-bold text-amber-900 dark:text-amber-200 shadow-2xs"
             >
               <span>⚠️</span>
               <span>محدودیت موجودی{limitingStock !== undefined && limitingStock !== null ? ` (${toFa(limitingStock)} عدد)` : ''}</span>
             </span>
           )}
           {required && !selectedColor && (
-            <span className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+            <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-full">
               انتخاب الزامی است
             </span>
           )}
         </div>
         {selectedColor && (
-          <div className="flex items-center gap-1.5 text-xs text-soil-700/80">
+          <div className="flex items-center gap-1.5 text-xs text-soil-700/80 dark:text-dust-200/80">
             <span>انتخاب:</span>
             <span
-              className="inline-block size-3.5 rounded-full border border-soil-900/20 shadow-2xs"
+              className="inline-block size-3.5 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-2xs"
               style={{ backgroundColor: selectedColor }}
             />
-            <span className="font-mono text-[11px] dir-ltr text-soil-900 font-bold">
+            <span className="font-mono text-[11px] dir-ltr text-soil-900 dark:text-dust-50 font-bold">
               {selectedColor}
             </span>
             {selectedOpt && (
-              <span className={selectedOpt.stock > 0 ? "text-soil-700/60 font-medium" : "text-red-600 font-bold"}>
+              <span className={selectedOpt.stock > 0 ? "text-soil-700/60 dark:text-dust-300 font-medium" : "text-red-600 dark:text-red-400 font-bold"}>
                 ({selectedOpt.stock > 0 ? `موجودی: ${toFa(selectedOpt.stock)}` : 'ناموجود'})
               </span>
             )}
@@ -139,7 +139,7 @@ function ColorSwatchRow({
           onClick={() => handleScroll('prev')}
           disabled={!canScrollStart}
           aria-label="رنگ‌های قبلی"
-          className="size-7 shrink-0 rounded-full border border-soil-900/15 bg-white grid place-items-center text-soil-700 shadow-2xs transition hover:bg-dust-100 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="size-7 shrink-0 rounded-full border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 grid place-items-center text-soil-700 dark:text-dust-200 shadow-2xs transition hover:bg-dust-100 dark:hover:bg-flora-900 disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
@@ -165,7 +165,7 @@ function ColorSwatchRow({
                 title={isOutOfStock ? `${hex} (ناموجود)` : hex}
                 aria-label={`رنگ ${hex}${isOutOfStock ? ' (ناموجود)' : ''}`}
                 aria-pressed={isSelected}
-                className={`group relative w-6 h-6 shrink-0 rounded-full transition-all duration-150 focus:outline-none border border-soil-900/20 ${
+                className={`group relative w-6 h-6 shrink-0 rounded-full transition-all duration-150 focus:outline-none border border-soil-900/20 dark:border-dust-50/20 ${
                   isOutOfStock
                     ? 'opacity-30 cursor-not-allowed'
                     : 'cursor-pointer hover:scale-105'
@@ -185,7 +185,7 @@ function ColorSwatchRow({
 
                 {/* Subtle border for very light colors so they are distinct against white background */}
                 {light && !isSelected && (
-                  <span className="absolute inset-0 rounded-full border border-soil-900/25 pointer-events-none" />
+                  <span className="absolute inset-0 rounded-full border border-soil-900/25 dark:border-dust-50/30 pointer-events-none" />
                 )}
 
                 {/* Checkmark indicator when selected */}
@@ -211,7 +211,7 @@ function ColorSwatchRow({
           onClick={() => handleScroll('next')}
           disabled={!canScrollEnd}
           aria-label="رنگ‌های بعدی"
-          className="size-7 shrink-0 rounded-full border border-soil-900/15 bg-white grid place-items-center text-soil-700 shadow-2xs transition hover:bg-dust-100 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="size-7 shrink-0 rounded-full border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 grid place-items-center text-soil-700 dark:text-dust-200 shadow-2xs transition hover:bg-dust-100 dark:hover:bg-flora-900 disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -261,10 +261,10 @@ export default function ColorPicker({
 
     return (
       <section className="mt-6 space-y-3">
-        <h3 className="text-sm font-black text-soil-900">
+        <h3 className="text-sm font-black text-soil-900 dark:text-dust-50">
           انتخاب رنگ اقلام بسته ({toFa(items.length)} آیتم)
         </h3>
-        <p className="text-xs text-soil-700/70">
+        <p className="text-xs text-soil-700/70 dark:text-dust-200/70">
           برای هر گلدان موجود در این بسته، رنگ مورد نظر خود را مشخص کنید:
         </p>
 
@@ -280,12 +280,12 @@ export default function ColorPicker({
               return (
                 <div
                   key={idx}
-                  className="flex items-center justify-between rounded-xl border border-soil-900/10 bg-dust-50/60 p-3 text-xs"
+                  className="flex items-center justify-between rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50/60 dark:bg-flora-950/60 p-3 text-xs"
                 >
-                  <span className="font-bold text-soil-900">
+                  <span className="font-bold text-soil-900 dark:text-dust-50">
                     رنگ گلدان {toFa(idx + 1)}{item.title ? `: ${item.title}` : ''}
                   </span>
-                  <span className="text-soil-700/60">تک‌رنگ استاندارد (پیش‌فرض)</span>
+                  <span className="text-soil-700/60 dark:text-dust-200/60">تک‌رنگ استاندارد (پیش‌فرض)</span>
                 </div>
               );
             }

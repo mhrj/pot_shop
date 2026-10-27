@@ -10,20 +10,20 @@ import {
  * the Persian label is always rendered beside it.
  */
 const ORDER_TONE: Record<string, string> = {
-  PENDING: 'bg-amber-50 text-amber-700',
-  PAID: 'bg-flora-100 text-flora-700',
-  PROCESSING: 'bg-sky-50 text-sky-700',
-  SHIPPED: 'bg-indigo-50 text-indigo-700',
-  DELIVERED: 'bg-flora-100 text-flora-700',
-  CANCELED: 'bg-red-50 text-red-700',
+  PENDING: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300',
+  PAID: 'bg-flora-100 text-flora-700 dark:bg-flora-900/60 dark:text-flora-300',
+  PROCESSING: 'bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300',
+  SHIPPED: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300',
+  DELIVERED: 'bg-flora-100 text-flora-700 dark:bg-flora-900/60 dark:text-flora-300',
+  CANCELED: 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-400',
 };
 
 const PAYMENT_TONE: Record<string, string> = {
-  PENDING: 'bg-amber-50 text-amber-700',
-  PAID: 'bg-flora-100 text-flora-700',
-  FAILED: 'bg-red-50 text-red-700',
-  CANCELED: 'bg-dust-100 text-soil-700',
-  REFUNDED: 'bg-dust-100 text-soil-700',
+  PENDING: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300',
+  PAID: 'bg-flora-100 text-flora-700 dark:bg-flora-900/60 dark:text-flora-300',
+  FAILED: 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-400',
+  CANCELED: 'bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200',
+  REFUNDED: 'bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200',
 };
 
 export default function StatusBadge({
@@ -44,7 +44,7 @@ export default function StatusBadge({
 
   const tone =
     (kind === 'order' ? ORDER_TONE[value] : PAYMENT_TONE[value]) ??
-    'bg-dust-100 text-soil-700';
+    'bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200';
 
   return (
     <span className={'rounded-full px-2.5 py-0.5 text-[11px] font-bold ' + tone}>

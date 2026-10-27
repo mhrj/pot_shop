@@ -82,7 +82,7 @@ export default function UserManagementActions({
   return (
     <div className="space-y-3">
       {error && (
-        <div className="rounded-xl border border-red-500/20 bg-red-50 p-3 text-xs text-red-700">
+        <div className="rounded-xl border border-red-500/20 dark:border-red-500/30 bg-red-50 dark:bg-red-950/40 p-3 text-xs text-red-700 dark:text-red-400">
           {error}
         </div>
       )}
@@ -94,8 +94,8 @@ export default function UserManagementActions({
           onClick={handleRoleToggle}
           className={`rounded-xl px-4 py-2 text-xs font-bold transition disabled:opacity-50 ${
             currentRole === 'ADMIN'
-              ? 'border border-amber-600/30 bg-amber-50 text-amber-900 hover:bg-amber-100'
-              : 'bg-soil-900 text-white hover:bg-soil-800'
+              ? 'border border-amber-600/30 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50'
+              : 'bg-soil-900 dark:bg-flora-800 text-white hover:bg-soil-800 dark:hover:bg-flora-700'
           }`}
         >
           {loading ? 'در حال اعمال...' : currentRole === 'ADMIN' ? 'تنزل به مشتری عادی' : 'ارتقا به مدیر سیستم'}
@@ -107,8 +107,8 @@ export default function UserManagementActions({
           onClick={handleActiveToggle}
           className={`rounded-xl px-4 py-2 text-xs font-bold transition disabled:opacity-50 cursor-pointer ${
             currentIsActive
-              ? 'border border-red-200 bg-red-50 text-red-700 hover:bg-red-100'
-              : 'border border-flora-300 bg-flora-50 text-flora-800 hover:bg-flora-100'
+              ? 'border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50'
+              : 'border border-flora-300 dark:border-flora-700 bg-flora-50 dark:bg-flora-950/40 text-flora-800 dark:text-flora-300 hover:bg-flora-100 dark:hover:bg-flora-900/50'
           }`}
         >
           {loading ? 'در حال اعمال...' : currentIsActive ? 'غیرفعال‌سازی حساب' : 'فعال‌سازی حساب'}

@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { toFa } from '@/lib/format';
 import LogoutButton from '@/components/layout/LogoutButton';
 import MobileNav from '@/components/layout/MobileNav';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default async function Header() {
   const user = await getCurrentUser();
@@ -26,18 +27,18 @@ export default async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-soil-900/10 bg-dust-50/90 backdrop-blur supports-[backdrop-filter]:bg-dust-50/75 print:hidden no-print">
+    <header className="sticky top-0 z-40 border-b border-soil-900/10 bg-dust-50/90 backdrop-blur supports-[backdrop-filter]:bg-dust-50/75 dark:border-dust-100/10 dark:bg-flora-950/90 dark:supports-[backdrop-filter]:bg-flora-950/75 print:hidden no-print">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-8">
         <div className="flex items-center gap-5">
-          <Link href="/" className="text-lg font-black text-soil-900">
+          <Link href="/" className="text-lg font-black text-soil-900 dark:text-dust-50">
             پات استور
           </Link>
-          <nav aria-label="منوی اصلی" className="hidden items-center gap-4 text-sm font-medium text-soil-700 md:flex">
+          <nav aria-label="منوی اصلی" className="hidden items-center gap-4 text-sm font-medium text-soil-700 dark:text-dust-200 md:flex">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} className="transition hover:text-flora-700">
+              <Link key={link.href} href={link.href} className="transition hover:text-flora-700 dark:hover:text-flora-300">
                 {link.label}
                 {link.href === '/cart' && cartCount > 0 && (
-                  <span className="ms-1.5 rounded-full bg-flora-900 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  <span className="ms-1.5 rounded-full bg-flora-900 dark:bg-flora-700 px-1.5 py-0.5 text-[10px] font-bold text-white">
                     {toFa(cartCount)}
                   </span>
                 )}
@@ -47,15 +48,18 @@ export default async function Header() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Theme toggle placed next to cart icon */}
+          <ThemeToggle />
+
           {/* Cart stays reachable at every width; the rest of the nav collapses. */}
           <Link
             href="/cart"
             aria-label={cartCount > 0 ? `سبد خرید، ${cartCount} کالا` : 'سبد خرید'}
-            className="relative rounded-full border border-soil-900/15 bg-white p-2.5 text-soil-900 transition hover:border-flora-700 hover:text-flora-700 md:hidden"
+            className="relative rounded-full border border-soil-900/15 bg-white p-2.5 text-soil-900 transition hover:border-flora-700 hover:text-flora-700 dark:border-dust-100/15 dark:bg-flora-900 dark:text-dust-50 dark:hover:border-flora-300 dark:hover:text-flora-300 md:hidden"
           >
             <CartIcon />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -end-1 min-w-4 rounded-full bg-flora-900 px-1 text-center text-[10px] font-bold text-white">
+              <span className="absolute -top-1 -end-1 min-w-4 rounded-full bg-flora-900 dark:bg-flora-700 px-1 text-center text-[10px] font-bold text-white">
                 {toFa(cartCount)}
               </span>
             )}
@@ -65,7 +69,7 @@ export default async function Header() {
             <>
               <Link
                 href={isAdmin ? '/admin' : '/dashboard'}
-                className="hidden rounded-full bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 sm:block"
+                className="hidden rounded-full bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-600 sm:block"
               >
                 {isAdmin ? 'داشبورد مدیریت' : user.fullName ? 'حساب من' : 'پروفایل'}
               </Link>
@@ -75,13 +79,13 @@ export default async function Header() {
             <>
               <Link
                 href="/register"
-                className="hidden rounded-full border border-soil-900/15 bg-white px-4 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700 sm:block"
+                className="hidden rounded-full border border-soil-900/15 bg-white px-4 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700 dark:border-dust-100/15 dark:bg-flora-900 dark:text-dust-50 dark:hover:border-flora-300 dark:hover:text-flora-300 sm:block"
               >
                 ثبت‌نام
               </Link>
               <Link
                 href="/login"
-                className="rounded-full bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700"
+                className="rounded-full bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-600"
               >
                 ورود
               </Link>

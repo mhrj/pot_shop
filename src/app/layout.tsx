@@ -62,38 +62,45 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={`${vazirmatn.variable} scroll-smooth antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
       {/* `min-h-dvh` + `flex-col` and a `flex-1` wrapper around the page content
           keep the footer pinned to the bottom of the viewport. Without the
           growing wrapper, a short page (`/checkout/success`, an empty `/cart`,
           `/login`) leaves the footer floating mid-screen with dead space below
           it, because the body is only as tall as its content. */}
-      <body className="flex min-h-dvh flex-col bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950">
+      <body className="flex min-h-dvh flex-col bg-dust-50 font-sans text-soil-900 selection:bg-flora-300 selection:text-flora-950 dark:bg-flora-950 dark:text-dust-50">
         <PageViewTracker />
         <TestBanner />
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
-        <footer className="border-t border-soil-900/10 bg-white/80 print:hidden no-print">
+        <footer className="border-t border-soil-900/10 bg-white/80 dark:border-dust-100/10 dark:bg-flora-950/90 dark:supports-[backdrop-filter]:bg-flora-950/75 backdrop-blur print:hidden no-print">
           <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
             {/* Three columns on desktop, stacked on mobile. The contact column is
                 skipped entirely when every key is empty, rather than rendering a
                 heading over blank space. */}
             <div className="grid gap-10 md:grid-cols-3">
               <div>
-                <p className="text-lg font-black text-soil-900">پات استور</p>
-                <p className="mt-3 text-sm leading-7 text-soil-700/80">
+                <p className="text-lg font-black text-soil-900 dark:text-dust-50">پات استور</p>
+                <p className="mt-3 text-sm leading-7 text-soil-700/80 dark:text-dust-200/80">
                   {content.footer_text.body}
                 </p>
               </div>
 
               {contact.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-soil-900">تماس با ما</p>
+                  <p className="text-xs font-bold text-soil-900 dark:text-dust-50">تماس با ما</p>
                   <dl className="mt-4 space-y-3 text-sm">
                     {contact.map((row) => (
                       <div key={row.label} className="flex flex-wrap gap-x-2">
-                        <dt className="text-soil-700/60">{row.label}:</dt>
+                        <dt className="text-soil-700/60 dark:text-dust-300/60">{row.label}:</dt>
                         <dd
-                          className="font-bold text-soil-700/90"
+                          className="font-bold text-soil-700/90 dark:text-dust-100/90"
                           dir={row.ltr ? 'ltr' : undefined}
                         >
                           {row.value}
@@ -105,20 +112,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               )}
 
               <div>
-                <p className="text-xs font-bold text-soil-900">دسترسی سریع</p>
+                <p className="text-xs font-bold text-soil-900 dark:text-dust-50">دسترسی سریع</p>
                 <ul className="mt-4 space-y-3 text-sm">
                   <li>
-                    <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900">
+                    <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-100">
                       محصولات
                     </Link>
                   </li>
                   <li>
-                    <Link href="/about" className="font-bold text-flora-700 hover:text-flora-900">
+                    <Link href="/about" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-100">
                       درباره ما
                     </Link>
                   </li>
                   <li>
-                    <Link href="/cart" className="font-bold text-flora-700 hover:text-flora-900">
+                    <Link href="/cart" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-100">
                       سبد خرید
                     </Link>
                   </li>
@@ -126,7 +133,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </div>
 
-            <div className="mt-10 border-t border-soil-900/10 pt-6 text-center text-xs text-soil-700/60">
+            <div className="mt-10 border-t border-soil-900/10 dark:border-dust-100/10 pt-6 text-center text-xs text-soil-700/60 dark:text-dust-300/60">
               © ۱۴۰۵ پات استور — تمامی حقوق محفوظ است.
             </div>
           </div>

@@ -32,13 +32,13 @@ export default async function DashboardPage() {
     <Container className="py-12">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-soil-900">
+          <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">
             سلام{user.fullName ? `، ${user.fullName}` : ''} 👋
           </h1>
-          <p className="mt-2 text-sm text-soil-700/70">سفارش‌ها و آدرس‌های شما</p>
+          <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">سفارش‌ها و آدرس‌های شما</p>
         </div>
         <form action="/api/auth/logout" method="post">
-          <button className="rounded-full border border-soil-900/15 px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-50">
+          <button className="rounded-full border border-soil-900/15 dark:border-dust-50/20 px-5 py-2.5 text-xs font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-50 dark:hover:bg-flora-900">
             خروج از حساب
           </button>
         </form>
@@ -49,10 +49,10 @@ export default async function DashboardPage() {
       </div>
 
       <section className="mt-10">
-        <h2 className="text-lg font-black text-soil-900">سفارش‌های من</h2>
+        <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">سفارش‌های من</h2>
 
         {orders.length === 0 ? (
-          <p className="mt-4 rounded-2xl border border-dashed border-soil-900/15 px-6 py-10 text-center text-sm text-soil-700/70">
+          <p className="mt-4 rounded-2xl border border-dashed border-soil-900/15 dark:border-dust-50/20 px-6 py-10 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
             هنوز سفارشی ثبت نکرده‌اید.
           </p>
         ) : (
@@ -61,17 +61,17 @@ export default async function DashboardPage() {
               <li key={order.id}>
                 <Link
                   href={"/dashboard/orders/" + order.id}
-                  className="group block rounded-2xl border border-soil-900/10 bg-white p-5 transition hover:border-soil-900/25 hover:shadow-md"
+                  className="group block rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5 transition hover:border-soil-900/25 dark:hover:border-dust-50/25 hover:shadow-md dark:hover:shadow-none"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-soil-900/5 pb-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-soil-900/5 dark:border-dust-50/10 pb-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <span className="font-mono text-sm font-bold text-soil-900">
+                      <span className="font-mono text-sm font-bold text-soil-900 dark:text-dust-50">
                         {toFa(order.orderNumber)}
                       </span>
                       <StatusBadge kind="order" value={order.status} />
                       <StatusBadge kind="payment" value={order.paymentStatus} />
                     </div>
-                    <span className="text-xs text-soil-700/60">
+                    <span className="text-xs text-soil-700/60 dark:text-dust-200/60">
                       {formatDateFa(order.createdAt)}
                     </span>
                   </div>
@@ -86,19 +86,19 @@ export default async function DashboardPage() {
                               key={item.id || idx}
                               src={item.imageUrl}
                               alt={item.productName}
-                              className="relative z-10 w-12 h-12 rounded-full border-2 border-white object-cover"
+                              className="relative z-10 w-12 h-12 rounded-full border-2 border-white dark:border-flora-900 object-cover"
                             />
                           ) : (
                             <div
                               key={item.id || idx}
-                              className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white bg-dust-100 text-soil-700/50 text-xs"
+                              className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-100 dark:bg-flora-800 text-soil-700/50 dark:text-dust-200/50 text-xs"
                             >
                               🏺
                             </div>
                           )
                         )}
                         {order._count.items > 3 && (
-                          <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white bg-dust-200 text-xs font-bold text-soil-800">
+                          <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-200 dark:bg-flora-800 text-xs font-bold text-soil-800 dark:text-dust-100">
                             +{toFa(order._count.items - 3)}
                           </div>
                         )}
@@ -106,10 +106,10 @@ export default async function DashboardPage() {
                     )}
 
                     {order.items.length > 0 && (
-                      <div className="text-xs text-soil-800">
+                      <div className="text-xs text-soil-800 dark:text-dust-100">
                         <span className="font-bold">{order.items[0]?.productName}</span>
                         {order._count.items > 1 && (
-                          <span className="text-soil-700/70">
+                          <span className="text-soil-700/70 dark:text-dust-200/70">
                             {' '}و {toFa(order._count.items - 1)} محصول دیگر
                           </span>
                         )}
@@ -118,32 +118,32 @@ export default async function DashboardPage() {
                   </div>
 
                   {/* Metadata and Actions */}
-                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-soil-900/5 pt-4 text-xs text-soil-700/80">
+                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-soil-900/5 dark:border-dust-50/10 pt-4 text-xs text-soil-700/80 dark:text-dust-200/80">
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                       <span>
-                        مبلغ: <b className="text-soil-900">{formatToman(order.totalToman)}</b>
+                        مبلغ: <b className="text-soil-900 dark:text-dust-50">{formatToman(order.totalToman)}</b>
                       </span>
                       <span>
-                        تعداد اقلام: <b className="text-soil-900">{toFa(order._count.items)}</b>
+                        تعداد اقلام: <b className="text-soil-900 dark:text-dust-50">{toFa(order._count.items)}</b>
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 px-2.5 py-1 text-xs text-soil-700">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 dark:bg-flora-800/80 px-2.5 py-1 text-xs text-soil-700 dark:text-dust-200">
                         <span>🚚</span>
                         <span>ارسال با {formatCarrierName(order.shippingCarrier)}</span>
                       </span>
                       {order.refId && (
                         <span dir="ltr">
-                          کد پیگیری: <b className="font-mono text-flora-700">{toFa(order.refId)}</b>
+                          کد پیگیری: <b className="font-mono text-flora-700 dark:text-flora-300">{toFa(order.refId)}</b>
                         </span>
                       )}
                       {order.trackingCode && (
                         <span>
-                          مرسوله: <b className="text-soil-900">{toFa(order.trackingCode)}</b>
+                          مرسوله: <b className="text-soil-900 dark:text-dust-50">{toFa(order.trackingCode)}</b>
                         </span>
                       )}
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-dust-100 px-4 py-2 text-[11px] font-bold text-soil-900 transition group-hover:bg-dust-200">
+                      <span className="rounded-full bg-dust-100 dark:bg-flora-800 px-4 py-2 text-[11px] font-bold text-soil-900 dark:text-dust-50 transition group-hover:bg-dust-200 dark:group-hover:bg-flora-700">
                         جزئیات سفارش
                       </span>
                       <ReorderButton orderId={order.id} />
@@ -157,8 +157,8 @@ export default async function DashboardPage() {
       </section>
 
       <section className="mt-12">
-        <h2 className="text-lg font-black text-soil-900">آدرس‌های ذخیره‌شده</h2>
-        <p className="mt-2 text-sm text-soil-700/70">
+        <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">آدرس‌های ذخیره‌شده</h2>
+        <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
           آدرس پیش‌فرض هنگام تسویه‌حساب به‌صورت خودکار انتخاب می‌شود.
         </p>
         <div className="mt-5">

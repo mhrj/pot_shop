@@ -39,7 +39,7 @@ export default function ArticleDeleteButton({
       type="button"
       disabled={isDeleting}
       onClick={handleDelete}
-      className="rounded-full bg-red-50 px-3.5 py-1.5 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+      className="rounded-full bg-red-50 px-3.5 py-1.5 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/60"
     >
       {isDeleting ? 'در حال حذف...' : 'حذف'}
     </button>

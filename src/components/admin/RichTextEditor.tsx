@@ -56,7 +56,7 @@ export default function RichTextEditor({
     editorProps: {
       attributes: {
         class:
-          'min-h-80 max-h-[650px] overflow-y-auto px-4 py-3 text-soil-900 focus:outline-none leading-relaxed text-sm md:text-base font-normal',
+          'min-h-80 max-h-[650px] overflow-y-auto px-4 py-3 text-soil-900 dark:text-dust-100 focus:outline-none leading-relaxed text-sm md:text-base font-normal',
         dir: 'rtl',
       },
     },
@@ -76,7 +76,7 @@ export default function RichTextEditor({
 
   if (!editor) {
     return (
-      <div className="h-64 rounded-2xl border border-soil-900/15 bg-white p-4 text-center text-xs text-soil-700/60 flex items-center justify-center">
+      <div className="h-64 rounded-2xl border border-soil-900/15 dark:border-dust-50/15 bg-white dark:bg-flora-900 p-4 text-center text-xs text-soil-700/60 dark:text-dust-200/60 flex items-center justify-center">
         در حال بارگذاری ویرایشگر متن...
       </div>
     );
@@ -154,17 +154,17 @@ export default function RichTextEditor({
   };
 
   return (
-    <div className="rounded-2xl border border-soil-900/15 bg-white overflow-hidden shadow-sm">
+    <div className="rounded-2xl border border-soil-900/15 dark:border-dust-50/15 bg-white dark:bg-flora-900 overflow-hidden shadow-sm dark:shadow-none">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 border-b border-soil-900/10 bg-dust-50/80 p-2 text-xs">
+      <div className="flex flex-wrap items-center gap-1 border-b border-soil-900/10 dark:border-dust-50/10 bg-dust-50/80 dark:bg-flora-950/80 p-2 text-xs">
         {/* Bold */}
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`rounded-lg px-2.5 py-1.5 font-bold transition ${
             editor.isActive('bold')
-              ? 'bg-flora-900 text-white shadow-sm'
-              : 'text-soil-800 hover:bg-dust-200'
+              ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
           }`}
           title="پررنگ (Bold)"
         >
@@ -177,15 +177,15 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`rounded-lg px-2.5 py-1.5 italic transition ${
             editor.isActive('italic')
-              ? 'bg-flora-900 text-white shadow-sm'
-              : 'text-soil-800 hover:bg-dust-200'
+              ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
           }`}
           title="مورب (Italic)"
         >
           I
         </button>
 
-        <span className="mx-1 h-5 w-px bg-soil-900/10" />
+        <span className="mx-1 h-5 w-px bg-soil-900/10 dark:bg-dust-50/10" />
 
         {/* Heading 2 */}
         <button
@@ -193,8 +193,8 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={`rounded-lg px-2.5 py-1.5 font-bold transition ${
             editor.isActive('heading', { level: 2 })
-              ? 'bg-flora-900 text-white shadow-sm'
-              : 'text-soil-800 hover:bg-dust-200'
+              ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
           }`}
           title="تیتر ۲"
         >
@@ -207,15 +207,15 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           className={`rounded-lg px-2.5 py-1.5 font-bold transition ${
             editor.isActive('heading', { level: 3 })
-              ? 'bg-flora-900 text-white shadow-sm'
-              : 'text-soil-800 hover:bg-dust-200'
+              ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
           }`}
           title="تیتر ۳"
         >
           H3
         </button>
 
-        <span className="mx-1 h-5 w-px bg-soil-900/10" />
+        <span className="mx-1 h-5 w-px bg-soil-900/10 dark:bg-dust-50/10" />
 
         {/* Bullet List */}
         <button
@@ -223,8 +223,8 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`rounded-lg px-2.5 py-1.5 font-medium transition ${
             editor.isActive('bulletList')
-              ? 'bg-flora-900 text-white shadow-sm'
-              : 'text-soil-800 hover:bg-dust-200'
+              ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
           }`}
           title="فهرست نشانه‌دار (Bullet list)"
         >
@@ -237,15 +237,15 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`rounded-lg px-2.5 py-1.5 font-medium transition ${
             editor.isActive('orderedList')
-              ? 'bg-flora-900 text-white shadow-sm'
-              : 'text-soil-800 hover:bg-dust-200'
+              ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
           }`}
           title="فهرست شماره‌دار"
         >
           ۱. لیست
         </button>
 
-        <span className="mx-1 h-5 w-px bg-soil-900/10" />
+        <span className="mx-1 h-5 w-px bg-soil-900/10 dark:bg-dust-50/10" />
 
         {/* Link */}
         <button
@@ -253,8 +253,8 @@ export default function RichTextEditor({
           onClick={handleOpenLinkModal}
           className={`rounded-lg px-2.5 py-1.5 font-medium transition ${
             editor.isActive('link')
-              ? 'bg-flora-900 text-white shadow-sm'
-              : 'text-soil-800 hover:bg-dust-200'
+              ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
           }`}
           title="افزودن / ویرایش لینک"
         >
@@ -273,7 +273,7 @@ export default function RichTextEditor({
           type="button"
           disabled={isUploadingImage}
           onClick={() => imageInputRef.current?.click()}
-          className="rounded-lg px-2.5 py-1.5 font-medium text-soil-800 hover:bg-dust-200 transition disabled:opacity-50"
+          className="rounded-lg px-2.5 py-1.5 font-medium text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition disabled:opacity-50"
           title="آپلود تصویر"
         >
           {isUploadingImage ? 'در حال آپلود...' : '🖼️ آپلود عکس'}
@@ -281,20 +281,20 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={handlePromptImageUrl}
-          className="rounded-lg px-2 py-1.5 font-medium text-soil-700/80 hover:bg-dust-200 transition text-[11px]"
+          className="rounded-lg px-2 py-1.5 font-medium text-soil-700/80 dark:text-dust-300 hover:bg-dust-200 dark:hover:bg-flora-800 transition text-[11px]"
           title="درج تصویر از طریق URL"
         >
           لینک عکس
         </button>
 
-        <span className="mx-1 h-5 w-px bg-soil-900/10" />
+        <span className="mx-1 h-5 w-px bg-soil-900/10 dark:bg-dust-50/10" />
 
         {/* Undo / Redo */}
         <button
           type="button"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
-          className="rounded-lg px-2 py-1.5 text-soil-800 hover:bg-dust-200 transition disabled:opacity-30"
+          className="rounded-lg px-2 py-1.5 text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition disabled:opacity-30"
           title="بازگشت (Undo)"
         >
           ↶
@@ -303,7 +303,7 @@ export default function RichTextEditor({
           type="button"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
-          className="rounded-lg px-2 py-1.5 text-soil-800 hover:bg-dust-200 transition disabled:opacity-30"
+          className="rounded-lg px-2 py-1.5 text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition disabled:opacity-30"
           title="تکرار (Redo)"
         >
           ↷
@@ -318,11 +318,11 @@ export default function RichTextEditor({
       {/* Link Dialog Modal */}
       {linkModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-soil-950/40 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-soil-900/10 bg-white p-6 shadow-2xl text-right">
-            <h3 className="text-base font-black text-soil-900">تنظیم پیوند</h3>
+          <div className="w-full max-w-sm rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-6 shadow-2xl dark:shadow-none text-right">
+            <h3 className="text-base font-black text-soil-900 dark:text-dust-50">تنظیم پیوند</h3>
             <form onSubmit={handleApplyLink} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-soil-700 mb-1">
+                <label className="block text-xs font-bold text-soil-700 dark:text-dust-200 mb-1">
                   آدرس اینترنتی (URL)
                 </label>
                 <input
@@ -331,33 +331,33 @@ export default function RichTextEditor({
                   placeholder="https://example.com"
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
-                  className="w-full rounded-xl border border-soil-900/15 px-3 py-2 text-sm text-left focus:border-flora-600 focus:outline-none"
+                  className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm text-left focus:border-flora-600 focus:outline-none"
                   autoFocus
                 />
               </div>
 
-              <label className="flex items-center gap-2 text-xs font-bold text-soil-800 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-bold text-soil-800 dark:text-dust-200 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={linkTargetBlank}
                   onChange={(e) => setLinkTargetBlank(e.target.checked)}
-                  className="size-4 rounded border-soil-900/20 text-flora-700 focus:ring-flora-600"
+                  className="size-4 rounded border-soil-900/20 dark:border-dust-50/20 text-flora-700 focus:ring-flora-600"
                 />
                 <span>باز شدن در برگه جدید (target=&ldquo;_blank&rdquo;)</span>
               </label>
 
-              <div className="flex items-center justify-between gap-2 pt-2 border-t border-soil-900/10">
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-soil-900/10 dark:border-dust-50/10">
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 transition"
+                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-700 transition"
                   >
                     تایید
                   </button>
                   <button
                     type="button"
                     onClick={() => setLinkModalOpen(false)}
-                    className="rounded-xl bg-dust-100 px-4 py-2 text-xs font-bold text-soil-800 hover:bg-dust-200 transition"
+                    className="rounded-xl bg-dust-100 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 hover:bg-dust-200 dark:hover:bg-flora-700 transition"
                   >
                     انصراف
                   </button>
@@ -366,7 +366,7 @@ export default function RichTextEditor({
                   <button
                     type="button"
                     onClick={handleRemoveLink}
-                    className="rounded-xl text-red-600 px-2 py-2 text-xs font-bold hover:bg-red-50 transition"
+                    className="rounded-xl text-red-600 dark:text-red-400 px-2 py-2 text-xs font-bold hover:bg-red-50 dark:hover:bg-red-950/40 transition"
                   >
                     حذف لینک
                   </button>

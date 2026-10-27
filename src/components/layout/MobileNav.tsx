@@ -49,7 +49,7 @@ export default function MobileNav({
         aria-expanded={open}
         aria-controls="mobile-nav"
         aria-label={open ? 'بستن منو' : 'باز کردن منو'}
-        className="rounded-full border border-soil-900/15 bg-white p-2.5 text-soil-900 transition hover:border-flora-700"
+        className="rounded-full border border-soil-900/15 bg-white p-2.5 text-soil-900 transition hover:border-flora-700 dark:border-dust-100/15 dark:bg-flora-900 dark:text-dust-50 dark:hover:border-flora-300"
       >
         <svg
           aria-hidden
@@ -72,18 +72,18 @@ export default function MobileNav({
         <nav
           id="mobile-nav"
           aria-label="منوی موبایل"
-          className="absolute inset-x-0 top-full border-b border-soil-900/10 bg-dust-50 px-4 py-3 shadow-[0_16px_32px_-20px_rgba(62,39,35,0.4)]"
+          className="absolute inset-x-0 top-full border-b border-soil-900/10 bg-dust-50 px-4 py-3 shadow-[0_16px_32px_-20px_rgba(62,39,35,0.4)] dark:border-dust-100/10 dark:bg-flora-950 dark:shadow-[0_16px_32px_-20px_rgba(0,0,0,0.8)]"
         >
           <ul className="flex flex-col">
             {items.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="flex items-center justify-between border-b border-soil-900/5 py-3 text-sm font-bold text-soil-900 last:border-b-0"
+                  className="flex items-center justify-between border-b border-soil-900/5 py-3 text-sm font-bold text-soil-900 last:border-b-0 dark:border-dust-100/10 dark:text-dust-50 dark:hover:text-flora-300"
                 >
                   {link.label}
                   {link.href === '/cart' && cartCount > 0 && (
-                    <span className="rounded-full bg-flora-900 px-2 py-0.5 text-[10px] font-bold text-white">
+                    <span className="rounded-full bg-flora-900 px-2 py-0.5 text-[10px] font-bold text-white dark:bg-flora-700">
                       {toFa(cartCount)}
                     </span>
                   )}

@@ -40,12 +40,12 @@ export default function TagDeleteButton({
         type="button"
         onClick={() => setIsConfirmOpen(true)}
         disabled={pending}
-        className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[11px] font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-50 cursor-pointer"
+        className="shrink-0 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-3 py-2 text-[11px] font-bold text-red-700 dark:text-red-400 transition hover:bg-red-100 dark:hover:bg-red-900/50 disabled:opacity-50 cursor-pointer"
       >
         {pending ? 'در حال حذف…' : 'حذف'}
       </button>
       {error && (
-        <p role="alert" className="text-end text-[11px] leading-5 font-bold text-red-600">
+        <p role="alert" className="text-end text-[11px] leading-5 font-bold text-red-600 dark:text-red-400">
           {error}
         </p>
       )}

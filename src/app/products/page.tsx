@@ -160,29 +160,29 @@ export default async function ProductsPage({ searchParams }: Props) {
   return (
     // Pure CSS, no motion library: soft sage-green inspired palette
     // that feels alive, reduces eye strain, and provides crisp contrast for white cards.
-    <div className="min-h-screen bg-gradient-to-b from-[#F2F7F4] via-[#E2F0E6] to-flora-100">
+    <div className="min-h-screen bg-gradient-to-b from-[#F2F7F4] via-[#E2F0E6] to-flora-100 dark:from-flora-950 dark:via-flora-950 dark:to-flora-900">
       <Container className="py-12">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             {/* Was the English word "CATALOG". The wide letter-spacing went with
                 it: tracking inserts gaps inside a connected Perso-Arabic word and
                 makes it read as broken type. */}
-            <p className="text-xs font-bold text-flora-700">کاتالوگ</p>
-            <h1 className="mt-2 text-3xl font-black text-soil-900">گلدان‌ها و فلاورباکس‌ها</h1>
+            <p className="text-xs font-bold text-flora-700 dark:text-flora-400">کاتالوگ</p>
+            <h1 className="mt-2 text-3xl font-black text-soil-900 dark:text-dust-50">گلدان‌ها و فلاورباکس‌ها</h1>
           </div>
-          <p className="text-sm text-soil-700/70">{toFa(total)} محصول در دسترس</p>
+          <p className="text-sm text-soil-700/70 dark:text-dust-200/70">{toFa(total)} محصول در دسترس</p>
         </header>
 
         {/* Categories and Tags Pill Filters */}
         <div className="mt-8 space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-soil-700/80">دسته‌بندی:</span>
+            <span className="text-xs font-bold text-soil-700/80 dark:text-dust-200/80">دسته‌بندی:</span>
             <Link
               href={buildHref({ category: '', page: 1 })}
               className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                 !categorySlug
-                  ? 'bg-flora-900 text-white shadow-sm'
-                  : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+                  ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                  : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
               }`}
             >
               همه
@@ -195,8 +195,8 @@ export default async function ProductsPage({ searchParams }: Props) {
                   href={buildHref({ category: active ? '' : c.slug, page: 1 })}
                   className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                     active
-                      ? 'bg-flora-900 text-white shadow-sm'
-                      : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+                      ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                      : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
                   }`}
                 >
                   {c.name}
@@ -207,13 +207,13 @@ export default async function ProductsPage({ searchParams }: Props) {
 
           {tags.length > 0 && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-soil-700/80">برچسب‌ها:</span>
+              <span className="text-xs font-bold text-soil-700/80 dark:text-dust-200/80">برچسب‌ها:</span>
               <Link
                 href={buildHref({ tag: '', page: 1 })}
                 className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                   !tagSlug
-                    ? 'bg-flora-900 text-white shadow-sm'
-                    : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+                    ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                    : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
                 }`}
               >
                 همه
@@ -226,8 +226,8 @@ export default async function ProductsPage({ searchParams }: Props) {
                     href={buildHref({ tag: active ? '' : t.slug, page: 1 })}
                     className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                       active
-                        ? 'bg-flora-900 text-white shadow-sm'
-                        : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100'
+                        ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                        : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
                     }`}
                   >
                     {t.name}
@@ -253,23 +253,23 @@ export default async function ProductsPage({ searchParams }: Props) {
           >
             {categorySlug && <input type="hidden" name="category" value={categorySlug} />}
             <div className="flex flex-wrap items-end gap-4">
-              <label className="min-w-56 flex-1 text-xs font-bold text-soil-700/80">
+              <label className="min-w-56 flex-1 text-xs font-bold text-soil-700/80 dark:text-dust-200/80">
                 جست‌وجو
                 <input
                   type="search"
                   name="q"
                   defaultValue={q}
                   placeholder="نام، جنس یا رنگ محصول…"
-                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
                 />
               </label>
 
-              <label className="text-xs font-bold text-soil-700/80">
+              <label className="text-xs font-bold text-soil-700/80 dark:text-dust-200/80">
                 برچسب
                 <select
                   name="tag"
                   defaultValue={tagSlug}
-                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
                 >
                   <option value="">همه</option>
                   {tags.map((t) => (
@@ -282,7 +282,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
               <button
                 type="submit"
-                className="rounded-xl bg-flora-900 px-6 py-2.5 text-xs font-black text-white transition hover:bg-flora-700"
+                className="rounded-xl bg-flora-900 px-6 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
               >
                 اعمال
               </button>
@@ -290,20 +290,20 @@ export default async function ProductsPage({ searchParams }: Props) {
               {filtered && (
                 <Link
                   href="/products"
-                  className="rounded-xl border border-soil-900/15 px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100"
+                  className="rounded-xl border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
                 >
                   حذف فیلترها
                 </Link>
               )}
             </div>
 
-            <div className="flex items-end border-t border-soil-900/10 pt-4 lg:ms-auto lg:border-s lg:border-t-0 lg:ps-4 lg:pt-0">
-              <label className="text-xs font-bold text-soil-700/80">
+            <div className="flex items-end border-t border-soil-900/10 pt-4 lg:ms-auto lg:border-s lg:border-t-0 lg:border-soil-900/10 lg:ps-4 lg:pt-0 dark:border-dust-50/10 dark:lg:border-dust-50/10">
+              <label className="text-xs font-bold text-soil-700/80 dark:text-dust-200/80">
                 ترتیب
                 <select
                   name="sort"
                   defaultValue={sort}
-                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
                 >
                   {(Object.keys(SORTS) as SortKey[]).map((key) => (
                     <option key={key} value={key}>
@@ -317,7 +317,7 @@ export default async function ProductsPage({ searchParams }: Props) {
         </search>
 
         {products.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-soil-900/15 bg-white/60 px-6 py-12 text-center text-sm text-soil-700/70">
+          <div className="mt-8 rounded-2xl border border-dashed border-soil-900/15 bg-white/60 px-6 py-12 text-center text-sm text-soil-700/70 dark:border-dust-50/20 dark:bg-flora-900/60 dark:text-dust-200/70">
             {filtered ? (
               <>
                 محصولی با این فیلترها پیدا نشد
@@ -325,7 +325,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                 {activeCategory ? ` در دسته «${activeCategory.name}»` : ''}
                 {activeTag ? ` با برچسب «${activeTag.name}»` : ''}.
                 <div className="mt-4">
-                  <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900">
+                  <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
                     نمایش همه محصولات
                   </Link>
                 </div>
@@ -346,7 +346,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
         {total > 0 && (
           <div className="mt-10 flex flex-col items-center gap-4">
-            <p className="text-xs font-bold text-soil-700/70">
+            <p className="text-xs font-bold text-soil-700/70 dark:text-dust-200/70">
               نمایش {toFa(firstShown)} تا {toFa(lastShown)} از {toFa(total)} محصول
             </p>
 
@@ -359,14 +359,14 @@ export default async function ProductsPage({ searchParams }: Props) {
                   <Link
                     href={buildHref({ page: page - 1 })}
                     rel="prev"
-                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100"
+                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
                   >
                     قبلی
                   </Link>
                 ) : (
                   <span
                     aria-disabled="true"
-                    className="rounded-full border border-soil-900/10 px-5 py-2.5 text-xs font-bold text-soil-700/35"
+                    className="rounded-full border border-soil-900/10 px-5 py-2.5 text-xs font-bold text-soil-700/35 dark:border-dust-50/10 dark:text-dust-200/35"
                   >
                     قبلی
                   </span>
@@ -374,14 +374,14 @@ export default async function ProductsPage({ searchParams }: Props) {
 
                 {pageWindow(page, pageCount).map((entry, index) =>
                   entry === 'gap' ? (
-                    <span key={`gap-${index}`} className="px-1 text-xs text-soil-700/50">
+                    <span key={`gap-${index}`} className="px-1 text-xs text-soil-700/50 dark:text-dust-200/50">
                       …
                     </span>
                   ) : entry === page ? (
                     <span
                       key={entry}
                       aria-current="page"
-                      className="min-w-10 rounded-full bg-flora-900 px-3 py-2.5 text-center text-xs font-black text-white"
+                      className="min-w-10 rounded-full bg-flora-900 px-3 py-2.5 text-center text-xs font-black text-white dark:bg-flora-800"
                     >
                       {toFa(entry)}
                     </span>
@@ -389,7 +389,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     <Link
                       key={entry}
                       href={buildHref({ page: entry })}
-                      className="min-w-10 rounded-full border border-soil-900/15 bg-white px-3 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:bg-dust-100"
+                      className="min-w-10 rounded-full border border-soil-900/15 bg-white px-3 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
                     >
                       {toFa(entry)}
                     </Link>
@@ -400,14 +400,14 @@ export default async function ProductsPage({ searchParams }: Props) {
                   <Link
                     href={buildHref({ page: page + 1 })}
                     rel="next"
-                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100"
+                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
                   >
                     بعدی
                   </Link>
                 ) : (
                   <span
                     aria-disabled="true"
-                    className="rounded-full border border-soil-900/10 px-5 py-2.5 text-xs font-bold text-soil-700/35"
+                    className="rounded-full border border-soil-900/10 px-5 py-2.5 text-xs font-bold text-soil-700/35 dark:border-dust-50/10 dark:text-dust-200/35"
                   >
                     بعدی
                   </span>

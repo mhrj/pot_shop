@@ -42,12 +42,12 @@ export default function GlobalColorPicker({
 }: Props) {
   if (globalColors.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-soil-900/15 bg-dust-50/50 p-4 text-xs text-soil-700/70">
+      <div className="rounded-xl border border-dashed border-soil-900/15 dark:border-dust-50/15 bg-dust-50/50 dark:bg-flora-900 p-4 text-xs text-soil-700/70 dark:text-dust-200/70">
         <span>هنوز رنگی در پالت سیستم ثبت نشده است. </span>
         <Link
           href="/admin/colors"
           target="_blank"
-          className="font-bold text-flora-700 underline hover:text-flora-900 transition mr-1"
+          className="font-bold text-flora-700 dark:text-flora-400 underline hover:text-flora-900 dark:hover:text-flora-300 transition mr-1"
         >
           مدیریت و ثبت رنگ‌ها در پنل
         </Link>
@@ -69,7 +69,7 @@ export default function GlobalColorPicker({
     <div className="space-y-3">
       {/* Clickable Swatch Palette */}
       <div>
-        <span className="block text-[11px] font-medium text-soil-700/70 mb-2">
+        <span className="block text-[11px] font-medium text-soil-700/70 dark:text-dust-200/70 mb-2">
           برای فعال‌سازی یا حذف رنگ، روی آن کلیک کنید:
         </span>
         <div className="flex flex-wrap gap-2">
@@ -91,21 +91,21 @@ export default function GlobalColorPicker({
                   compact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-xs'
                 } ${
                   isSelected
-                    ? 'border-flora-600 bg-flora-50/80 text-flora-900 font-bold shadow-xs ring-2 ring-flora-600/30'
-                    : 'border-soil-900/15 bg-white text-soil-800 hover:border-soil-900/30 hover:bg-dust-50'
+                    ? 'border-flora-600 dark:border-flora-400 bg-flora-50/80 dark:bg-flora-800/80 text-flora-900 dark:text-flora-200 font-bold shadow-xs dark:shadow-none ring-2 ring-flora-600/30 dark:ring-flora-400/30'
+                    : 'border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-800 dark:text-dust-200 hover:border-soil-900/30 dark:hover:border-dust-50/30 hover:bg-dust-50 dark:hover:bg-flora-800'
                 }`}
               >
                 <span
-                  className="relative size-4 sm:size-4.5 rounded-full border border-soil-900/20 shrink-0 shadow-2xs flex items-center justify-center"
+                  className="relative size-4 sm:size-4.5 rounded-full border border-soil-900/20 dark:border-dust-50/20 shrink-0 shadow-2xs flex items-center justify-center"
                   style={{ backgroundColor: color.hexCode }}
                 >
                   {light && (
-                    <span className="absolute inset-0 rounded-full border border-soil-900/20 pointer-events-none" />
+                    <span className="absolute inset-0 rounded-full border border-soil-900/20 dark:border-dust-50/20 pointer-events-none" />
                   )}
                   {isSelected && (
                     <span
                       className={`text-[9px] font-black leading-none ${
-                        light ? 'text-soil-900' : 'text-white'
+                        light ? 'text-soil-900 dark:text-soil-950' : 'text-white'
                       }`}
                     >
                       ✓
@@ -113,7 +113,7 @@ export default function GlobalColorPicker({
                   )}
                 </span>
                 <span>{color.name}</span>
-                <span className="font-mono text-[10px] text-soil-700/50 dir-ltr">
+                <span className="font-mono text-[10px] text-soil-700/50 dark:text-dust-200/50 dir-ltr">
                   {color.hexCode}
                 </span>
               </button>
@@ -125,7 +125,7 @@ export default function GlobalColorPicker({
       {/* Selected Color Chips */}
       {colorsList.length > 0 && (
         <div className="pt-1">
-          <span className="block text-[11px] font-bold text-soil-900 mb-1.5">
+          <span className="block text-[11px] font-bold text-soil-900 dark:text-dust-50 mb-1.5">
             رنگ‌های انتخاب‌شده ({toFa(colorsList.length)}):
           </span>
           <div className="flex flex-wrap gap-2">
@@ -134,16 +134,16 @@ export default function GlobalColorPicker({
               return (
                 <div
                   key={i}
-                  className="flex flex-wrap items-center gap-2 rounded-xl border border-soil-900/10 bg-white px-3 py-1.5 text-xs shadow-2xs"
+                  className="flex flex-wrap items-center gap-2 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 px-3 py-1.5 text-xs shadow-2xs dark:shadow-none"
                 >
                   <span
-                    className="size-3.5 rounded-full border border-soil-900/20 shadow-xs shrink-0"
+                    className="size-3.5 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-xs shrink-0"
                     style={{ backgroundColor: color.hexCode }}
                   />
-                  <span className="font-bold text-soil-900">{name}</span>
-                  <span className="font-mono text-[10px] text-soil-700/60 dir-ltr">{color.hexCode}</span>
+                  <span className="font-bold text-soil-900 dark:text-dust-50">{name}</span>
+                  <span className="font-mono text-[10px] text-soil-700/60 dark:text-dust-200/60 dir-ltr">{color.hexCode}</span>
 
-                  <div className="flex items-center gap-1.5 text-[11px] text-soil-700 font-medium border-r border-soil-900/10 pr-2 mr-1">
+                  <div className="flex items-center gap-1.5 text-[11px] text-soil-700 dark:text-dust-200 font-medium border-r border-soil-900/10 dark:border-dust-50/10 pr-2 mr-1">
                     <label htmlFor={`color-stock-${color.hexCode.replace('#', '')}`}>
                       موجودی:
                     </label>
@@ -157,14 +157,14 @@ export default function GlobalColorPicker({
                         const val = Math.max(0, Math.floor(Number(e.target.value) || 0));
                         onUpdateStock?.(color.hexCode, val);
                       }}
-                      className="w-16 rounded-lg border border-soil-900/15 bg-dust-50/70 px-1.5 py-0.5 text-center text-xs font-bold text-soil-900 outline-none focus:border-flora-500 focus:bg-white focus:ring-1 focus:ring-flora-500"
+                      className="w-16 rounded-lg border border-soil-900/15 dark:border-dust-50/20 bg-dust-50/70 dark:bg-flora-950 px-1.5 py-0.5 text-center text-xs font-bold text-soil-900 dark:text-dust-50 outline-none focus:border-flora-500 focus:bg-white dark:focus:bg-flora-900 focus:ring-1 focus:ring-flora-500"
                     />
                   </div>
 
                   <button
                     type="button"
                     onClick={() => onRemoveColor(color.hexCode)}
-                    className="text-red-500 hover:text-red-700 text-sm font-bold leading-none p-1 hover:bg-red-50 rounded"
+                    className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-bold leading-none p-1 hover:bg-red-50 dark:hover:bg-red-950/40 rounded"
                     title="حذف رنگ"
                   >
                     ×

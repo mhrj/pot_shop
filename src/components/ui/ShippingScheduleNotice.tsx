@@ -11,12 +11,12 @@ export default function ShippingScheduleNotice({
     <div
       role="note"
       dir="rtl"
-      className={`rounded-xl border border-amber-200 bg-amber-50 text-amber-800 transition ${
+      className={`rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200 transition ${
         compact ? 'p-3 text-xs' : 'p-4 text-sm'
       } ${className}`}
     >
       <div className="flex items-start gap-2.5 sm:gap-3">
-        <div className="mt-0.5 shrink-0 text-amber-600">
+        <div className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400">
           <svg
             className={compact ? 'size-4' : 'size-5'}
             fill="none"
@@ -33,11 +33,11 @@ export default function ShippingScheduleNotice({
           </svg>
         </div>
         <div className="space-y-1 leading-relaxed">
-          <div className="font-bold text-amber-900 flex items-center gap-1.5">
+          <div className="font-bold text-amber-900 dark:text-amber-100 flex items-center gap-1.5">
             <span>📦</span>
             <span>برنامه ارسال سفارشات:</span>
           </div>
-          <p className="text-amber-800/90 leading-6">
+          <p className="text-amber-800/90 dark:text-amber-200/90 leading-6">
             سفارش‌های شما تنها در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال می‌شوند. سفارش‌هایی که تا ساعت <strong>۱۰ صبح</strong> این روزها ثبت شوند، در همان روز تحویل پست داده می‌شوند.
           </p>
         </div>

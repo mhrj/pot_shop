@@ -116,11 +116,11 @@ export default function BundleDetailsAccordion({
   }
 
   return (
-    <details className={`group mt-2 rounded-xl border border-soil-900/10 bg-dust-50/60 p-2.5 text-xs transition print:mt-0.5 print:p-0 print:border-none print:bg-transparent print:text-[9px] ${className}`}>
-      <summary className="flex cursor-pointer select-none items-center justify-between font-bold text-soil-800 hover:text-flora-800 list-none [&::-webkit-details-marker]:hidden print:text-[9px]">
+    <details className={`group mt-2 rounded-xl border border-soil-900/10 bg-dust-50/60 p-2.5 text-xs transition dark:border-dust-50/10 dark:bg-flora-950/60 print:mt-0.5 print:p-0 print:border-none print:bg-transparent print:text-[9px] ${className}`}>
+      <summary className="flex cursor-pointer select-none items-center justify-between font-bold text-soil-800 hover:text-flora-800 dark:text-dust-200 dark:hover:text-flora-300 list-none [&::-webkit-details-marker]:hidden print:text-[9px]">
         <span className="flex items-center gap-1.5">
           <svg
-            className="size-3.5 text-soil-500 transition-transform duration-200 group-open:rotate-180 print:hidden"
+            className="size-3.5 text-soil-500 transition-transform duration-200 group-open:rotate-180 dark:text-dust-400 print:hidden"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -129,12 +129,12 @@ export default function BundleDetailsAccordion({
           </svg>
           <span className="text-xs print:text-[9px]">مشاهده جزئیات این بسته</span>
         </span>
-        <span className="text-[11px] font-normal text-soil-700/60 group-open:hidden print:inline print:text-[9px]">
+        <span className="text-[11px] font-normal text-soil-700/60 group-open:hidden dark:text-dust-200/60 print:inline print:text-[9px]">
           ({toFa(itemsList.length)} قلم)
         </span>
       </summary>
 
-      <div className="mt-2.5 space-y-1.5 border-t border-soil-900/10 pt-2.5 print:hidden">
+      <div className="mt-2.5 space-y-1.5 border-t border-soil-900/10 pt-2.5 dark:border-dust-50/10 print:hidden">
         {itemsList.map((bItem, idx) => {
           const chosen = bundleColors[idx] ?? bundleColors[String(idx)];
           const hex = chosen?.hex || null;
@@ -153,51 +153,51 @@ export default function BundleDetailsAccordion({
           return (
             <div
               key={idx}
-              className="flex items-center justify-between gap-3 rounded-lg border border-soil-900/5 bg-white/90 px-2.5 py-1.5"
+              className="flex items-center justify-between gap-3 rounded-lg border border-soil-900/5 bg-white/90 px-2.5 py-1.5 dark:border-dust-50/10 dark:bg-flora-900/90"
             >
               <div className="flex items-center gap-2 flex-wrap min-w-0">
-                <span className="flex size-4.5 items-center justify-center rounded-full bg-soil-100 text-[10px] font-bold text-soil-700 shrink-0">
+                <span className="flex size-4.5 items-center justify-center rounded-full bg-soil-100 text-[10px] font-bold text-soil-700 shrink-0 dark:bg-flora-800 dark:text-dust-200">
                   {toFa(idx + 1)}
                 </span>
-                <span className="font-bold text-soil-900 truncate">
+                <span className="font-bold text-soil-900 truncate dark:text-dust-50">
                   {bItem.title || `گلدان شماره ${toFa(idx + 1)}`}
                 </span>
                 {dimsText && (
-                  <span className="text-[11px] text-soil-700/60">
+                  <span className="text-[11px] text-soil-700/60 dark:text-dust-200/60">
                     {dimsText}
                   </span>
                 )}
                 {bItem.material && (
-                  <span className="text-[11px] text-soil-700/60">
+                  <span className="text-[11px] text-soil-700/60 dark:text-dust-200/60">
                     · جنس: {bItem.material}
                   </span>
                 )}
                 {effectiveWeight > 0 && (
-                  <span className="text-[11px] text-soil-700/60">
+                  <span className="text-[11px] text-soil-700/60 dark:text-dust-200/60">
                     · وزن: {toFa(effectiveWeight)} گرم{count > 1 ? ` (${toFa(count)} بسته)` : ''}
                   </span>
                 )}
                 {effectivePrice > 0 && (
-                  <span className="text-[11px] text-soil-700/60">
+                  <span className="text-[11px] text-soil-700/60 dark:text-dust-200/60">
                     · ارزش: {formatToman(effectivePrice)}{count > 1 ? ` (${toFa(count)} بسته)` : ''}
                   </span>
                 )}
               </div>
 
               {hex ? (
-                <div className="flex items-center gap-1.5 shrink-0 bg-dust-50 px-2 py-0.5 rounded-md border border-soil-900/10">
-                  <span className="text-[11px] text-soil-700/70">رنگ:</span>
+                <div className="flex items-center gap-1.5 shrink-0 bg-dust-50 px-2 py-0.5 rounded-md border border-soil-900/10 dark:bg-flora-950 dark:border-dust-50/10">
+                  <span className="text-[11px] text-soil-700/70 dark:text-dust-200/70">رنگ:</span>
                   <span
-                    className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs shrink-0"
+                    className="size-3.5 rounded-full border border-soil-900/20 shadow-2xs shrink-0 dark:border-dust-50/20"
                     style={{ backgroundColor: hex }}
                     title={colorName ? `${colorName} (${hex})` : hex}
                   />
                   {colorName ? (
-                    <span className="text-xs font-bold text-soil-900">
+                    <span className="text-xs font-bold text-soil-900 dark:text-dust-50">
                       {colorName}
                     </span>
                   ) : null}
-                  <span className="font-mono text-[11px] font-bold text-soil-700" dir="ltr">
+                  <span className="font-mono text-[11px] font-bold text-soil-700 dark:text-dust-200" dir="ltr">
                     {hex}
                   </span>
                 </div>

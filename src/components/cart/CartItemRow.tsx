@@ -61,8 +61,8 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
   };
 
   return (
-    <li className="flex gap-4 rounded-2xl border border-soil-900/10 bg-white p-4">
-      <div className="relative size-24 shrink-0 overflow-hidden rounded-xl bg-dust-100">
+    <li className="flex gap-4 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4">
+      <div className="relative size-24 shrink-0 overflow-hidden rounded-xl bg-dust-100 dark:bg-flora-950">
         {line.imageUrl && (
           <Image src={line.imageUrl} alt={line.name} fill className="object-cover" sizes="96px" />
         )}
@@ -72,10 +72,10 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="font-bold text-soil-900">{line.name}</h2>
+              <h2 className="font-bold text-soil-900 dark:text-dust-50">{line.name}</h2>
               <ItemColorBadge colorData={line.colorData} />
             </div>
-            <p className="mt-1 text-xs text-soil-700/70">
+            <p className="mt-1 text-xs text-soil-700/70 dark:text-dust-200/70">
               {formatToman(line.unitToman)} × {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} بسته)`} — {line.tierLabel}
             </p>
           </div>
@@ -84,7 +84,7 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
             onClick={() => setIsConfirmOpen(true)}
             disabled={pending}
             aria-label="حذف از سبد"
-            className="rounded-full p-1.5 text-soil-700/60 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-40 cursor-pointer"
+            className="rounded-full p-1.5 text-soil-700/60 dark:text-dust-200/60 transition hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-40 cursor-pointer"
           >
             <svg
               className="size-4"
@@ -101,38 +101,38 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 rounded-full border border-soil-900/10 p-0.5">
+            <div className="flex items-center gap-1 rounded-full border border-soil-900/10 dark:border-dust-50/20 dark:bg-flora-950 p-0.5">
               <button
                 type="button"
                 onClick={() => update(qty - line.bundleSize)}
                 disabled={pending || qty <= line.bundleSize}
                 aria-label="کاهش تعداد"
-                className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
+                className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-100 dark:hover:bg-flora-900 disabled:opacity-35"
               >
                 −
               </button>
-              <span className="w-8 text-center text-sm font-black text-soil-900">{toFa(qty)}</span>
+              <span className="w-8 text-center text-sm font-black text-soil-900 dark:text-dust-50">{toFa(qty)}</span>
               <button
                 type="button"
                 onClick={() => update(qty + line.bundleSize)}
                 disabled={pending || qty + line.bundleSize > stock}
                 aria-label="افزایش تعداد"
-                className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 transition hover:bg-dust-100 disabled:opacity-35"
+                className="grid size-8 place-items-center rounded-full text-base font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-100 dark:hover:bg-flora-900 disabled:opacity-35"
               >
                 +
               </button>
             </div>
-            <span className="text-xs text-soil-700/80">
+            <span className="text-xs text-soil-700/80 dark:text-dust-200/80">
               {toFa(qty)} عدد {line.bundleSize > 1 && `(معادل ${toFa(qty / line.bundleSize)} بسته)`}
             </span>
           </div>
 
           <div className="text-end">
-            <p className="text-sm font-black text-flora-900">
+            <p className="text-sm font-black text-flora-900 dark:text-flora-300">
               {formatToman(line.lineTotalToman)}
             </p>
             {line.lineTotalToman >= 1000 && (
-              <p className="text-[11px] font-normal text-soil-700/70">
+              <p className="text-[11px] font-normal text-soil-700/70 dark:text-dust-200/70">
                 ({numberToWordsFa(line.lineTotalToman)} تومان)
               </p>
             )}
@@ -140,7 +140,7 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
         </div>
 
         {line.nextTier && (
-          <p className="text-[11px] text-dust-500">
+          <p className="text-[11px] text-dust-500 dark:text-dust-400">
             {line.bundleSize > 1 ? (
               <>
                 {toFa(Math.max(1, line.nextTier.minQuantity - Math.round(qty / line.bundleSize)))} بسته دیگر → هر بسته{' '}
@@ -156,7 +156,7 @@ export default function CartItemRow({ line, stock }: { line: PricedLine; stock: 
         )}
 
         {error && (
-          <p role="alert" className="text-[11px] font-bold text-red-600">
+          <p role="alert" className="text-[11px] font-bold text-red-600 dark:text-red-400">
             {error}
           </p>
         )}

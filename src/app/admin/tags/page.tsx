@@ -32,20 +32,20 @@ export default async function AdminTagsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-soil-900">برچسب‌ها</h1>
-      <p className="mt-2 text-sm text-soil-700/70">مدیریت، ویرایش نام و دسته‌بندی‌های محصولات</p>
+      <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">برچسب‌ها</h1>
+      <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">مدیریت، ویرایش نام و دسته‌بندی‌های محصولات</p>
 
-      <form action={createTag} className="mt-6 rounded-2xl border border-soil-900/10 bg-white p-5">
+      <form action={createTag} className="mt-6 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
         <label className="block">
-          <span className="text-xs font-bold text-soil-900">نام برچسب جدید</span>
+          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">نام برچسب جدید</span>
           <input
             name="name"
             required
-            className="mt-2 w-full rounded-xl border border-soil-900/15 px-3 py-2.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
+            className="mt-2 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 px-3 py-2.5 text-sm outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20"
             placeholder="مثلاً: گیاهان آپارتمانی"
           />
         </label>
-        <button type="submit" className="mt-4 rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700">
+        <button type="submit" className="mt-4 rounded-xl bg-flora-900 dark:bg-flora-800 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-700">
           افزودن برچسب
         </button>
       </form>

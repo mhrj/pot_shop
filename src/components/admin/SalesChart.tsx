@@ -24,31 +24,31 @@ export default function SalesChart({
   const max = Math.max(...points.map((p) => p.revenueToman), 1);
 
   return (
-    <figure className="rounded-2xl border border-soil-900/10 bg-white p-6">
+    <figure className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-6">
       <figcaption className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-base font-black text-soil-900">
+          <h2 className="text-base font-black text-soil-900 dark:text-dust-50">
             فروش {toFa(days)} روز گذشته
           </h2>
-          <p className="mt-1.5 text-sm text-soil-700/70">
+          <p className="mt-1.5 text-sm text-soil-700/70 dark:text-dust-200/70">
             درآمد تأییدشده:{' '}
-            <b className="text-soil-900">{formatToman(total)}</b>
+            <b className="text-soil-900 dark:text-dust-50">{formatToman(total)}</b>
           </p>
         </div>
         {peak && peak.revenueToman > 0 && (
-          <p className="text-xs text-soil-700/60">
+          <p className="text-xs text-soil-700/60 dark:text-dust-200/60">
             بیشترین روز: {peak.label} · {formatToman(peak.revenueToman)}
           </p>
         )}
       </figcaption>
 
       {total === 0 ? (
-        <p className="mt-6 rounded-xl border border-dashed border-soil-900/15 px-5 py-10 text-center text-sm text-soil-700/70">
+        <p className="mt-6 rounded-xl border border-dashed border-soil-900/15 dark:border-dust-50/15 px-5 py-10 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
           در این بازه فروش تأییدشده‌ای ثبت نشده است.
         </p>
       ) : (
         <>
-          <div className="mt-6 flex h-44 items-end gap-1 border-b border-soil-900/10">
+          <div className="mt-6 flex h-44 items-end gap-1 border-b border-soil-900/10 dark:border-dust-50/10">
             {points.map((p) => {
               const heightPct = Math.max(2, (p.revenueToman / max) * 100);
               return (
@@ -58,10 +58,10 @@ export default function SalesChart({
                 >
                   <div
                     role="tooltip"
-                    className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-lg bg-soil-900 px-2.5 py-1.5 text-center text-[10px] leading-5 whitespace-nowrap text-white shadow-lg group-hover:block"
+                    className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-lg bg-soil-900 dark:bg-flora-950 dark:border dark:border-dust-50/10 px-2.5 py-1.5 text-center text-[10px] leading-5 whitespace-nowrap text-white shadow-lg group-hover:block"
                   >
                     <span className="block font-bold">{p.label}</span>
-                    <span className="block text-flora-100/90">
+                    <span className="block text-flora-100/90 dark:text-flora-300">
                       {formatToman(p.revenueToman)}
                     </span>
                     <span className="block text-dust-200/80">
@@ -81,7 +81,7 @@ export default function SalesChart({
             {points.map((p, i) => (
               <span
                 key={p.key}
-                className="flex-1 text-center text-[9px] text-soil-700/50"
+                className="flex-1 text-center text-[9px] text-soil-700/50 dark:text-dust-200/50"
               >
                 {i % 2 === 0 ? p.label : ''}
               </span>
@@ -89,23 +89,23 @@ export default function SalesChart({
           </div>
 
           <details className="mt-5">
-            <summary className="cursor-pointer text-xs font-bold text-flora-700 hover:text-flora-900">
+            <summary className="cursor-pointer text-xs font-bold text-flora-700 dark:text-flora-400 hover:text-flora-900 dark:hover:text-flora-300">
               نمایش جدول اعداد
             </summary>
             <table className="mt-3 w-full text-xs">
-              <thead className="text-soil-700/60">
+              <thead className="text-soil-700/60 dark:text-dust-200/60">
                 <tr>
                   <th scope="col" className="py-2 text-start font-medium">روز</th>
                   <th scope="col" className="py-2 text-start font-medium">سفارش</th>
                   <th scope="col" className="py-2 text-start font-medium">درآمد</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-soil-900/5">
+              <tbody className="divide-y divide-soil-900/5 dark:divide-dust-50/5">
                 {points.map((p) => (
                   <tr key={p.key}>
-                    <td className="py-2 text-soil-900">{p.label}</td>
-                    <td className="py-2 text-soil-700/80">{toFa(p.orderCount)}</td>
-                    <td className="py-2 font-bold text-soil-900">
+                    <td className="py-2 text-soil-900 dark:text-dust-50">{p.label}</td>
+                    <td className="py-2 text-soil-700/80 dark:text-dust-200/80">{toFa(p.orderCount)}</td>
+                    <td className="py-2 font-bold text-soil-900 dark:text-dust-50">
                       {formatToman(p.revenueToman)}
                     </td>
                   </tr>

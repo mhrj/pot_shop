@@ -131,7 +131,7 @@ export default function PersianChatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 320, damping: 30 }}
-            className="fixed bottom-24 left-5 z-50 flex h-[min(34rem,72dvh)] w-[min(23rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-pot bg-white shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]"
+            className="fixed bottom-24 left-5 z-50 flex h-[min(34rem,72dvh)] w-[min(23rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-pot bg-white dark:bg-flora-950 border border-soil-900/10 dark:border-dust-100/10 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.8)]"
           >
             <header className="flex items-center gap-3 bg-flora-900 px-5 py-4 text-white">
               <span className="grid size-9 place-items-center rounded-full bg-flora-500/30 text-lg">
@@ -145,7 +145,7 @@ export default function PersianChatbot() {
 
             <div
               ref={scrollRef}
-              className="flex-1 space-y-3 overflow-y-auto bg-dust-50 p-4"
+              className="flex-1 space-y-3 overflow-y-auto bg-dust-50 dark:bg-flora-900/40 p-4"
             >
               {messages.map((m, i) => (
                 <div
@@ -153,17 +153,18 @@ export default function PersianChatbot() {
                   className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13px] leading-7 whitespace-pre-line ${m.role === 'user'
-                        ? 'bg-flora-900 text-white'
-                        : 'bg-white text-soil-900 shadow-sm'
-                      }`}
+                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13px] leading-7 whitespace-pre-line ${
+                      m.role === 'user'
+                        ? 'bg-flora-900 dark:bg-flora-700 text-white'
+                        : 'bg-white dark:bg-flora-900 text-soil-900 dark:text-dust-50 shadow-sm border border-soil-900/5 dark:border-dust-100/10'
+                    }`}
                   >
                     {m.content}
 
                     {m.escalated && (
                       <a
                         href="tel:+982191000000"
-                        className="mt-3 block rounded-xl bg-dust-100 px-3 py-2 text-center text-[11px] font-bold text-soil-900 transition hover:bg-dust-200"
+                        className="mt-3 block rounded-xl bg-dust-100 dark:bg-flora-800 px-3 py-2 text-center text-[11px] font-bold text-soil-900 dark:text-dust-100 transition hover:bg-dust-200 dark:hover:bg-flora-700"
                       >
                         تماس با پشتیبانی انسانی: ۰۲۱-۹۱۰۰۰۰۰۰
                       </a>
@@ -174,7 +175,7 @@ export default function PersianChatbot() {
 
               {loading && (
                 <div className="flex justify-end">
-                  <div className="flex gap-1 rounded-2xl bg-white px-4 py-3 shadow-sm">
+                  <div className="flex gap-1 rounded-2xl bg-white dark:bg-flora-900 px-4 py-3 shadow-sm border border-soil-900/5 dark:border-dust-100/10">
                     {[0, 1, 2].map((d) => (
                       <motion.span
                         key={d}
@@ -189,13 +190,13 @@ export default function PersianChatbot() {
             </div>
 
             {messages.length <= 1 && (
-              <div className="flex flex-wrap gap-2 border-t border-soil-900/5 bg-white px-4 pt-3">
+              <div className="flex flex-wrap gap-2 border-t border-soil-900/5 dark:border-dust-100/10 bg-white dark:bg-flora-950 px-4 pt-3">
                 {QUICK.map((q) => (
                   <button
                     key={q}
                     type="button"
                     onClick={() => send(q)}
-                    className="rounded-full bg-dust-100 px-3 py-1.5 text-[11px] font-medium text-soil-700 transition hover:bg-dust-200"
+                    className="rounded-full bg-dust-100 dark:bg-flora-900 px-3 py-1.5 text-[11px] font-medium text-soil-700 dark:text-dust-200 transition hover:bg-dust-200 dark:hover:bg-flora-800"
                   >
                     {q}
                   </button>
@@ -208,7 +209,7 @@ export default function PersianChatbot() {
                 e.preventDefault();
                 send(input);
               }}
-              className="flex items-center gap-2 border-t border-soil-900/5 bg-white p-3"
+              className="flex items-center gap-2 border-t border-soil-900/5 dark:border-dust-100/10 bg-white dark:bg-flora-950 p-3"
             >
               <input
                 value={input}
@@ -216,7 +217,7 @@ export default function PersianChatbot() {
                 placeholder="سوالت رو بنویس…"
                 aria-label="متن پیام"
                 maxLength={500}
-                className="flex-1 rounded-full bg-dust-50 px-4 py-2.5 text-[13px] text-soil-900 outline-none placeholder:text-soil-700/45 focus:ring-2 focus:ring-flora-500/30"
+                className="flex-1 rounded-full bg-dust-50 dark:bg-flora-900 px-4 py-2.5 text-[13px] text-soil-900 dark:text-dust-50 outline-none placeholder:text-soil-700/45 dark:placeholder:text-dust-300/45 focus:ring-2 focus:ring-flora-500/30"
               />
               <button
                 type="submit"

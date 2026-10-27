@@ -93,7 +93,7 @@ export default function ColorRow({ color }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-2xl border border-soil-900/10 bg-white p-4 transition hover:border-soil-900/20">
+    <div className="flex flex-col gap-2 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4 transition hover:border-soil-900/20 dark:hover:border-dust-50/20">
       <div className="flex flex-wrap items-center justify-between gap-3">
         {isEditing ? (
           <form onSubmit={handleSave} className="flex flex-1 flex-wrap items-center gap-3">
@@ -101,7 +101,7 @@ export default function ColorRow({ color }: Props) {
               type="color"
               value={hexCode.startsWith('#') && hexCode.length === 7 ? hexCode : color.hexCode}
               onChange={(e) => setHexCode(e.target.value.toUpperCase())}
-              className="size-9 cursor-pointer rounded-xl border border-soil-900/15 p-1 bg-white"
+              className="size-9 cursor-pointer rounded-xl border border-soil-900/15 dark:border-dust-50/20 p-1 bg-white dark:bg-flora-950"
               title="انتخاب رنگ"
             />
             <input
@@ -110,21 +110,21 @@ export default function ColorRow({ color }: Props) {
               onChange={(e) => setHexCode(e.target.value)}
               placeholder="#FFFFFF"
               dir="ltr"
-              className="w-28 rounded-xl border border-soil-900/15 px-3 py-1.5 text-xs font-mono outline-none focus:border-flora-500"
+              className="w-28 rounded-xl border border-soil-900/15 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 px-3 py-1.5 text-xs font-mono outline-none focus:border-flora-500"
             />
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="نام رنگ"
-              className="min-w-44 flex-1 rounded-xl border border-soil-900/15 px-3 py-1.5 text-sm outline-none focus:border-flora-500"
+              className="min-w-44 flex-1 rounded-xl border border-soil-900/15 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 px-3 py-1.5 text-sm outline-none focus:border-flora-500"
               autoFocus
             />
             <div className="flex items-center gap-2">
               <button
                 type="submit"
                 disabled={pending}
-                className="rounded-xl bg-flora-900 px-4 py-1.5 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50"
+                className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-1.5 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-50"
               >
                 {pending ? 'در حال ذخیره…' : 'ذخیره'}
               </button>
@@ -137,7 +137,7 @@ export default function ColorRow({ color }: Props) {
                   setError(null);
                 }}
                 disabled={pending}
-                className="rounded-xl border border-soil-900/15 px-3 py-1.5 text-xs font-medium text-soil-700 hover:bg-dust-50"
+                className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 px-3 py-1.5 text-xs font-medium text-soil-700 dark:text-dust-200 hover:bg-dust-50 dark:hover:bg-flora-800"
               >
                 انصراف
               </button>
@@ -147,11 +147,11 @@ export default function ColorRow({ color }: Props) {
           <>
             <div className="flex items-center gap-3">
               <span
-                className="size-7 rounded-full border border-soil-900/20 shadow-xs"
+                className="size-7 rounded-full border border-soil-900/20 dark:border-dust-50/20 shadow-xs dark:shadow-none"
                 style={{ backgroundColor: color.hexCode }}
               />
-              <span className="text-sm font-bold text-soil-900">{color.name}</span>
-              <span className="font-mono text-xs text-soil-700/60 dir-ltr bg-dust-50 px-2 py-0.5 rounded-lg border border-soil-900/10">
+              <span className="text-sm font-bold text-soil-900 dark:text-dust-50">{color.name}</span>
+              <span className="font-mono text-xs text-soil-700/60 dark:text-dust-200/60 dir-ltr bg-dust-50 dark:bg-flora-950 px-2 py-0.5 rounded-lg border border-soil-900/10 dark:border-dust-50/10">
                 {color.hexCode}
               </span>
             </div>
@@ -160,7 +160,7 @@ export default function ColorRow({ color }: Props) {
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="rounded-xl border border-soil-900/15 px-3 py-1.5 text-xs font-bold text-soil-700 hover:bg-dust-50 transition"
+                className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 px-3 py-1.5 text-xs font-bold text-soil-700 dark:text-dust-200 hover:bg-dust-50 dark:hover:bg-flora-800 transition"
               >
                 ویرایش
               </button>
@@ -168,7 +168,7 @@ export default function ColorRow({ color }: Props) {
                 type="button"
                 onClick={() => setIsConfirmOpen(true)}
                 disabled={pending}
-                className="rounded-xl border border-red-200 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 transition disabled:opacity-50 cursor-pointer"
+                className="rounded-xl border border-red-200 dark:border-red-900/50 px-3 py-1.5 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition disabled:opacity-50 cursor-pointer"
               >
                 حذف
               </button>
@@ -177,7 +177,7 @@ export default function ColorRow({ color }: Props) {
         )}
       </div>
 
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
 
       <ConfirmModal
         isOpen={isConfirmOpen}

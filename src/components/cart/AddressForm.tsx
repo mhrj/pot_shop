@@ -189,17 +189,17 @@ export default function AddressForm({
     <form
       noValidate
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-2xl border border-soil-900/10 bg-white p-5"
+      className="space-y-4 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5"
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-black text-soil-900">
+        <h3 className="text-sm font-black text-soil-900 dark:text-dust-50">
           {editing ? 'ویرایش آدرس' : 'افزودن آدرس جدید'}
         </h3>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="block">
-          <label htmlFor={`${idPrefix}-fullName`} className="block text-xs font-bold text-soil-700/80">
+          <label htmlFor={`${idPrefix}-fullName`} className="block text-xs font-bold text-soil-700/80 dark:text-dust-200">
             نام و نام خانوادگی
             <span className="text-red-500 ms-0.5">*</span>
           </label>
@@ -208,10 +208,10 @@ export default function AddressForm({
             name="fullName"
             value={form.fullName}
             onChange={handleChange}
-            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
               errors.fullName
                 ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-soil-900/10 focus:border-flora-500'
+                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
             }`}
             placeholder="مثلاً مریم رضایی"
           />
@@ -219,7 +219,7 @@ export default function AddressForm({
         </div>
 
         <div className="block">
-          <label htmlFor={`${idPrefix}-phone`} className="block text-xs font-bold text-soil-700/80">
+          <label htmlFor={`${idPrefix}-phone`} className="block text-xs font-bold text-soil-700/80 dark:text-dust-200">
             شماره همراه
             <span className="text-red-500 ms-0.5">*</span>
           </label>
@@ -232,14 +232,14 @@ export default function AddressForm({
             type="tel"
             maxLength={11}
             inputMode="numeric"
-            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
               phoneError
                 ? 'border-red-500 focus:ring-red-500'
-                : 'border-soil-900/10 focus:border-flora-500'
+                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
             }`}
             placeholder="09121234567"
           />
-          {phoneError && <p className="mt-1 text-xs font-bold text-red-600">{phoneError}</p>}
+          {phoneError && <p className="mt-1 text-xs font-bold text-red-600 dark:text-red-400">{phoneError}</p>}
         </div>
 
         <div className="sm:col-span-2">
@@ -270,7 +270,7 @@ export default function AddressForm({
         </div>
 
         <div className="block">
-          <label htmlFor={`${idPrefix}-postalCode`} className="block text-xs font-bold text-soil-700/80">
+          <label htmlFor={`${idPrefix}-postalCode`} className="block text-xs font-bold text-soil-700/80 dark:text-dust-200">
             کد پستی
             <span className="text-red-500 ms-0.5">*</span>
           </label>
@@ -282,10 +282,10 @@ export default function AddressForm({
             dir="ltr"
             maxLength={10}
             inputMode="numeric"
-            className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
               errors.postalCode
                 ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-soil-900/10 focus:border-flora-500'
+                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
             }`}
             placeholder="1234567890"
           />
@@ -293,7 +293,7 @@ export default function AddressForm({
         </div>
 
         <div className="block">
-          <label htmlFor={`${idPrefix}-label`} className="block text-xs font-bold text-soil-700/80">
+          <label htmlFor={`${idPrefix}-label`} className="block text-xs font-bold text-soil-700/80 dark:text-dust-200">
             برچسب آدرس
           </label>
           <select
@@ -301,17 +301,17 @@ export default function AddressForm({
             name="label"
             value={form.label}
             onChange={handleChange}
-            className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+            className="mt-1 w-full rounded-xl border border-soil-900/10 dark:border-dust-50/20 bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition focus:border-flora-500"
           >
-            <option value="HOME">خانه</option>
-            <option value="WORK">محل کار</option>
-            <option value="OTHER">سایر</option>
+            <option value="HOME" className="dark:bg-flora-950 dark:text-dust-50">خانه</option>
+            <option value="WORK" className="dark:bg-flora-950 dark:text-dust-50">محل کار</option>
+            <option value="OTHER" className="dark:bg-flora-950 dark:text-dust-50">سایر</option>
           </select>
         </div>
       </div>
 
       <div className="block">
-        <label htmlFor={`${idPrefix}-line1`} className="block text-xs font-bold text-soil-700/80">
+        <label htmlFor={`${idPrefix}-line1`} className="block text-xs font-bold text-soil-700/80 dark:text-dust-200">
           آدرس دقیق
           <span className="text-red-500 ms-0.5">*</span>
         </label>
@@ -320,10 +320,10 @@ export default function AddressForm({
           name="line1"
           value={form.line1}
           onChange={handleChange}
-          className={`mt-1 w-full rounded-xl border bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition ${
+          className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
             errors.line1
               ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-soil-900/10 focus:border-flora-500'
+              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
           }`}
           placeholder="خیابان ولیعصر، کوچه ..."
         />
@@ -331,7 +331,7 @@ export default function AddressForm({
       </div>
 
       <div className="block">
-        <label htmlFor={`${idPrefix}-line2`} className="block text-xs font-bold text-soil-700/80">
+        <label htmlFor={`${idPrefix}-line2`} className="block text-xs font-bold text-soil-700/80 dark:text-dust-200">
           واحد / پلاک / توضیحات بیشتر
         </label>
         <input
@@ -339,7 +339,7 @@ export default function AddressForm({
           name="line2"
           value={form.line2}
           onChange={handleChange}
-          className="mt-1 w-full rounded-xl border border-soil-900/10 bg-dust-50 px-3 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500"
+          className="mt-1 w-full rounded-xl border border-soil-900/10 dark:border-dust-50/20 bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition focus:border-flora-500"
           placeholder="پلاک ۱۲، طبقه ۳"
         />
       </div>
@@ -353,13 +353,13 @@ export default function AddressForm({
           onChange={handleChange}
           className="h-4 w-4 accent-flora-700"
         />
-        <label htmlFor={`${idPrefix}-isDefault`} className="text-xs font-bold text-soil-700/80 cursor-pointer">
+        <label htmlFor={`${idPrefix}-isDefault`} className="text-xs font-bold text-soil-700/80 dark:text-dust-200 cursor-pointer">
           این آدرس پیش‌فرض باشد
         </label>
       </div>
 
       {error && (
-        <p role="alert" className="rounded-xl bg-red-50 px-3 py-2 text-xs font-bold text-red-700">
+        <p role="alert" className="rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/40 px-3 py-2 text-xs font-bold text-red-700 dark:text-red-300">
           {error}
         </p>
       )}
@@ -376,7 +376,7 @@ export default function AddressForm({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-2xl border border-soil-900/10 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
+            className="rounded-2xl border border-soil-900/10 dark:border-dust-50/20 px-6 py-3 text-sm font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-50 dark:hover:bg-flora-800"
           >
             انصراف
           </button>

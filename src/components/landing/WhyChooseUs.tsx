@@ -80,10 +80,10 @@ export default function WhyChooseUs() {
     <section className="py-20 relative">
       <Container>
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-black text-soil-900 sm:text-4xl">
+          <h2 className="text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl">
             چرا پات استور؟
           </h2>
-          <p className="mt-4 text-base leading-8 text-soil-700/85 sm:text-lg">
+          <p className="mt-4 text-base leading-8 text-soil-700/85 dark:text-dust-200/85 sm:text-lg">
             هر گلدانی بستر مناسبی برای نگهداری گیاه زنده نیست. پات استور با انتخاب دقیق کارگاه‌های برتر کشور و تأمین خاک و ابزار تخصصی، محصولاتی گردآوری کرده که گیاه شما سال‌ها با طراوت نفس بکشد.
           </p>
         </div>
@@ -94,36 +94,36 @@ export default function WhyChooseUs() {
 
             const cardBody = (
               <div
-                className={`flex h-full flex-col justify-between rounded-3xl border ${adv.border} bg-gradient-to-b ${adv.color} p-7 shadow-sm text-right ${
+                className={`flex h-full flex-col justify-between rounded-3xl border ${adv.border} dark:border-dust-100/10 bg-gradient-to-b ${adv.color} dark:from-flora-900 dark:to-flora-900 dark:bg-flora-900 p-7 shadow-sm text-right ${
                   isClickable
-                    ? 'transition-all duration-300 hover:-translate-y-1 hover:shadow-lg'
+                    ? 'transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-black/40'
                     : ''
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
                     <div
-                      className={`grid size-12 place-items-center rounded-2xl ${adv.iconBg} shadow-sm ${
+                      className={`grid size-12 place-items-center rounded-2xl ${adv.iconBg} dark:bg-white/10 dark:text-dust-50 shadow-sm ${
                         isClickable ? 'transition duration-300 group-hover:scale-110' : ''
                       }`}
                     >
                       {adv.icon}
                     </div>
-                    <span className="rounded-full bg-white/70 px-3 py-1 text-[11px] font-bold text-soil-700 backdrop-blur">
+                    <span className="rounded-full bg-white/70 dark:bg-white/10 px-3 py-1 text-[11px] font-bold text-soil-700 dark:text-dust-200 backdrop-blur">
                       {adv.tag}
                     </span>
                   </div>
 
-                  <h3 className="mt-6 text-lg font-black text-soil-900 text-right leading-tight">
+                  <h3 className="mt-6 text-lg font-black text-soil-900 dark:text-dust-50 text-right leading-tight">
                     {adv.title}
                   </h3>
-                  <p className="mt-3 text-xs leading-6 sm:text-sm sm:leading-7 text-soil-700/85 text-right">
+                  <p className="mt-3 text-xs leading-6 sm:text-sm sm:leading-7 text-soil-700/85 dark:text-dust-200/85 text-right">
                     {adv.description}
                   </p>
                 </div>
 
                 <div
-                  className={`mt-6 flex items-center gap-1.5 text-[11px] font-bold text-flora-800 ${
+                  className={`mt-6 flex items-center gap-1.5 text-[11px] font-bold text-flora-800 dark:text-flora-300 ${
                     isClickable
                       ? 'opacity-80 transition duration-300 group-hover:opacity-100'
                       : 'opacity-70'

@@ -28,29 +28,29 @@ export default async function FailedPage({
 
   return (
     <Container className="flex min-h-dvh items-center justify-center py-16">
-      <div className="w-full max-w-lg rounded-pot bg-white p-10 text-center shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)]">
-        <div className="mx-auto grid size-16 place-items-center rounded-full bg-red-50 text-3xl">
+      <div className="w-full max-w-lg rounded-pot border border-transparent bg-white p-10 text-center shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none">
+        <div className="mx-auto grid size-16 place-items-center rounded-full bg-red-50 text-3xl dark:bg-red-950/50 dark:text-red-400">
           ✕
         </div>
-        <h1 className="mt-6 text-2xl font-black text-soil-900">پرداخت انجام نشد</h1>
-        <p className="mt-3 text-sm leading-7 text-soil-700/80">
+        <h1 className="mt-6 text-2xl font-black text-soil-900 dark:text-dust-50">پرداخت انجام نشد</h1>
+        <p className="mt-3 text-sm leading-7 text-soil-700/80 dark:text-dust-200/80">
           {explanation}
         </p>
         {order && (
-          <p className="mt-4 text-xs text-soil-700/60">
-            شماره سفارش: <span className="font-mono font-bold">{toFa(order)}</span>
+          <p className="mt-4 text-xs text-soil-700/60 dark:text-dust-200/60">
+            شماره سفارش: <span className="font-mono font-bold dark:text-dust-50">{toFa(order)}</span>
           </p>
         )}
         <div className="mt-8 flex justify-center gap-3">
           <Link
             href="/cart"
-            className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700"
+            className="rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
           >
             بازگشت به سبد
           </Link>
           <Link
             href="/"
-            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50"
+            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
           >
             صفحه اصلی
           </Link>
