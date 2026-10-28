@@ -20,6 +20,9 @@ export default function RichTextEditor({
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkTargetBlank, setLinkTargetBlank] = useState(true);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [editorError, setEditorError] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -118,6 +121,7 @@ export default function RichTextEditor({
     if (!file) return;
 
     try {
+      setEditorError(null);
       setIsUploadingImage(true);
       const fd = new FormData();
       fd.append('file', file);
@@ -137,7 +141,7 @@ export default function RichTextEditor({
         editor.chain().focus().setImage({ src: data.url, alt: file.name }).run();
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'آپلود تصویر با خطا مواجه شد');
+      setEditorError(err instanceof Error ? err.message : 'آپلود تصویر با خطا مواجه شد');
     } finally {
       setIsUploadingImage(false);
       if (imageInputRef.current) {
@@ -146,11 +150,18 @@ export default function RichTextEditor({
     }
   };
 
-  const handlePromptImageUrl = () => {
-    const url = prompt('آدرس اینترنتی تصویر را وارد کنید:');
-    if (url && url.trim()) {
-      editor.chain().focus().setImage({ src: url.trim() }).run();
+  const handleOpenImageUrlModal = () => {
+    setImageUrl('');
+    setEditorError(null);
+    setImageModalOpen(true);
+  };
+
+  const handleApplyImageUrl = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (imageUrl && imageUrl.trim()) {
+      editor.chain().focus().setImage({ src: imageUrl.trim() }).run();
     }
+    setImageModalOpen(false);
   };
 
   return (
@@ -280,7 +291,7 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={handlePromptImageUrl}
+          onClick={handleOpenImageUrlModal}
           className="rounded-lg px-2 py-1.5 font-medium text-soil-700/80 dark:text-dust-300 hover:bg-dust-200 dark:hover:bg-flora-800 transition text-[11px]"
           title="درج تصویر از طریق URL"
         >
@@ -310,6 +321,13 @@ export default function RichTextEditor({
         </button>
       </div>
 
+      {editorError && (
+        <div className="bg-red-50 dark:bg-red-950/50 border-b border-red-200 dark:border-red-800/40 px-3 py-1.5 text-xs text-red-700 dark:text-red-300 flex items-center justify-between">
+          <span>{editorError}</span>
+          <button type="button" onClick={() => setEditorError(null)} className="text-red-500 font-bold hover:text-red-700 cursor-pointer">✕</button>
+        </div>
+      )}
+
       {/* Editor Content */}
       <div className="relative">
         <EditorContent editor={editor} />
@@ -322,10 +340,12 @@ export default function RichTextEditor({
             <h3 className="text-base font-black text-soil-900 dark:text-dust-50">تنظیم پیوند</h3>
             <form onSubmit={handleApplyLink} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-soil-700 dark:text-dust-200 mb-1">
+                <label htmlFor="rich-editor-link-url" className="block text-xs font-bold text-soil-700 dark:text-dust-200 mb-1">
                   آدرس اینترنتی (URL)
                 </label>
                 <input
+                  id="rich-editor-link-url"
+                  name="rich-editor-link-url"
                   type="url"
                   dir="ltr"
                   placeholder="https://example.com"
@@ -371,6 +391,51 @@ export default function RichTextEditor({
                     حذف لینک
                   </button>
                 )}
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Image URL Modal */}
+      {imageModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-soil-950/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-6 shadow-2xl dark:shadow-none text-right">
+            <h3 className="text-base font-black text-soil-900 dark:text-dust-50">درج تصویر با لینک</h3>
+            <form onSubmit={handleApplyImageUrl} className="mt-4 space-y-4">
+              <div>
+                <label htmlFor="rich-editor-image-url" className="block text-xs font-bold text-soil-700 dark:text-dust-200 mb-1">
+                  آدرس اینترنتی تصویر (URL)
+                </label>
+                <input
+                  id="rich-editor-image-url"
+                  name="rich-editor-image-url"
+                  type="url"
+                  dir="ltr"
+                  placeholder="https://example.com/image.jpg"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm text-left focus:border-flora-600 focus:outline-none"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-soil-900/10 dark:border-dust-50/10">
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-700 transition"
+                  >
+                    درج تصویر
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageModalOpen(false)}
+                    className="rounded-xl bg-dust-100 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 hover:bg-dust-200 dark:hover:bg-flora-700 transition"
+                  >
+                    انصراف
+                  </button>
+                </div>
               </div>
             </form>
           </div>

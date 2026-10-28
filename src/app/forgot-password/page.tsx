@@ -74,9 +74,13 @@ export default function ForgotPasswordPage() {
           شماره موبایل ثبت‌شده در حساب خود را وارد کنید تا کد تایید ۵ رقمی برایتان پیامک شود.
         </p>
 
-        <label className="mt-6 block">
-          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">شماره موبایل</span>
+        <div className="mt-6 block">
+          <label htmlFor="forgot-password-phone" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+            شماره موبایل
+          </label>
           <input
+            id="forgot-password-phone"
+            name="phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             required
@@ -86,7 +90,7 @@ export default function ForgotPasswordPage() {
             autoComplete="tel"
             className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-right text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
           />
-        </label>
+        </div>
 
         {error && (
           <p role="alert" className="mt-4 rounded-xl border border-transparent bg-red-50 px-4 py-3 text-xs font-bold text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300">{error}</p>

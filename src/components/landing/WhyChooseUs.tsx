@@ -103,13 +103,13 @@ export default function WhyChooseUs() {
                 <div>
                   <div className="flex items-center justify-between">
                     <div
-                      className={`grid size-12 place-items-center rounded-2xl ${adv.iconBg} dark:bg-white/10 dark:text-dust-50 shadow-sm ${
+                      className={`grid size-12 place-items-center rounded-2xl ${adv.iconBg} dark:bg-flora-900/50 dark:text-flora-300 shadow-sm ${
                         isClickable ? 'transition duration-300 group-hover:scale-110' : ''
                       }`}
                     >
                       {adv.icon}
                     </div>
-                    <span className="rounded-full bg-white/70 dark:bg-white/10 px-3 py-1 text-[11px] font-bold text-soil-700 dark:text-dust-200 backdrop-blur">
+                    <span className="rounded-full bg-white/70 dark:bg-flora-950/60 px-3 py-1 text-[11px] font-bold text-soil-700 dark:text-flora-300 backdrop-blur">
                       {adv.tag}
                     </span>
                   </div>

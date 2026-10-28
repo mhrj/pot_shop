@@ -73,6 +73,22 @@ export async function POST(req: Request) {
   const totals = await getCartTotals(session.sub);
   const effectiveWeight = weightGrams ?? totals.totalWeightGrams ?? 1000;
 
+  // If weight exceeds 2kg (2000g), Postex drops requests and Pishtaz cannot handle it.
+  if (effectiveWeight > 2000) {
+    return NextResponse.json({
+      ok: false,
+      isOverweight: true,
+      message:
+        "وزن مرسوله بیش از ۲ کیلوگرم است و امکان ارسال با پست پیشتاز وجود ندارد. لطفاً جهت هماهنگی ارسال اختصاصی با پشتیبانی تماس بگیرید.",
+      shippingToman: 0,
+      isFree: false,
+      options: [],
+      shippingOptions: [],
+      destination,
+      cityCode: resolvedCode,
+    });
+  }
+
   // 3) Fetch store settings for origin city and from_city_code
   let originCity = "تهران";
   try {

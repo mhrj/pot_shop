@@ -153,10 +153,12 @@ export default function WholesaleInquiryForm() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="block text-xs font-medium text-flora-100/90 mb-1.5">
+                        <label htmlFor="wholesale-fullname" className="block text-xs font-medium text-flora-100/90 mb-1.5">
                           نام و نام خانوادگی <span className="text-rose-400">*</span>
                         </label>
                         <input
+                          id="wholesale-fullname"
+                          name="fullName"
                           type="text"
                           value={formData.fullName}
                           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
@@ -169,10 +171,12 @@ export default function WholesaleInquiryForm() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-flora-100/90 mb-1.5">
+                        <label htmlFor="wholesale-phone" className="block text-xs font-medium text-flora-100/90 mb-1.5">
                           شماره تماس <span className="text-rose-400">*</span>
                         </label>
                         <input
+                          id="wholesale-phone"
+                          name="phone"
                           type="tel"
                           dir="ltr"
                           value={formData.phone}
@@ -188,10 +192,12 @@ export default function WholesaleInquiryForm() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="block text-xs font-medium text-flora-100/90 mb-1.5">
+                        <label htmlFor="wholesale-business-name" className="block text-xs font-medium text-flora-100/90 mb-1.5">
                           نام کسب‌وکار یا برند (اختیاری)
                         </label>
                         <input
+                          id="wholesale-business-name"
+                          name="businessName"
                           type="text"
                           value={formData.businessName}
                           onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
@@ -201,10 +207,12 @@ export default function WholesaleInquiryForm() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-flora-100/90 mb-1.5">
+                        <label htmlFor="wholesale-estimated-qty" className="block text-xs font-medium text-flora-100/90 mb-1.5">
                           تیراژ تقریبی مدنظر
                         </label>
                         <select
+                          id="wholesale-estimated-qty"
+                          name="estimatedQty"
                           value={formData.estimatedQty}
                           onChange={(e) => setFormData({ ...formData, estimatedQty: e.target.value })}
                           className="w-full rounded-xl border border-white/20 bg-flora-950 px-3.5 py-2.5 text-xs text-white focus:border-flora-400 focus:outline-none transition"
@@ -218,10 +226,12 @@ export default function WholesaleInquiryForm() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-flora-100/90 mb-1.5">
+                      <label htmlFor="wholesale-message" className="block text-xs font-medium text-flora-100/90 mb-1.5">
                         توضیحات یا مدل‌های مدنظر (اختیاری)
                       </label>
                       <textarea
+                        id="wholesale-message"
+                        name="message"
                         rows={2}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}

@@ -75,6 +75,9 @@ export default function TagRow({ tag }: Props) {
       {isEditing ? (
         <form onSubmit={handleSave} className="flex flex-1 flex-wrap items-center gap-2">
           <input
+            id={`tag-name-${tag.id}`}
+            name="name"
+            aria-label="نام جدید برچسب"
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={pending}

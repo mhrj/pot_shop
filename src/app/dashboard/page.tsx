@@ -128,19 +128,21 @@ export default async function DashboardPage() {
                         <span>ارسال با {formatCarrierName(order.shippingCarrier)}</span>
                       </span>
                       {order.refId && (
-                        <span dir="ltr">
-                          کد پیگیری: <b className="font-mono text-flora-700 dark:text-flora-300">{toFa(order.refId)}</b>
+                        <span dir="ltr" className="inline-flex items-center gap-1 rounded-full bg-dust-100 dark:bg-flora-900 px-2.5 py-1 text-xs text-soil-700 dark:text-flora-300">
+                          <span>کد پیگیری:</span>
+                          <b className="font-mono font-bold text-flora-700 dark:text-flora-300">{toFa(order.refId)}</b>
                         </span>
                       )}
                       {order.trackingCode && (
-                        <span>
-                          مرسوله: <b className="text-soil-900 dark:text-dust-50">{toFa(order.trackingCode)}</b>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-dust-100 dark:bg-flora-900 px-2.5 py-1 text-xs text-soil-700 dark:text-dust-200">
+                          <span>مرسوله:</span>
+                          <b className="text-soil-900 dark:text-dust-50">{toFa(order.trackingCode)}</b>
                         </span>
                       )}
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-dust-100 dark:bg-flora-900 dark:text-dust-100 dark:hover:bg-flora-800 dark:group-hover:bg-flora-800 px-4 py-2 text-[11px] font-bold text-soil-900 transition group-hover:bg-dust-200">
+                      <span className="rounded-full bg-dust-100 text-soil-900 dark:bg-flora-800 dark:text-dust-50 dark:hover:bg-flora-700 px-4 py-2 text-[11px] font-bold transition group-hover:bg-dust-200">
                         جزئیات سفارش
                       </span>
                       <ReorderButton orderId={order.id} />

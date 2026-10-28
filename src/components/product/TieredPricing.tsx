@@ -694,6 +694,8 @@ export default function TieredPricing({
               −
             </button>
             <input
+              id="quantity-input"
+              name="quantity"
               type="number"
               inputMode="numeric"
               step={1}

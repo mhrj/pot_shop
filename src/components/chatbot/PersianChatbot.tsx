@@ -212,6 +212,8 @@ export default function PersianChatbot() {
               className="flex items-center gap-2 border-t border-soil-900/5 dark:border-dust-100/10 bg-white dark:bg-flora-950 p-3"
             >
               <input
+                id="chatbot-input"
+                name="message"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="سوالت رو بنویس…"

@@ -159,9 +159,13 @@ function ResetPasswordForm() {
           </div>
         ) : (
           <form noValidate onSubmit={submit} className="mt-6">
-            <label className="block">
-              <span className="text-xs font-bold text-soil-900 dark:text-dust-200">شماره موبایل</span>
+            <div className="block">
+              <label htmlFor="reset-phone" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+                شماره موبایل
+              </label>
               <input
+                id="reset-phone"
+                name="phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
@@ -171,11 +175,13 @@ function ResetPasswordForm() {
                 autoComplete="tel"
                 className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-right text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
-            </label>
+            </div>
 
-            <label className="mt-4 block">
+            <div className="mt-4 block">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-soil-900 dark:text-dust-200">کد تایید ۵ رقمی</span>
+                <label htmlFor="reset-code" className="text-xs font-bold text-soil-900 dark:text-dust-200">
+                  کد تایید ۵ رقمی
+                </label>
                 {cooldown > 0 ? (
                   <span className="text-xs text-soil-700/70 dark:text-dust-200/70">
                     ارسال مجدد تا ({toFa(cooldown)}) ثانیه
@@ -192,6 +198,8 @@ function ResetPasswordForm() {
                 )}
               </div>
               <input
+                id="reset-code"
+                name="code"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 required
@@ -203,11 +211,15 @@ function ResetPasswordForm() {
                 autoComplete="one-time-code"
                 className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-center text-lg font-bold tracking-widest text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
-            </label>
+            </div>
 
-            <label className="mt-4 block">
-              <span className="text-xs font-bold text-soil-900 dark:text-dust-200">رمز عبور جدید</span>
+            <div className="mt-4 block">
+              <label htmlFor="reset-password" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+                رمز عبور جدید
+              </label>
               <input
+                id="reset-password"
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -216,11 +228,15 @@ function ResetPasswordForm() {
                 autoComplete="new-password"
                 className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
-            </label>
+            </div>
 
-            <label className="mt-4 block">
-              <span className="text-xs font-bold text-soil-900 dark:text-dust-200">تکرار رمز عبور جدید</span>
+            <div className="mt-4 block">
+              <label htmlFor="reset-confirmPassword" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+                تکرار رمز عبور جدید
+              </label>
               <input
+                id="reset-confirmPassword"
+                name="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
@@ -229,7 +245,7 @@ function ResetPasswordForm() {
                 autoComplete="new-password"
                 className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
-            </label>
+            </div>
 
             {error && (
               <p role="alert" className="mt-4 rounded-xl border border-transparent bg-red-50 px-4 py-3 text-xs font-bold text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300">

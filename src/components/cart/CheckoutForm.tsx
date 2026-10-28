@@ -181,9 +181,17 @@ export default function CheckoutForm({
     setEditingAddressId(null);
   };
 
+  const isOverweight = totals.totalWeightGrams > 2000;
+
   const pay = async () => {
     if (!selectedId) {
       setError("یک آدرس ارسال انتخاب کنید");
+      return;
+    }
+    if (isOverweight) {
+      setError(
+        "وزن مرسوله بیش از ۲ کیلوگرم است. امکان ارسال خودکار با پست پیشتاز وجود ندارد. لطفاً با پشتیبانی تماس بگیرید.",
+      );
       return;
     }
     if (calculatingShipping) {
@@ -414,6 +422,20 @@ export default function CheckoutForm({
           )}
         </fieldset>
 
+        {isOverweight && (
+          <div className="rounded-2xl border border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-950/40 p-4 text-xs font-bold text-amber-900 dark:text-amber-200">
+            <div className="flex items-center gap-2 mb-1.5 text-sm font-black text-amber-950 dark:text-amber-100">
+              <span aria-hidden="true">⚠️</span>
+              <span>محدودیت وزن ارسال پستی (بیش از ۲ کیلوگرم)</span>
+            </div>
+            <p className="leading-6">
+              وزن سفارش شما ({formatWeight(totals.totalWeightGrams)}) بیش از سقف مجاز پست پیشتاز (۲ کیلوگرم) است.
+              پست پیشتاز بسته‌های بالای ۲ کیلوگرم را پذیرش نمی‌کند و امکان ثبت خودکار این سفارش وجود ندارد.
+              ارسال این سفارش از طریق باربری، تیپاکس یا پیک اختصاصی با هماهنگی تلفنی انجام می‌شود. لطفاً با پشتیبانی تماس بگیرید.
+            </p>
+          </div>
+        )}
+
         {error && (
           <p
             role="alert"
@@ -426,14 +448,16 @@ export default function CheckoutForm({
         <button
           type="button"
           onClick={pay}
-          disabled={loading || calculatingShipping || !selectedId}
+          disabled={loading || calculatingShipping || !selectedId || isOverweight}
           className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer"
         >
-          {loading
-            ? "در حال انتقال به درگاه…"
-            : calculatingShipping
-              ? "در حال محاسبه هزینه ارسال…"
-              : "پرداخت با زرینپال"}
+          {isOverweight
+            ? "ارسال با هماهنگی تلفنی (وزن بالای ۲ کیلوگرم)"
+            : loading
+              ? "در حال انتقال به درگاه…"
+              : calculatingShipping
+                ? "در حال محاسبه هزینه ارسال…"
+                : "پرداخت با زرینپال"}
         </button>
 
         <ShippingScheduleNotice compact={true} className="mt-3" />

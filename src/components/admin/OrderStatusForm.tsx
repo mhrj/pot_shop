@@ -71,9 +71,11 @@ export default function OrderStatusForm({
       <h2 className="text-sm font-black text-soil-900 dark:text-dust-50">به‌روزرسانی وضعیت و مرسوله</h2>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-3">
-        <label className="block">
-          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">وضعیت سفارش</span>
+        <div className="block">
+          <label htmlFor="order-status-select" className="block text-xs font-bold text-soil-900 dark:text-dust-200">وضعیت سفارش</label>
           <select
+            id="order-status-select"
+            name="status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm outline-none focus:border-flora-500"
@@ -82,11 +84,13 @@ export default function OrderStatusForm({
               <option key={s.key} value={s.key}>{s.label}</option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="block">
-          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">شرکت حمل و نقل</span>
+        <div className="block">
+          <label htmlFor="order-carrier-select" className="block text-xs font-bold text-soil-900 dark:text-dust-200">شرکت حمل و نقل</label>
           <select
+            id="order-carrier-select"
+            name="carrier"
             value={carrier}
             onChange={(e) => setCarrier(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2.5 text-sm outline-none focus:border-flora-500"
@@ -95,13 +99,15 @@ export default function OrderStatusForm({
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="block">
-          <span className="text-xs font-bold text-soil-900 dark:text-dust-200">
+        <div className="block">
+          <label htmlFor="order-tracking-code" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
             کد رهگیری {carrier || 'مرسوله'}
-          </span>
+          </label>
           <input
+            id="order-tracking-code"
+            name="trackingCode"
             value={tracking}
             onChange={(e) => setTracking(e.target.value)}
             dir="ltr"
@@ -114,7 +120,7 @@ export default function OrderStatusForm({
               ? 'در صورت خالی ماندن، کد سیستمی ایجاد می‌شود'
               : 'کد رهگیری صادرشده توسط شرکت پست یا باربری'}
           </span>
-        </label>
+        </div>
       </div>
 
       {error && (
