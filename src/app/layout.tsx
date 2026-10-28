@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Vazirmatn } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
@@ -9,11 +9,10 @@ import PageViewTracker from '@/components/analytics/PageViewTracker';
 import { getContentMap } from '@/lib/content';
 import { toFa } from '@/lib/format';
 
-const vazirmatn = Vazirmatn({
-  subsets: ['arabic', 'latin'],
+const vazirmatn = localFont({
+  src: './fonts/Vazirmatn.woff2',
   display: 'swap',
   variable: '--font-vazirmatn',
-  preload: true,
 });
 
 export const metadata: Metadata = {

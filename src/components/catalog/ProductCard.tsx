@@ -100,12 +100,12 @@ export default function ProductCard({ product, className = '' }: Props) {
         {/* Top-left Badges (Left Corner) */}
         <div className="absolute top-2 left-2 md:top-3 md:left-3 flex flex-col gap-1 z-10 items-start">
           {hasSale && (
-            <span className="rounded-lg md:rounded-xl bg-red-500 dark:bg-red-600 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
+            <span className="rounded-lg md:rounded-xl bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
               تخفیف ویژه
             </span>
           )}
           {soldOut && (
-            <span className="rounded-lg md:rounded-xl bg-soil-900/85 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black backdrop-blur-xs">
+            <span className="rounded-lg md:rounded-xl bg-soil-900/85 dark:bg-flora-950/85 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black backdrop-blur-xs">
               ناموجود
             </span>
           )}
@@ -155,12 +155,12 @@ export default function ProductCard({ product, className = '' }: Props) {
 
           <div className="flex flex-wrap items-center justify-end gap-1.5 shrink-0">
             {hasMultipleColors && (
-              <span className="rounded-full bg-dust-100 dark:bg-flora-800/80 px-2 py-0.5 text-[10px] font-medium text-soil-700/60 dark:text-dust-200/80">
+              <span className="rounded-full bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200 px-2 py-0.5 text-[10px] font-medium">
                 شامل {toFa(colors.length)} رنگ
               </span>
             )}
             {bestTier.label && (
-              <span className="rounded-md md:rounded-lg bg-dust-100 dark:bg-flora-800 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold text-soil-700 dark:text-dust-200">
+              <span className="rounded-md md:rounded-lg bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold">
                 {bestTier.label}
               </span>
             )}

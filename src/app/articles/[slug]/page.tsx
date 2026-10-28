@@ -112,7 +112,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         </nav>
 
         {/* Article Container */}
-        <article className="mx-auto max-w-3xl">
+        <article className="mx-auto max-w-3xl rounded-3xl bg-white dark:bg-flora-900 p-6 md:p-10 border border-soil-900/10 dark:border-dust-50/10 shadow-sm dark:shadow-none text-soil-900 dark:text-dust-100">
           {/* Header */}
           <header className="mb-8">
             {article.tags.length > 0 && (
@@ -121,7 +121,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                   <Link
                     key={tag}
                     href={`/articles?tag=${encodeURIComponent(tag)}`}
-                    className="rounded-full bg-flora-100 dark:bg-flora-900/60 px-3 py-1 text-xs font-bold text-flora-900 dark:text-flora-200 border border-flora-300/40 dark:border-flora-500/30 hover:bg-flora-200 dark:hover:bg-flora-800 transition"
+                    className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900 dark:text-flora-300 px-3 py-1 text-xs font-bold border border-flora-300/40 dark:border-flora-500/30 hover:bg-flora-200 dark:hover:bg-flora-800 transition"
                   >
                     #{tag}
                   </Link>

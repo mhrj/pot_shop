@@ -96,7 +96,7 @@ export default async function AdminArticlesPage() {
                       {article.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full bg-dust-100 px-2 py-0.5 text-[10px] font-bold text-soil-700 dark:bg-flora-800 dark:text-dust-300"
+                          className="rounded-full bg-dust-100 text-soil-700 dark:bg-flora-900 dark:text-dust-300 px-2 py-0.5 text-[10px] font-bold"
                         >
                           #{tag}
                         </span>
@@ -123,7 +123,7 @@ export default async function AdminArticlesPage() {
               <div className="flex shrink-0 items-center gap-2 self-end sm:self-center">
                 <Link
                   href={`/admin/articles/${article.id}`}
-                  className="rounded-full bg-dust-100 px-4 py-1.5 text-[11px] font-bold text-soil-900 transition hover:bg-dust-200 dark:bg-flora-800 dark:text-dust-50 dark:hover:bg-flora-700"
+                  className="rounded-full bg-dust-100 text-soil-900 dark:bg-flora-800 dark:text-dust-100 px-4 py-1.5 text-[11px] font-bold transition hover:bg-dust-200 dark:hover:bg-flora-700"
                 >
                   ویرایش
                 </Link>

@@ -175,10 +175,10 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                             className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
                               user.role === 'ADMIN'
                                 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
-                                : 'bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200'
+                                : 'bg-dust-100 text-soil-900 dark:bg-flora-800 dark:text-dust-100'
                             }`}
                           >
-                            {user.role === 'ADMIN' ? 'مدیر' : 'مشتری'}
+                            {user.role === 'ADMIN' ? 'مدیر' : 'کاربر'}
                           </span>
                         </Link>
                       </td>
@@ -208,7 +208,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                       <td className="px-4 py-3.5 text-left">
                         <Link
                           href={`/admin/users/${user.id}`}
-                          className="inline-flex items-center text-xs font-bold text-flora-700 dark:text-flora-400 hover:text-flora-900 dark:hover:text-flora-300"
+                          className="inline-flex items-center text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200"
                         >
                           جزئیات ←
                         </Link>
