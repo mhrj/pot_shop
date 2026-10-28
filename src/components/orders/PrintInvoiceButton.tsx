@@ -9,7 +9,7 @@ export default function PrintInvoiceButton({ className = '' }: Props) {
     <button
       type="button"
       onClick={() => window.print()}
-      className={`inline-flex items-center gap-2 rounded-xl border border-soil-900/15 bg-white px-4 py-2 text-xs font-bold text-soil-800 shadow-2xs hover:bg-dust-100 hover:text-flora-800 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-100 dark:hover:bg-flora-950 transition-colors cursor-pointer print:hidden ${className}`}
+      className={`inline-flex items-center gap-2 rounded-xl border border-soil-900/15 bg-white px-4 py-2 text-xs font-bold text-soil-800 shadow-2xs hover:bg-dust-100 hover:text-flora-700 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-100 dark:hover:bg-flora-950 transition-colors cursor-pointer print:hidden ${className}`}
       title="چاپ و دانلود فاکتور"
     >
       <svg className="size-4 shrink-0 text-soil-600 dark:text-dust-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">

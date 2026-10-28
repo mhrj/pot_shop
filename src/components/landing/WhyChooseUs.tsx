@@ -26,9 +26,9 @@ const ADVANTAGES = [
     slug: 'soil-growth',
     description:
       'از خاک‌های عمومی تا ترکیب‌های مخصوص گیاهان مختلف، بستری متناسب با نیاز ریشه، میزان رطوبت و شرایط رشد گیاه انتخاب کنید.',
-    color: 'from-flora-100/70 to-flora-200/50',
+    color: 'from-flora-100/70 to-flora-300/50',
     border: 'border-flora-300/60',
-    iconBg: 'bg-flora-200 text-flora-900',
+    iconBg: 'bg-flora-300 text-flora-900',
     action: 'انواع خاک و بستر',
     href: '/products?category=soil-growth',
     icon: (
@@ -62,8 +62,8 @@ const ADVANTAGES = [
     slug: 'product-guide',
     description:
       'با مطالعه مقالات کارشناسان ما، بهترین گلدان و خاک را برای گیاه خود انتخاب کنید.',
-    color: 'from-flora-200/40 to-flora-300/30',
-    border: 'border-flora-400/40',
+    color: 'from-flora-300/40 to-flora-300/30',
+    border: 'border-flora-300/40',
     iconBg: 'bg-flora-300 text-flora-950',
     action: 'مطالعه مقالات',
     href: '/articles',
@@ -123,7 +123,7 @@ export default function WhyChooseUs() {
                 </div>
 
                 <div
-                  className={`mt-6 flex items-center gap-1.5 text-[11px] font-bold text-flora-800 dark:text-flora-300 ${
+                  className={`mt-6 flex items-center gap-1.5 text-[11px] font-bold text-flora-700 dark:text-flora-300 ${
                     isClickable
                       ? 'opacity-80 transition duration-300 group-hover:opacity-100'
                       : 'opacity-70'
@@ -148,7 +148,7 @@ export default function WhyChooseUs() {
                 <Link
                   key={adv.title}
                   href={adv.href}
-                  className="group block h-full rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-flora-600"
+                  className="group block h-full rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-flora-500"
                 >
                   {cardBody}
                 </Link>

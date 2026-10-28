@@ -121,9 +121,9 @@ export default function StoreSettingsForm({
       {success && (
         <div
           role="status"
-          className="rounded-xl bg-flora-50 dark:bg-flora-950/50 border border-flora-200 dark:border-flora-800/50 px-4 py-3 text-xs font-bold text-flora-800 dark:text-flora-300 flex items-center gap-2"
+          className="rounded-xl bg-flora-50 dark:bg-flora-950/50 border border-flora-300 dark:border-flora-700/50 px-4 py-3 text-xs font-bold text-flora-700 dark:text-flora-300 flex items-center gap-2"
         >
-          <svg className="w-4 h-4 text-flora-700 dark:text-flora-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 text-flora-700 dark:text-flora-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -138,7 +138,7 @@ export default function StoreSettingsForm({
         <button
           type="submit"
           disabled={loading}
-          className="rounded-2xl bg-flora-900 dark:bg-flora-800 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-60 cursor-pointer"
+          className="rounded-2xl bg-flora-900 dark:bg-flora-700 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-60 cursor-pointer"
         >
           {loading ? 'در حال ذخیره…' : 'ذخیره تنظیمات'}
         </button>

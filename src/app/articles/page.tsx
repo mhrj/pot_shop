@@ -52,7 +52,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
       <Container>
         {/* Page Header */}
         <div className="max-w-3xl">
-          <span className="inline-block rounded-full bg-flora-100 dark:bg-flora-900/60 px-3.5 py-1 text-xs font-bold text-flora-900 dark:text-flora-200 border border-flora-300/40 dark:border-flora-500/30">
+          <span className="inline-block rounded-full bg-flora-100 dark:bg-flora-900/60 px-3.5 py-1 text-xs font-bold text-flora-900 dark:text-flora-300 border border-flora-300/40 dark:border-flora-500/30">
             دانشنامه و وبلاگ پات استور
           </span>
           <h1 className="mt-4 text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl lg:text-5xl">
@@ -71,7 +71,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
               href="/articles"
               className={`rounded-full px-4 py-1.5 text-xs font-bold transition ${
                 !currentTag
-                  ? 'bg-soil-900 text-white dark:bg-flora-800 shadow-sm'
+                  ? 'bg-soil-900 text-white dark:bg-flora-700 shadow-sm'
                   : 'bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 transition-colors hover:bg-dust-200'
               }`}
             >
@@ -83,7 +83,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                 href={`/articles?tag=${encodeURIComponent(t)}`}
                 className={`rounded-full px-4 py-1.5 text-xs font-bold transition ${
                   currentTag === t
-                    ? 'bg-flora-800 text-white shadow-sm'
+                    ? 'bg-flora-700 text-white shadow-sm'
                     : 'bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 transition-colors hover:bg-dust-200'
                 }`}
               >
@@ -150,13 +150,13 @@ export default async function ArticlesPage({ searchParams }: Props) {
                       {/* Meta info */}
                       <div className="flex items-center justify-between text-[11px] font-bold text-soil-700/60 dark:text-dust-200/60 mb-3">
                         <span>{formattedDate}</span>
-                        <span className="rounded-full bg-flora-50 dark:bg-flora-950/70 px-2 py-0.5 text-flora-800 dark:text-flora-300">
+                        <span className="rounded-full bg-flora-50 dark:bg-flora-950/70 px-2 py-0.5 text-flora-700 dark:text-flora-300">
                           راهنمای آموزشی
                         </span>
                       </div>
 
                       {/* Title */}
-                      <h2 className="text-lg font-black text-soil-900 dark:text-dust-50 leading-snug group-hover:text-flora-800 dark:group-hover:text-flora-300 transition">
+                      <h2 className="text-lg font-black text-soil-900 dark:text-dust-50 leading-snug group-hover:text-flora-700 dark:group-hover:text-flora-300 transition">
                         <Link href={`/articles/${article.slug}`}>{article.title}</Link>
                       </h2>
 
@@ -186,7 +186,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
 
                       <Link
                         href={`/articles/${article.slug}`}
-                        className="inline-flex items-center gap-1 text-xs font-bold text-flora-800 dark:text-flora-300 group-hover:text-flora-700 dark:group-hover:text-flora-200 transition"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-flora-700 dark:text-flora-300 group-hover:text-flora-900 dark:group-hover:text-flora-300 transition"
                       >
                         <span>مطالعه کامل مقاله</span>
                         <span className="transition-transform duration-300 group-hover:-translate-x-1">

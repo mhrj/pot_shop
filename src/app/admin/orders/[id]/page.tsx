@@ -91,9 +91,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                 className={
                   'rounded-2xl border p-3.5 text-xs font-bold transition ' +
                   (isCurrent
-                    ? 'border-flora-600 dark:border-flora-400 bg-flora-50 dark:bg-flora-800 text-flora-950 dark:text-dust-50 ring-2 ring-flora-500/20 dark:ring-flora-400/40'
+                    ? 'border-flora-500 dark:border-flora-300 bg-flora-50 dark:bg-flora-700 text-flora-950 dark:text-dust-50 ring-2 ring-flora-500/20 dark:ring-flora-300/40'
                     : isDone
-                      ? 'border-flora-200 dark:border-flora-700/60 bg-flora-100/70 dark:bg-flora-900/80 text-flora-800 dark:text-flora-200'
+                      ? 'border-flora-300 dark:border-flora-700/60 bg-flora-100/70 dark:bg-flora-900/80 text-flora-700 dark:text-flora-300'
                       : 'border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900/50 text-soil-700/40 dark:text-dust-400') +
                   ' print:border-none print:bg-transparent print:p-0 print:shadow-none print:ring-0 print:text-[10px]'
                 }
@@ -236,7 +236,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                         className="w-20 h-20 rounded-xl object-cover shrink-0 border border-soil-900/10 dark:border-dust-50/10 shadow-2xs dark:shadow-none print:w-10 print:h-10 print:rounded-md"
                       />
                     ) : (
-                      <div className="w-20 h-20 rounded-xl bg-dust-100 dark:bg-flora-800 border border-soil-900/10 dark:border-dust-50/10 flex items-center justify-center text-soil-700/40 dark:text-dust-400 shrink-0 print:w-10 print:h-10 print:rounded-md">
+                      <div className="w-20 h-20 rounded-xl bg-dust-100 dark:bg-flora-900 border border-soil-900/10 dark:border-dust-50/10 flex items-center justify-center text-soil-700/40 dark:text-dust-400 shrink-0 print:w-10 print:h-10 print:rounded-md">
                         <svg className="w-7 h-7 print:w-5 print:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -253,7 +253,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                           {i.productName}
                         </Link>
                         {isBundle && (
-                          <span className="inline-flex items-center rounded-md bg-flora-100 dark:bg-flora-900 px-2 py-0.5 text-[11px] font-bold text-flora-800 dark:text-flora-200 border border-flora-300 dark:border-flora-700 print:text-[9px] print:px-1.5 print:py-0">
+                          <span className="inline-flex items-center rounded-md bg-flora-100 dark:bg-flora-900 px-2 py-0.5 text-[11px] font-bold text-flora-700 dark:text-flora-300 border border-flora-300 dark:border-flora-700 print:text-[9px] print:px-1.5 print:py-0">
                             شامل {toFa(bundleSize)} عدد گلدان
                           </span>
                         )}
@@ -301,7 +301,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                           )}
                         </p>
                         {i.tierLabel && (
-                          <span className="rounded-md bg-flora-50 dark:bg-flora-900/60 px-2 py-0.5 text-[11px] font-medium text-flora-800 dark:text-flora-200 border border-flora-200/60 dark:border-flora-700/60 print:text-[9px]">
+                          <span className="rounded-md bg-flora-50 dark:bg-flora-900/60 px-2 py-0.5 text-[11px] font-medium text-flora-700 dark:text-flora-300 border border-flora-300/60 dark:border-flora-700/60 print:text-[9px]">
                             سطح: {i.tierLabel}
                           </span>
                         )}

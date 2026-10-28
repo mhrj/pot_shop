@@ -167,7 +167,7 @@ export default async function ProductsPage({ searchParams }: Props) {
             {/* Was the English word "CATALOG". The wide letter-spacing went with
                 it: tracking inserts gaps inside a connected Perso-Arabic word and
                 makes it read as broken type. */}
-            <p className="text-xs font-bold text-flora-700 dark:text-flora-400">کاتالوگ</p>
+            <p className="text-xs font-bold text-flora-700 dark:text-flora-300">کاتالوگ</p>
             <h1 className="mt-2 text-3xl font-black text-soil-900 dark:text-dust-50">گلدان‌ها و فلاورباکس‌ها</h1>
           </div>
           <p className="text-sm text-soil-700/70 dark:text-dust-200/70">{toFa(total)} محصول در دسترس</p>
@@ -181,7 +181,7 @@ export default async function ProductsPage({ searchParams }: Props) {
               href={buildHref({ category: '', page: 1 })}
               className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                 !categorySlug
-                  ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                  ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-700'
                   : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
               }`}
             >
@@ -195,7 +195,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   href={buildHref({ category: active ? '' : c.slug, page: 1 })}
                   className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                     active
-                      ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                      ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-700'
                       : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
                   }`}
                 >
@@ -212,7 +212,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                 href={buildHref({ tag: '', page: 1 })}
                 className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                   !tagSlug
-                    ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                    ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-700'
                     : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
                 }`}
               >
@@ -226,7 +226,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     href={buildHref({ tag: active ? '' : t.slug, page: 1 })}
                     className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                       active
-                        ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
+                        ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-700'
                         : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
                     }`}
                   >
@@ -282,7 +282,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
               <button
                 type="submit"
-                className="rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 transition-colors px-6 py-2.5 text-xs font-black hover:bg-flora-700 cursor-pointer shadow-sm"
+                className="rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 transition-colors px-6 py-2.5 text-xs font-black hover:bg-flora-700 cursor-pointer shadow-sm"
               >
                 اعمال
               </button>
@@ -325,7 +325,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                 {activeCategory ? ` در دسته «${activeCategory.name}»` : ''}
                 {activeTag ? ` با برچسب «${activeTag.name}»` : ''}.
                 <div className="mt-4">
-                  <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
+                  <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
                     نمایش همه محصولات
                   </Link>
                 </div>
@@ -381,7 +381,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     <span
                       key={entry}
                       aria-current="page"
-                      className="min-w-10 rounded-full bg-flora-900 px-3 py-2.5 text-center text-xs font-black text-white dark:bg-flora-800"
+                      className="min-w-10 rounded-full bg-flora-900 px-3 py-2.5 text-center text-xs font-black text-white dark:bg-flora-700"
                     >
                       {toFa(entry)}
                     </span>

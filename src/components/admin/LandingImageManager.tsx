@@ -175,7 +175,7 @@ export default function LandingImageManager({ initial }: { initial: LandingImage
                   )}
                 </div>
 
-                <label className="mt-4 block cursor-pointer rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-3 py-2 text-center text-xs font-bold text-soil-900 dark:text-dust-100 transition hover:border-flora-700 dark:hover:border-flora-400 hover:text-flora-700 dark:hover:text-flora-400">
+                <label className="mt-4 block cursor-pointer rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-3 py-2 text-center text-xs font-bold text-soil-900 dark:text-dust-100 transition hover:border-flora-700 dark:hover:border-flora-300 hover:text-flora-700 dark:hover:text-flora-300">
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp,image/avif,image/gif"

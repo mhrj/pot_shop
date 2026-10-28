@@ -25,7 +25,7 @@ export default async function AdminArticlesPage() {
         </div>
         <Link
           href="/admin/articles/new"
-          className="rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-900"
+          className="rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-700 dark:hover:bg-flora-900"
         >
           + افزودن مقاله جدید
         </Link>
@@ -39,7 +39,7 @@ export default async function AdminArticlesPage() {
           </p>
           <Link
             href="/admin/articles/new"
-            className="mt-6 inline-block rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-900"
+            className="mt-6 inline-block rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-700 dark:hover:bg-flora-900"
           >
             نوشتن اولین مقاله
           </Link>
@@ -76,8 +76,8 @@ export default async function AdminArticlesPage() {
                     <span
                       className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                         article.isPublished
-                          ? 'border border-flora-300/40 bg-flora-100 text-flora-900 dark:border-flora-800 dark:bg-flora-950 dark:text-flora-300'
-                          : 'bg-dust-200 text-soil-700 dark:bg-flora-800 dark:text-dust-300'
+                          ? 'border border-flora-300/40 bg-flora-100 text-flora-900 dark:border-flora-700 dark:bg-flora-950 dark:text-flora-300'
+                          : 'bg-dust-200 text-soil-700 dark:bg-flora-900 dark:text-dust-300'
                       }`}
                     >
                       {article.isPublished ? 'منتشر شده' : 'پیش‌نویس'}
@@ -110,7 +110,7 @@ export default async function AdminArticlesPage() {
                       <Link
                         href={`/articles/${article.slug}`}
                         target="_blank"
-                        className="font-bold text-flora-700 hover:underline dark:text-flora-400"
+                        className="font-bold text-flora-700 hover:underline dark:text-flora-300"
                       >
                         نمایش عمومی ↗
                       </Link>

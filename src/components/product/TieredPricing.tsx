@@ -634,7 +634,7 @@ export default function TieredPricing({
                 return (
                   <tr
                     key={t.minQuantity}
-                    className={isActive ? 'bg-flora-100/60 dark:bg-flora-800/40' : undefined}
+                    className={isActive ? 'bg-flora-100/60 dark:bg-flora-900/40' : undefined}
                     aria-current={isActive ? 'true' : undefined}
                   >
                     <td className="px-4 py-3.5 font-medium text-soil-900 dark:text-dust-50">
@@ -808,7 +808,7 @@ export default function TieredPricing({
                 {formatToman(hint.unitPriceToman - packagePrice)}
               </span>{' '}
               ارزان‌تر بخر — مجموعاً{' '}
-              <span className="font-bold text-flora-700 dark:text-flora-400">
+              <span className="font-bold text-flora-700 dark:text-flora-300">
                 {formatToman(hint.saveMoreToman)}
               </span>{' '}
               بیشتر صرفه‌جویی کن.
@@ -864,7 +864,7 @@ export default function TieredPricing({
                 {formatToman(total)}
               </span>
               {total > 0 && (
-                <span className="block text-xs font-semibold text-flora-800/80 dark:text-flora-200/80 mt-0.5">
+                <span className="block text-xs font-semibold text-flora-700/80 dark:text-flora-300/80 mt-0.5">
                   ({numberToWordsFa(total)} تومان)
                 </span>
               )}
@@ -951,7 +951,7 @@ export default function TieredPricing({
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-bold text-soil-900 dark:text-dust-50">{item.title}</p>
                         {itemPrice && itemPrice > 0 ? (
-                          <span className="text-xs font-bold text-flora-800 dark:text-flora-300 shrink-0">
+                          <span className="text-xs font-bold text-flora-700 dark:text-flora-300 shrink-0">
                             {formatToman(itemPrice)}
                           </span>
                         ) : null}
@@ -1081,7 +1081,7 @@ export default function TieredPricing({
           type="button"
           onClick={handleAdd}
           disabled={pending || outOfStock}
-          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {outOfStock
             ? 'ناموجود'

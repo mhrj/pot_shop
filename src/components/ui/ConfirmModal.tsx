@@ -95,7 +95,7 @@ export default function ConfirmModal({
                 className={`flex-1 rounded-xl py-2.5 text-sm font-black text-white transition cursor-pointer ${
                   isDestructive
                     ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-flora-900 hover:bg-flora-800'
+                    : 'bg-flora-900 hover:bg-flora-700'
                 }`}
               >
                 {confirmText}

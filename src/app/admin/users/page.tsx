@@ -70,7 +70,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
         </div>
         <div className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-4">
           <p className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60">مجموع خرید موفق</p>
-          <p className="mt-2 text-xl font-black text-flora-800 dark:text-flora-300">{formatToman(overallSpent)}</p>
+          <p className="mt-2 text-xl font-black text-flora-700 dark:text-flora-300">{formatToman(overallSpent)}</p>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
         )}
         <button
           type="submit"
-          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-800 dark:hover:bg-flora-900"
+          className="rounded-xl bg-flora-900 dark:bg-flora-950 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-900"
         >
           جستجو
         </button>
@@ -146,11 +146,11 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                           href={`/admin/users/${user.id}`}
                           className="flex items-center gap-3"
                         >
-                          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-dust-200 dark:bg-flora-800 text-xs font-bold text-soil-700 dark:text-dust-200">
+                          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-dust-200 dark:bg-flora-900 text-xs font-bold text-soil-700 dark:text-dust-200">
                             {user.fullName ? user.fullName[0] : '؟'}
                           </div>
                           <div>
-                            <p className="font-bold text-soil-900 dark:text-dust-50 group-hover:text-flora-800 dark:group-hover:text-flora-300 transition">
+                            <p className="font-bold text-soil-900 dark:text-dust-50 group-hover:text-flora-700 dark:group-hover:text-flora-300 transition">
                               {user.fullName || 'بدون نام'}
                             </p>
                             <span className="text-[11px] text-soil-700/50 dark:text-dust-200/50">
@@ -175,7 +175,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                             className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
                               user.role === 'ADMIN'
                                 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
-                                : 'bg-dust-100 text-soil-900 dark:bg-flora-800 dark:text-dust-100'
+                                : 'bg-dust-100 text-soil-900 dark:bg-flora-900 dark:text-dust-100'
                             }`}
                           >
                             {user.role === 'ADMIN' ? 'مدیر' : 'کاربر'}
@@ -187,7 +187,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                           <span
                             className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
                               user.isActive
-                                ? 'bg-flora-100 text-flora-800 dark:bg-flora-900/60 dark:text-flora-300'
+                                ? 'bg-flora-100 text-flora-700 dark:bg-flora-900/60 dark:text-flora-300'
                                 : 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-400'
                             }`}
                           >
@@ -208,7 +208,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                       <td className="px-4 py-3.5 text-left">
                         <Link
                           href={`/admin/users/${user.id}`}
-                          className="inline-flex items-center text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200"
+                          className="inline-flex items-center text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300"
                         >
                           جزئیات ←
                         </Link>

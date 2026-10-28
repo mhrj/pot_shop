@@ -64,7 +64,7 @@ export default function WholesaleInquiryForm() {
   return (
     <section id="wholesale-inquiry" className="scroll-mt-24 py-20 relative">
       <Container>
-        <div className="relative overflow-hidden rounded-3xl border border-flora-800/30 bg-gradient-to-br from-flora-950 via-flora-900 to-soil-950 p-8 text-white shadow-2xl sm:p-12 lg:p-16">
+        <div className="relative overflow-hidden rounded-3xl border border-flora-700/30 bg-gradient-to-br from-flora-950 via-flora-900 to-soil-950 p-8 text-white shadow-2xl sm:p-12 lg:p-16">
           {/* Subtle botanical glow background */}
           <div
             aria-hidden
@@ -77,7 +77,7 @@ export default function WholesaleInquiryForm() {
 
           <div className="relative grid gap-12 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-6">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-flora-300/30 bg-flora-800/50 px-4 py-1.5 text-xs font-bold text-flora-200 backdrop-blur">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-flora-300/30 bg-flora-700/50 px-4 py-1.5 text-xs font-bold text-flora-300 backdrop-blur">
                 🏢 بخش همکاری سازمانی و B2B
               </span>
               <h2 className="mt-4 text-3xl font-black leading-tight sm:text-4xl">
@@ -140,7 +140,7 @@ export default function WholesaleInquiryForm() {
                       <h3 className="text-lg font-black text-white">
                         فرم استعلام و دریافت پیش‌فاکتور
                       </h3>
-                      <p className="text-xs text-flora-200/70">
+                      <p className="text-xs text-flora-300/70">
                         مشخصات خود را وارد کنید تا کارشناسان ما با شما ارتباط بگیرند.
                       </p>
                     </div>
@@ -163,7 +163,7 @@ export default function WholesaleInquiryForm() {
                           value={formData.fullName}
                           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                           placeholder="مثال: علی رضایی"
-                          className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs text-white placeholder-white/40 focus:border-flora-400 focus:bg-white/10 focus:outline-none transition"
+                          className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs text-white placeholder-white/40 focus:border-flora-300 focus:bg-white/10 focus:outline-none transition"
                         />
                         {fieldErrors.fullName && (
                           <p className="mt-1 text-[11px] text-rose-300">{fieldErrors.fullName}</p>
@@ -182,7 +182,7 @@ export default function WholesaleInquiryForm() {
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-                          className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs text-white placeholder-white/40 focus:border-flora-400 focus:bg-white/10 focus:outline-none transition text-end"
+                          className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs text-white placeholder-white/40 focus:border-flora-300 focus:bg-white/10 focus:outline-none transition text-end"
                         />
                         {fieldErrors.phone && (
                           <p className="mt-1 text-[11px] text-rose-300">{fieldErrors.phone}</p>
@@ -202,7 +202,7 @@ export default function WholesaleInquiryForm() {
                           value={formData.businessName}
                           onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                           placeholder="کافه، گلخانه، شرکت..."
-                          className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs text-white placeholder-white/40 focus:border-flora-400 focus:bg-white/10 focus:outline-none transition"
+                          className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs text-white placeholder-white/40 focus:border-flora-300 focus:bg-white/10 focus:outline-none transition"
                         />
                       </div>
 
@@ -215,7 +215,7 @@ export default function WholesaleInquiryForm() {
                           name="estimatedQty"
                           value={formData.estimatedQty}
                           onChange={(e) => setFormData({ ...formData, estimatedQty: e.target.value })}
-                          className="w-full rounded-xl border border-white/20 bg-flora-950 px-3.5 py-2.5 text-xs text-white focus:border-flora-400 focus:outline-none transition"
+                          className="w-full rounded-xl border border-white/20 bg-flora-950 px-3.5 py-2.5 text-xs text-white focus:border-flora-300 focus:outline-none transition"
                         >
                           <option value="۲۰ تا ۵۰ عدد">۲۰ تا ۵۰ عدد (تخفیف اولیه)</option>
                           <option value="۵۰ تا ۱۰۰ عدد">۵۰ تا ۱۰۰ عدد (تخفیف همکار)</option>
@@ -236,14 +236,14 @@ export default function WholesaleInquiryForm() {
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         placeholder="سایز، رنگ یا هر نکته دیگری که برای ما مهم است..."
-                        className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2 text-xs text-white placeholder-white/40 focus:border-flora-400 focus:bg-white/10 focus:outline-none transition resize-none"
+                        className="w-full rounded-xl border border-white/20 bg-white/5 px-3.5 py-2 text-xs text-white placeholder-white/40 focus:border-flora-300 focus:bg-white/10 focus:outline-none transition resize-none"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={loading}
-                      className="group relative w-full overflow-hidden rounded-xl bg-flora-500 py-3 text-xs font-bold text-soil-950 shadow-lg shadow-flora-500/25 transition duration-300 hover:bg-flora-400 active:scale-[0.99] disabled:opacity-60"
+                      className="group relative w-full overflow-hidden rounded-xl bg-flora-500 py-3 text-xs font-bold text-soil-950 shadow-lg shadow-flora-500/25 transition duration-300 hover:bg-flora-300 active:scale-[0.99] disabled:opacity-60"
                     >
                       <span className="flex items-center justify-center gap-2">
                         {loading ? (

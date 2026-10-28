@@ -60,7 +60,7 @@ export default function ProductGallery({
                 className={
                   'relative block aspect-square w-full overflow-hidden rounded-xl bg-white border border-soil-900/5 dark:border-dust-50/10 transition ' +
                   (index === activeIndex
-                    ? 'ring-2 ring-flora-700 dark:ring-flora-400 ring-offset-2 ring-offset-dust-50 dark:ring-offset-flora-950'
+                    ? 'ring-2 ring-flora-700 dark:ring-flora-300 ring-offset-2 ring-offset-dust-50 dark:ring-offset-flora-950'
                     : 'opacity-70 hover:opacity-100')
                 }
               >

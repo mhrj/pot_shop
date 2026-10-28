@@ -233,14 +233,14 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+          className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
         >
           {loading ? 'در حال ثبت‌نام…' : 'ثبت‌نام'}
         </button>
 
         <p className="mt-5 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
           قبلاً ثبت‌نام کرده‌اید؟{' '}
-          <a href="/login" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
+          <a href="/login" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
             وارد شوید
           </a>
         </p>

@@ -49,7 +49,7 @@ export default async function SuccessPage({ searchParams }: Props) {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
+              className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
             >
               پیگیری سفارش
             </Link>
@@ -113,7 +113,7 @@ export default async function SuccessPage({ searchParams }: Props) {
         {!isOwner && (
           <p className="mt-4 text-[11px] leading-6 text-soil-700/60 dark:text-dust-200/60">
             جزئیات این سفارش فقط برای صاحب حساب نمایش داده می‌شود.{' '}
-            <Link href="/login" className="font-bold text-flora-700 underline dark:text-flora-400">
+            <Link href="/login" className="font-bold text-flora-700 underline dark:text-flora-300">
               ورود به حساب
             </Link>
           </p>
@@ -122,7 +122,7 @@ export default async function SuccessPage({ searchParams }: Props) {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/dashboard"
-            className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
+            className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
           >
             پیگیری سفارش
           </Link>

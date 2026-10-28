@@ -85,7 +85,7 @@ export default function CategoryRow({ category }: Props) {
           <button
             type="submit"
             disabled={pending || !name.trim()}
-            className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-900"
+            className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-700 dark:hover:bg-flora-900"
           >
             {pending ? 'در حال ذخیره…' : 'ذخیره'}
           </button>
@@ -117,7 +117,7 @@ export default function CategoryRow({ category }: Props) {
             type="button"
             onClick={() => setIsEditing(true)}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700 disabled:opacity-50 cursor-pointer dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:hover:border-flora-400 dark:hover:text-flora-300"
+            className="rounded-xl border border-soil-900/15 bg-white px-3 py-2 text-xs font-bold text-soil-900 transition hover:border-flora-700 hover:text-flora-700 disabled:opacity-50 cursor-pointer dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:hover:border-flora-300 dark:hover:text-flora-300"
           >
             ویرایش نام
           </button>

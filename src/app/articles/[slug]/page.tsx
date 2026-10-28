@@ -96,13 +96,13 @@ export default async function ArticleDetailPage({ params }: Props) {
         <nav aria-label="راهنمای مسیر" className="text-xs font-bold text-soil-700/60 dark:text-dust-200/60 mb-8">
           <ol className="flex items-center gap-2">
             <li>
-              <Link href="/" className="hover:text-flora-800 dark:hover:text-flora-300 transition">
+              <Link href="/" className="hover:text-flora-700 dark:hover:text-flora-300 transition">
                 صفحه اصلی
               </Link>
             </li>
             <li>/</li>
             <li>
-              <Link href="/articles" className="hover:text-flora-800 dark:hover:text-flora-300 transition">
+              <Link href="/articles" className="hover:text-flora-700 dark:hover:text-flora-300 transition">
                 مقالات
               </Link>
             </li>
@@ -121,7 +121,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                   <Link
                     key={tag}
                     href={`/articles?tag=${encodeURIComponent(tag)}`}
-                    className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900 dark:text-flora-300 px-3 py-1 text-xs font-bold border border-flora-300/40 dark:border-flora-500/30 hover:bg-flora-200 dark:hover:bg-flora-950 transition-colors"
+                    className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900 dark:text-flora-300 px-3 py-1 text-xs font-bold border border-flora-300/40 dark:border-flora-500/30 hover:bg-flora-300 dark:hover:bg-flora-950 transition-colors"
                   >
                     #{tag}
                   </Link>
@@ -141,7 +141,7 @@ export default async function ArticleDetailPage({ params }: Props) {
               </div>
               <Link
                 href="/articles"
-                className="text-xs font-bold text-flora-800 dark:text-flora-300 hover:text-flora-700 dark:hover:text-flora-200 transition"
+                className="text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300 transition"
               >
                 ← بازگشت به لیست مقالات
               </Link>
@@ -164,7 +164,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
           {/* Excerpt Lead */}
           {article.excerpt && (
-            <div className="rounded-2xl border-r-4 border-flora-600 bg-flora-50/50 dark:bg-flora-900/40 p-6 text-sm md:text-base leading-8 text-soil-800 dark:text-dust-100 font-medium mb-10">
+            <div className="rounded-2xl border-r-4 border-flora-500 bg-flora-50/50 dark:bg-flora-900/40 p-6 text-sm md:text-base leading-8 text-soil-800 dark:text-dust-100 font-medium mb-10">
               {article.excerpt}
             </div>
           )}
@@ -178,11 +178,11 @@ export default async function ArticleDetailPage({ params }: Props) {
               [&_p]:my-4 [&_p]:leading-8 [&_p]:text-soil-800/90 dark:[&_p]:text-dust-200
               [&_b]:font-black [&_strong]:font-black [&_strong]:text-soil-900 dark:[&_strong]:text-dust-50
               [&_i]:italic [&_em]:italic
-              [&_a]:text-flora-800 dark:[&_a]:text-flora-300 [&_a]:font-bold [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-flora-600 dark:hover:[&_a]:text-flora-200
+              [&_a]:text-flora-700 dark:[&_a]:text-flora-300 [&_a]:font-bold [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-flora-500 dark:hover:[&_a]:text-flora-300
               [&_ul]:list-disc [&_ul]:pr-6 [&_ul]:my-5 [&_ul]:space-y-2
               [&_ol]:list-decimal [&_ol]:pr-6 [&_ol]:my-5 [&_ol]:space-y-2
               [&_li]:text-soil-800 dark:[&_li]:text-dust-200 [&_li]:leading-8
-              [&_blockquote]:border-r-4 [&_blockquote]:border-flora-600 dark:[&_blockquote]:border-dust-50/20 [&_blockquote]:pr-4 [&_blockquote]:py-3 [&_blockquote]:my-6 [&_blockquote]:bg-flora-50/40 dark:[&_blockquote]:bg-flora-900/30 [&_blockquote]:rounded-l-2xl [&_blockquote]:text-soil-800 dark:[&_blockquote]:text-dust-200 [&_blockquote]:italic
+              [&_blockquote]:border-r-4 [&_blockquote]:border-flora-500 dark:[&_blockquote]:border-dust-50/20 [&_blockquote]:pr-4 [&_blockquote]:py-3 [&_blockquote]:my-6 [&_blockquote]:bg-flora-50/40 dark:[&_blockquote]:bg-flora-900/30 [&_blockquote]:rounded-l-2xl [&_blockquote]:text-soil-800 dark:[&_blockquote]:text-dust-200 [&_blockquote]:italic
               [&_img]:rounded-3xl [&_img]:my-8 [&_img]:w-full [&_img]:max-h-[550px] [&_img]:object-cover [&_img]:shadow-md dark:[&_img]:shadow-none [&_img]:border [&_img]:border-soil-900/10 dark:[&_img]:border-dust-50/10
               [&_hr]:my-10 [&_hr]:border-soil-900/10 dark:[&_hr]:border-dust-50/10
               [&_table]:w-full [&_table]:my-6 [&_table]:border-collapse
@@ -201,7 +201,7 @@ export default async function ArticleDetailPage({ params }: Props) {
             </Link>
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 rounded-2xl bg-flora-900 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-2xl bg-flora-900 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 transition-colors"
             >
               <span>مشاهده محصولات مرتبط در فروشگاه</span>
               <span>→</span>
@@ -231,7 +231,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                       />
                     </div>
                   )}
-                  <h3 className="text-sm font-black text-soil-900 dark:text-dust-50 group-hover:text-flora-800 dark:group-hover:text-flora-300 transition line-clamp-2">
+                  <h3 className="text-sm font-black text-soil-900 dark:text-dust-50 group-hover:text-flora-700 dark:group-hover:text-flora-300 transition line-clamp-2">
                     {rel.title}
                   </h3>
                   {rel.excerpt && (
@@ -239,7 +239,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                       {rel.excerpt}
                     </p>
                   )}
-                  <span className="mt-4 text-[11px] font-bold text-flora-800 dark:text-flora-300">
+                  <span className="mt-4 text-[11px] font-bold text-flora-700 dark:text-flora-300">
                     مطالعه مقاله ←
                   </span>
                 </Link>

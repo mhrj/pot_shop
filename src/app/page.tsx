@@ -171,7 +171,7 @@ export default async function HomePage() {
     <section className="relative flex min-h-auto items-center overflow-hidden pt-10 pb-16 md:min-h-[85dvh] lg:pt-24">
       {/* Background Decorative Orbs */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-75 h-75 bg-flora-300/20 dark:bg-flora-600/20 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-75 h-75 bg-flora-300/20 dark:bg-flora-500/20 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute top-44 right-1/4 w-65 h-65 bg-dust-300/35 dark:bg-flora-900/40 blur-[100px] rounded-full pointer-events-none" />
       </div>
 
@@ -184,7 +184,7 @@ export default async function HomePage() {
           {/* 1. Badge, H1, Subtitle */}
           <div className="order-1 lg:order-1 flex flex-col items-center text-center lg:items-start lg:text-right">
             <span className="inline-flex items-center gap-2 rounded-full border border-dust-300/70 bg-dust-100/70 dark:border-dust-100/20 dark:bg-flora-900/70 px-4 py-1.5 text-xs font-medium text-soil-700 dark:text-dust-200 backdrop-blur">
-              <span className="size-1.5 rounded-full bg-dust-400 dark:bg-flora-400" />
+              <span className="size-1.5 rounded-full bg-dust-400 dark:bg-flora-300" />
               از خاک خالی، تا رویش سبز
             </span>
 
@@ -198,7 +198,7 @@ export default async function HomePage() {
           <div className="order-3 lg:order-2 w-full flex flex-col sm:flex-row gap-3 mt-8">
             <Link
               href="#catalog"
-              className="group relative inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-7 py-3.5 text-sm font-bold shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
+              className="group relative inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-7 py-3.5 text-sm font-bold shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-700 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
             >
               <span className="inline-block transition duration-300 group-hover:rotate-12 group-hover:scale-125">
                 🌱
@@ -281,7 +281,7 @@ export default async function HomePage() {
               'خاک‌های مختلف، کاربردهای متفاوتی دارند. با توجه به نیاز گیاه به رطوبت، هوادهی و زهکشی، بستر مناسب‌تری برای رشد آن انتخاب کنید.',
             icon: '🏺',
             card: 'bg-dust-200 dark:bg-flora-900',
-            accent: 'border-t-dust-400 dark:border-t-flora-400',
+            accent: 'border-t-dust-400 dark:border-t-flora-300',
           },
           {
             title: 'ریشه',
@@ -290,7 +290,7 @@ export default async function HomePage() {
               'اندازه گلدان، فضای ریشه و خروج آب اضافی در سلامت گیاه اهمیت دارند. گلدانی انتخاب کنید که با اندازه و نیاز گیاهتان متناسب باشد.',
             icon: '🪴',
             card: 'bg-flora-100 dark:bg-flora-900',
-            accent: 'border-t-flora-300 dark:border-t-flora-400',
+            accent: 'border-t-flora-300 dark:border-t-flora-300',
           },
           {
             title: 'رویش',
@@ -299,7 +299,7 @@ export default async function HomePage() {
               'با انتخاب گلدان، خاک و لوازم مناسب، برای رسیدگی به گیاهانتان آماده‌تر باشید؛ چه در حال شروع باشید و چه بخواهید مجموعه‌تان را گسترش دهید.',
             icon: '🌸',
             card: 'bg-flora-300/50 dark:bg-flora-900',
-            accent: 'border-t-flora-500 dark:border-t-flora-400',
+            accent: 'border-t-flora-500 dark:border-t-flora-300',
           },
         ].map((card) => (
           <div

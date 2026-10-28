@@ -89,7 +89,7 @@ export default function SalesChart({
           </div>
 
           <details className="mt-5">
-            <summary className="cursor-pointer text-xs font-bold text-flora-700 dark:text-flora-400 hover:text-flora-900 dark:hover:text-flora-300">
+            <summary className="cursor-pointer text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300">
               نمایش جدول اعداد
             </summary>
             <table className="mt-3 w-full text-xs">

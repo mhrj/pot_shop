@@ -30,7 +30,7 @@ export default function MaintenancePage() {
             </span>
             <Link
               href="/admin"
-              className="text-xs text-soil-700/40 hover:text-flora-800 transition underline underline-offset-4"
+              className="text-xs text-soil-700/40 hover:text-flora-700 transition underline underline-offset-4"
             >
               ورود به بخش مدیریت
             </Link>

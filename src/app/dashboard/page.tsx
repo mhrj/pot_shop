@@ -88,14 +88,14 @@ export default async function DashboardPage() {
                           ) : (
                             <div
                               key={item.id || idx}
-                              className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-100 dark:bg-flora-800 text-soil-700/50 dark:text-dust-200/50 text-xs"
+                              className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-100 dark:bg-flora-700 text-soil-700/50 dark:text-dust-200/50 text-xs"
                             >
                               🏺
                             </div>
                           )
                         )}
                         {order._count.items > 3 && (
-                          <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-200 dark:bg-flora-800 text-xs font-bold text-soil-800 dark:text-dust-100">
+                          <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-200 dark:bg-flora-700 text-xs font-bold text-soil-800 dark:text-dust-100">
                             +{toFa(order._count.items - 3)}
                           </div>
                         )}

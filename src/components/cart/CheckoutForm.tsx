@@ -276,7 +276,7 @@ export default function CheckoutForm({
                             {a.fullName}
                           </span>
                           {a.isDefault && (
-                            <span className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900/80 dark:text-flora-200 border border-flora-300/40 dark:border-flora-700/50 px-2 py-0.5 text-[10px] font-bold">
+                            <span className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900/80 dark:text-flora-300 border border-flora-300/40 dark:border-flora-500/50 px-2 py-0.5 text-[10px] font-bold">
                               پیش‌فرض
                             </span>
                           )}
@@ -326,9 +326,9 @@ export default function CheckoutForm({
           <legend className="flex items-center gap-2 px-2 text-sm font-black text-soil-900 dark:text-dust-50">
             <span>روش و شرکت حمل و نقل</span>
             {calculatingShipping && (
-              <span className="inline-flex items-center gap-1.5 text-xs text-flora-700 dark:text-flora-400 font-normal">
+              <span className="inline-flex items-center gap-1.5 text-xs text-flora-700 dark:text-flora-300 font-normal">
                 <svg
-                  className="h-3.5 w-3.5 animate-spin text-flora-700 dark:text-flora-400"
+                  className="h-3.5 w-3.5 animate-spin text-flora-700 dark:text-flora-300"
                   viewBox="0 0 24 24"
                   fill="none"
                 >
@@ -358,7 +358,7 @@ export default function CheckoutForm({
           {calculatingShipping ? (
             <div className="flex flex-col items-center justify-center py-8 text-soil-700/60 dark:text-dust-200/60">
               <svg
-                className="h-8 w-8 animate-spin text-flora-700 dark:text-flora-400 mb-2"
+                className="h-8 w-8 animate-spin text-flora-700 dark:text-flora-300 mb-2"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -402,7 +402,7 @@ export default function CheckoutForm({
                     </div>
                     <span className="text-xs sm:text-sm font-black text-soil-900 dark:text-dust-50 shrink-0">
                       {opt.costToman === 0 ? (
-                        <span className="text-flora-700 dark:text-flora-400">رایگان</span>
+                        <span className="text-flora-700 dark:text-flora-300">رایگان</span>
                       ) : (
                         formatToman(opt.costToman)
                       )}
@@ -427,7 +427,7 @@ export default function CheckoutForm({
           type="button"
           onClick={pay}
           disabled={loading || calculatingShipping || !selectedId}
-          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer"
+          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer"
         >
           {loading
             ? "در حال انتقال به درگاه…"
@@ -490,7 +490,7 @@ export default function CheckoutForm({
                     : ""}
                 </span>
                 {calculatingShipping && (
-                  <span className="text-[10px] text-flora-700 dark:text-flora-400 animate-pulse font-normal">
+                  <span className="text-[10px] text-flora-700 dark:text-flora-300 animate-pulse font-normal">
                     (در حال محاسبه…)
                   </span>
                 )}

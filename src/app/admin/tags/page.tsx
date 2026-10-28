@@ -45,7 +45,7 @@ export default async function AdminTagsPage() {
             placeholder="مثلاً: گیاهان آپارتمانی"
           />
         </label>
-        <button type="submit" className="mt-4 rounded-xl bg-flora-900 dark:bg-flora-800 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-900">
+        <button type="submit" className="mt-4 rounded-xl bg-flora-900 dark:bg-flora-700 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-900">
           افزودن برچسب
         </button>
       </form>

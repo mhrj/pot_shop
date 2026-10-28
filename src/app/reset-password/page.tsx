@@ -144,7 +144,7 @@ function ResetPasswordForm() {
 
         {isSuccess ? (
           <div className="mt-6 text-center">
-            <div className="rounded-xl border border-transparent bg-flora-100 p-4 text-sm font-bold text-flora-800 dark:border-flora-800 dark:bg-flora-950/60 dark:text-flora-200">
+            <div className="rounded-xl border border-transparent bg-flora-100 p-4 text-sm font-bold text-flora-700 dark:border-flora-700 dark:bg-flora-950/60 dark:text-flora-300">
               {message}
             </div>
             <p className="mt-3 text-xs text-soil-700/80 dark:text-dust-200/80">
@@ -152,7 +152,7 @@ function ResetPasswordForm() {
             </p>
             <Link
               href="/login"
-              className="mt-6 inline-block w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-center text-sm font-black transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
+              className="mt-6 inline-block w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-center text-sm font-black transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
             >
               ورود به حساب کاربری
             </Link>
@@ -191,7 +191,7 @@ function ResetPasswordForm() {
                     type="button"
                     onClick={handleResendCode}
                     disabled={resending}
-                    className="text-xs font-bold text-flora-700 hover:text-flora-900 disabled:opacity-50 cursor-pointer dark:text-flora-400 dark:hover:text-flora-300"
+                    className="text-xs font-bold text-flora-700 hover:text-flora-900 disabled:opacity-50 cursor-pointer dark:text-flora-300 dark:hover:text-flora-300"
                   >
                     {resending ? 'در حال ارسال…' : 'ارسال مجدد کد'}
                   </button>
@@ -254,7 +254,7 @@ function ResetPasswordForm() {
             )}
 
             {message && !isSuccess && (
-              <p className="mt-4 rounded-xl border border-transparent bg-flora-100 px-4 py-3 text-xs font-bold text-flora-700 dark:border-flora-800 dark:bg-flora-950 dark:text-flora-300">
+              <p className="mt-4 rounded-xl border border-transparent bg-flora-100 px-4 py-3 text-xs font-bold text-flora-700 dark:border-flora-700 dark:bg-flora-950 dark:text-flora-300">
                 {message}
               </p>
             )}
@@ -262,13 +262,13 @@ function ResetPasswordForm() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+              className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
             >
               {loading ? 'در حال تغییر رمز…' : 'تغییر رمز عبور'}
             </button>
 
             <p className="mt-5 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
-              <Link href="/login" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
+              <Link href="/login" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
                 بازگشت به ورود
               </Link>
             </p>

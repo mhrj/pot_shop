@@ -95,7 +95,7 @@ export default function UserManagementActions({
           className={`rounded-xl px-4 py-2 text-xs font-bold transition disabled:opacity-50 ${
             currentRole === 'ADMIN'
               ? 'border border-amber-600/30 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50'
-              : 'bg-soil-900 dark:bg-flora-800 text-white hover:bg-soil-800 dark:hover:bg-flora-900'
+              : 'bg-soil-900 dark:bg-flora-700 text-white hover:bg-soil-800 dark:hover:bg-flora-900'
           }`}
         >
           {loading ? 'در حال اعمال...' : currentRole === 'ADMIN' ? 'تنزل به مشتری عادی' : 'ارتقا به مدیر سیستم'}
@@ -108,7 +108,7 @@ export default function UserManagementActions({
           className={`rounded-xl px-4 py-2 text-xs font-bold transition disabled:opacity-50 cursor-pointer ${
             currentIsActive
               ? 'border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50'
-              : 'border border-flora-300 dark:border-flora-700 bg-flora-50 dark:bg-flora-950/40 text-flora-800 dark:text-flora-300 hover:bg-flora-100 dark:hover:bg-flora-900/50'
+              : 'border border-flora-300 dark:border-flora-700 bg-flora-50 dark:bg-flora-950/40 text-flora-700 dark:text-flora-300 hover:bg-flora-100 dark:hover:bg-flora-900/50'
           }`}
         >
           {loading ? 'در حال اعمال...' : currentIsActive ? 'غیرفعال‌سازی حساب' : 'فعال‌سازی حساب'}

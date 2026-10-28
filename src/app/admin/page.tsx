@@ -209,7 +209,7 @@ export default async function AdminPage() {
               سیستم آمارگیر بومی و مستقل از گوگل آنالیتیکس (با رعایت حریم خصوصی)
             </p>
           </div>
-          <span className="rounded-full bg-flora-100 dark:bg-flora-900/80 px-3 py-1 text-xs font-bold text-flora-800 dark:text-flora-200 border border-flora-300 dark:border-flora-700">
+          <span className="rounded-full bg-flora-100 dark:bg-flora-900/80 px-3 py-1 text-xs font-bold text-flora-700 dark:text-flora-300 border border-flora-300 dark:border-flora-700">
             بروزرسانی ۵ دقیقه‌ای
           </span>
         </div>
@@ -221,7 +221,7 @@ export default async function AdminPage() {
               <p className="mt-2 text-2xl font-black text-soil-900 dark:text-dust-50">{toFa(totalViewsCount)}</p>
               <p className="mt-1 text-[11px] text-soil-700/50 dark:text-dust-200/50">مجموع تمام صفحات دیده شده</p>
             </div>
-            <div className="size-12 rounded-xl bg-flora-50 dark:bg-flora-800/60 border border-flora-200/60 dark:border-flora-700/60 flex items-center justify-center text-flora-700 dark:text-flora-300 shrink-0">
+            <div className="size-12 rounded-xl bg-flora-50 dark:bg-flora-900/60 border border-flora-300/60 dark:border-flora-700/60 flex items-center justify-center text-flora-700 dark:text-flora-300 shrink-0">
               <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -235,7 +235,7 @@ export default async function AdminPage() {
               <p className="mt-2 text-2xl font-black text-flora-700 dark:text-flora-300">{toFa(uniqueVisitorsTodayCount)}</p>
               <p className="mt-1 text-[11px] text-soil-700/50 dark:text-dust-200/50">بر اساس آی‌پی هش‌شده روزانه</p>
             </div>
-            <div className="size-12 rounded-xl bg-dust-100 dark:bg-flora-800/60 border border-dust-300 dark:border-dust-50/20 flex items-center justify-center text-dust-500 dark:text-dust-300 shrink-0">
+            <div className="size-12 rounded-xl bg-dust-100 dark:bg-flora-900/60 border border-dust-300 dark:border-dust-50/20 flex items-center justify-center text-dust-500 dark:text-dust-300 shrink-0">
               <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
@@ -274,7 +274,7 @@ export default async function AdminPage() {
                       >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-flora-100 dark:bg-flora-800 text-[10px] font-bold text-flora-800 dark:text-flora-200">
+                            <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-flora-100 dark:bg-flora-900 text-[10px] font-bold text-flora-700 dark:text-flora-300">
                               {toFa(idx + 1)}
                             </span>
                             <div className="min-w-0">
@@ -475,7 +475,7 @@ export default async function AdminPage() {
                     <td className="px-5 py-3.5 font-mono text-xs">
                       <Link
                         href={'/admin/orders/' + o.id}
-                        className="font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200"
+                        className="font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300"
                       >
                         {toFa(o.orderNumber)}
                       </Link>

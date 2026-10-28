@@ -47,7 +47,7 @@ export default function GlobalColorPicker({
         <Link
           href="/admin/colors"
           target="_blank"
-          className="font-bold text-flora-700 dark:text-flora-400 underline hover:text-flora-900 dark:hover:text-flora-300 transition mr-1"
+          className="font-bold text-flora-700 dark:text-flora-300 underline hover:text-flora-900 dark:hover:text-flora-300 transition mr-1"
         >
           مدیریت و ثبت رنگ‌ها در پنل
         </Link>
@@ -91,7 +91,7 @@ export default function GlobalColorPicker({
                   compact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-xs'
                 } ${
                   isSelected
-                    ? 'border-flora-600 dark:border-flora-400 bg-flora-50/80 dark:bg-flora-800/80 text-flora-900 dark:text-flora-200 font-bold shadow-xs dark:shadow-none ring-2 ring-flora-600/30 dark:ring-flora-400/30'
+                    ? 'border-flora-500 dark:border-flora-300 bg-flora-50/80 dark:bg-flora-700/80 text-flora-900 dark:text-flora-300 font-bold shadow-xs dark:shadow-none ring-2 ring-flora-500/30 dark:ring-flora-300/30'
                     : 'border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 text-soil-800 dark:text-dust-200 hover:border-soil-900/30 dark:hover:border-dust-50/30 hover:bg-dust-50 dark:hover:bg-flora-950'
                 }`}
               >

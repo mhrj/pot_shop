@@ -26,7 +26,7 @@ export default async function AboutPage() {
 
   return (
     <Container className="py-12 lg:py-16">
-      <p className="text-xs font-bold text-flora-700 dark:text-flora-400">پات استور</p>
+      <p className="text-xs font-bold text-flora-700 dark:text-flora-300">پات استور</p>
       <h1 className="mt-2 text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl">
         {content.about_title.body}
       </h1>

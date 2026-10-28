@@ -63,7 +63,7 @@ export default async function CustomerOrderPage({ params }: Props) {
     <Container className="py-12 print:max-w-full print:p-0 print:m-0 print:py-0">
       <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
         <nav className="text-xs text-soil-700/60 dark:text-dust-200/60">
-          <Link href="/dashboard" className="hover:text-flora-700 dark:hover:text-flora-400">
+          <Link href="/dashboard" className="hover:text-flora-700 dark:hover:text-flora-300">
             حساب من
           </Link>
           <span className="mx-2">/</span>
@@ -113,9 +113,9 @@ export default async function CustomerOrderPage({ params }: Props) {
                   className={
                     'rounded-2xl border p-4 text-xs font-bold transition ' +
                     (isCurrent
-                      ? 'border-flora-600 bg-flora-50 text-flora-950 shadow-xs ring-2 ring-flora-500/25 dark:border-flora-400 dark:bg-flora-800 dark:text-dust-50 dark:ring-flora-400/40'
+                      ? 'border-flora-500 bg-flora-50 text-flora-950 shadow-xs ring-2 ring-flora-500/25 dark:border-flora-300 dark:bg-flora-700 dark:text-dust-50 dark:ring-flora-300/40'
                       : isDone
-                        ? 'border-flora-200 bg-flora-100/70 text-flora-800 dark:border-flora-700/60 dark:bg-flora-900/80 dark:text-flora-200'
+                        ? 'border-flora-300 bg-flora-100/70 text-flora-700 dark:border-flora-700/60 dark:bg-flora-900/80 dark:text-flora-300'
                         : 'border-soil-900/10 bg-white text-soil-700/40 dark:border-dust-50/10 dark:bg-flora-900/50 dark:text-dust-400') +
                     ' print:border-none print:bg-transparent print:p-0 print:shadow-none print:ring-0 print:text-[10px]'
                   }
@@ -196,12 +196,12 @@ export default async function CustomerOrderPage({ params }: Props) {
                       <div className="flex items-center gap-2 flex-wrap">
                         <Link
                           href={`/products/${item.productSlug}`}
-                          className="font-bold text-soil-900 dark:text-dust-50 hover:text-flora-700 dark:hover:text-flora-400 transition print:text-xs"
+                          className="font-bold text-soil-900 dark:text-dust-50 hover:text-flora-700 dark:hover:text-flora-300 transition print:text-xs"
                         >
                           {item.productName}
                         </Link>
                         {isBundle && (
-                          <span className="inline-flex items-center rounded-md bg-flora-100 dark:bg-flora-950 px-2 py-0.5 text-[11px] font-bold text-flora-800 dark:text-flora-300 border border-flora-300 dark:border-flora-800 print:text-[9px] print:px-1.5 print:py-0">
+                          <span className="inline-flex items-center rounded-md bg-flora-100 dark:bg-flora-950 px-2 py-0.5 text-[11px] font-bold text-flora-700 dark:text-flora-300 border border-flora-300 dark:border-flora-700 print:text-[9px] print:px-1.5 print:py-0">
                             شامل {toFa(bundleSize)} عدد گلدان
                           </span>
                         )}
@@ -249,7 +249,7 @@ export default async function CustomerOrderPage({ params }: Props) {
                           )}
                         </p>
                         {item.tierLabel && (
-                          <span className="rounded-md bg-flora-50 dark:bg-flora-950 px-2 py-0.5 text-[11px] font-medium text-flora-800 dark:text-flora-300 border border-flora-200/60 dark:border-flora-800 print:text-[9px]">
+                          <span className="rounded-md bg-flora-50 dark:bg-flora-950 px-2 py-0.5 text-[11px] font-medium text-flora-700 dark:text-flora-300 border border-flora-300/60 dark:border-flora-700 print:text-[9px]">
                             سطح: {item.tierLabel}
                           </span>
                         )}
@@ -276,7 +276,7 @@ export default async function CustomerOrderPage({ params }: Props) {
             {order.discountToman > 0 && (
               <div className="flex justify-between">
                 <dt className="text-soil-700/70 dark:text-dust-200/70">تخفیف</dt>
-                <dd className="text-flora-700 dark:text-flora-400">−{formatToman(order.discountToman)}</dd>
+                <dd className="text-flora-700 dark:text-flora-300">−{formatToman(order.discountToman)}</dd>
               </div>
             )}
             <div className="flex justify-between">
@@ -368,7 +368,7 @@ export default async function CustomerOrderPage({ params }: Props) {
           <div className="flex flex-wrap gap-3 print:hidden">
             <form action="/api/cart/reorder" method="post">
               <input type="hidden" name="orderId" value={order.id} />
-              <button className="rounded-full bg-flora-900 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 transition-colors cursor-pointer">
+              <button className="rounded-full bg-flora-900 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 transition-colors cursor-pointer">
                 سفارش مجدد
               </button>
             </form>

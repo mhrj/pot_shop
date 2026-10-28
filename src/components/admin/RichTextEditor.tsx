@@ -45,7 +45,7 @@ export default function RichTextEditor({
         openOnClick: false,
         autolink: true,
         HTMLAttributes: {
-          class: 'text-flora-700 underline font-medium hover:text-flora-800 transition',
+          class: 'text-flora-700 underline font-medium hover:text-flora-700 transition',
         },
       }),
       ImageExtension.configure({
@@ -351,7 +351,7 @@ export default function RichTextEditor({
                   placeholder="https://example.com"
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
-                  className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm text-left focus:border-flora-600 focus:outline-none"
+                  className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm text-left focus:border-flora-500 focus:outline-none"
                   autoFocus
                 />
               </div>
@@ -361,7 +361,7 @@ export default function RichTextEditor({
                   type="checkbox"
                   checked={linkTargetBlank}
                   onChange={(e) => setLinkTargetBlank(e.target.checked)}
-                  className="size-4 rounded border-soil-900/20 dark:border-dust-50/20 text-flora-700 focus:ring-flora-600"
+                  className="size-4 rounded border-soil-900/20 dark:border-dust-50/20 text-flora-700 focus:ring-flora-500"
                 />
                 <span>باز شدن در برگه جدید (target=&ldquo;_blank&rdquo;)</span>
               </label>
@@ -370,7 +370,7 @@ export default function RichTextEditor({
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-900 transition"
+                    className="rounded-xl bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-900 transition"
                   >
                     تایید
                   </button>
@@ -415,7 +415,7 @@ export default function RichTextEditor({
                   placeholder="https://example.com/image.jpg"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm text-left focus:border-flora-600 focus:outline-none"
+                  className="w-full rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 text-soil-900 dark:text-dust-50 px-3 py-2 text-sm text-left focus:border-flora-500 focus:outline-none"
                   autoFocus
                 />
               </div>
@@ -424,7 +424,7 @@ export default function RichTextEditor({
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-900 transition"
+                    className="rounded-xl bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-900 transition"
                   >
                     درج تصویر
                   </button>

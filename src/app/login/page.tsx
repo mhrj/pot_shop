@@ -281,18 +281,18 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+              className="mt-2 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
             >
               {loading ? 'در حال ورود…' : 'ورود'}
             </button>
 
             <div className="mt-5 flex items-center justify-between gap-3 text-xs sm:text-sm text-soil-700/70 pt-2 dark:text-dust-200/70">
-              <Link href="/forgot-password" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
+              <Link href="/forgot-password" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
                 فراموشی رمز عبور
               </Link>
               <span>
                 حساب ندارید؟{' '}
-                <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
+                <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
                   ثبت‌نام کنید
                 </Link>
               </span>
@@ -338,21 +338,21 @@ function LoginForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
                 >
                   {loading ? 'در حال ارسال کد…' : 'ارسال کد تایید'}
                 </button>
 
                 <p className="text-center text-xs text-soil-700/70 pt-2 dark:text-dust-200/70">
                   حساب ندارید؟{' '}
-                  <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-400 dark:hover:text-flora-300">
+                  <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
                     ثبت‌نام کنید
                   </Link>
                 </p>
               </form>
             ) : (
               <form noValidate onSubmit={handleVerifyOtp} className="space-y-5">
-                <div className="rounded-xl border border-flora-200/60 bg-flora-50 p-3.5 text-xs text-soil-800 flex items-center justify-between dark:border-flora-800 dark:bg-flora-950/60 dark:text-dust-200">
+                <div className="rounded-xl border border-flora-300/60 bg-flora-50 p-3.5 text-xs text-soil-800 flex items-center justify-between dark:border-flora-700 dark:bg-flora-950/60 dark:text-dust-200">
                   <div>
                     <span className="text-soil-700/70 block text-[11px] dark:text-dust-200/70">ارسال شده به شماره:</span>
                     <span className="font-bold text-sm text-soil-900 dir-ltr dark:text-dust-50">{toFa(otpPhone)}</span>
@@ -364,7 +364,7 @@ function LoginForm() {
                       setError(null);
                       setFieldError(null);
                     }}
-                    className="text-xs font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-400 dark:hover:text-flora-300"
+                    className="text-xs font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-300 dark:hover:text-flora-300"
                   >
                     ویرایش شماره
                   </button>
@@ -404,7 +404,7 @@ function LoginForm() {
                   {countdown > 0 ? (
                     <span>
                       ارسال مجدد کد تا{' '}
-                      <span className="font-bold text-flora-700 font-mono dark:text-flora-400">
+                      <span className="font-bold text-flora-700 font-mono dark:text-flora-300">
                         {formattedCountdown}
                       </span>
                     </span>
@@ -413,7 +413,7 @@ function LoginForm() {
                       type="button"
                       onClick={() => handleRequestOtp()}
                       disabled={loading}
-                      className="font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-400 dark:hover:text-flora-300"
+                      className="font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-300 dark:hover:text-flora-300"
                     >
                       ارسال مجدد کد پیامکی
                     </button>
@@ -423,7 +423,7 @@ function LoginForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
                 >
                   {loading ? 'در حال بررسی…' : 'تایید و ورود'}
                 </button>

@@ -32,7 +32,7 @@ export default async function EditArticlePage({ params }: Props) {
             <Link
               href={`/articles/${article.slug}`}
               target="_blank"
-              className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-4 py-2 text-xs font-bold text-flora-800 dark:text-flora-300 transition-colors hover:bg-dust-100 dark:hover:bg-flora-950"
+              className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-4 py-2 text-xs font-bold text-flora-700 dark:text-flora-300 transition-colors hover:bg-dust-100 dark:hover:bg-flora-950"
             >
               مشاهده عمومی ↗
             </Link>

@@ -117,7 +117,7 @@ export default function BundleDetailsAccordion({
 
   return (
     <details className={`group mt-2 rounded-xl border border-soil-900/10 bg-dust-50/60 p-2.5 text-xs transition dark:border-dust-50/10 dark:bg-flora-950/60 print:mt-0.5 print:p-0 print:border-none print:bg-transparent print:text-[9px] ${className}`}>
-      <summary className="flex cursor-pointer select-none items-center justify-between font-bold text-soil-800 hover:text-flora-800 dark:text-dust-200 dark:hover:text-flora-300 list-none [&::-webkit-details-marker]:hidden print:text-[9px]">
+      <summary className="flex cursor-pointer select-none items-center justify-between font-bold text-soil-800 hover:text-flora-700 dark:text-dust-200 dark:hover:text-flora-300 list-none [&::-webkit-details-marker]:hidden print:text-[9px]">
         <span className="flex items-center gap-1.5">
           <svg
             className="size-3.5 text-soil-500 transition-transform duration-200 group-open:rotate-180 dark:text-dust-400 print:hidden"

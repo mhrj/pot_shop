@@ -70,7 +70,7 @@ export default function VisitsChart({
                   </div>
                   <div
                     style={{ height: `${heightPct}%` }}
-                    className="w-full rounded-t bg-dust-400 dark:bg-flora-700/50 transition hover:bg-dust-500 dark:hover:bg-flora-950 group-hover:bg-flora-700 dark:group-hover:bg-flora-800"
+                    className="w-full rounded-t bg-dust-400 dark:bg-flora-700/50 transition hover:bg-dust-500 dark:hover:bg-flora-950 group-hover:bg-flora-700 dark:group-hover:bg-flora-900"
                   />
                 </div>
               );
@@ -89,7 +89,7 @@ export default function VisitsChart({
           </div>
 
           <details className="mt-5">
-            <summary className="cursor-pointer text-xs font-bold text-flora-700 dark:text-flora-400 hover:text-flora-900 dark:hover:text-flora-300">
+            <summary className="cursor-pointer text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300">
               نمایش جدول آمار ۷ روز
             </summary>
             <table className="mt-3 w-full text-xs">
@@ -105,7 +105,7 @@ export default function VisitsChart({
                   <tr key={p.key} className="hover:bg-dust-50/60 dark:hover:bg-flora-950/60">
                     <td className="py-2 font-medium text-soil-900 dark:text-dust-50">{p.label}</td>
                     <td className="py-2 text-soil-800 dark:text-dust-200">{toFa(p.viewsCount)}</td>
-                    <td className="py-2 text-flora-800 dark:text-flora-300 font-bold">{toFa(p.uniqueVisitors)}</td>
+                    <td className="py-2 text-flora-700 dark:text-flora-300 font-bold">{toFa(p.uniqueVisitors)}</td>
                   </tr>
                 ))}
               </tbody>

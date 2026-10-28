@@ -72,7 +72,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
             className={`rounded-full px-3 py-1 text-xs font-bold ${
               user.role === 'ADMIN'
                 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
-                : 'bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200'
+                : 'bg-dust-100 text-soil-700 dark:bg-flora-900 dark:text-dust-200'
             }`}
           >
             {user.role === 'ADMIN' ? 'مدیر سیستم' : 'مشتری'}
@@ -80,7 +80,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
           <span
             className={`rounded-full px-3 py-1 text-xs font-bold ${
               user.isActive
-                ? 'bg-flora-100 text-flora-800 dark:bg-flora-900/60 dark:text-flora-300'
+                ? 'bg-flora-100 text-flora-700 dark:bg-flora-900/60 dark:text-flora-300'
                 : 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-400'
             }`}
           >
@@ -148,7 +148,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
             </div>
             <div>
               <p className="text-xs text-soil-700/60 dark:text-dust-200/60">مجموع خرید موفق</p>
-              <p className="text-xl font-black text-flora-800 dark:text-flora-300">{formatToman(totalSpent)}</p>
+              <p className="text-xl font-black text-flora-700 dark:text-flora-300">{formatToman(totalSpent)}</p>
             </div>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="font-bold text-soil-900 dark:text-dust-50">{addr.fullName}</span>
                   {addr.isDefault && (
-                    <span className="rounded-full bg-flora-100 dark:bg-flora-900/60 px-2 py-0.5 text-[10px] font-bold text-flora-800 dark:text-flora-300">
+                    <span className="rounded-full bg-flora-100 dark:bg-flora-900/60 px-2 py-0.5 text-[10px] font-bold text-flora-700 dark:text-flora-300">
                       پیش‌فرض
                     </span>
                   )}
@@ -237,14 +237,14 @@ export default async function AdminUserDetailPage({ params }: Props) {
                             ) : (
                               <div
                                 key={item.id || idx}
-                                className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-100 dark:bg-flora-800 text-soil-700/50 dark:text-dust-200/50 text-xs"
+                                className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-100 dark:bg-flora-900 text-soil-700/50 dark:text-dust-200/50 text-xs"
                               >
                                 🏺
                               </div>
                             )
                           )}
                           {order._count.items > 3 && (
-                            <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-200 dark:bg-flora-800 text-xs font-bold text-soil-800 dark:text-dust-100">
+                            <div className="relative z-10 flex w-12 h-12 items-center justify-center rounded-full border-2 border-white dark:border-flora-900 bg-dust-200 dark:bg-flora-900 text-xs font-bold text-soil-800 dark:text-dust-100">
                               +{toFa(order._count.items - 3)}
                             </div>
                           )}
@@ -272,7 +272,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
                         <span>
                           تعداد اقلام: <b className="text-soil-900 dark:text-dust-50">{toFa(order._count.items)}</b>
                         </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 dark:bg-flora-800 px-2.5 py-1 text-xs text-soil-700 dark:text-dust-200">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 dark:bg-flora-900 px-2.5 py-1 text-xs text-soil-700 dark:text-dust-200">
                           <span>🚚</span>
                           <span>ارسال با {formatCarrierName(order.shippingCarrier)}</span>
                         </span>
@@ -289,7 +289,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-flora-50 dark:bg-flora-900 px-4 py-2 text-[11px] font-bold text-flora-800 dark:text-flora-200 transition-colors group-hover:bg-flora-100 dark:group-hover:bg-flora-950">
+                        <span className="rounded-full bg-flora-50 dark:bg-flora-900 px-4 py-2 text-[11px] font-bold text-flora-700 dark:text-flora-300 transition-colors group-hover:bg-flora-100 dark:group-hover:bg-flora-950">
                           مشاهده سفارش ←
                         </span>
                       </div>

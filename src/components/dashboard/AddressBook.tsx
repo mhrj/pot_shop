@@ -125,7 +125,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
                     {LABEL_TEXT[a.label]}
                   </span>
                   {a.isDefault && (
-                    <span className="rounded-full border border-transparent bg-flora-100 px-2.5 py-0.5 text-[10px] font-bold text-flora-700 dark:border-flora-800 dark:bg-flora-950 dark:text-flora-300">
+                    <span className="rounded-full border border-transparent bg-flora-100 px-2.5 py-0.5 text-[10px] font-bold text-flora-700 dark:border-flora-700 dark:bg-flora-950 dark:text-flora-300">
                       پیش‌فرض
                     </span>
                   )}

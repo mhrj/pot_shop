@@ -225,7 +225,7 @@ export default function PersianChatbot() {
                 type="submit"
                 disabled={loading || !input.trim()}
                 aria-label="ارسال پیام"
-                className="grid size-10 shrink-0 place-items-center rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 transition-colors hover:bg-flora-700 disabled:opacity-40 cursor-pointer"
+                className="grid size-10 shrink-0 place-items-center rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 transition-colors hover:bg-flora-700 disabled:opacity-40 cursor-pointer"
               >
                 ↑
               </button>

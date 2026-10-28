@@ -45,7 +45,7 @@ export default function ReorderButton({ orderId }: { orderId: string }) {
         type="submit"
         onClick={handleClick}
         disabled={loading}
-        className="rounded-full bg-flora-900 px-4 py-2 text-[11px] font-bold text-white hover:bg-flora-700 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 transition-colors cursor-pointer disabled:opacity-50"
+        className="rounded-full bg-flora-900 px-4 py-2 text-[11px] font-bold text-white hover:bg-flora-700 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 transition-colors cursor-pointer disabled:opacity-50"
       >
         {loading ? 'در حال افزودن…' : 'سفارش مجدد'}
       </button>

@@ -56,7 +56,7 @@ export default async function AdminOrdersPage({
             className={
               'rounded-full px-3.5 py-1.5 text-xs font-bold transition ' +
               (active === f.key
-                ? 'bg-flora-900 text-white dark:bg-flora-800'
+                ? 'bg-flora-900 text-white dark:bg-flora-700'
                 : 'bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 transition-colors hover:bg-dust-200')
             }
           >
@@ -108,7 +108,7 @@ export default async function AdminOrdersPage({
                     <td className="px-4 py-3.5">
                       <Link
                         href={'/admin/orders/' + o.id}
-                        className="text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200"
+                        className="text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300"
                       >
                         مدیریت ←
                       </Link>

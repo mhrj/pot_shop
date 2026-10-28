@@ -140,7 +140,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="مثال: ۵ اشتباه رایج در تعویض گلدان سانسوریا"
-            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-600 focus:outline-none"
+            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-500 focus:outline-none"
             required
           />
         </div>
@@ -159,7 +159,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
             onChange={(e) => setSlug(e.target.value)}
             placeholder="مثال: sansevieria-pot-repotting-guide"
             dir="auto"
-            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-600 focus:outline-none"
+            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-500 focus:outline-none"
           />
         </div>
 
@@ -175,9 +175,9 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
               onChange={(e) => setCoverImage(e.target.value)}
               placeholder="آدرس اینترنتی تصویر یا آپلود مستقیم"
               dir="ltr"
-              className="flex-1 w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-xs font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-600 focus:outline-none"
+              className="flex-1 w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-xs font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-500 focus:outline-none"
             />
-            <label className="shrink-0 cursor-pointer rounded-2xl bg-soil-100 dark:bg-flora-800 px-5 py-3 text-xs font-bold text-soil-900 dark:text-dust-100 hover:bg-soil-200 dark:hover:bg-flora-900 transition">
+            <label className="shrink-0 cursor-pointer rounded-2xl bg-soil-100 dark:bg-flora-700 px-5 py-3 text-xs font-bold text-soil-900 dark:text-dust-100 hover:bg-soil-200 dark:hover:bg-flora-900 transition">
               {isUploadingCover ? 'در حال آپلود...' : 'انتخاب و آپلود عکس'}
               <input
                 type="file"
@@ -221,7 +221,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
             placeholder="خلاصه‌ای دو تا سه خطی از موضوع مقاله بنویسید..."
-            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-600 focus:outline-none"
+            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-500 focus:outline-none"
           />
         </div>
 
@@ -238,7 +238,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
             placeholder="خاک، گلدان، نگهداری گیاه، زهکشی"
-            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-600 focus:outline-none"
+            className="w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-sm font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-500 focus:outline-none"
           />
         </div>
 
@@ -257,7 +257,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
               type="checkbox"
               checked={isPublished}
               onChange={(e) => setIsPublished(e.target.checked)}
-              className="size-5 rounded border-soil-900/20 dark:border-dust-50/20 text-flora-800 focus:ring-flora-600"
+              className="size-5 rounded border-soil-900/20 dark:border-dust-50/20 text-flora-700 focus:ring-flora-500"
             />
             <div>
               <p className="text-sm font-bold text-soil-900 dark:text-dust-50">انتشار عمومی در وبلاگ</p>
@@ -274,7 +274,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
         <button
           type="submit"
           disabled={isSaving}
-          className="rounded-2xl bg-flora-900 dark:bg-flora-800 px-8 py-3.5 text-sm font-black text-white shadow-md shadow-flora-950/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
+          className="rounded-2xl bg-flora-900 dark:bg-flora-700 px-8 py-3.5 text-sm font-black text-white shadow-md shadow-flora-950/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
         >
           {isSaving ? 'در حال ذخیره‌سازی...' : isEditing ? 'ذخیره تغییرات' : 'انتشار مقاله'}
         </button>

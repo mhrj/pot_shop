@@ -115,7 +115,7 @@ export default function ProductCard({ product, className = '' }: Props) {
       {/* Product Details Content */}
       <div className="px-1 pt-3 pb-1 md:px-1.5 md:pt-3.5 md:pb-1.5">
         {/* Title */}
-        <h3 className="text-sm md:text-base font-bold text-soil-900 dark:text-dust-50 transition-colors group-hover:text-flora-800 dark:group-hover:text-flora-300 line-clamp-1 md:line-clamp-2">
+        <h3 className="text-sm md:text-base font-bold text-soil-900 dark:text-dust-50 transition-colors group-hover:text-flora-700 dark:group-hover:text-flora-300 line-clamp-1 md:line-clamp-2">
           {product.name}
         </h3>
 

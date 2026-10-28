@@ -176,7 +176,7 @@ export default function GlobalSearch() {
                 className="flex-1 bg-transparent text-sm text-soil-900 dark:text-dust-50 placeholder:text-soil-700/50 dark:placeholder:text-dust-200/50 outline-none"
               />
               {loading && (
-                <span className="size-4 animate-spin rounded-full border-2 border-flora-700 dark:border-flora-400 border-t-transparent me-2" />
+                <span className="size-4 animate-spin rounded-full border-2 border-flora-700 dark:border-flora-300 border-t-transparent me-2" />
               )}
               {query && !loading && (
                 <button
@@ -222,7 +222,7 @@ export default function GlobalSearch() {
                     <Link
                       href="/admin/users"
                       onClick={() => setOpen(false)}
-                      className="text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200 normal-case"
+                      className="text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300 normal-case"
                     >
                       مشاهده همه کاربران
                     </Link>
@@ -257,7 +257,7 @@ export default function GlobalSearch() {
                               className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                                 user.role === 'ADMIN'
                                   ? 'bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200'
-                                  : 'bg-dust-100 dark:bg-flora-800 text-soil-700 dark:text-dust-200'
+                                  : 'bg-dust-100 dark:bg-flora-700 text-soil-700 dark:text-dust-200'
                               }`}
                             >
                               {user.role === 'ADMIN' ? 'مدیر' : 'مشتری'}
@@ -283,7 +283,7 @@ export default function GlobalSearch() {
                     <Link
                       href="/admin/orders"
                       onClick={() => setOpen(false)}
-                      className="text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200 normal-case"
+                      className="text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300 normal-case"
                     >
                       مشاهده همه سفارش‌ها
                     </Link>
@@ -330,7 +330,7 @@ export default function GlobalSearch() {
                     <Link
                       href="/admin/products"
                       onClick={() => setOpen(false)}
-                      className="text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200 normal-case"
+                      className="text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300 normal-case"
                     >
                       مشاهده همه محصولات
                     </Link>
@@ -351,7 +351,7 @@ export default function GlobalSearch() {
                                 className="size-10 rounded-lg object-cover border border-soil-900/10 dark:border-dust-50/10 shrink-0"
                               />
                             ) : (
-                              <div className="size-10 rounded-lg bg-dust-100 dark:bg-flora-800 flex items-center justify-center text-base shrink-0">
+                              <div className="size-10 rounded-lg bg-dust-100 dark:bg-flora-700 flex items-center justify-center text-base shrink-0">
                                 🪴
                               </div>
                             )}

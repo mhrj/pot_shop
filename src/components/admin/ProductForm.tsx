@@ -1306,7 +1306,7 @@ export default function ProductForm({
             {form.features.map((f, i) => (
               <li
                 key={`${f.label}-${i}`}
-                className="flex items-center gap-2 rounded-full border border-flora-500/30 dark:border-flora-500/20 bg-flora-100/50 dark:bg-flora-800/60 px-3 py-1.5 text-xs font-bold text-soil-900 dark:text-dust-50"
+                className="flex items-center gap-2 rounded-full border border-flora-500/30 dark:border-flora-500/20 bg-flora-100/50 dark:bg-flora-700/60 px-3 py-1.5 text-xs font-bold text-soil-900 dark:text-dust-50"
               >
                 <span className="size-1.5 rounded-full bg-flora-500" />
                 <span>{f.label}</span>
@@ -1341,7 +1341,7 @@ export default function ProductForm({
           <button
             type="button"
             onClick={() => update('images', [...form.images, ''])}
-            className="text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-200"
+            className="text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300"
           >
             + افزودن تصویر
           </button>
@@ -1384,7 +1384,7 @@ export default function ProductForm({
 
                   {isUploading && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/85 dark:bg-flora-900/85 backdrop-blur-sm text-xs font-bold text-soil-900 dark:text-dust-50">
-                      <div className="mb-2 size-8 animate-spin rounded-full border-3 border-flora-700 dark:border-flora-400 border-t-transparent" />
+                      <div className="mb-2 size-8 animate-spin rounded-full border-3 border-flora-700 dark:border-flora-300 border-t-transparent" />
                       <span>در حال اعتبارسنجی و آپلود تصویر…</span>
                     </div>
                   )}
@@ -1423,7 +1423,7 @@ export default function ProductForm({
                     placeholder="/uploads/product/example.jpg"
                     className={`${inputCls} flex-1`}
                   />
-                  <label htmlFor={`product-image-file-${i}`} className="cursor-pointer rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-4 py-2.5 text-center text-xs font-bold text-soil-900 dark:text-dust-50 transition hover:border-flora-700 hover:text-flora-700 dark:hover:border-flora-400 dark:hover:text-flora-300">
+                  <label htmlFor={`product-image-file-${i}`} className="cursor-pointer rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-4 py-2.5 text-center text-xs font-bold text-soil-900 dark:text-dust-50 transition hover:border-flora-700 hover:text-flora-700 dark:hover:border-flora-300 dark:hover:text-flora-300">
                     <input
                       id={`product-image-file-${i}`}
                       name={`imageFile_${i}`}
@@ -1472,7 +1472,7 @@ export default function ProductForm({
                   }}
                   className={
                     'rounded-full px-3 py-1.5 text-xs font-bold transition ' +
-                    (active ? 'bg-flora-900 text-white dark:bg-flora-800' : 'bg-dust-100 dark:bg-flora-950 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-900')
+                    (active ? 'bg-flora-900 text-white dark:bg-flora-700' : 'bg-dust-100 dark:bg-flora-950 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-900')
                   }
                 >
                   {tag.name}

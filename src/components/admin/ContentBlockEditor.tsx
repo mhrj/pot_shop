@@ -105,13 +105,13 @@ export default function ContentBlockEditor({
         <button
           type="submit"
           disabled={pending || !value.trim()}
-          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-5 py-2 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
+          className="rounded-xl bg-flora-900 dark:bg-flora-700 px-5 py-2 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
         >
           {pending ? 'در حال ذخیره…' : 'ذخیره تغییرات'}
         </button>
 
         {status === 'success' && (
-          <span className="text-xs font-bold text-flora-700 dark:text-flora-400">✓ با موفقیت ذخیره و منتشر شد</span>
+          <span className="text-xs font-bold text-flora-700 dark:text-flora-300">✓ با موفقیت ذخیره و منتشر شد</span>
         )}
         {status === 'error' && (
           <span className="text-xs font-bold text-red-600 dark:text-red-400">{errorMsg}</span>

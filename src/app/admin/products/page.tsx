@@ -53,7 +53,7 @@ export default async function AdminProductsPage() {
                 <p className="truncate font-bold text-soil-900 dark:text-dust-50">{p.name}</p>
                 <div className="mt-1 flex flex-wrap gap-1.5">
                   {p.bundleSize > 1 && (
-                    <span className="rounded-full bg-flora-100 dark:bg-flora-950 px-2 py-0.5 text-[10px] font-bold text-flora-800 dark:text-flora-200 border border-flora-300 dark:border-flora-800">
+                    <span className="rounded-full bg-flora-100 dark:bg-flora-950 px-2 py-0.5 text-[10px] font-bold text-flora-700 dark:text-flora-300 border border-flora-300 dark:border-flora-700">
                       ست {toFa(p.bundleSize)} عددی
                     </span>
                   )}

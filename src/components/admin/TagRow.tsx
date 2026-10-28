@@ -88,7 +88,7 @@ export default function TagRow({ tag }: Props) {
           <button
             type="submit"
             disabled={pending || !name.trim()}
-            className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
+            className="rounded-xl bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
           >
             {pending ? 'در حال ذخیره…' : 'ذخیره'}
           </button>
@@ -125,7 +125,7 @@ export default function TagRow({ tag }: Props) {
             type="button"
             onClick={() => setIsEditing(true)}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-3 py-2 text-xs font-bold text-soil-900 dark:text-dust-100 transition hover:border-flora-700 dark:hover:border-flora-400 hover:text-flora-700 dark:hover:text-flora-400 disabled:opacity-50"
+            className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-3 py-2 text-xs font-bold text-soil-900 dark:text-dust-100 transition hover:border-flora-700 dark:hover:border-flora-300 hover:text-flora-700 dark:hover:text-flora-300 disabled:opacity-50"
           >
             ویرایش نام
           </button>
