@@ -427,7 +427,7 @@ export default function CheckoutForm({
           type="button"
           onClick={pay}
           disabled={loading || calculatingShipping || !selectedId}
-          className="w-full rounded-2xl bg-flora-900 px-6 py-4 text-sm font-black text-white shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer"
+          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer"
         >
           {loading
             ? "در حال انتقال به درگاه…"

@@ -123,10 +123,10 @@ export default function RegisterPage() {
                 setForm((prev) => ({ ...prev, fullName: e.target.value }));
                 if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: '' }));
               }}
-              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 ${
+              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 ${
                 errors.fullName
                   ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500/80'
-                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:focus:border-flora-400'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 focus:dark:border-flora-500'
               }`}
             />
             <FormError message={errors.fullName} />
@@ -148,10 +148,10 @@ export default function RegisterPage() {
               type="tel"
               autoComplete="tel"
               placeholder="09121234567"
-              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 ${
+              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 ${
                 errors.phone
                   ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500/80'
-                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:focus:border-flora-400'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 focus:dark:border-flora-500'
               }`}
             />
             <FormError message={errors.phone} />
@@ -173,10 +173,10 @@ export default function RegisterPage() {
               autoComplete="email"
               dir="ltr"
               placeholder="example@mail.com"
-              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 ${
+              className={`mt-2 w-full rounded-xl border bg-white px-4 py-3 text-sm text-soil-900 outline-none transition dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 ${
                 errors.email
                   ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500/80'
-                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:focus:border-flora-400'
+                  : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 focus:dark:border-flora-500'
               }`}
             />
             <FormError message={errors.email} />
@@ -233,7 +233,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+          className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-sm font-black transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
         >
           {loading ? 'در حال ثبت‌نام…' : 'ثبت‌نام'}
         </button>

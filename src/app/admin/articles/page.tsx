@@ -52,7 +52,7 @@ export default async function AdminArticlesPage() {
               className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-soil-900/10 bg-white p-4 shadow-sm transition hover:border-soil-900/20 dark:border-dust-50/10 dark:bg-flora-900 dark:hover:border-dust-50/20"
             >
               <div className="flex items-start gap-4 min-w-0 flex-1">
-                <div className="relative size-16 shrink-0 overflow-hidden rounded-xl border border-soil-900/10 bg-dust-100 dark:border-dust-50/10 dark:bg-flora-950">
+                <div className="relative size-16 shrink-0 overflow-hidden rounded-xl border border-soil-900/5 dark:border-dust-50/10 bg-white">
                   {article.coverImage ? (
                     <Image
                       src={article.coverImage}

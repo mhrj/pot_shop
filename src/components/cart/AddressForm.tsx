@@ -208,10 +208,10 @@ export default function AddressForm({
             name="fullName"
             value={form.fullName}
             onChange={handleChange}
-            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
+            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 dark:placeholder:text-dust-400 outline-none transition ${
               errors.fullName
                 ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
+                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:dark:border-flora-500'
             }`}
             placeholder="مثلاً مریم رضایی"
           />
@@ -232,10 +232,10 @@ export default function AddressForm({
             type="tel"
             maxLength={11}
             inputMode="numeric"
-            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
+            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 dark:placeholder:text-dust-400 outline-none transition ${
               phoneError
                 ? 'border-red-500 focus:ring-red-500'
-                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
+                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:dark:border-flora-500'
             }`}
             placeholder="09121234567"
           />
@@ -282,10 +282,10 @@ export default function AddressForm({
             dir="ltr"
             maxLength={10}
             inputMode="numeric"
-            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
+            className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 dark:placeholder:text-dust-400 outline-none transition ${
               errors.postalCode
                 ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
+                : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:dark:border-flora-500'
             }`}
             placeholder="1234567890"
           />
@@ -301,7 +301,7 @@ export default function AddressForm({
             name="label"
             value={form.label}
             onChange={handleChange}
-            className="mt-1 w-full rounded-xl border border-soil-900/10 dark:border-dust-50/20 bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition focus:border-flora-500"
+            className="mt-1 w-full rounded-xl border border-soil-900/10 dark:border-dust-50/20 bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition focus:border-flora-500 focus:dark:border-flora-500"
           >
             <option value="HOME" className="dark:bg-flora-950 dark:text-dust-50">خانه</option>
             <option value="WORK" className="dark:bg-flora-950 dark:text-dust-50">محل کار</option>
@@ -320,10 +320,10 @@ export default function AddressForm({
           name="line1"
           value={form.line1}
           onChange={handleChange}
-          className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition ${
+          className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 dark:placeholder:text-dust-400 outline-none transition ${
             errors.line1
               ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500'
+              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:dark:border-flora-500'
           }`}
           placeholder="خیابان ولیعصر، کوچه ..."
         />
@@ -339,7 +339,7 @@ export default function AddressForm({
           name="line2"
           value={form.line2}
           onChange={handleChange}
-          className="mt-1 w-full rounded-xl border border-soil-900/10 dark:border-dust-50/20 bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition focus:border-flora-500"
+          className="mt-1 w-full rounded-xl border border-soil-900/10 dark:border-dust-50/20 bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 dark:placeholder:text-dust-400 outline-none transition focus:border-flora-500 focus:dark:border-flora-500"
           placeholder="پلاک ۱۲، طبقه ۳"
         />
       </div>
@@ -368,7 +368,7 @@ export default function AddressForm({
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 rounded-2xl bg-flora-900 px-6 py-3 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-60"
+          className="flex-1 rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3 text-sm font-black transition hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
         >
           {loading ? 'در حال ذخیره…' : editing ? 'ذخیره تغییرات' : 'ثبت آدرس'}
         </button>

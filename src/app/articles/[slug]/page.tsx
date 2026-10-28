@@ -150,7 +150,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
           {/* Cover Image */}
           {article.coverImage && (
-            <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-soil-900/10 dark:border-dust-50/10 shadow-lg shadow-soil-900/5 dark:shadow-none mb-10 bg-dust-100 dark:bg-flora-950">
+            <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-soil-900/10 dark:border-dust-50/10 shadow-lg shadow-soil-900/5 dark:shadow-none mb-10 bg-white">
               <Image
                 src={article.coverImage}
                 alt={article.title}
@@ -201,7 +201,7 @@ export default async function ArticleDetailPage({ params }: Props) {
             </Link>
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 rounded-2xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 transition"
+              className="inline-flex items-center gap-2 rounded-2xl bg-flora-900 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 transition"
             >
               <span>مشاهده محصولات مرتبط در فروشگاه</span>
               <span>→</span>
@@ -221,7 +221,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                   className="group flex flex-col overflow-hidden rounded-3xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5 shadow-sm dark:shadow-none transition hover:-translate-y-1 hover:shadow-lg dark:hover:border-dust-50/20"
                 >
                   {rel.coverImage && (
-                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl mb-4 bg-dust-100 dark:bg-flora-950">
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl mb-4 bg-white border border-soil-900/5 dark:border-dust-50/10">
                       <Image
                         src={rel.coverImage}
                         alt={rel.title}

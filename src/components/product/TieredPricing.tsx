@@ -1079,7 +1079,7 @@ export default function TieredPricing({
           type="button"
           onClick={handleAdd}
           disabled={pending || outOfStock}
-          className="w-full rounded-2xl bg-flora-900 px-6 py-4 text-sm font-black text-white shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {outOfStock
             ? 'ناموجود'
@@ -1092,7 +1092,7 @@ export default function TieredPricing({
                   : `افزودن ${toFa(count)} عدد به سبد — ${formatToman(total)}`}
         </button>
 
-        <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/40 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-200 text-center">
+        <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/80 dark:border-amber-700/50 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-300 text-center">
           📦 توجه: مرسولات فقط در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال می‌شوند.
         </div>
 

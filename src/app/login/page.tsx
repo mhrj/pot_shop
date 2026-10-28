@@ -200,8 +200,8 @@ function LoginForm() {
             onClick={() => switchTab('password')}
             className={`rounded-xl py-2.5 transition cursor-pointer ${
               tab === 'password'
-                ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-800 dark:text-dust-50'
-                : 'hover:text-soil-900 text-soil-600 dark:text-dust-300 dark:hover:text-dust-50'
+                ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-500 dark:text-flora-950'
+                : 'hover:text-soil-900 text-soil-600 dark:bg-flora-950 dark:text-dust-300 dark:hover:text-dust-50'
             }`}
           >
             ورود با رمز عبور
@@ -211,8 +211,8 @@ function LoginForm() {
             onClick={() => switchTab('otp')}
             className={`rounded-xl py-2.5 transition cursor-pointer ${
               tab === 'otp'
-                ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-800 dark:text-dust-50'
-                : 'hover:text-soil-900 text-soil-600 dark:text-dust-300 dark:hover:text-dust-50'
+                ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-500 dark:text-flora-950'
+                : 'hover:text-soil-900 text-soil-600 dark:bg-flora-950 dark:text-dust-300 dark:hover:text-dust-50'
             }`}
           >
             ورود با پیامک (OTP)
@@ -249,7 +249,7 @@ function LoginForm() {
                 autoComplete="username"
                 dir="ltr"
                 placeholder="09121234567 یا email@example.com"
-                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
             </div>
 
@@ -281,7 +281,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+              className="mt-2 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-sm font-black transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
             >
               {loading ? 'در حال ورود…' : 'ورود'}
             </button>
@@ -322,7 +322,7 @@ function LoginForm() {
                     autoComplete="tel"
                     dir="ltr"
                     placeholder="09121234567"
-                    className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                    className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
                   />
                   <span className="mt-1.5 block text-[11px] text-soil-700/60 dark:text-dust-200/60">
                     کد یکبار مصرف ۵ رقمی به این شماره ارسال خواهد شد.
@@ -338,7 +338,7 @@ function LoginForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-sm font-black transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
                 >
                   {loading ? 'در حال ارسال کد…' : 'ارسال کد تایید'}
                 </button>
@@ -389,7 +389,7 @@ function LoginForm() {
                     dir="ltr"
                     placeholder="— — — — —"
                     autoFocus
-                    className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-center text-xl font-bold tracking-[0.4em] text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                    className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-center text-xl font-bold tracking-[0.4em] text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
                   />
                 </div>
 
@@ -423,7 +423,7 @@ function LoginForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-sm font-black transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
                 >
                   {loading ? 'در حال بررسی…' : 'تایید و ورود'}
                 </button>

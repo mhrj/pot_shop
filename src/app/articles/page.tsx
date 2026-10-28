@@ -122,12 +122,12 @@ export default async function ArticlesPage({ searchParams }: Props) {
               return (
                 <article
                   key={article.id}
-                  className="group flex flex-col overflow-hidden rounded-3xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 shadow-sm dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-soil-900/5 dark:hover:border-dust-50/20"
+                  className="group flex flex-col overflow-hidden rounded-3xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 shadow-sm dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-soil-900/5 dark:hover:border-dust-50/20 p-2 sm:p-2.5"
                 >
                   {/* Cover Image */}
                   <Link
                     href={`/articles/${article.slug}`}
-                    className="relative aspect-[16/10] w-full overflow-hidden bg-dust-100 dark:bg-flora-950"
+                    className="relative block aspect-[16/10] w-full overflow-hidden rounded-2xl border border-soil-900/5 dark:border-dust-50/10 bg-white"
                   >
                     {article.coverImage ? (
                       <Image
@@ -138,14 +138,14 @@ export default async function ArticlesPage({ searchParams }: Props) {
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       />
                     ) : (
-                      <div className="grid h-full w-full place-items-center bg-gradient-to-br from-flora-100/50 to-dust-200/50 dark:from-flora-900/50 dark:to-flora-950/50 text-4xl">
+                      <div className="grid h-full w-full place-items-center bg-white text-4xl">
                         🪴
                       </div>
                     )}
                   </Link>
 
                   {/* Body Content */}
-                  <div className="flex flex-1 flex-col justify-between p-6">
+                  <div className="flex flex-1 flex-col justify-between p-4 sm:p-5 pt-3">
                     <div>
                       {/* Meta info */}
                       <div className="flex items-center justify-between text-[11px] font-bold text-soil-700/60 dark:text-dust-200/60 mb-3">

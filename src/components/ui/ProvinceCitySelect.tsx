@@ -79,7 +79,7 @@ export default function ProvinceCitySelect({
           className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition cursor-pointer ${
             errorProvince
               ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:dark:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           <option value="" disabled className="dark:bg-flora-950 dark:text-dust-50">
@@ -111,7 +111,7 @@ export default function ProvinceCitySelect({
           className={`mt-1 w-full rounded-xl border bg-dust-50 dark:bg-flora-950 px-3 py-2.5 text-sm text-soil-900 dark:text-dust-50 outline-none transition cursor-pointer ${
             errorCity
               ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
+              : 'border-soil-900/10 dark:border-dust-50/20 focus:border-flora-500 focus:dark:border-flora-500 focus:ring-2 focus:ring-flora-500/20'
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           <option value="" disabled className="dark:bg-flora-950 dark:text-dust-50">

@@ -56,10 +56,10 @@ export default function ProductCard({ product, className = '' }: Props) {
   return (
     <Link
       href={`/products/${product.slug}`}
-      className={`group block overflow-hidden rounded-2xl md:rounded-3xl bg-white dark:bg-flora-900/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-soil-900/5 dark:border-dust-100/10 ${className}`}
+      className={`group block rounded-2xl md:rounded-3xl bg-white dark:bg-flora-900 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-soil-900/5 dark:border-dust-100/10 p-2 sm:p-2.5 ${className}`}
     >
       {/* Product Image Wrapper */}
-      <div className="relative aspect-square overflow-hidden bg-dust-100 dark:bg-flora-950">
+      <div className="relative aspect-square rounded-xl overflow-hidden border border-soil-900/5 dark:border-dust-50/10 bg-white">
         {product.images[0] ? (
           <Image
             src={product.images[0].url}
@@ -71,7 +71,7 @@ export default function ProductCard({ product, className = '' }: Props) {
             }`}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-dust-100 dark:bg-flora-950 text-soil-700/30 dark:text-dust-300/30">
+          <div className="flex h-full w-full items-center justify-center bg-white text-soil-700/30 dark:text-dust-300/30">
             <svg className="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -82,9 +82,6 @@ export default function ProductCard({ product, className = '' }: Props) {
             </svg>
           </div>
         )}
-
-        {/* Gradient Overlay for contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/5 pointer-events-none" />
 
         {/* Dynamic Badges (Start Corner / Right in RTL) */}
         <div className="absolute top-2 start-2 md:top-3 md:start-3 flex flex-col gap-1 z-10">
@@ -116,7 +113,7 @@ export default function ProductCard({ product, className = '' }: Props) {
       </div>
 
       {/* Product Details Content */}
-      <div className="p-3 md:p-4.5">
+      <div className="px-1 pt-3 pb-1 md:px-1.5 md:pt-3.5 md:pb-1.5">
         {/* Title */}
         <h3 className="text-sm md:text-base font-bold text-soil-900 dark:text-dust-50 transition-colors group-hover:text-flora-800 dark:group-hover:text-flora-300 line-clamp-1 md:line-clamp-2">
           {product.name}

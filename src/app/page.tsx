@@ -198,7 +198,7 @@ export default async function HomePage() {
           <div className="order-3 lg:order-2 w-full flex flex-col sm:flex-row gap-3 mt-8">
             <Link
               href="#catalog"
-              className="group relative inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
+              className="group relative inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-7 py-3.5 text-sm font-bold shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
             >
               <span className="inline-block transition duration-300 group-hover:rotate-12 group-hover:scale-125">
                 🌱
@@ -231,14 +231,14 @@ export default async function HomePage() {
 
         {/* 2. Hero Image */}
         <div className="order-2 lg:order-1 lg:col-span-5 w-full flex justify-center mt-8 mb-8 lg:mt-0 lg:mb-0">
-          <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none mx-auto aspect-square lg:aspect-4/5 bg-transparent">
+          <div className="relative w-full max-w-[320px] sm:max-w-[400px] lg:max-w-none mx-auto aspect-square lg:aspect-4/5">
             <Image
               src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723'}
               alt={heroImage?.alt ?? 'گلدان سفالی دست‌ساز با گیاه سبز'}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent),linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [mask-composite:intersect] [-webkit-mask-composite:destination-in] dark:brightness-[0.8] dark:contrast-[1.1] dark:opacity-90 dark:mix-blend-lighten"
+              className="object-contain"
             />
           </div>
         </div>
@@ -259,13 +259,13 @@ export default async function HomePage() {
 
       {journeyImage && (
         <Container className="mt-16">
-          <div className="relative aspect-21/9 overflow-hidden rounded-pot bg-dust-200 dark:bg-flora-900 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.5)] border border-transparent dark:border-dust-100/10">
+          <div className="relative aspect-21/9 overflow-hidden rounded-pot bg-white border border-soil-900/5 dark:border-dust-50/10 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-none">
             <Image
               src={journeyImage.url}
               alt={journeyImage.alt ?? 'مسیر ساخت گلدان از خاک تا رویش'}
               fill
               sizes="(max-width: 1024px) 100vw, 80vw"
-              className="object-cover dark:brightness-[0.85] dark:contrast-[1.05]"
+              className="object-cover"
             />
           </div>
         </Container>

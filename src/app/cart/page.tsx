@@ -17,7 +17,7 @@ export default async function CartPage() {
         <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">سبد خرید خالی است</h1>
         <Link
           href="/products"
-          className="mt-6 inline-block rounded-full bg-flora-900 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-flora-900/20"
+          className="mt-6 inline-block rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3 text-sm font-bold shadow-lg shadow-flora-900/20"
         >
           مشاهده محصولات
         </Link>
@@ -71,11 +71,11 @@ export default async function CartPage() {
             </dl>
             <Link
               href="/checkout"
-              className="mt-6 block rounded-xl bg-flora-900 px-6 py-3.5 text-center text-sm font-black text-white transition hover:bg-flora-700"
+              className="mt-6 block rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-center text-sm font-black transition hover:bg-flora-700"
             >
               ادامه فرآیند خرید
             </Link>
-            <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/40 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-200">
+            <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/80 dark:border-amber-700/50 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-300">
               📦 توجه: مرسولات فقط در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال می‌شوند.
             </div>
           </div>

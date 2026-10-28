@@ -152,7 +152,7 @@ function ResetPasswordForm() {
             </p>
             <Link
               href="/login"
-              className="mt-6 inline-block w-full rounded-xl bg-flora-900 px-6 py-3.5 text-center text-sm font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+              className="mt-6 inline-block w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-center text-sm font-black transition hover:bg-flora-700 cursor-pointer shadow-sm"
             >
               ورود به حساب کاربری
             </Link>
@@ -169,7 +169,7 @@ function ResetPasswordForm() {
                 dir="ltr"
                 placeholder="09123456789"
                 autoComplete="tel"
-                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-right text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-right text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
             </label>
 
@@ -201,7 +201,7 @@ function ResetPasswordForm() {
                 dir="ltr"
                 placeholder="12345"
                 autoComplete="one-time-code"
-                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-center text-lg font-bold tracking-widest text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-center text-lg font-bold tracking-widest text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
             </label>
 
@@ -214,7 +214,7 @@ function ResetPasswordForm() {
                 minLength={8}
                 type="password"
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
             </label>
 
@@ -227,7 +227,7 @@ function ResetPasswordForm() {
                 minLength={8}
                 type="password"
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
               />
             </label>
 
@@ -246,7 +246,7 @@ function ResetPasswordForm() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full rounded-xl bg-flora-900 px-6 py-3.5 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+              className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-sm font-black transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
             >
               {loading ? 'در حال تغییر رمز…' : 'تغییر رمز عبور'}
             </button>

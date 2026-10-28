@@ -6,6 +6,7 @@ import Container from '@/components/ui/Container';
 import StatusBadge from '@/components/ui/StatusBadge';
 import AddressBook from '@/components/dashboard/AddressBook';
 import ReorderButton from '@/components/dashboard/ReorderButton';
+import LogoutButton from '@/components/layout/LogoutButton';
 import { formatCarrierName } from '@/lib/orders';
 import ShippingScheduleNotice from '@/components/ui/ShippingScheduleNotice';
 
@@ -37,11 +38,7 @@ export default async function DashboardPage() {
           </h1>
           <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">سفارش‌ها و آدرس‌های شما</p>
         </div>
-        <form action="/api/auth/logout" method="post">
-          <button className="rounded-full border border-soil-900/15 dark:border-dust-50/20 px-5 py-2.5 text-xs font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-50 dark:hover:bg-flora-900">
-            خروج از حساب
-          </button>
-        </form>
+        <LogoutButton />
       </header>
 
       <div className="mt-6">
@@ -143,7 +140,7 @@ export default async function DashboardPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-dust-100 dark:bg-flora-800 px-4 py-2 text-[11px] font-bold text-soil-900 dark:text-dust-50 transition group-hover:bg-dust-200 dark:group-hover:bg-flora-700">
+                      <span className="rounded-full bg-dust-100 dark:bg-flora-900 dark:text-dust-100 dark:hover:bg-flora-800 dark:group-hover:bg-flora-800 px-4 py-2 text-[11px] font-bold text-soil-900 transition group-hover:bg-dust-200">
                         جزئیات سفارش
                       </span>
                       <ReorderButton orderId={order.id} />

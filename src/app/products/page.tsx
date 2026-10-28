@@ -260,7 +260,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   name="q"
                   defaultValue={q}
                   placeholder="نام، جنس یا رنگ محصول…"
-                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
                 />
               </label>
 
@@ -269,7 +269,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                 <select
                   name="tag"
                   defaultValue={tagSlug}
-                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
+                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:dark:border-flora-500 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
                 >
                   <option value="">همه</option>
                   {tags.map((t) => (
@@ -282,7 +282,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
               <button
                 type="submit"
-                className="rounded-xl bg-flora-900 px-6 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+                className="rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-2.5 text-xs font-black transition hover:bg-flora-700 cursor-pointer shadow-sm"
               >
                 اعمال
               </button>

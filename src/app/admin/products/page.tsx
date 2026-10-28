@@ -44,7 +44,7 @@ export default async function AdminProductsPage() {
               key={p.id}
               className="flex items-center gap-4 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-3"
             >
-              <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-dust-100 dark:bg-flora-950">
+              <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-white border border-soil-900/5 dark:border-dust-50/10">
                 {p.images[0] && (
                   <Image src={p.images[0].url} alt={p.name} fill className="object-cover" sizes="64px" />
                 )}
