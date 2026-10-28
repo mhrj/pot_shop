@@ -84,7 +84,7 @@ export default function ProductCard({ product, className = '' }: Props) {
         )}
 
         {/* Dynamic Badges (Start Corner / Right in RTL) */}
-        <div className="absolute top-2 start-2 md:top-3 md:start-3 flex flex-col gap-1 z-10">
+        <div className="absolute top-2 inset-s-2 md:top-3 md:inset-s-3 flex flex-col gap-1 z-10">
           {isBundle && (
             <span className="rounded-lg md:rounded-xl bg-flora-900 dark:bg-flora-700 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
               ست {toFa(bundleSize)} عددی

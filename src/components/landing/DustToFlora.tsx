@@ -1,12 +1,11 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import {
   motion,
   useScroll,
   useSpring,
   useTransform,
-  useMotionValueEvent,
   useReducedMotion,
 } from 'framer-motion';
 import BotanicalCanvas from './BotanicalCanvas';
@@ -60,12 +59,6 @@ export default function DustToFlora({
   const headlineY = useTransform(progress, [0, 0.3], [0, -60]);
   const headlineOpacity = useTransform(progress, [0, 0.24], [1, 0]);
 
-  const [floraActive, setFloraActive] = useState(false);
-  useMotionValueEvent(progress, 'change', (v) => {
-    const next = v > 0.32;
-    setFloraActive((prev) => (prev === next ? prev : next));
-  });
-
   if (reduce) {
     return (
       <div className="bg-dust-50 dark:bg-flora-950">
@@ -81,7 +74,7 @@ export default function DustToFlora({
   }
 
   return (
-    <motion.div ref={ref} style={{ backgroundColor }} className="relative dark:!bg-flora-950">
+    <motion.div ref={ref} style={{ backgroundColor }} className="relative isolate overflow-hidden dark:!bg-flora-950">
       {/* Sunlight Breathing Overlay */}
       <div
         aria-hidden
@@ -113,7 +106,7 @@ export default function DustToFlora({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(64,145,108,0.45),transparent_62%),radial-gradient(circle_at_15%_30%,rgba(116,198,157,0.22),transparent_55%)]" />
       </motion.div>
 
-      <BotanicalCanvas active={floraActive} />
+      <BotanicalCanvas active={true} variant="auto" progress={progress} />
 
       <motion.div style={{ y: headlineY, opacity: headlineOpacity }} className="relative z-10">
         {hero}

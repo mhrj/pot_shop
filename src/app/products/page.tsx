@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { formatToman, toFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
 import ProductCard from '@/components/catalog/ProductCard';
+import BotanicalCanvas from '@/components/landing/BotanicalCanvas';
 
 // 12 items per page for balanced 2, 3, 4 column grids across screen sizes.
 const PAGE_SIZE = 12;
@@ -158,10 +159,9 @@ export default async function ProductsPage({ searchParams }: Props) {
   const lastShown = Math.min(page * PAGE_SIZE, total);
 
   return (
-    // Pure CSS, no motion library: soft sage-green inspired palette
-    // that feels alive, reduces eye strain, and provides crisp contrast for white cards.
-    <div className="min-h-screen bg-gradient-to-b from-[#F2F7F4] via-[#E2F0E6] to-flora-100 dark:from-flora-950 dark:via-flora-950 dark:to-flora-900">
-      <Container className="py-12">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#F2F7F4]/90 via-[#E2F0E6]/85 to-flora-100/90 dark:from-flora-950/90 dark:via-flora-950/85 dark:to-flora-900/90">
+      <BotanicalCanvas active={true} variant="flora" />
+      <Container className="relative z-10 py-12">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             {/* Was the English word "CATALOG". The wide letter-spacing went with
