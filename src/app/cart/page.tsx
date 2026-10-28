@@ -17,7 +17,7 @@ export default async function CartPage() {
         <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">سبد خرید خالی است</h1>
         <Link
           href="/products"
-          className="mt-6 inline-block rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3 text-sm font-bold shadow-lg shadow-flora-900/20"
+          className="mt-6 inline-block rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3 text-sm font-bold shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700"
         >
           مشاهده محصولات
         </Link>
@@ -71,7 +71,7 @@ export default async function CartPage() {
             </dl>
             <Link
               href="/checkout"
-              className="mt-6 block rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-center text-sm font-black transition hover:bg-flora-700"
+              className="mt-6 block rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-center text-sm font-black transition-colors hover:bg-flora-700"
             >
               ادامه فرآیند خرید
             </Link>

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import type { MotionValue } from 'framer-motion';
+import { useEffect, useRef } from "react";
+import type { MotionValue } from "framer-motion";
 
-export type BotanicalVariant = 'dust' | 'flora' | 'auto';
+export type BotanicalVariant = "dust" | "flora" | "auto";
 
 export type BotanicalCanvasProps = {
   active?: boolean;
@@ -29,7 +29,7 @@ type Particle = {
   targetSaturation: number;
 };
 
-function getColorTargets(effectiveVariant: 'dust' | 'flora', isDark: boolean) {
+function getColorTargets(effectiveVariant: "dust" | "flora", isDark: boolean) {
   if (isDark) {
     // Dark Mode: Force lighter, glowing green particles (hue: 150, alpha: 0.3 to 0.6)
     return {
@@ -40,7 +40,7 @@ function getColorTargets(effectiveVariant: 'dust' | 'flora', isDark: boolean) {
     };
   }
 
-  if (effectiveVariant === 'dust') {
+  if (effectiveVariant === "dust") {
     // Warm colors (hue: 20 to 40, e.g. orange/brown terracotta)
     return {
       hue: 20 + Math.random() * 20,
@@ -62,21 +62,24 @@ function getColorTargets(effectiveVariant: 'dust' | 'flora', isDark: boolean) {
 function resolveEffectiveVariant(
   variant: BotanicalVariant,
   progressVal: number | undefined,
-): 'dust' | 'flora' {
-  if (variant === 'dust') return 'dust';
-  if (variant === 'flora') return 'flora';
+): "dust" | "flora" {
+  if (variant === "dust") return "dust";
+  if (variant === "flora") return "flora";
 
   // 'auto'
   let p: number;
-  if (typeof progressVal === 'number') {
+  if (typeof progressVal === "number") {
     p = progressVal;
-  } else if (typeof window !== 'undefined') {
-    const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  } else if (typeof window !== "undefined") {
+    const scrollMax = Math.max(
+      1,
+      document.documentElement.scrollHeight - window.innerHeight,
+    );
     p = window.scrollY / scrollMax;
   } else {
     p = 0;
   }
-  return p > 0.3 ? 'flora' : 'dust';
+  return p > 0.3 ? "flora" : "dust";
 }
 
 /**
@@ -86,7 +89,7 @@ function resolveEffectiveVariant(
  */
 export default function BotanicalCanvas({
   active = true,
-  variant = 'auto',
+  variant = "auto",
   progress,
 }: BotanicalCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -105,10 +108,12 @@ export default function BotanicalCanvas({
     const canvas = canvasRef.current;
     if (!canvas || !active) return;
 
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (reduce) return;
 
-    const ctx = canvas.getContext('2d', { alpha: true });
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
@@ -116,19 +121,19 @@ export default function BotanicalCanvas({
     let h = 0;
     let visible = true;
 
-    let isDark = document.documentElement.classList.contains('dark');
+    let isDark = document.documentElement.classList.contains("dark");
     let currentVariant = resolveEffectiveVariant(
       variantRef.current,
-      typeof progressRef.current === 'number'
+      typeof progressRef.current === "number"
         ? progressRef.current
         : progressRef.current?.get?.(),
     );
 
     const syncColors = () => {
-      const nextDark = document.documentElement.classList.contains('dark');
+      const nextDark = document.documentElement.classList.contains("dark");
       const nextVariant = resolveEffectiveVariant(
         variantRef.current,
-        typeof progressRef.current === 'number'
+        typeof progressRef.current === "number"
           ? progressRef.current
           : progressRef.current?.get?.(),
       );
@@ -147,13 +152,13 @@ export default function BotanicalCanvas({
     syncColorsRef.current = syncColors;
 
     const isMobile = window.innerWidth < 768;
-    const COUNT = isMobile ? 6 : 12;
+    const COUNT = isMobile ? 10 : 16;
 
     const seed = () => {
-      isDark = document.documentElement.classList.contains('dark');
+      isDark = document.documentElement.classList.contains("dark");
       currentVariant = resolveEffectiveVariant(
         variantRef.current,
-        typeof progressRef.current === 'number'
+        typeof progressRef.current === "number"
           ? progressRef.current
           : progressRef.current?.get?.(),
       );
@@ -197,7 +202,7 @@ export default function BotanicalCanvas({
       ctx.ellipse(0, 0, p.r, p.r * 0.42, 0, 0, Math.PI * 2);
 
       if (isDark) {
-        ctx.shadowColor = 'hsla(150, 85%, 65%, 0.45)';
+        ctx.shadowColor = "hsla(150, 85%, 65%, 0.45)";
         ctx.shadowBlur = 8;
       }
 
@@ -250,7 +255,7 @@ export default function BotanicalCanvas({
           rafRef.current = requestAnimationFrame(tick);
         }
       },
-      { rootMargin: '120px' },
+      { rootMargin: "120px" },
     );
 
     const onVisibility = () => {
@@ -266,28 +271,28 @@ export default function BotanicalCanvas({
     });
     themeObserver.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class'],
+      attributeFilter: ["class"],
     });
 
     // Window scroll handler for variant='auto' when no MotionValue is supplied
     const onScroll = () => {
-      if (variantRef.current === 'auto') {
+      if (variantRef.current === "auto") {
         syncColors();
       }
     };
 
     resize();
     io.observe(canvas);
-    document.addEventListener('visibilitychange', onVisibility);
-    window.addEventListener('resize', resize, { passive: true });
-    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     rafRef.current = requestAnimationFrame(tick);
 
     // MotionValue listener if progress is a Framer Motion value
     let unsubscribeMotion: (() => void) | undefined;
     const p = progressRef.current;
-    if (p && typeof (p as MotionValue<number>).on === 'function') {
-      unsubscribeMotion = (p as MotionValue<number>).on('change', () => {
+    if (p && typeof (p as MotionValue<number>).on === "function") {
+      unsubscribeMotion = (p as MotionValue<number>).on("change", () => {
         syncColors();
       });
     }
@@ -297,9 +302,9 @@ export default function BotanicalCanvas({
       rafRef.current = null;
       io.disconnect();
       themeObserver.disconnect();
-      document.removeEventListener('visibilitychange', onVisibility);
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('scroll', onScroll);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("scroll", onScroll);
       if (unsubscribeMotion) unsubscribeMotion();
     };
   }, [active]);

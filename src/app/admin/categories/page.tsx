@@ -55,7 +55,7 @@ export default async function AdminCategoriesPage() {
             placeholder="مثلاً: گلدان و فلاورباکس"
           />
         </label>
-        <button type="submit" className="mt-4 rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700">
+        <button type="submit" className="mt-4 rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-900">
           افزودن دسته‌بندی
         </button>
       </form>

@@ -368,7 +368,7 @@ export default async function CustomerOrderPage({ params }: Props) {
           <div className="flex flex-wrap gap-3 print:hidden">
             <form action="/api/cart/reorder" method="post">
               <input type="hidden" name="orderId" value={order.id} />
-              <button className="rounded-full bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 cursor-pointer">
+              <button className="rounded-full bg-flora-900 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 transition-colors cursor-pointer">
                 سفارش مجدد
               </button>
             </form>

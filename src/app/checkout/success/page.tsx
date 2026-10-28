@@ -49,13 +49,13 @@ export default async function SuccessPage({ searchParams }: Props) {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3 text-sm font-bold transition hover:bg-flora-700 cursor-pointer shadow-sm"
+              className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
             >
               پیگیری سفارش
             </Link>
             <Link
               href="/cart"
-              className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
+              className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition-colors hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-950"
             >
               بازگشت به سبد
             </Link>
@@ -122,13 +122,13 @@ export default async function SuccessPage({ searchParams }: Props) {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/dashboard"
-            className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3 text-sm font-bold transition hover:bg-flora-700 cursor-pointer shadow-sm"
+            className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
           >
             پیگیری سفارش
           </Link>
           <Link
             href="/"
-            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
+            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition-colors hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-950"
           >
             بازگشت به فروشگاه
           </Link>

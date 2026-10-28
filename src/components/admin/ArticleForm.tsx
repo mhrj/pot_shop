@@ -177,7 +177,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
               dir="ltr"
               className="flex-1 w-full rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-950 px-4 py-3 text-xs font-medium text-soil-900 dark:text-dust-50 placeholder:text-soil-700/40 dark:placeholder:text-dust-200/40 focus:border-flora-600 focus:outline-none"
             />
-            <label className="shrink-0 cursor-pointer rounded-2xl bg-soil-100 dark:bg-flora-800 px-5 py-3 text-xs font-bold text-soil-900 dark:text-dust-100 hover:bg-soil-200 dark:hover:bg-flora-700 transition">
+            <label className="shrink-0 cursor-pointer rounded-2xl bg-soil-100 dark:bg-flora-800 px-5 py-3 text-xs font-bold text-soil-900 dark:text-dust-100 hover:bg-soil-200 dark:hover:bg-flora-900 transition">
               {isUploadingCover ? 'در حال آپلود...' : 'انتخاب و آپلود عکس'}
               <input
                 type="file"
@@ -274,14 +274,14 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
         <button
           type="submit"
           disabled={isSaving}
-          className="rounded-2xl bg-flora-900 dark:bg-flora-800 px-8 py-3.5 text-sm font-black text-white shadow-md shadow-flora-950/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-50"
+          className="rounded-2xl bg-flora-900 dark:bg-flora-800 px-8 py-3.5 text-sm font-black text-white shadow-md shadow-flora-950/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
         >
           {isSaving ? 'در حال ذخیره‌سازی...' : isEditing ? 'ذخیره تغییرات' : 'انتشار مقاله'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/admin/articles')}
-          className="rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-6 py-3.5 text-sm font-bold text-soil-800 dark:text-dust-100 transition hover:bg-dust-100 dark:hover:bg-flora-800"
+          className="rounded-2xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-6 py-3.5 text-sm font-bold text-soil-800 dark:text-dust-100 transition hover:bg-dust-100 dark:hover:bg-flora-950"
         >
           انصراف
         </button>

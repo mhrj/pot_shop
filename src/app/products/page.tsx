@@ -182,7 +182,7 @@ export default async function ProductsPage({ searchParams }: Props) {
               className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                 !categorySlug
                   ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
-                  : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
+                  : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
               }`}
             >
               همه
@@ -196,7 +196,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                     active
                       ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
-                      : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
+                      : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
                   }`}
                 >
                   {c.name}
@@ -213,7 +213,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                 className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                   !tagSlug
                     ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
-                    : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
+                    : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
                 }`}
               >
                 همه
@@ -227,7 +227,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                       active
                         ? 'bg-flora-900 text-white shadow-sm dark:bg-flora-800'
-                        : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-800'
+                        : 'border border-soil-900/10 bg-white text-soil-700 hover:bg-dust-100 dark:border-dust-50/10 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950'
                     }`}
                   >
                     {t.name}
@@ -282,7 +282,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
               <button
                 type="submit"
-                className="rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-2.5 text-xs font-black transition hover:bg-flora-700 cursor-pointer shadow-sm"
+                className="rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 transition-colors px-6 py-2.5 text-xs font-black hover:bg-flora-700 cursor-pointer shadow-sm"
               >
                 اعمال
               </button>
@@ -290,7 +290,7 @@ export default async function ProductsPage({ searchParams }: Props) {
               {filtered && (
                 <Link
                   href="/products"
-                  className="rounded-xl border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
+                  className="rounded-xl border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition-colors hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-950"
                 >
                   حذف فیلترها
                 </Link>
@@ -359,7 +359,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   <Link
                     href={buildHref({ page: page - 1 })}
                     rel="prev"
-                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
+                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition-colors hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-950"
                   >
                     قبلی
                   </Link>
@@ -389,7 +389,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     <Link
                       key={entry}
                       href={buildHref({ page: entry })}
-                      className="min-w-10 rounded-full border border-soil-900/15 bg-white px-3 py-2.5 text-center text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
+                      className="min-w-10 rounded-full border border-soil-900/15 bg-white px-3 py-2.5 text-center text-xs font-bold text-soil-900 transition-colors hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-950"
                     >
                       {toFa(entry)}
                     </Link>
@@ -400,7 +400,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   <Link
                     href={buildHref({ page: page + 1 })}
                     rel="next"
-                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-800"
+                    className="rounded-full border border-soil-900/15 bg-white px-5 py-2.5 text-xs font-bold text-soil-900 transition-colors hover:bg-dust-100 dark:border-dust-50/20 dark:bg-flora-900 dark:text-dust-50 dark:hover:bg-flora-950"
                   >
                     بعدی
                   </Link>

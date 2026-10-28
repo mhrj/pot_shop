@@ -16,7 +16,7 @@ export default async function NewArticlePage() {
         </div>
         <Link
           href="/admin/articles"
-          className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 bg-white dark:bg-flora-900 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 transition hover:bg-dust-100 dark:hover:bg-flora-800"
+          className="rounded-xl border border-soil-900/15 dark:border-dust-50/10 bg-white dark:bg-flora-900 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 transition-colors hover:bg-dust-100 dark:hover:bg-flora-950"
         >
           بازگشت به مقالات
         </Link>

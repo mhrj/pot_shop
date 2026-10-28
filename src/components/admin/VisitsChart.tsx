@@ -70,7 +70,7 @@ export default function VisitsChart({
                   </div>
                   <div
                     style={{ height: `${heightPct}%` }}
-                    className="w-full rounded-t bg-dust-400 dark:bg-flora-700/50 transition hover:bg-dust-500 dark:hover:bg-flora-600 group-hover:bg-flora-700 dark:group-hover:bg-flora-500"
+                    className="w-full rounded-t bg-dust-400 dark:bg-flora-700/50 transition hover:bg-dust-500 dark:hover:bg-flora-950 group-hover:bg-flora-700 dark:group-hover:bg-flora-800"
                   />
                 </div>
               );
@@ -102,7 +102,7 @@ export default function VisitsChart({
               </thead>
               <tbody className="divide-y divide-soil-900/5 dark:divide-dust-50/5">
                 {points.map((p) => (
-                  <tr key={p.key} className="hover:bg-dust-50/60 dark:hover:bg-flora-800/40">
+                  <tr key={p.key} className="hover:bg-dust-50/60 dark:hover:bg-flora-950/60">
                     <td className="py-2 font-medium text-soil-900 dark:text-dust-50">{p.label}</td>
                     <td className="py-2 text-soil-800 dark:text-dust-200">{toFa(p.viewsCount)}</td>
                     <td className="py-2 text-flora-800 dark:text-flora-300 font-bold">{toFa(p.uniqueVisitors)}</td>

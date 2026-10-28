@@ -166,18 +166,6 @@ export async function POST(req: Request) {
     })),
   );
 
-  // Block checkout if cart weight exceeds 2kg (2000g) as Postex drops >2kg requests and Pishtaz cannot ship
-  if (totals.totalWeightGrams > 2000) {
-    return NextResponse.json(
-      {
-        message:
-          'وزن مرسوله شما بیش از ۲ کیلوگرم است و امکان ارسال خودکار با پست پیشتاز وجود ندارد. لطفاً جهت هماهنگی ارسال اختصاصی با پشتیبانی تماس بگیرید.',
-        isOverweight: true,
-      },
-      { status: 400 },
-    );
-  }
-
   let originCity = 'تهران';
   try {
     const settings = await prisma.storeSettings.findUnique({
@@ -190,13 +178,17 @@ export async function POST(req: Request) {
     // fallback
   }
   const fromCityCode = resolveCityCode(originCity);
-  const pishtazShippingToman = await calculateShippingCost({
+  const pishtazResult = await calculateShippingCost({
     originCity,
     from_city_code: fromCityCode,
     destinationCity: address.city || address.province,
     weightGrams: totals.totalWeightGrams,
     fallbackTotals: totals,
   });
+  const pishtazShippingToman =
+    typeof pishtazResult === 'number'
+      ? pishtazResult
+      : calcShippingToman(totals, address.city || address.province);
 
   const shippingCarrier = 'پست پیشتاز';
   const shippingToman = pishtazShippingToman;

@@ -152,7 +152,7 @@ function ResetPasswordForm() {
             </p>
             <Link
               href="/login"
-              className="mt-6 inline-block w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-center text-sm font-black transition hover:bg-flora-700 cursor-pointer shadow-sm"
+              className="mt-6 inline-block w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-center text-sm font-black transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
             >
               ورود به حساب کاربری
             </Link>
@@ -262,7 +262,7 @@ function ResetPasswordForm() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3.5 text-sm font-black transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+              className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
             >
               {loading ? 'در حال تغییر رمز…' : 'تغییر رمز عبور'}
             </button>

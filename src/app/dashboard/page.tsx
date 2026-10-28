@@ -123,7 +123,7 @@ export default async function DashboardPage() {
                       <span>
                         تعداد اقلام: <b className="text-soil-900 dark:text-dust-50">{toFa(order._count.items)}</b>
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 dark:bg-flora-800/80 px-2.5 py-1 text-xs text-soil-700 dark:text-dust-200">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-dust-100 dark:bg-flora-900/80 px-2.5 py-1 text-xs text-soil-700 dark:text-dust-200 border border-transparent dark:border-dust-50/10">
                         <span>🚚</span>
                         <span>ارسال با {formatCarrierName(order.shippingCarrier)}</span>
                       </span>
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-dust-100 text-soil-900 dark:bg-flora-800 dark:text-dust-50 dark:hover:bg-flora-700 px-4 py-2 text-[11px] font-bold transition group-hover:bg-dust-200">
+                      <span className="rounded-full bg-dust-100 text-soil-900 dark:bg-flora-900 dark:text-dust-200 dark:hover:bg-flora-950 px-4 py-2 text-[11px] font-bold transition-colors">
                         جزئیات سفارش
                       </span>
                       <ReorderButton orderId={order.id} />

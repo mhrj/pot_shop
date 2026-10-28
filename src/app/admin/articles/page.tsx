@@ -25,7 +25,7 @@ export default async function AdminArticlesPage() {
         </div>
         <Link
           href="/admin/articles/new"
-          className="rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+          className="rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-900"
         >
           + افزودن مقاله جدید
         </Link>
@@ -39,7 +39,7 @@ export default async function AdminArticlesPage() {
           </p>
           <Link
             href="/admin/articles/new"
-            className="mt-6 inline-block rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+            className="mt-6 inline-block rounded-xl bg-flora-900 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-900"
           >
             نوشتن اولین مقاله
           </Link>
@@ -123,7 +123,7 @@ export default async function AdminArticlesPage() {
               <div className="flex shrink-0 items-center gap-2 self-end sm:self-center">
                 <Link
                   href={`/admin/articles/${article.id}`}
-                  className="rounded-full bg-dust-100 text-soil-900 dark:bg-flora-800 dark:text-dust-100 px-4 py-1.5 text-[11px] font-bold transition hover:bg-dust-200 dark:hover:bg-flora-700"
+                  className="rounded-full bg-dust-100 text-soil-900 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 px-4 py-1.5 text-[11px] font-bold transition-colors hover:bg-dust-200"
                 >
                   ویرایش
                 </Link>

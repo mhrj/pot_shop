@@ -85,7 +85,7 @@ export default function ConfirmModal({
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 rounded-xl border border-soil-900/15 dark:border-dust-50/20 py-2.5 text-sm font-bold text-soil-900 dark:text-dust-50 transition hover:bg-soil-900/5 dark:hover:bg-flora-800 cursor-pointer"
+                className="flex-1 rounded-xl border border-soil-900/15 dark:border-dust-50/20 py-2.5 text-sm font-bold text-soil-900 dark:text-dust-50 transition-colors hover:bg-soil-900/5 dark:hover:bg-flora-950 cursor-pointer"
               >
                 {cancelText}
               </button>

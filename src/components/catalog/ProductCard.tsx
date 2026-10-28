@@ -155,12 +155,12 @@ export default function ProductCard({ product, className = '' }: Props) {
 
           <div className="flex flex-wrap items-center justify-end gap-1.5 shrink-0">
             {hasMultipleColors && (
-              <span className="rounded-full bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200 px-2 py-0.5 text-[10px] font-medium">
+              <span className="rounded-full bg-dust-100 text-soil-700 dark:bg-flora-900 dark:text-dust-300 border border-transparent dark:border-dust-50/10 px-2 py-0.5 text-[10px] font-medium">
                 شامل {toFa(colors.length)} رنگ
               </span>
             )}
             {bestTier.label && (
-              <span className="rounded-md md:rounded-lg bg-dust-100 text-soil-700 dark:bg-flora-800 dark:text-dust-200 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold">
+              <span className="rounded-md md:rounded-lg bg-dust-100 text-soil-700 dark:bg-flora-900 dark:text-dust-300 border border-transparent dark:border-dust-50/10 px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-bold">
                 {bestTier.label}
               </span>
             )}

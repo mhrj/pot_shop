@@ -13,7 +13,7 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link
           href="/"
-          className="rounded-full bg-flora-900 dark:bg-flora-800 px-6 py-3 text-sm font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-700"
+          className="rounded-full bg-flora-900 dark:bg-flora-800 px-6 py-3 text-sm font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-900"
         >
           صفحه اصلی
         </Link>

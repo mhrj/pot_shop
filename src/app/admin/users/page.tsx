@@ -90,14 +90,14 @@ export default async function AdminUsersPage({ searchParams }: Props) {
         {query && (
           <Link
             href="/admin/users"
-            className="rounded-xl px-3 py-1.5 text-xs font-medium text-soil-700/70 dark:text-dust-200/70 hover:bg-dust-100 dark:hover:bg-flora-800"
+            className="rounded-xl px-3 py-1.5 text-xs font-medium text-soil-700/70 dark:text-dust-200/70 hover:bg-dust-100 dark:hover:bg-flora-950 transition-colors"
           >
             پاک کردن
           </Link>
         )}
         <button
           type="submit"
-          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-800 dark:hover:bg-flora-700"
+          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-800 dark:hover:bg-flora-900"
         >
           جستجو
         </button>
@@ -139,7 +139,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                   return (
                     <tr
                       key={user.id}
-                      className="group cursor-pointer transition hover:bg-dust-50/70 dark:hover:bg-flora-800/40"
+                      className="group cursor-pointer transition hover:bg-dust-50/70 dark:hover:bg-flora-950/60"
                     >
                       <td className="px-4 py-3.5">
                         <Link

@@ -95,7 +95,7 @@ export default function UserManagementActions({
           className={`rounded-xl px-4 py-2 text-xs font-bold transition disabled:opacity-50 ${
             currentRole === 'ADMIN'
               ? 'border border-amber-600/30 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50'
-              : 'bg-soil-900 dark:bg-flora-800 text-white hover:bg-soil-800 dark:hover:bg-flora-700'
+              : 'bg-soil-900 dark:bg-flora-800 text-white hover:bg-soil-800 dark:hover:bg-flora-900'
           }`}
         >
           {loading ? 'در حال اعمال...' : currentRole === 'ADMIN' ? 'تنزل به مشتری عادی' : 'ارتقا به مدیر سیستم'}

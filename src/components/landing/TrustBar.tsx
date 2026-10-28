@@ -59,11 +59,11 @@ export default function TrustBar({ maxDiscount = 0 }: TrustBarProps) {
                 className="group flex flex-col items-center text-center p-3 transition duration-300 hover:-translate-y-1 sm:items-start sm:text-start lg:px-5"
               >
                 <div className="flex items-center justify-between w-full">
-                  <div className="grid size-12 place-items-center rounded-2xl bg-flora-100 dark:bg-flora-900/50 shadow-sm transition duration-300 group-hover:scale-110 group-hover:bg-flora-200 dark:group-hover:bg-flora-800/60">
+                  <div className="grid size-12 place-items-center rounded-2xl bg-flora-100 dark:bg-flora-900/50 shadow-sm transition duration-300 group-hover:scale-110 group-hover:bg-flora-200 dark:group-hover:bg-flora-900/60">
                     {pillar.icon}
                   </div>
                   {pillar.badge && (
-                    <span className="rounded-full bg-flora-100 dark:bg-flora-800/80 px-2.5 py-0.5 text-[11px] font-bold text-flora-900 dark:text-flora-100 border border-flora-300/40 dark:border-flora-600/40">
+                    <span className="rounded-full bg-flora-100 text-flora-900 dark:bg-flora-900/80 dark:text-flora-200 border border-flora-300/40 dark:border-flora-700/50 px-2.5 py-0.5 text-[11px] font-bold">
                       {pillar.badge}
                     </span>
                   )}

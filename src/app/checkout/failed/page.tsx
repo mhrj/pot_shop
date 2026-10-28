@@ -44,13 +44,13 @@ export default async function FailedPage({
         <div className="mt-8 flex justify-center gap-3">
           <Link
             href="/cart"
-            className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3 text-sm font-bold transition hover:bg-flora-700 cursor-pointer shadow-sm"
+            className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
           >
             بازگشت به سبد
           </Link>
           <Link
             href="/"
-            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
+            className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition-colors hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-950"
           >
             صفحه اصلی
           </Link>

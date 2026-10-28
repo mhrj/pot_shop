@@ -140,7 +140,7 @@ export default function GlobalSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mb-4 flex w-full items-center justify-between rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-900/50 px-3 py-2.5 text-xs text-soil-700/70 dark:text-dust-200/70 transition hover:border-flora-500 dark:hover:border-flora-500/50 hover:bg-dust-100 dark:hover:bg-flora-800 hover:text-soil-900 dark:hover:text-dust-50"
+        className="mb-4 flex w-full items-center justify-between rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-900/50 px-3 py-2.5 text-xs text-soil-700/70 dark:text-dust-200/70 transition hover:border-flora-500 dark:hover:border-flora-500/50 hover:bg-dust-100 dark:hover:bg-flora-950 hover:text-soil-900 dark:hover:text-dust-50"
       >
         <span className="flex items-center gap-2">
           <span>🔍</span>
@@ -182,14 +182,14 @@ export default function GlobalSearch() {
                 <button
                   type="button"
                   onClick={() => setQuery('')}
-                  className="rounded-full p-1 text-xs text-soil-700/50 dark:text-dust-200/50 hover:bg-dust-100 dark:hover:bg-flora-800 hover:text-soil-900 dark:hover:text-dust-50 me-2"
+                  className="rounded-full p-1 text-xs text-soil-700/50 dark:text-dust-200/50 hover:bg-dust-100 dark:hover:bg-flora-950 hover:text-soil-900 dark:hover:text-dust-50 me-2"
                 >
                   ✕
                 </button>
               )}
               <kbd
                 onClick={() => setOpen(false)}
-                className="cursor-pointer rounded border border-soil-900/15 dark:border-dust-50/20 bg-dust-100 dark:bg-flora-950 px-1.5 py-0.5 font-mono text-[10px] text-soil-700/70 dark:text-dust-200/70 hover:bg-dust-200 dark:hover:bg-flora-800"
+                className="cursor-pointer rounded border border-soil-900/15 dark:border-dust-50/20 bg-dust-100 dark:bg-flora-950 px-1.5 py-0.5 font-mono text-[10px] text-soil-700/70 dark:text-dust-200/70 hover:bg-dust-200 dark:hover:bg-flora-950"
               >
                 ESC
               </kbd>
@@ -233,7 +233,7 @@ export default function GlobalSearch() {
                         <button
                           type="button"
                           onClick={() => handleSelect(`/admin/users/${user.id}`)}
-                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-800/60 focus:bg-dust-100 dark:focus:bg-flora-800"
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
                         >
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-bold text-soil-900 dark:text-dust-50 truncate">
@@ -294,7 +294,7 @@ export default function GlobalSearch() {
                         <button
                           type="button"
                           onClick={() => handleSelect(`/admin/orders/${order.id}`)}
-                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-800/60 focus:bg-dust-100 dark:focus:bg-flora-800"
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
                         >
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-bold text-soil-900 dark:text-dust-50 truncate">
@@ -341,7 +341,7 @@ export default function GlobalSearch() {
                         <button
                           type="button"
                           onClick={() => handleSelect(`/admin/products/${prod.id}`)}
-                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-800/60 focus:bg-dust-100 dark:focus:bg-flora-800"
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
                         >
                           <div className="flex items-center gap-3 min-w-0 flex-1">
                             {prod.images?.[0]?.url ? (

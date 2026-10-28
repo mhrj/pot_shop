@@ -368,7 +368,7 @@ export default function AddressForm({
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-3 text-sm font-black transition hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
+          className="flex-1 rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-3 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
         >
           {loading ? 'در حال ذخیره…' : editing ? 'ذخیره تغییرات' : 'ثبت آدرس'}
         </button>
@@ -376,7 +376,7 @@ export default function AddressForm({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-2xl border border-soil-900/10 dark:border-dust-50/20 px-6 py-3 text-sm font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-50 dark:hover:bg-flora-800"
+            className="rounded-2xl border border-soil-900/10 dark:border-dust-50/20 px-6 py-3 text-sm font-bold text-soil-900 dark:text-dust-50 transition-colors hover:bg-dust-50 dark:hover:bg-flora-950"
           >
             انصراف
           </button>

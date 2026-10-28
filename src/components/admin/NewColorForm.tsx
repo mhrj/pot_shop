@@ -107,7 +107,7 @@ export default function NewColorForm() {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-50"
+          className="rounded-xl bg-flora-900 dark:bg-flora-800 px-5 py-2.5 text-xs font-black text-white transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
         >
           {pending ? 'در حال ثبت…' : '+ افزودن به پالت رنگ'}
         </button>

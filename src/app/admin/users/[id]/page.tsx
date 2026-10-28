@@ -289,7 +289,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-flora-50 dark:bg-flora-800 px-4 py-2 text-[11px] font-bold text-flora-800 dark:text-flora-200 transition group-hover:bg-flora-100 dark:group-hover:bg-flora-700">
+                        <span className="rounded-full bg-flora-50 dark:bg-flora-900 px-4 py-2 text-[11px] font-bold text-flora-800 dark:text-flora-200 transition-colors group-hover:bg-flora-100 dark:group-hover:bg-flora-950">
                           مشاهده سفارش ←
                         </span>
                       </div>

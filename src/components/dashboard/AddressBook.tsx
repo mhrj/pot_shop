@@ -121,7 +121,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
               <div className="flex items-center justify-between gap-2">
                 <span className="font-bold text-soil-900 dark:text-dust-50">{a.fullName}</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="rounded-full bg-dust-100 px-2.5 py-0.5 text-[10px] font-bold text-soil-700 dark:bg-flora-800 dark:text-dust-200">
+                  <span className="rounded-full bg-dust-100 px-2.5 py-0.5 text-[10px] font-bold text-soil-700 dark:bg-flora-900 dark:text-dust-300 border border-transparent dark:border-dust-50/10">
                     {LABEL_TEXT[a.label]}
                   </span>
                   {a.isDefault && (
@@ -145,7 +145,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
                 <button
                   type="button"
                   onClick={() => setEditingId(a.id)}
-                  className="rounded-full bg-dust-100 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-200 dark:bg-flora-800 dark:text-dust-50 dark:hover:bg-flora-700"
+                  className="rounded-full bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition-colors hover:bg-dust-200"
                 >
                   ویرایش
                 </button>
@@ -154,7 +154,7 @@ export default function AddressBook({ initial }: { initial: AddressRecord[] }) {
                     type="button"
                     onClick={() => makeDefault(a)}
                     disabled={busyId === a.id}
-                    className="rounded-full border border-soil-900/15 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition hover:bg-dust-50 disabled:opacity-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-800"
+                    className="rounded-full border border-soil-900/15 px-3.5 py-2 text-[11px] font-bold text-soil-900 transition-colors hover:bg-dust-50 disabled:opacity-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-950"
                   >
                     {busyId === a.id ? 'در حال تغییر…' : 'انتخاب به‌عنوان پیش‌فرض'}
                   </button>

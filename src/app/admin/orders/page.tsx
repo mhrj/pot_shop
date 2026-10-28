@@ -57,7 +57,7 @@ export default async function AdminOrdersPage({
               'rounded-full px-3.5 py-1.5 text-xs font-bold transition ' +
               (active === f.key
                 ? 'bg-flora-900 text-white dark:bg-flora-800'
-                : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800')
+                : 'bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 transition-colors hover:bg-dust-200')
             }
           >
             {f.label}

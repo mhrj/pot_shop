@@ -164,7 +164,7 @@ export default function PersianChatbot() {
                     {m.escalated && (
                       <a
                         href="tel:+982191000000"
-                        className="mt-3 block rounded-xl bg-dust-100 dark:bg-flora-800 px-3 py-2 text-center text-[11px] font-bold text-soil-900 dark:text-dust-100 transition hover:bg-dust-200 dark:hover:bg-flora-700"
+                        className="mt-3 block rounded-xl bg-dust-100 dark:bg-flora-900 border border-transparent dark:border-dust-50/10 px-3 py-2 text-center text-[11px] font-bold text-soil-900 dark:text-dust-100 transition-colors hover:bg-dust-200 dark:hover:bg-flora-950"
                       >
                         تماس با پشتیبانی انسانی: ۰۲۱-۹۱۰۰۰۰۰۰
                       </a>
@@ -196,7 +196,7 @@ export default function PersianChatbot() {
                     key={q}
                     type="button"
                     onClick={() => send(q)}
-                    className="rounded-full bg-dust-100 dark:bg-flora-900 px-3 py-1.5 text-[11px] font-medium text-soil-700 dark:text-dust-200 transition hover:bg-dust-200 dark:hover:bg-flora-800"
+                    className="rounded-full bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 px-3 py-1.5 text-[11px] font-medium text-soil-700 transition-colors hover:bg-dust-200"
                   >
                     {q}
                   </button>
@@ -225,7 +225,7 @@ export default function PersianChatbot() {
                 type="submit"
                 disabled={loading || !input.trim()}
                 aria-label="ارسال پیام"
-                className="grid size-10 shrink-0 place-items-center rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 transition hover:bg-flora-700 disabled:opacity-40 cursor-pointer"
+                className="grid size-10 shrink-0 place-items-center rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 transition-colors hover:bg-flora-700 disabled:opacity-40 cursor-pointer"
               >
                 ↑
               </button>

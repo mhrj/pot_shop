@@ -76,7 +76,7 @@ export default async function AdminProductsPage() {
                 )}
                 <Link
                   href={'/admin/products/' + p.id}
-                  className="rounded-full bg-dust-100 dark:bg-flora-950 px-4 py-1.5 text-[11px] font-bold text-soil-900 dark:text-dust-50 transition hover:bg-dust-200 dark:hover:bg-flora-800"
+                  className="rounded-full bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 px-4 py-1.5 text-[11px] font-bold text-soil-900 transition-colors hover:bg-dust-200"
                 >
                   ویرایش
                 </Link>

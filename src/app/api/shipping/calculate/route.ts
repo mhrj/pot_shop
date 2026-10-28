@@ -73,22 +73,6 @@ export async function POST(req: Request) {
   const totals = await getCartTotals(session.sub);
   const effectiveWeight = weightGrams ?? totals.totalWeightGrams ?? 1000;
 
-  // If weight exceeds 2kg (2000g), Postex drops requests and Pishtaz cannot handle it.
-  if (effectiveWeight > 2000) {
-    return NextResponse.json({
-      ok: false,
-      isOverweight: true,
-      message:
-        "وزن مرسوله بیش از ۲ کیلوگرم است و امکان ارسال با پست پیشتاز وجود ندارد. لطفاً جهت هماهنگی ارسال اختصاصی با پشتیبانی تماس بگیرید.",
-      shippingToman: 0,
-      isFree: false,
-      options: [],
-      shippingOptions: [],
-      destination,
-      cityCode: resolvedCode,
-    });
-  }
-
   // 3) Fetch store settings for origin city and from_city_code
   let originCity = "تهران";
   try {
@@ -110,7 +94,7 @@ export async function POST(req: Request) {
 
   try {
     // 4) Call Postex API securely on the server
-    shippingToman = await calculatePostexShipping({
+    const postexResult = await calculatePostexShipping({
       originCity,
       destinationCity: destination,
       weightGrams: effectiveWeight,
@@ -118,6 +102,13 @@ export async function POST(req: Request) {
       from_city_code: fromCityCode,
       to_city_code: resolvedCode,
     });
+
+    if (typeof postexResult === "number") {
+      shippingToman = postexResult;
+    } else {
+      // Postex returned { ok: false }, silently fallback to calcShippingToman
+      shippingToman = calcShippingToman(totals, destination);
+    }
   } catch (error) {
     console.warn(
       "[shipping/calculate] Postex failed, falling back to pricing engine:",

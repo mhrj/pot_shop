@@ -69,7 +69,7 @@ export default async function Header() {
             <>
               <Link
                 href={isAdmin ? '/admin' : '/dashboard'}
-                className="hidden rounded-full bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-600 sm:block"
+                className="hidden rounded-full bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-950 sm:block"
               >
                 {isAdmin ? 'داشبورد مدیریت' : user.fullName ? 'حساب من' : 'پروفایل'}
               </Link>
@@ -85,7 +85,7 @@ export default async function Header() {
               </Link>
               <Link
                 href="/login"
-                className="rounded-full bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-600"
+                className="rounded-full bg-flora-900 dark:bg-flora-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-950"
               >
                 ورود
               </Link>

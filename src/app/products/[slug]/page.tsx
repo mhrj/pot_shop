@@ -228,7 +228,7 @@ export default async function ProductPage({ params }: Params) {
                 <Link
                   key={entry.tag.id}
                   href={`/products?tag=${encodeURIComponent(entry.tag.slug)}`}
-                  className="rounded-full bg-flora-100 dark:bg-flora-800/80 px-3 py-1 text-xs font-bold text-flora-700 dark:text-flora-200 transition hover:bg-flora-200 dark:hover:bg-flora-700"
+                  className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900/80 dark:text-flora-200 border border-flora-300/40 dark:border-flora-700/50 px-3 py-1 text-xs font-bold transition hover:bg-flora-200 dark:hover:bg-flora-900"
                 >
                   {entry.tag.name}
                 </Link>

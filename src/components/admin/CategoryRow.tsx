@@ -85,7 +85,7 @@ export default function CategoryRow({ category }: Props) {
           <button
             type="submit"
             disabled={pending || !name.trim()}
-            className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-700"
+            className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-800 dark:hover:bg-flora-900"
           >
             {pending ? 'در حال ذخیره…' : 'ذخیره'}
           </button>
@@ -97,7 +97,7 @@ export default function CategoryRow({ category }: Props) {
               setError(null);
             }}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 px-3 py-2 text-xs font-bold text-soil-700 transition hover:bg-dust-50 cursor-pointer dark:border-dust-50/20 dark:text-dust-200 dark:hover:bg-flora-800"
+            className="rounded-xl border border-soil-900/15 px-3 py-2 text-xs font-bold text-soil-700 transition hover:bg-dust-50 cursor-pointer dark:border-dust-50/20 dark:text-dust-200 dark:hover:bg-flora-950"
           >
             انصراف
           </button>

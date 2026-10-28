@@ -72,7 +72,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
               className={`rounded-full px-4 py-1.5 text-xs font-bold transition ${
                 !currentTag
                   ? 'bg-soil-900 text-white dark:bg-flora-800 shadow-sm'
-                  : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+                  : 'bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 transition-colors hover:bg-dust-200'
               }`}
             >
               همه مقالات ({toFa(allPublished.length)})
@@ -84,7 +84,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                 className={`rounded-full px-4 py-1.5 text-xs font-bold transition ${
                   currentTag === t
                     ? 'bg-flora-800 text-white shadow-sm'
-                    : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+                    : 'bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 transition-colors hover:bg-dust-200'
                 }`}
               >
                 #{t}
@@ -176,7 +176,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                             <Link
                               key={tag}
                               href={`/articles?tag=${encodeURIComponent(tag)}`}
-                              className="rounded-full bg-dust-100 dark:bg-flora-950 px-2.5 py-0.5 text-[10px] font-bold text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition"
+                              className="rounded-full bg-dust-100 dark:bg-flora-950 dark:text-dust-300 dark:hover:bg-flora-900 border border-transparent dark:border-dust-50/10 px-2.5 py-0.5 text-[10px] font-bold text-soil-700 hover:bg-dust-200 transition-colors"
                             >
                               #{tag}
                             </Link>

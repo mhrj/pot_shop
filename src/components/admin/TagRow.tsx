@@ -88,7 +88,7 @@ export default function TagRow({ tag }: Props) {
           <button
             type="submit"
             disabled={pending || !name.trim()}
-            className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-50"
+            className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
           >
             {pending ? 'در حال ذخیره…' : 'ذخیره'}
           </button>
@@ -100,7 +100,7 @@ export default function TagRow({ tag }: Props) {
               setError(null);
             }}
             disabled={pending}
-            className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 px-3 py-2 text-xs font-bold text-soil-700 dark:text-dust-200 transition hover:bg-dust-50 dark:hover:bg-flora-800"
+            className="rounded-xl border border-soil-900/15 dark:border-dust-50/20 px-3 py-2 text-xs font-bold text-soil-700 dark:text-dust-200 transition hover:bg-dust-50 dark:hover:bg-flora-950"
           >
             انصراف
           </button>

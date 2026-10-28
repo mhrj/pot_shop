@@ -198,7 +198,7 @@ export default async function HomePage() {
           <div className="order-3 lg:order-2 w-full flex flex-col sm:flex-row gap-3 mt-8">
             <Link
               href="#catalog"
-              className="group relative inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-7 py-3.5 text-sm font-bold shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
+              className="group relative inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-7 py-3.5 text-sm font-bold shadow-lg shadow-flora-900/25 transition-all duration-300 hover:scale-105 hover:bg-flora-800 hover:shadow-2xl hover:shadow-flora-900/40 active:scale-[0.98]"
             >
               <span className="inline-block transition duration-300 group-hover:rotate-12 group-hover:scale-125">
                 🌱
@@ -207,7 +207,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="#wholesale-inquiry"
-              className="group inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full border border-soil-900/15 bg-white/70 dark:border-dust-100/20 dark:bg-flora-900/70 px-7 py-3.5 text-sm font-bold text-soil-900 dark:text-dust-50 backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white dark:hover:bg-flora-800 hover:border-soil-900/35 dark:hover:border-dust-100/30 hover:shadow-xl hover:shadow-soil-900/10 active:scale-[0.98]"
+              className="group inline-flex w-full lg:w-auto items-center justify-center gap-2 rounded-full border border-soil-900/15 bg-white/70 dark:border-dust-100/20 dark:bg-flora-900/70 px-7 py-3.5 text-sm font-bold text-soil-900 dark:text-dust-50 backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white dark:hover:bg-flora-950 hover:border-soil-900/35 dark:hover:border-dust-100/30 hover:shadow-xl hover:shadow-soil-900/10 active:scale-[0.98]"
             >
               <span>خرید عمده و استعلام قیمت</span>
               <span className="text-flora-700 dark:text-flora-300 transition duration-300 group-hover:translate-x-1">←</span>

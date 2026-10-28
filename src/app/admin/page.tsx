@@ -270,7 +270,7 @@ export default async function AdminPage() {
                     return (
                       <div
                         key={page.path}
-                        className="group rounded-xl border border-soil-900/5 dark:border-dust-50/10 bg-dust-50/60 dark:bg-flora-950/60 p-3 transition hover:bg-dust-100 dark:hover:bg-flora-800"
+                        className="group rounded-xl border border-soil-900/5 dark:border-dust-50/10 bg-dust-50/60 dark:bg-flora-950/60 p-3 transition hover:bg-dust-100 dark:hover:bg-flora-900"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">

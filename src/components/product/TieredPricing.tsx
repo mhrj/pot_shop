@@ -781,7 +781,7 @@ export default function TieredPricing({
                   count >= t.minQuantity &&
                   resolveTier(sorted, count).minQuantity === t.minQuantity
                     ? 'bg-flora-900 text-white dark:bg-flora-700'
-                    : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+                    : 'bg-dust-100 dark:bg-flora-900/50 text-soil-700 dark:text-dust-200 transition-colors hover:bg-dust-200 dark:hover:bg-flora-950'
                 }`}
               >
                 {t.label ?? 'پله'} · {toFa(t.minQuantity)}+ {isBundle ? 'بسته' : ''}
@@ -798,7 +798,7 @@ export default function TieredPricing({
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               onClick={() => setCount(clamp(hint.minQuantity))}
-              className="mt-4 block w-full rounded-xl bg-dust-100 dark:bg-flora-900/50 px-4 py-3 text-start text-xs leading-6 text-soil-700 dark:text-dust-200 transition hover:bg-dust-200 dark:hover:bg-flora-800"
+              className="mt-4 block w-full rounded-xl bg-dust-100 dark:bg-flora-900/50 px-4 py-3 text-start text-xs leading-6 text-soil-700 dark:text-dust-200 transition-colors hover:bg-dust-200 dark:hover:bg-flora-950"
             >
               <span className="font-bold text-dust-500 dark:text-dust-400">
                 {toFa(hint.minQuantity - count)} {isBundle ? 'بسته' : 'عدد'} دیگر
@@ -1081,7 +1081,7 @@ export default function TieredPricing({
           type="button"
           onClick={handleAdd}
           disabled={pending || outOfStock}
-          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition hover:bg-flora-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {outOfStock
             ? 'ناموجود'

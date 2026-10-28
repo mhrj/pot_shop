@@ -121,7 +121,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                   <Link
                     key={tag}
                     href={`/articles?tag=${encodeURIComponent(tag)}`}
-                    className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900 dark:text-flora-300 px-3 py-1 text-xs font-bold border border-flora-300/40 dark:border-flora-500/30 hover:bg-flora-200 dark:hover:bg-flora-800 transition"
+                    className="rounded-full bg-flora-100 text-flora-700 dark:bg-flora-900 dark:text-flora-300 px-3 py-1 text-xs font-bold border border-flora-300/40 dark:border-flora-500/30 hover:bg-flora-200 dark:hover:bg-flora-950 transition-colors"
                   >
                     #{tag}
                   </Link>
@@ -195,13 +195,13 @@ export default async function ArticleDetailPage({ params }: Props) {
           <footer className="mt-14 pt-8 border-t border-soil-900/10 dark:border-dust-50/10 flex flex-wrap items-center justify-between gap-4">
             <Link
               href="/articles"
-              className="inline-flex items-center gap-2 rounded-2xl bg-dust-100 dark:bg-flora-900/60 px-5 py-2.5 text-xs font-bold text-soil-900 dark:text-dust-50 hover:bg-dust-200 dark:hover:bg-flora-800 transition"
+              className="inline-flex items-center gap-2 rounded-2xl bg-dust-100 dark:bg-flora-900/60 px-5 py-2.5 text-xs font-bold text-soil-900 dark:text-dust-50 hover:bg-dust-200 dark:hover:bg-flora-950 transition-colors"
             >
               <span>← بازگشت به دانشنامه و مقالات</span>
             </Link>
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 rounded-2xl bg-flora-900 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-400 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 transition"
+              className="inline-flex items-center gap-2 rounded-2xl bg-flora-900 dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-600 px-5 py-2.5 text-xs font-black text-white hover:bg-flora-700 transition-colors"
             >
               <span>مشاهده محصولات مرتبط در فروشگاه</span>
               <span>→</span>

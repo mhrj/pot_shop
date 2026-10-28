@@ -175,7 +175,7 @@ export default function RichTextEditor({
           className={`rounded-lg px-2.5 py-1.5 font-bold transition ${
             editor.isActive('bold')
               ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
-              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950'
           }`}
           title="پررنگ (Bold)"
         >
@@ -189,7 +189,7 @@ export default function RichTextEditor({
           className={`rounded-lg px-2.5 py-1.5 italic transition ${
             editor.isActive('italic')
               ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
-              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950'
           }`}
           title="مورب (Italic)"
         >
@@ -205,7 +205,7 @@ export default function RichTextEditor({
           className={`rounded-lg px-2.5 py-1.5 font-bold transition ${
             editor.isActive('heading', { level: 2 })
               ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
-              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950'
           }`}
           title="تیتر ۲"
         >
@@ -219,7 +219,7 @@ export default function RichTextEditor({
           className={`rounded-lg px-2.5 py-1.5 font-bold transition ${
             editor.isActive('heading', { level: 3 })
               ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
-              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950'
           }`}
           title="تیتر ۳"
         >
@@ -235,7 +235,7 @@ export default function RichTextEditor({
           className={`rounded-lg px-2.5 py-1.5 font-medium transition ${
             editor.isActive('bulletList')
               ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
-              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950'
           }`}
           title="فهرست نشانه‌دار (Bullet list)"
         >
@@ -249,7 +249,7 @@ export default function RichTextEditor({
           className={`rounded-lg px-2.5 py-1.5 font-medium transition ${
             editor.isActive('orderedList')
               ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
-              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950'
           }`}
           title="فهرست شماره‌دار"
         >
@@ -265,7 +265,7 @@ export default function RichTextEditor({
           className={`rounded-lg px-2.5 py-1.5 font-medium transition ${
             editor.isActive('link')
               ? 'bg-flora-900 dark:bg-flora-700 text-white shadow-sm dark:shadow-none'
-              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800'
+              : 'text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950'
           }`}
           title="افزودن / ویرایش لینک"
         >
@@ -284,7 +284,7 @@ export default function RichTextEditor({
           type="button"
           disabled={isUploadingImage}
           onClick={() => imageInputRef.current?.click()}
-          className="rounded-lg px-2.5 py-1.5 font-medium text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition disabled:opacity-50"
+          className="rounded-lg px-2.5 py-1.5 font-medium text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950 transition disabled:opacity-50"
           title="آپلود تصویر"
         >
           {isUploadingImage ? 'در حال آپلود...' : '🖼️ آپلود عکس'}
@@ -292,7 +292,7 @@ export default function RichTextEditor({
         <button
           type="button"
           onClick={handleOpenImageUrlModal}
-          className="rounded-lg px-2 py-1.5 font-medium text-soil-700/80 dark:text-dust-300 hover:bg-dust-200 dark:hover:bg-flora-800 transition text-[11px]"
+          className="rounded-lg px-2 py-1.5 font-medium text-soil-700/80 dark:text-dust-300 hover:bg-dust-200 dark:hover:bg-flora-950 transition text-[11px]"
           title="درج تصویر از طریق URL"
         >
           لینک عکس
@@ -305,7 +305,7 @@ export default function RichTextEditor({
           type="button"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
-          className="rounded-lg px-2 py-1.5 text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition disabled:opacity-30"
+          className="rounded-lg px-2 py-1.5 text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950 transition disabled:opacity-30"
           title="بازگشت (Undo)"
         >
           ↶
@@ -314,7 +314,7 @@ export default function RichTextEditor({
           type="button"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
-          className="rounded-lg px-2 py-1.5 text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800 transition disabled:opacity-30"
+          className="rounded-lg px-2 py-1.5 text-soil-800 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-950 transition disabled:opacity-30"
           title="تکرار (Redo)"
         >
           ↷
@@ -370,14 +370,14 @@ export default function RichTextEditor({
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-700 transition"
+                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-900 transition"
                   >
                     تایید
                   </button>
                   <button
                     type="button"
                     onClick={() => setLinkModalOpen(false)}
-                    className="rounded-xl bg-dust-100 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 hover:bg-dust-200 dark:hover:bg-flora-700 transition"
+                    className="rounded-xl bg-dust-100 dark:bg-flora-950 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 hover:bg-dust-200 dark:hover:bg-flora-900 transition"
                   >
                     انصراف
                   </button>
@@ -424,14 +424,14 @@ export default function RichTextEditor({
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-700 transition"
+                    className="rounded-xl bg-flora-900 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-white hover:bg-flora-700 dark:hover:bg-flora-900 transition"
                   >
                     درج تصویر
                   </button>
                   <button
                     type="button"
                     onClick={() => setImageModalOpen(false)}
-                    className="rounded-xl bg-dust-100 dark:bg-flora-800 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 hover:bg-dust-200 dark:hover:bg-flora-700 transition"
+                    className="rounded-xl bg-dust-100 dark:bg-flora-950 px-4 py-2 text-xs font-bold text-soil-800 dark:text-dust-100 hover:bg-dust-200 dark:hover:bg-flora-900 transition"
                   >
                     انصراف
                   </button>

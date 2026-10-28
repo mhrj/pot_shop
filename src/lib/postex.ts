@@ -278,12 +278,14 @@ export async function getStoreOrigin(): Promise<{
  * @param weightGrams Total package weight in grams
  * @param fallbackTotals Optional CartTotals used for fallback calculation and free-shipping rule
  */
+export type PostexCalculationResult = number | { ok: false };
+
 export async function calculatePostexShipping(
   originCityOrParams: string | PostexCalculationParams,
   destinationCity?: string,
   weightGrams?: number,
   fallbackTotals?: CartTotals,
-): Promise<number> {
+): Promise<PostexCalculationResult> {
   let originCity = "";
   let destination = destinationCity ?? "تهران";
   let weight = weightGrams ?? 1000;
@@ -312,17 +314,6 @@ export async function calculatePostexShipping(
     }
   }
 
-  const defaultFallbackTotals: CartTotals = totals ?? {
-    lines: [],
-    totalQuantity: 1,
-    subtotalToman: 0,
-    payableToman: 0,
-    discountToman: 0,
-    totalWeightGrams: weight,
-    totalCartons: 1,
-    channel: "RETAIL",
-  };
-
   // Free shipping rule check if cart totals are known
   if (totals && totals.payableToman >= 5000000) {
     return 0;
@@ -330,9 +321,9 @@ export async function calculatePostexShipping(
 
   const apiKey = process.env.POSTEX_API_KEY;
 
-  // If API key is not configured or is a placeholder, immediately use the fallback
+  // If API key is not configured or is a placeholder, return { ok: false } so caller uses fallback
   if (!apiKey || apiKey === "your-postex-api-key") {
-    return calcShippingToman(defaultFallbackTotals, destination);
+    return { ok: false };
   }
 
   try {
@@ -424,11 +415,11 @@ export async function calculatePostexShipping(
         // Not JSON
       }
 
-      console.error(
-        `[postex] API returned HTTP ${response.status} error response:`,
-        parsedError ? JSON.stringify(parsedError, null, 2) : errorText || "(empty response)",
+      console.warn(
+        `[postex] API returned HTTP ${response.status} response:`,
+        parsedError ? JSON.stringify(parsedError) : errorText || "(empty response)",
       );
-      return calcShippingToman(defaultFallbackTotals, destination);
+      return { ok: false };
     }
 
     const data = await response.json().catch(() => null);
@@ -439,16 +430,15 @@ export async function calculatePostexShipping(
     }
 
     console.warn(
-      "[postex] Could not parse valid shipping price from response, falling back to calcShippingToman",
+      "[postex] Could not parse valid shipping price from response, returning { ok: false }",
     );
-    return calcShippingToman(defaultFallbackTotals, destination);
+    return { ok: false };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    console.error(
-      `[postex] Failed to calculate shipping rate: ${message}. Full error:`,
-      error,
+    console.warn(
+      `[postex] Failed to calculate shipping rate: ${message}`,
     );
-    return calcShippingToman(defaultFallbackTotals, destination);
+    return { ok: false };
   }
 }
 

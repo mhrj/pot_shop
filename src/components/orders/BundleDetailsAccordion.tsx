@@ -156,7 +156,7 @@ export default function BundleDetailsAccordion({
               className="flex items-center justify-between gap-3 rounded-lg border border-soil-900/5 bg-white/90 px-2.5 py-1.5 dark:border-dust-50/10 dark:bg-flora-900/90"
             >
               <div className="flex items-center gap-2 flex-wrap min-w-0">
-                <span className="flex size-4.5 items-center justify-center rounded-full bg-soil-100 text-[10px] font-bold text-soil-700 shrink-0 dark:bg-flora-800 dark:text-dust-200">
+                <span className="flex size-4.5 items-center justify-center rounded-full bg-soil-100 text-[10px] font-bold text-soil-700 shrink-0 dark:bg-flora-900 dark:text-dust-300 border border-transparent dark:border-dust-50/10">
                   {toFa(idx + 1)}
                 </span>
                 <span className="font-bold text-soil-900 truncate dark:text-dust-50">

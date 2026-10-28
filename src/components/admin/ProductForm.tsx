@@ -874,7 +874,7 @@ export default function ProductForm({
               اگر این محصول شامل چند گلدان یا آیتم است و به عنوان یک پکیج فروخته می‌شود، این گزینه را فعال کنید.
             </p>
           </div>
-          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 px-4 py-2.5 text-xs font-bold text-soil-900 dark:text-dust-50 cursor-pointer transition hover:bg-dust-100 dark:hover:bg-flora-800">
+          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 px-4 py-2.5 text-xs font-bold text-soil-900 dark:text-dust-50 cursor-pointer transition hover:bg-dust-100 dark:hover:bg-flora-900">
             <input
               id="product-isBundleActive"
               name="isBundleActive"
@@ -1472,7 +1472,7 @@ export default function ProductForm({
                   }}
                   className={
                     'rounded-full px-3 py-1.5 text-xs font-bold transition ' +
-                    (active ? 'bg-flora-900 text-white dark:bg-flora-800' : 'bg-dust-100 dark:bg-flora-950 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-800')
+                    (active ? 'bg-flora-900 text-white dark:bg-flora-800' : 'bg-dust-100 dark:bg-flora-950 text-soil-700 dark:text-dust-200 hover:bg-dust-200 dark:hover:bg-flora-900')
                   }
                 >
                   {tag.name}
@@ -1493,7 +1493,7 @@ export default function ProductForm({
               تعیین قیمت پایه و در صورت نیاز، فعال‌سازی تخفیف‌های پله‌ای برای خریدهای تعداد بالا
             </p>
           </div>
-          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 px-4 py-2 text-xs font-bold text-soil-900 dark:text-dust-50 cursor-pointer transition hover:bg-dust-100 dark:hover:bg-flora-800">
+          <div className="flex items-center gap-2.5 rounded-xl border border-soil-900/10 dark:border-dust-50/10 bg-dust-50 dark:bg-flora-950 px-4 py-2 text-xs font-bold text-soil-900 dark:text-dust-50 cursor-pointer transition hover:bg-dust-100 dark:hover:bg-flora-900">
             <input
               id="product-allowBatchDiscount"
               name="allowBatchDiscount"

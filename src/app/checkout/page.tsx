@@ -2,6 +2,7 @@ import { requireUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { getCartTotals } from '@/lib/cart';
 import { calculateShippingCost, resolveCityCode } from '@/lib/postex';
+import { calcShippingToman } from '@/lib/pricing';
 import Container from '@/components/ui/Container';
 import CheckoutForm from '@/components/cart/CheckoutForm';
 import { redirect } from 'next/navigation';
@@ -38,13 +39,17 @@ export default async function CheckoutPage() {
 
   await Promise.all(
     addresses.map(async (a) => {
-      initialShippingRates[a.id] = await calculateShippingCost({
+      const rate = await calculateShippingCost({
         originCity,
         from_city_code: fromCityCode,
         destinationCity: a.city || a.province,
         weightGrams: totals.totalWeightGrams,
         fallbackTotals: totals,
       });
+      initialShippingRates[a.id] =
+        typeof rate === 'number'
+          ? rate
+          : calcShippingToman(totals, a.city || a.province);
     }),
   );
 

@@ -138,7 +138,7 @@ export default function StoreSettingsForm({
         <button
           type="submit"
           disabled={loading}
-          className="rounded-2xl bg-flora-900 dark:bg-flora-800 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
+          className="rounded-2xl bg-flora-900 dark:bg-flora-800 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-60 cursor-pointer"
         >
           {loading ? 'در حال ذخیره…' : 'ذخیره تنظیمات'}
         </button>
