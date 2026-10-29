@@ -10,8 +10,7 @@ import ProductGallery from '@/components/product/ProductGallery';
 import ColorPicker from '@/components/product/ColorPicker';
 import { ProductColorProvider } from '@/components/product/ProductColorContext';
 import Container from '@/components/ui/Container';
-
-export const revalidate = 600;
+export const dynamic = 'force-dynamic';
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -60,19 +59,6 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       images: product.images[0]?.url ? [product.images[0].url] : [],
     },
   };
-}
-
-export async function generateStaticParams() {
-  try {
-    const products = await prisma.product.findMany({
-      where: { isActive: true },
-      select: { slug: true },
-      take: 200,
-    });
-    return products.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
 }
 
 export default async function ProductPage({ params }: Params) {

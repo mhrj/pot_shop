@@ -12,8 +12,7 @@ import HeroTitle from '@/components/landing/HeroTitle';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
 import ProductCard from '@/components/catalog/ProductCard';
-
-export const revalidate = 300; // ISR: 5 minutes
+export const dynamic = 'force-dynamic';
 
 // The home page previously inherited the layout's default title, leaving its
 // Open Graph card with no title or description of its own. `absolute` keeps the
