@@ -252,7 +252,7 @@ export default async function ProductPage({ params }: Params) {
 
           {specs.length > 0 && (
             <section className="mt-10">
-              <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">مشخصات فنی</h2>
+              <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">مشخصات محصول</h2>
               <dl className="mt-4 divide-y divide-soil-900/5 dark:divide-dust-50/10 overflow-hidden rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900">
                 {specs.map((s) => (
                   <div key={s.k} className="flex justify-between gap-4 px-5 py-3.5 text-sm">
@@ -279,7 +279,7 @@ export default async function ProductPage({ params }: Params) {
           )}
 
           <section className="mt-10">
-            <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">درباره این گلدان</h2>
+            <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">درباره این محصول</h2>
             <div className="mt-4 text-sm leading-8 whitespace-pre-line text-soil-700/85 dark:text-dust-200/85">
               {product.description}
             </div>

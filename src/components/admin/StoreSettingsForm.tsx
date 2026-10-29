@@ -60,7 +60,7 @@ export default function StoreSettingsForm({
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch {
-      setError('خطای شبکه — مجدداً تلاش کنید');
+      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
@@ -140,7 +140,7 @@ export default function StoreSettingsForm({
           disabled={loading}
           className="rounded-2xl bg-flora-900 dark:bg-flora-700 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-60 cursor-pointer"
         >
-          {loading ? 'در حال ذخیره…' : 'ذخیره تنظیمات'}
+          {loading ? 'در حال ثبت…' : 'ثبت تنظیمات'}
         </button>
       </div>
     </form>

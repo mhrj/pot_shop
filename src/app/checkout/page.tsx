@@ -57,7 +57,7 @@ export default async function CheckoutPage() {
     <Container className="py-12">
       <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">تکمیل خرید</h1>
       <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
-        آدرس ارسال را انتخاب یا وارد کنید، سپس به درگاه زرین‌پال منتقل می‌شوید.
+        آدرس تحویل سفارش را انتخاب یا ثبت کنید، سپس برای پرداخت امن به درگاه منتقل می‌شوید.
       </p>
 
       <div className="mt-8">

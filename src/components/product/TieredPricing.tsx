@@ -1084,7 +1084,7 @@ export default function TieredPricing({
           className="w-full rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-4 text-sm font-black shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {outOfStock
-            ? 'ناموجود'
+            ? 'این محصول موقتاً تمام شده است'
             : pending
               ? 'در حال افزودن…'
               : added

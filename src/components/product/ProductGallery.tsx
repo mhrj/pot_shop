@@ -45,7 +45,7 @@ export default function ProductGallery({
         />
         {soldOut && (
           <span className="absolute top-4 start-4 rounded-full bg-soil-900/85 dark:bg-soil-950/90 px-3.5 py-1.5 text-[11px] font-bold text-white">
-            ناموجود
+            موقتاً ناموجود
           </span>
         )}
       </div>

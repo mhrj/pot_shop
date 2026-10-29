@@ -385,7 +385,7 @@ export default async function HomePage() {
                 ✨ بدون نیاز به کد تخفیف
               </span>
               <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl leading-tight">
-                تخفیف پله‌ای خودکار برای خریدهای بیشتر
+                خرید عمده و تخفیف پلکانی برای خریدهای بیشتر
               </h2>
               <p className="mt-4 text-sm sm:text-base leading-8 text-flora-100/90">
                 چه برای خانه‌تان چند گلدان بخواهید، چه برای کافه‌تان ۲۰ عدد؛ نیازی به چانه‌زنی نیست. با افزایش تعداد سفارش، قیمت هر واحد به صورت خودکار کاهش می‌یابد.
@@ -410,7 +410,7 @@ export default async function HomePage() {
               <div className="rounded-pot bg-flora-950/70 border border-flora-700/40 dark:border-dust-100/10 p-6 sm:p-8 backdrop-blur shadow-xl">
                 <div className="overflow-x-auto">
                   <table className="w-full text-right text-xs sm:text-sm">
-                    <caption className="sr-only">جدول تخفیف پله‌ای خودکار بر اساس تعداد سفارش</caption>
+                    <caption className="sr-only">جدول خرید عمده و تخفیف پلکانی بر اساس تعداد سفارش</caption>
                     <thead>
                       <tr className="border-b border-flora-100/15 text-flora-200/80">
                         <th scope="col" className="pb-3 text-start font-bold">

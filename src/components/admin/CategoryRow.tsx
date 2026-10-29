@@ -47,7 +47,7 @@ export default function CategoryRow({ category }: Props) {
         setIsEditing(false);
         router.refresh();
       } catch {
-        setError('خطای شبکه رخ داد');
+        setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
       }
     });
   };
@@ -65,7 +65,7 @@ export default function CategoryRow({ category }: Props) {
         }
         router.refresh();
       } catch {
-        setError('خطای شبکه رخ داد');
+        setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
       }
     });
   };
@@ -87,7 +87,7 @@ export default function CategoryRow({ category }: Props) {
             disabled={pending || !name.trim()}
             className="rounded-xl bg-flora-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm dark:bg-flora-700 dark:hover:bg-flora-900"
           >
-            {pending ? 'در حال ذخیره…' : 'ذخیره'}
+            {pending ? 'در حال ثبت…' : 'ثبت تغییرات'}
           </button>
           <button
             type="button"

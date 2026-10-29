@@ -24,7 +24,7 @@ export default async function FailedPage({
 
   const explanation =
     (reason && reasonMessages[reason]) ||
-    'متأسفانه پرداخت تأیید نشد یا خطایی از سمت بانک رخ داده است. می‌توانید مجدداً برای پرداخت سفارش تلاش کنید.';
+    'پرداخت شما انجام نشد. اگر مبلغی کسر شده باشد، تا ۷۲ ساعت آینده بازگردانده می‌شود.';
 
   return (
     <Container className="flex min-h-dvh items-center justify-center py-16">
@@ -32,7 +32,7 @@ export default async function FailedPage({
         <div className="mx-auto grid size-16 place-items-center rounded-full bg-red-50 text-3xl dark:bg-red-950/50 dark:text-red-400">
           ✕
         </div>
-        <h1 className="mt-6 text-2xl font-black text-soil-900 dark:text-dust-50">پرداخت انجام نشد</h1>
+        <h1 className="mt-6 text-2xl font-black text-soil-900 dark:text-dust-50">پرداخت ناموفق</h1>
         <p className="mt-3 text-sm leading-7 text-soil-700/80 dark:text-dust-200/80">
           {explanation}
         </p>
@@ -46,7 +46,7 @@ export default async function FailedPage({
             href="/cart"
             className="rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3 text-sm font-bold transition-colors hover:bg-flora-700 cursor-pointer shadow-sm"
           >
-            بازگشت به سبد
+            بازگشت به سبد خرید
           </Link>
           <Link
             href="/"

@@ -307,21 +307,26 @@ export default async function ProductsPage({ searchParams }: Props) {
         </search>
 
         {products.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-soil-900/15 bg-white/60 px-6 py-12 text-center text-sm text-soil-700/70 dark:border-dust-50/20 dark:bg-flora-900/60 dark:text-dust-200/70">
+          <div className="mt-8 rounded-2xl border border-dashed border-soil-900/15 bg-white/60 px-6 py-12 text-center text-sm text-soil-700/80 dark:border-dust-50/20 dark:bg-flora-900/60 dark:text-dust-200/80">
             {filtered ? (
               <>
-                محصولی با این فیلترها پیدا نشد
-                {q ? ` برای «${q}»` : ''}
-                {activeCategory ? ` در دسته «${activeCategory.name}»` : ''}
-                {activeTag ? ` با برچسب «${activeTag.name}»` : ''}.
-                <div className="mt-4">
-                  <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
-                    نمایش همه محصولات
+                <p className="font-bold text-soil-900 dark:text-dust-50">
+                  متأسفانه محصولی با این مشخصات پیدا نکردیم.
+                </p>
+                <p className="mt-2 text-xs text-soil-700/70 dark:text-dust-200/70">
+                  عبارت دیگری را جستجو کنید یا همه محصولات را ببینید.
+                </p>
+                <div className="mt-5">
+                  <Link
+                    href="/products"
+                    className="inline-block rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-5 py-2 text-xs font-bold transition-colors hover:bg-flora-700"
+                  >
+                    مشاهده همه محصولات
                   </Link>
                 </div>
               </>
             ) : (
-              'هنوز محصولی ثبت نشده است.'
+              'در حال حاضر محصولی برای نمایش وجود ندارد.'
             )}
           </div>
         ) : (

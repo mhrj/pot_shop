@@ -67,7 +67,7 @@ export default function ColorRow({ color }: Props) {
         setIsEditing(false);
         router.refresh();
       } catch {
-        setError('خطای شبکه رخ داد');
+        setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
       }
     });
   };
@@ -87,7 +87,7 @@ export default function ColorRow({ color }: Props) {
         }
         router.refresh();
       } catch {
-        setError('خطای شبکه رخ داد');
+        setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
       }
     });
   };
@@ -126,7 +126,7 @@ export default function ColorRow({ color }: Props) {
                 disabled={pending}
                 className="rounded-xl bg-flora-900 dark:bg-flora-700 px-4 py-1.5 text-xs font-bold text-white transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
               >
-                {pending ? 'در حال ذخیره…' : 'ذخیره'}
+                {pending ? 'در حال ثبت…' : 'ثبت تغییرات'}
               </button>
               <button
                 type="button"

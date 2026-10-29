@@ -704,7 +704,7 @@ export default function ProductForm({
       </section>
 
       <section className="rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-5">
-        <h2 className="mb-4 text-sm font-black text-soil-900 dark:text-dust-50">مشخصات فنی</h2>
+        <h2 className="mb-4 text-sm font-black text-soil-900 dark:text-dust-50">مشخصات محصول</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {!isBundleActive && (
             <>
@@ -1513,7 +1513,7 @@ export default function ProductForm({
               className="accent-flora-700 size-4"
             />
             <label htmlFor="product-allowBatchDiscount" className="cursor-pointer">
-              فعالسازی تخفیف پلهای (عمده)
+              فعال‌سازی خرید عمده و تخفیف پلکانی
             </label>
           </div>
         </div>
@@ -1736,7 +1736,7 @@ export default function ProductForm({
           disabled={pending}
           className="rounded-xl bg-flora-900 px-6 py-3 text-sm font-black text-white transition hover:bg-flora-700 disabled:opacity-50"
         >
-          {pending ? 'در حال ذخیره…' : initial.id ? 'ذخیره تغییرات' : 'ایجاد محصول'}
+          {pending ? 'در حال ثبت…' : initial.id ? 'ثبت تغییرات' : 'ایجاد محصول'}
         </button>
         {initial.id && (
           <button

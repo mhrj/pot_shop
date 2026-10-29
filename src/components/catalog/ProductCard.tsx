@@ -94,7 +94,7 @@ export default function ProductCard({ product, className = '' }: Props) {
           )}
           {hasTierDiscount && (
             <span className="rounded-lg md:rounded-xl bg-amber-600 dark:bg-amber-700 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black shadow-xs">
-              تخفیف عمده
+              تخفیف پلکانی
             </span>
           )}
         </div>
@@ -108,7 +108,7 @@ export default function ProductCard({ product, className = '' }: Props) {
           )}
           {soldOut && (
             <span className="rounded-lg md:rounded-xl bg-soil-900/85 dark:bg-flora-950/85 text-white px-2 py-0.5 md:px-2.5 md:py-1 text-[10px] md:text-xs font-black backdrop-blur-xs">
-              ناموجود
+              موقتاً ناموجود
             </span>
           )}
         </div>

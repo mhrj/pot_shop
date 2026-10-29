@@ -57,7 +57,7 @@ export default async function SuccessPage({ searchParams }: Props) {
               href="/cart"
               className="rounded-full border border-soil-900/15 px-6 py-3 text-sm font-bold text-soil-900 transition-colors hover:bg-dust-50 dark:border-dust-50/20 dark:text-dust-50 dark:hover:bg-flora-950"
             >
-              بازگشت به سبد
+              بازگشت به سبد خرید
             </Link>
           </div>
         </div>

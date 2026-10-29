@@ -53,7 +53,7 @@ export default function NewColorForm() {
         setHexCode('#8B8B8B');
         router.refresh();
       } catch {
-        setError('خطای شبکه رخ داد');
+        setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
       }
     });
   };

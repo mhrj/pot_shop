@@ -105,9 +105,9 @@ export default function RegisterPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-lg rounded-pot border border-transparent bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none"
       >
-        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">ثبت‌نام مشتری</h1>
+        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">ساخت حساب کاربری</h1>
         <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
-          برای اولین بار در پات استور، حساب جدید بسازید.
+          با ساخت حساب کاربری، وضعیت سفارش‌ها و خریدهای خود را آسان‌تر پیگیری کنید.
         </p>
 
         <div className="mt-7 space-y-4">
@@ -235,13 +235,13 @@ export default function RegisterPage() {
           disabled={loading}
           className="mt-6 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
         >
-          {loading ? 'در حال ثبت‌نام…' : 'ثبت‌نام'}
+          {loading ? 'در حال ساخت حساب…' : 'ساخت حساب کاربری'}
         </button>
 
         <p className="mt-5 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
-          قبلاً ثبت‌نام کرده‌اید؟{' '}
+          قبلاً در پات استور حساب کاربری ساخته‌اید؟{' '}
           <a href="/login" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
-            وارد شوید
+            ورود به حساب
           </a>
         </p>
       </form>

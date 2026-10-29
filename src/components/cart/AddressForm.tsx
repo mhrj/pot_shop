@@ -172,14 +172,14 @@ export default function AddressForm({
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        setError(data?.message ?? 'ثبت آدرس ناموفق بود');
+        setError(data?.message ?? 'ذخیره آدرس با خطا مواجه شد');
         return;
       }
 
       onSaved(data.address as AddressRecord);
       if (!editing) setForm({ ...EMPTY_FORM });
     } catch {
-      setError('خطای شبکه — دوباره تلاش کنید');
+      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
@@ -370,7 +370,7 @@ export default function AddressForm({
           disabled={loading}
           className="flex-1 rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
         >
-          {loading ? 'در حال ذخیره…' : editing ? 'ذخیره تغییرات' : 'ثبت آدرس'}
+          {loading ? 'در حال ذخیره…' : editing ? 'ثبت تغییرات' : 'ذخیره آدرس'}
         </button>
         {editing && onCancel && (
           <button

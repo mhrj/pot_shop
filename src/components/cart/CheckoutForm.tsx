@@ -205,14 +205,14 @@ export default function CheckoutForm({
       if (!res.ok || !data?.redirectUrl) {
         setError(
           data?.message ||
-            "ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.",
+            "ارتباط با درگاه پرداخت برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
         );
         setLoading(false);
         return;
       }
       window.location.href = data.redirectUrl;
     } catch {
-      setError("ارتباط با درگاه پرداخت برقرار نشد. لطفاً مجدداً تلاش کنید.");
+      setError("ارتباط با درگاه پرداخت برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.");
       setLoading(false);
     }
   };
@@ -433,7 +433,7 @@ export default function CheckoutForm({
             ? "در حال انتقال به درگاه…"
             : calculatingShipping
               ? "در حال محاسبه هزینه ارسال…"
-              : "پرداخت با زرینپال"}
+              : "پرداخت امن با زرین‌پال"}
         </button>
 
         <ShippingScheduleNotice compact={true} className="mt-3" />
@@ -478,7 +478,7 @@ export default function CheckoutForm({
               <dd>{formatToman(totals.subtotalToman)}</dd>
             </div>
             <div className="flex justify-between text-flora-700 dark:text-flora-300">
-              <dt>تخفیف پله‌ای</dt>
+              <dt>خرید عمده و تخفیف پلکانی</dt>
               <dd>−{formatToman(totals.discountToman)}</dd>
             </div>
             <div className="flex justify-between items-center text-soil-900 dark:text-dust-50">

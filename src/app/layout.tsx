@@ -93,7 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
               {contact.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-soil-900 dark:text-dust-50">تماس با ما</p>
+                  <p className="text-xs font-bold text-soil-900 dark:text-dust-50">راه‌های ارتباطی</p>
                   <dl className="mt-4 space-y-3 text-sm">
                     {contact.map((row) => (
                       <div key={row.label} className="flex flex-wrap gap-x-2">
@@ -116,6 +116,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <li>
                     <Link href="/products" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-100">
                       محصولات
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/articles" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-100">
+                      دانشنامه و مقالات
                     </Link>
                   </li>
                   <li>

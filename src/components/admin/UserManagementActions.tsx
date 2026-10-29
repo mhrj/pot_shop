@@ -72,7 +72,7 @@ export default function UserManagementActions({
       title: nextStatus ? 'فعال‌سازی حساب کاربری' : 'غیرفعال‌سازی حساب کاربری',
       message: nextStatus
         ? 'آیا از فعال‌سازی مجدد حساب کاربری اطمینان دارید؟'
-        : 'آیا از غیرفعال‌سازی این حساب کاربری اطمینان دارید؟ کاربر دیگر قادر به ورود نخواهد بود.',
+        : 'آیا از غیرفعال‌سازی این حساب کاربری اطمینان دارید؟ کاربر دیگر قادر به ورود به حساب نخواهد بود.',
       isDestructive: !nextStatus,
       confirmText: nextStatus ? 'فعال‌سازی' : 'غیرفعال‌سازی',
       action: () => updateStatus({ isActive: nextStatus }),

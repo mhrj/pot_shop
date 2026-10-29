@@ -49,9 +49,17 @@ export default async function DashboardPage() {
         <h2 className="text-lg font-black text-soil-900 dark:text-dust-50">سفارش‌های من</h2>
 
         {orders.length === 0 ? (
-          <p className="mt-4 rounded-2xl border border-dashed border-soil-900/15 dark:border-dust-50/20 px-6 py-10 text-center text-sm text-soil-700/70 dark:text-dust-200/70">
-            هنوز سفارشی ثبت نکرده‌اید.
-          </p>
+          <div className="mt-4 rounded-2xl border border-dashed border-soil-900/15 dark:border-dust-50/20 px-6 py-10 text-center">
+            <p className="text-sm font-medium text-soil-700/80 dark:text-dust-200/80">
+              شما هنوز سفارشی ثبت نکرده‌اید. اولین گلدان خود را انتخاب کنید تا اینجا نمایش داده شود.
+            </p>
+            <Link
+              href="/products"
+              className="mt-4 inline-block rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-5 py-2 text-xs font-bold transition-colors hover:bg-flora-700"
+            >
+              مشاهده محصولات
+            </Link>
+          </div>
         ) : (
           <ul className="mt-4 space-y-4">
             {orders.map((order) => (

@@ -13,8 +13,14 @@ export default async function CartPage() {
 
   if (totals.lines.length === 0) {
     return (
-      <Container className="py-20 text-center">
-        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">سبد خرید خالی است</h1>
+      <Container className="py-20 text-center max-w-lg mx-auto">
+        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-flora-50 text-2xl dark:bg-flora-900/50">
+          🪴
+        </div>
+        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">سبد خرید شما خالی است!</h1>
+        <p className="mt-3 text-sm leading-7 text-soil-700/80 dark:text-dust-200/80">
+          هنوز گلدانی انتخاب نکرده‌اید. نگاهی به مجموعه ما بیندازید تا فضایتان سبز شود.
+        </p>
         <Link
           href="/products"
           className="mt-6 inline-block rounded-full bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3 text-sm font-bold shadow-lg shadow-flora-900/20 transition-colors hover:bg-flora-700"
@@ -50,7 +56,7 @@ export default async function CartPage() {
                 <dd>{formatToman(totals.subtotalToman)}</dd>
               </div>
               <div className="flex justify-between text-flora-700 dark:text-flora-300">
-                <dt>تخفیف پله‌ای</dt>
+                <dt>خرید عمده و تخفیف پلکانی</dt>
                 <dd>−{formatToman(totals.discountToman)}</dd>
               </div>
               <div className="flex justify-between">
@@ -73,7 +79,7 @@ export default async function CartPage() {
               href="/checkout"
               className="mt-6 block rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-center text-sm font-black transition-colors hover:bg-flora-700"
             >
-              ادامه فرآیند خرید
+              تکمیل خرید
             </Link>
             <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/80 dark:border-amber-700/50 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-300">
               📦 توجه: مرسولات فقط در روزهای <strong>یکشنبه</strong> و <strong>چهارشنبه</strong> ارسال می‌شوند.

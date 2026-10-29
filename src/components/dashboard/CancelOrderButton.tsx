@@ -24,7 +24,7 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
       }
       router.refresh();
     } catch {
-      setError('خطای شبکه — دوباره تلاش کنید');
+      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }

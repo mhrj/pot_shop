@@ -67,9 +67,9 @@ export default async function AboutPage() {
       </div>
 
       <section className="mt-12 w-full max-w-3xl rounded-pot border border-soil-900/10 bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none">
-        <h2 className="text-xl font-black text-soil-900 dark:text-dust-50">راه های تماس</h2>
+        <h2 className="text-xl font-black text-soil-900 dark:text-dust-50">راه‌های ارتباطی</h2>
         <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
-          برای سفارش عمده، مشاوره انتخاب گلدان یا پیگیری سفارش، از این راه ها در دسترس هستیم.
+          هر سوالی دارید، با کمال میل پاسخ می‌دهیم. برای سفارش عمده، مشاوره انتخاب گلدان یا پیگیری سفارش، در کنارتان هستیم.
         </p>
 
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">

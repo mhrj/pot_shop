@@ -87,7 +87,7 @@ function LoginForm() {
       router.replace(next || data.redirectTo || '/dashboard');
       router.refresh();
     } catch {
-      setError('خطای شبکه — لطفاً دوباره تلاش کنید.');
+      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
@@ -133,7 +133,7 @@ function LoginForm() {
       setCountdown(data.expiresInSeconds ?? 120);
       setOtpCode('');
     } catch {
-      setError('خطای شبکه در ارتباط با سرور.');
+      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
@@ -175,7 +175,7 @@ function LoginForm() {
       router.replace(next || data.redirectTo || '/dashboard');
       router.refresh();
     } catch {
-      setError('خطای شبکه در تایید کد.');
+      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
@@ -288,13 +288,13 @@ function LoginForm() {
                 disabled={loading}
                 className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
               >
-                {loading ? 'در حال ورود…' : 'ورود'}
+                {loading ? 'در حال ورود…' : 'ورود به حساب'}
               </button>
 
               <p className="mt-3 text-center text-xs sm:text-sm text-soil-700/70 dark:text-dust-200/70">
-                حساب ندارید؟{' '}
+                حساب کاربری ندارید؟{' '}
                 <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
-                  ثبت‌نام کنید
+                  ساخت حساب کاربری
                 </Link>
               </p>
             </div>
@@ -348,9 +348,9 @@ function LoginForm() {
                   </button>
 
                   <p className="mt-3 text-center text-xs sm:text-sm text-soil-700/70 dark:text-dust-200/70">
-                    حساب ندارید؟{' '}
+                    حساب کاربری ندارید؟{' '}
                     <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
-                      ثبت‌نام کنید
+                      ساخت حساب کاربری
                     </Link>
                   </p>
                 </div>
@@ -433,7 +433,7 @@ function LoginForm() {
                     disabled={loading}
                     className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
                   >
-                    {loading ? 'در حال بررسی…' : 'تایید و ورود'}
+                    {loading ? 'در حال بررسی…' : 'تأیید و ورود به حساب'}
                   </button>
                 </div>
               </form>

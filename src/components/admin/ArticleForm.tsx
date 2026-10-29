@@ -276,7 +276,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
           disabled={isSaving}
           className="rounded-2xl bg-flora-900 dark:bg-flora-700 px-8 py-3.5 text-sm font-black text-white shadow-md shadow-flora-950/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-50"
         >
-          {isSaving ? 'در حال ذخیره‌سازی...' : isEditing ? 'ذخیره تغییرات' : 'انتشار مقاله'}
+          {isSaving ? 'در حال ثبت…' : isEditing ? 'ثبت تغییرات' : 'انتشار مقاله'}
         </button>
         <button
           type="button"
