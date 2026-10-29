@@ -186,247 +186,256 @@ function LoginForm() {
   const formattedCountdown = `${toFa(minutes)}:${toFa(seconds.toString().padStart(2, '0'))}`;
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-7xl items-center justify-center px-4 py-16 md:px-8">
-      <div className="w-full max-w-md rounded-pot border border-transparent bg-white p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none">
-        <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">ورود به حساب</h1>
-        <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
-          روش ورود مورد نظر خود را انتخاب کنید.
-        </p>
+    <main className="mx-auto flex flex-1 min-h-dvh w-full max-w-7xl items-center justify-center px-4 py-8 sm:py-12 md:px-8">
+      <div className="flex h-[520px] w-full max-w-md flex-col rounded-pot border border-transparent bg-white p-6 sm:p-8 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:border-dust-50/10 dark:bg-flora-900 dark:shadow-none">
+        <div>
+          <h1 className="text-2xl font-black text-soil-900 dark:text-dust-50">ورود به حساب</h1>
+          <p className="mt-2 text-sm text-soil-700/70 dark:text-dust-200/70">
+            روش ورود مورد نظر خود را انتخاب کنید.
+          </p>
 
-        {/* Tab Toggle */}
-        <div className="mt-6 grid grid-cols-2 gap-1 rounded-2xl bg-dust-100 p-1.5 text-xs sm:text-sm font-bold text-soil-700 dark:bg-flora-950 dark:text-dust-200">
-          <button
-            type="button"
-            onClick={() => switchTab('password')}
-            className={`rounded-xl py-2.5 transition cursor-pointer ${
-              tab === 'password'
-                ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-500 dark:text-flora-950'
-                : 'hover:text-soil-900 text-soil-600 dark:bg-flora-950 dark:text-dust-300 dark:hover:text-dust-50'
-            }`}
-          >
-            ورود با رمز عبور
-          </button>
-          <button
-            type="button"
-            onClick={() => switchTab('otp')}
-            className={`rounded-xl py-2.5 transition cursor-pointer ${
-              tab === 'otp'
-                ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-500 dark:text-flora-950'
-                : 'hover:text-soil-900 text-soil-600 dark:bg-flora-950 dark:text-dust-300 dark:hover:text-dust-50'
-            }`}
-          >
-            ورود با پیامک (OTP)
-          </button>
-        </div>
-
-        {/* Global Error Banner */}
-        {error && (
-          <div
-            role="alert"
-            className="mt-6 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-xs font-bold text-red-700 shadow-sm dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300"
-          >
-            <span className="text-sm">⚠️</span>
-            <span>{error}</span>
+          {/* Tab Toggle */}
+          <div className="mt-6 grid grid-cols-2 gap-1 rounded-2xl bg-dust-100 p-1.5 text-xs sm:text-sm font-bold text-soil-700 dark:bg-flora-950 dark:text-dust-200">
+            <button
+              type="button"
+              onClick={() => switchTab('password')}
+              className={`rounded-xl py-2.5 transition cursor-pointer ${
+                tab === 'password'
+                  ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-500 dark:text-flora-950'
+                  : 'hover:text-soil-900 text-soil-600 dark:bg-flora-950 dark:text-dust-300 dark:hover:text-dust-50'
+              }`}
+            >
+              ورود با رمز عبور
+            </button>
+            <button
+              type="button"
+              onClick={() => switchTab('otp')}
+              className={`rounded-xl py-2.5 transition cursor-pointer ${
+                tab === 'otp'
+                  ? 'bg-white text-soil-900 shadow-sm font-black dark:bg-flora-500 dark:text-flora-950'
+                  : 'hover:text-soil-900 text-soil-600 dark:bg-flora-950 dark:text-dust-300 dark:hover:text-dust-50'
+              }`}
+            >
+              ورود با پیامک (OTP)
+            </button>
           </div>
-        )}
+
+          {/* Global Error Banner */}
+          {error && (
+            <div
+              role="alert"
+              className="mt-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-bold text-red-700 shadow-sm dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300"
+            >
+              <span className="text-sm">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+        </div>
 
         {/* Tab 1: Password Login */}
         {tab === 'password' && (
-          <form noValidate onSubmit={handlePasswordSubmit} className="mt-6 space-y-4">
-            <div className="block">
-              <label htmlFor="login-identifier" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
-                شماره موبایل یا ایمیل
-              </label>
-              <input
-                id="login-identifier"
-                name="identifier"
-                value={identifier}
-                onChange={(e) => {
-                  setIdentifier(e.target.value);
-                  if (error) setError(null);
-                  if (fieldError) setFieldError(null);
-                }}
-                autoComplete="username"
-                dir="ltr"
-                placeholder="09121234567 یا email@example.com"
-                className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
-              />
+          <form noValidate onSubmit={handlePasswordSubmit} className="flex flex-1 flex-col mt-6">
+            <div className="flex flex-col gap-4">
+              <div className="block">
+                <label htmlFor="login-identifier" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+                  شماره موبایل یا ایمیل
+                </label>
+                <input
+                  id="login-identifier"
+                  name="identifier"
+                  value={identifier}
+                  onChange={(e) => {
+                    setIdentifier(e.target.value);
+                    if (error) setError(null);
+                    if (fieldError) setFieldError(null);
+                  }}
+                  autoComplete="username"
+                  dir="ltr"
+                  placeholder="09121234567 یا email@example.com"
+                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
+                />
+              </div>
+
+              <div className="block">
+                <label htmlFor="login-password" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+                  رمز عبور
+                </label>
+                <PasswordInput
+                  id="login-password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError(null);
+                    if (fieldError) setFieldError(null);
+                  }}
+                  error={Boolean(error || fieldError)}
+                  autoComplete="current-password"
+                  className="mt-2"
+                />
+              </div>
+
+              {fieldError && (
+                <p role="alert" className="text-xs font-bold text-red-600 dark:text-red-400">
+                  {fieldError}
+                </p>
+              )}
             </div>
 
-            <div className="block">
-              <label htmlFor="login-password" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
-                رمز عبور
-              </label>
-              <PasswordInput
-                id="login-password"
-                name="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (error) setError(null);
-                  if (fieldError) setFieldError(null);
-                }}
-                error={Boolean(error || fieldError)}
-                autoComplete="current-password"
-                className="mt-2"
-              />
-            </div>
+            <div className="mt-auto pt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+              >
+                {loading ? 'در حال ورود…' : 'ورود'}
+              </button>
 
-            {fieldError && (
-              <p role="alert" className="text-xs font-bold text-red-600 dark:text-red-400">
-                {fieldError}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-2 w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
-            >
-              {loading ? 'در حال ورود…' : 'ورود'}
-            </button>
-
-            <div className="mt-5 flex items-center justify-between gap-3 text-xs sm:text-sm text-soil-700/70 pt-2 dark:text-dust-200/70">
-              <Link href="/forgot-password" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
-                فراموشی رمز عبور
-              </Link>
-              <span>
+              <p className="mt-3 text-center text-xs sm:text-sm text-soil-700/70 dark:text-dust-200/70">
                 حساب ندارید؟{' '}
                 <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
                   ثبت‌نام کنید
                 </Link>
-              </span>
+              </p>
             </div>
           </form>
         )}
 
         {/* Tab 2: OTP Login */}
         {tab === 'otp' && (
-          <div className="mt-6">
+          <div className="flex flex-1 flex-col mt-6">
             {otpStep === 'phone' ? (
-              <form noValidate onSubmit={handleRequestOtp} className="space-y-4">
-                <div className="block">
-                  <label htmlFor="login-otp-phone" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
-                    شماره موبایل
-                  </label>
-                  <input
-                    id="login-otp-phone"
-                    name="otpPhone"
-                    type="tel"
-                    value={otpPhone}
-                    onChange={(e) => {
-                      setOtpPhone(e.target.value);
-                      if (error) setError(null);
-                      if (fieldError) setFieldError(null);
-                    }}
-                    autoComplete="tel"
-                    dir="ltr"
-                    placeholder="09121234567"
-                    className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
-                  />
-                  <span className="mt-1.5 block text-[11px] text-soil-700/60 dark:text-dust-200/60">
-                    کد یکبار مصرف ۵ رقمی به این شماره ارسال خواهد شد.
-                  </span>
-                </div>
-
-                {fieldError && (
-                  <p role="alert" className="text-xs font-bold text-red-600 dark:text-red-400">
-                    {fieldError}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
-                >
-                  {loading ? 'در حال ارسال کد…' : 'ارسال کد تایید'}
-                </button>
-
-                <p className="text-center text-xs text-soil-700/70 pt-2 dark:text-dust-200/70">
-                  حساب ندارید؟{' '}
-                  <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
-                    ثبت‌نام کنید
-                  </Link>
-                </p>
-              </form>
-            ) : (
-              <form noValidate onSubmit={handleVerifyOtp} className="space-y-5">
-                <div className="rounded-xl border border-flora-300/60 bg-flora-50 p-3.5 text-xs text-soil-800 flex items-center justify-between dark:border-flora-700 dark:bg-flora-950/60 dark:text-dust-200">
-                  <div>
-                    <span className="text-soil-700/70 block text-[11px] dark:text-dust-200/70">ارسال شده به شماره:</span>
-                    <span className="font-bold text-sm text-soil-900 dir-ltr dark:text-dust-50">{toFa(otpPhone)}</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOtpStep('phone');
-                      setError(null);
-                      setFieldError(null);
-                    }}
-                    className="text-xs font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-300 dark:hover:text-flora-300"
-                  >
-                    ویرایش شماره
-                  </button>
-                </div>
-
-                <div className="block">
-                  <label htmlFor="login-otp-code" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
-                    کد تایید ۵ رقمی
-                  </label>
-                  <input
-                    id="login-otp-code"
-                    name="otpCode"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={5}
-                    value={otpCode}
-                    onChange={(e) => {
-                      setOtpCode(e.target.value);
-                      if (error) setError(null);
-                      if (fieldError) setFieldError(null);
-                    }}
-                    dir="ltr"
-                    placeholder="— — — — —"
-                    autoFocus
-                    className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-center text-xl font-bold tracking-[0.4em] text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
-                  />
-                </div>
-
-                {fieldError && (
-                  <p role="alert" className="text-xs font-bold text-red-600 dark:text-red-400">
-                    {fieldError}
-                  </p>
-                )}
-
-                {/* Countdown and Resend */}
-                <div className="flex items-center justify-between text-xs text-soil-700/70 dark:text-dust-200/70">
-                  {countdown > 0 ? (
-                    <span>
-                      ارسال مجدد کد تا{' '}
-                      <span className="font-bold text-flora-700 font-mono dark:text-flora-300">
-                        {formattedCountdown}
-                      </span>
+              <form noValidate onSubmit={handleRequestOtp} className="flex flex-1 flex-col">
+                <div className="flex flex-col gap-4">
+                  <div className="block">
+                    <label htmlFor="login-otp-phone" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+                      شماره موبایل
+                    </label>
+                    <input
+                      id="login-otp-phone"
+                      name="otpPhone"
+                      type="tel"
+                      value={otpPhone}
+                      onChange={(e) => {
+                        setOtpPhone(e.target.value);
+                        if (error) setError(null);
+                        if (fieldError) setFieldError(null);
+                      }}
+                      autoComplete="tel"
+                      dir="ltr"
+                      placeholder="09121234567"
+                      className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
+                    />
+                    <span className="mt-1.5 block text-[11px] text-soil-700/60 dark:text-dust-200/60">
+                      کد یکبار مصرف ۵ رقمی به این شماره ارسال خواهد شد.
                     </span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleRequestOtp()}
-                      disabled={loading}
-                      className="font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-300 dark:hover:text-flora-300"
-                    >
-                      ارسال مجدد کد پیامکی
-                    </button>
+                  </div>
+
+                  {fieldError && (
+                    <p role="alert" className="text-xs font-bold text-red-600 dark:text-red-400">
+                      {fieldError}
+                    </p>
                   )}
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
-                >
-                  {loading ? 'در حال بررسی…' : 'تایید و ورود'}
-                </button>
+                <div className="mt-auto pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+                  >
+                    {loading ? 'در حال ارسال کد…' : 'ارسال کد تایید'}
+                  </button>
+
+                  <p className="mt-3 text-center text-xs sm:text-sm text-soil-700/70 dark:text-dust-200/70">
+                    حساب ندارید؟{' '}
+                    <Link href="/register" className="font-bold text-flora-700 hover:text-flora-900 dark:text-flora-300 dark:hover:text-flora-300">
+                      ثبت‌نام کنید
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            ) : (
+              <form noValidate onSubmit={handleVerifyOtp} className="flex flex-1 flex-col">
+                <div className="flex flex-col gap-4">
+                  <div className="rounded-xl border border-flora-300/60 bg-flora-50 p-3 text-xs text-soil-800 flex items-center justify-between dark:border-flora-700 dark:bg-flora-950/60 dark:text-dust-200">
+                    <div>
+                      <span className="text-soil-700/70 block text-[11px] dark:text-dust-200/70">ارسال شده به شماره:</span>
+                      <span className="font-bold text-sm text-soil-900 dir-ltr dark:text-dust-50">{toFa(otpPhone)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOtpStep('phone');
+                        setError(null);
+                        setFieldError(null);
+                      }}
+                      className="text-xs font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-300 dark:hover:text-flora-300"
+                    >
+                      ویرایش شماره
+                    </button>
+                  </div>
+
+                  <div className="block">
+                    <label htmlFor="login-otp-code" className="block text-xs font-bold text-soil-900 dark:text-dust-200">
+                      کد تایید ۵ رقمی
+                    </label>
+                    <input
+                      id="login-otp-code"
+                      name="otpCode"
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={5}
+                      value={otpCode}
+                      onChange={(e) => {
+                        setOtpCode(e.target.value);
+                        if (error) setError(null);
+                        if (fieldError) setFieldError(null);
+                      }}
+                      dir="ltr"
+                      placeholder="— — — — —"
+                      autoFocus
+                      className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-3 text-center text-xl font-bold tracking-[0.4em] text-soil-900 outline-none transition focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 focus:dark:border-flora-500"
+                    />
+                  </div>
+
+                  {fieldError && (
+                    <p role="alert" className="text-xs font-bold text-red-600 dark:text-red-400">
+                      {fieldError}
+                    </p>
+                  )}
+
+                  {/* Countdown and Resend */}
+                  <div className="flex items-center justify-between text-xs text-soil-700/70 dark:text-dust-200/70">
+                    {countdown > 0 ? (
+                      <span>
+                        ارسال مجدد کد تا{' '}
+                        <span className="font-bold text-flora-700 font-mono dark:text-flora-300">
+                          {formattedCountdown}
+                        </span>
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleRequestOtp()}
+                        disabled={loading}
+                        className="font-bold text-flora-700 hover:text-flora-900 underline cursor-pointer dark:text-flora-300 dark:hover:text-flora-300"
+                      >
+                        ارسال مجدد کد پیامکی
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full rounded-xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3.5 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-50 cursor-pointer shadow-sm"
+                  >
+                    {loading ? 'در حال بررسی…' : 'تایید و ورود'}
+                  </button>
+                </div>
               </form>
             )}
           </div>

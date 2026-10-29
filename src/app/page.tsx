@@ -378,80 +378,115 @@ export default async function HomePage() {
             </>
           )}
 
-          <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div>
-              <h2 className="text-3xl font-black text-white sm:text-4xl">
-                {content.promo_title.body}
+          <div className="relative grid gap-10 lg:grid-cols-12 lg:items-center">
+            {/* Left Column: Heading, Subtext & Bullets */}
+            <div className="lg:col-span-6">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-flora-300/30 bg-flora-800/60 px-3.5 py-1 text-xs font-bold text-flora-300 backdrop-blur">
+                ✨ بدون نیاز به کد تخفیف
+              </span>
+              <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl leading-tight">
+                تخفیف پله‌ای خودکار برای خریدهای بیشتر
               </h2>
-              <p className="mt-5 leading-8 text-flora-100/85">
-                {content.promo_subtitle.body}
+              <p className="mt-4 text-sm sm:text-base leading-8 text-flora-100/90">
+                چه برای خانه‌تان چند گلدان بخواهید، چه برای کافه‌تان ۲۰ عدد؛ نیازی به چانه‌زنی نیست. با افزایش تعداد سفارش، قیمت هر واحد به صورت خودکار کاهش می‌یابد.
               </p>
-              <ul className="mt-8 space-y-4 text-sm">
+              <ul className="mt-8 space-y-3.5 text-xs sm:text-sm">
                 {[
-                  wholesaleHighlight.maxDiscount > 0
-                    ? `تخفیف پله‌ای تا ${toFa(wholesaleHighlight.maxDiscount)}٪ متناسب با تعداد سفارش`
-                    : 'قیمت‌گذاری شفاف و بهینه برای سفارش‌های خرد و عمده',
-                  'بسته‌بندی استاندارد، ایمن و مقاوم',
-                  'فاکتور رسمی و امکان تسویه اعتباری',
-                  'پشتیبانی اختصاصی و پیگیری سفارش',
+                  'محاسبه آنی و خودکار تخفیف در سبد خرید متناسب با تعداد',
+                  'بسته‌بندی استاندارد، ایمن و مقاوم در برابر ضربه برای ارسال',
+                  'شفافیت کامل قیمت‌ها برای تمام محصولات گلدان، خاک و لوازم',
+                  'امکان خرید از یک عدد تا تیراژ عمده بدون محدودیت حداقل سفارش',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3">
-                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-flora-300" />
+                    <span className="mt-1 size-1.5 shrink-0 rounded-full bg-flora-300" />
                     <span className="text-flora-100/90">{f}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {wholesaleHighlight.hasWholesaleTiers ? (
-              <div className="rounded-pot bg-flora-950/60 border border-transparent dark:border-dust-100/10 p-6 backdrop-blur">
-                <table className="w-full text-sm">
-                  <caption className="sr-only">ماتریس نمونه قیمت پله‌ای</caption>
-                  <thead>
-                    <tr className="text-flora-100/60">
-                      <th scope="col" className="pb-3 text-start font-medium">
-                        تعداد
-                      </th>
-                      <th scope="col" className="pb-3 text-start font-medium">
-                        قیمت هر عدد
-                      </th>
-                      <th scope="col" className="pb-3 text-start font-medium">
-                        تخفیف
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-flora-100/10">
-                    {wholesaleHighlight.tableRows.map((r) => (
-                      <tr key={r.q}>
-                        <td className="py-4 text-flora-100/90">{r.q}</td>
-                        <td className="py-4 font-bold text-white">{formatToman(r.p)}</td>
-                        <td className="py-4 text-flora-300">{r.d}</td>
+            {/* Right Column: Generic & Clear Table + B2B Escape Hatch */}
+            <div className="lg:col-span-6">
+              <div className="rounded-pot bg-flora-950/70 border border-flora-700/40 dark:border-dust-100/10 p-6 sm:p-8 backdrop-blur shadow-xl">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-right text-xs sm:text-sm">
+                    <caption className="sr-only">جدول تخفیف پله‌ای خودکار بر اساس تعداد سفارش</caption>
+                    <thead>
+                      <tr className="border-b border-flora-100/15 text-flora-200/80">
+                        <th scope="col" className="pb-3 text-start font-bold">
+                          تعداد
+                        </th>
+                        <th scope="col" className="pb-3 text-start font-bold">
+                          میزان تخفیف
+                        </th>
+                        <th scope="col" className="pb-3 text-start font-bold">
+                          توضیحات
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <p className="mt-5 text-[11px] leading-6 text-flora-100/50">
-                  * قیمت‌ها {wholesaleHighlight.sampleProductName ? `نمونه بر اساس «${wholesaleHighlight.sampleProductName}» است` : 'نمونه است'}. ماتریس واقعی هر محصول در صفحه آن قابل مشاهده است.
+                    </thead>
+                    <tbody className="divide-y divide-flora-100/10">
+                      <tr className="transition-colors hover:bg-white/5">
+                        <td className="py-4 font-bold text-white whitespace-nowrap">
+                          {toFa('1')} تا {toFa('4')} عدد
+                        </td>
+                        <td className="py-4 text-flora-100/90 font-medium whitespace-nowrap">
+                          قیمت پایه
+                        </td>
+                        <td className="py-4 text-flora-100/70">
+                          بدون تخفیف
+                        </td>
+                      </tr>
+                      <tr className="transition-colors hover:bg-white/5">
+                        <td className="py-4 font-bold text-white whitespace-nowrap">
+                          {toFa('5')} تا {toFa('19')} عدد
+                        </td>
+                        <td className="py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center rounded-lg bg-emerald-500/20 px-2.5 py-1 text-xs font-black text-emerald-300 border border-emerald-400/30">
+                            {toFa('15')}٪ تخفیف
+                          </span>
+                        </td>
+                        <td className="py-4 text-flora-100/80 font-medium">
+                          مناسب کافه‌ها و شرکت‌های کوچک
+                        </td>
+                      </tr>
+                      <tr className="transition-colors hover:bg-white/5">
+                        <td className="py-4 font-bold text-white whitespace-nowrap">
+                          {toFa('20')} عدد به بالا
+                        </td>
+                        <td className="py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center rounded-lg bg-emerald-500/25 px-2.5 py-1 text-xs font-black text-emerald-200 border border-emerald-400/40">
+                            {toFa('30')}٪ تخفیف
+                          </span>
+                        </td>
+                        <td className="py-4 text-flora-100/80 font-medium">
+                          مناسب پروژه‌های بزرگ و عمده
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="mt-4 text-[11px] sm:text-xs leading-6 text-flora-100/60 font-medium">
+                  * تخفیف‌ها به صورت خودکار روی سبد خرید شما اعمال می‌شوند.
                 </p>
+
+                {/* B2B Escape Hatch */}
+                <div className="mt-6 pt-5 border-t border-flora-100/15">
+                  <Link
+                    href="#wholesale-inquiry"
+                    className="group inline-flex w-full items-center justify-between rounded-xl border border-flora-300/35 bg-white/5 hover:bg-white/10 px-4 py-3 text-xs sm:text-sm font-bold text-white transition-all duration-200 hover:border-flora-300 dark:border-dust-50/20 dark:hover:border-flora-300"
+                  >
+                    <span>پروژه بزرگ دارید؟ استعلام قیمت اختصاصی بگیرید</span>
+                    <span
+                      aria-hidden="true"
+                      className="transition-transform duration-200 group-hover:-translate-x-1 text-flora-300 font-bold"
+                    >
+                      ←
+                    </span>
+                  </Link>
+                </div>
               </div>
-            ) : (
-              <div className="rounded-pot bg-flora-950/60 border border-transparent dark:border-dust-100/10 p-8 backdrop-blur text-center flex flex-col items-center justify-center min-h-64">
-                <span className="text-3xl mb-3">📞</span>
-                <p className="text-base font-bold text-white mb-2">
-                  برای اطلاع از قیمت‌های عمده با ما تماس بگیرید
-                </p>
-                <p className="text-xs text-flora-100/70 mb-6 leading-6 max-w-xs">
-                  امکان استعلام قیمت بر اساس تیراژ اختصاصی، بسته‌بندی سفارشی و صدور پیش‌فاکتور رسمی
-                </p>
-                <Link
-                  href="#wholesale-inquiry"
-                  className="inline-flex items-center gap-2 rounded-full bg-flora-500/25 border border-flora-300/30 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-flora-500/40"
-                >
-                  <span>استعلام و مشاوره عمده</span>
-                  <span>←</span>
-                </Link>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </Container>

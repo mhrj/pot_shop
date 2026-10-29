@@ -63,6 +63,7 @@ export default function WholesaleInquiryForm() {
 
   return (
     <section id="wholesale-inquiry" className="scroll-mt-24 py-20 relative">
+      <div id="b2b-form" className="absolute -top-24" aria-hidden="true" />
       <Container>
         <div className="relative overflow-hidden rounded-3xl border border-flora-700/30 bg-gradient-to-br from-flora-950 via-flora-900 to-soil-950 p-8 text-white shadow-2xl sm:p-12 lg:p-16">
           {/* Subtle botanical glow background */}

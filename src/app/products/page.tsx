@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { formatToman, toFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
 import ProductCard from '@/components/catalog/ProductCard';
+import TagFilterSelect from '@/components/catalog/TagFilterSelect';
 import BotanicalCanvas from '@/components/landing/BotanicalCanvas';
 
 // 12 items per page for balanced 2, 3, 4 column grids across screen sizes.
@@ -266,18 +267,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
               <label className="text-xs font-bold text-soil-700/80 dark:text-dust-200/80">
                 برچسب
-                <select
-                  name="tag"
-                  defaultValue={tagSlug}
-                  className="mt-2 w-full rounded-xl border border-soil-900/15 bg-white px-4 py-2.5 text-sm text-soil-900 outline-none transition focus:border-flora-500 focus:dark:border-flora-500 dark:border-dust-50/20 dark:bg-flora-950 dark:text-dust-50"
-                >
-                  <option value="">همه</option>
-                  {tags.map((t) => (
-                    <option key={t.slug} value={t.slug}>
-                      {t.name}
-                    </option>
-                  ))}
-                </select>
+                <TagFilterSelect tags={tags} tagSlug={tagSlug} />
               </label>
 
               <button

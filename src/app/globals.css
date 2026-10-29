@@ -27,6 +27,13 @@
   --radius-pot: 1.75rem;
 }
 
+@layer base {
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
 @keyframes gradient-flow {
   0% {
     background-position: 0% 50%;
