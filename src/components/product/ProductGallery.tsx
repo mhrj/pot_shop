@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { isUnoptimizedImage } from '@/lib/image-validation';
 
 export type GalleryImage = { id: string; url: string; alt: string | null };
 
@@ -40,6 +41,7 @@ export default function ProductGallery({
           priority={activeIndex === 0}
           sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover"
+          unoptimized={isUnoptimizedImage(active.url)}
         />
         {soldOut && (
           <span className="absolute top-4 start-4 rounded-full bg-soil-900/85 dark:bg-soil-950/90 px-3.5 py-1.5 text-[11px] font-bold text-white">
@@ -70,6 +72,7 @@ export default function ProductGallery({
                   fill
                   sizes="120px"
                   className="object-cover"
+                  unoptimized={isUnoptimizedImage(img.url)}
                 />
               </button>
             </li>

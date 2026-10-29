@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { formatToman, toFa } from '@/lib/format';
 import { parseColorOptions, type ColorOption } from '@/lib/product-features';
+import { isUnoptimizedImage } from '@/lib/image-validation';
 
 export type ProductCardData = {
   id: string;
@@ -60,7 +61,7 @@ export default function ProductCard({ product, className = '' }: Props) {
     >
       {/* Product Image Wrapper */}
       <div className="relative aspect-square rounded-xl overflow-hidden border border-soil-900/5 dark:border-dust-50/10 bg-white">
-        {product.images[0] ? (
+        {product.images?.[0]?.url && product.images[0].url.trim().length > 0 ? (
           <Image
             src={product.images[0].url}
             alt={product.images[0].alt ?? product.name}
@@ -69,6 +70,7 @@ export default function ProductCard({ product, className = '' }: Props) {
             className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
               soldOut ? 'grayscale opacity-70' : ''
             }`}
+            unoptimized={isUnoptimizedImage(product.images[0].url)}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-white text-soil-700/30 dark:text-dust-300/30">

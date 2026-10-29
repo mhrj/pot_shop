@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { formatToman, toFa } from '@/lib/format';
+import { isUnoptimizedImage } from '@/lib/image-validation';
 
 export default async function AdminProductsPage() {
   await requireAdmin();
@@ -45,8 +46,19 @@ export default async function AdminProductsPage() {
               className="flex items-center gap-4 rounded-2xl border border-soil-900/10 dark:border-dust-50/10 bg-white dark:bg-flora-900 p-3"
             >
               <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-white border border-soil-900/5 dark:border-dust-50/10">
-                {p.images[0] && (
-                  <Image src={p.images[0].url} alt={p.name} fill className="object-cover" sizes="64px" />
+                {p.images[0]?.url ? (
+                  <Image
+                    src={p.images[0].url}
+                    alt={p.name}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                    unoptimized={isUnoptimizedImage(p.images[0].url)}
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-xs text-soil-700/40 dark:text-dust-400">
+                    🖼️
+                  </div>
                 )}
               </div>
               <div className="min-w-0 flex-1">

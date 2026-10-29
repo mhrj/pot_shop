@@ -222,7 +222,7 @@ async function main() {
         images: {
           create: [
             {
-              url: `https://placehold.co/800x800/E8D5C4/3E2723?text=${encodeURIComponent(p.name)}`,
+              url: `https://placehold.co/800x800/E8D5C4/3E2723.png?text=${encodeURIComponent(p.name)}`,
               alt: p.name,
               sortOrder: 0,
             },

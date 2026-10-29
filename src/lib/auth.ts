@@ -8,6 +8,7 @@ import { requireEnv } from '@/lib/env';
 import {
   SESSION_COOKIE,
   verifySessionToken,
+  getExpiredSessionCookieOptions,
   type SessionPayload,
 } from '@/lib/auth-edge';
 
@@ -57,7 +58,7 @@ export async function createSessionCookie(user: {
 
 export async function destroySessionCookie() {
   const jar = await cookies();
-  jar.set(SESSION_COOKIE, '', { httpOnly: true, path: '/', maxAge: 0 });
+  jar.set(SESSION_COOKIE, '', getExpiredSessionCookieOptions());
 }
 
 export async function getSession(): Promise<SessionPayload | null> {

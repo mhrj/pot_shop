@@ -91,3 +91,35 @@ export const persistedImageUrlSchema = z
   .refine((value) => isPersistedImageUrl(value), {
     message: 'URL تصویر باید یک مسیر محلی /uploads/... یا یک URL معتبر http/https باشد',
   });
+
+/**
+ * Detects whether an image URL represents an SVG or an external SVG placeholder (such as placehold.co)
+ * that must be served `unoptimized` by Next.js <Image> to avoid optimizer rejection when
+ * `dangerouslyAllowSVG` is disabled.
+ */
+export function isUnoptimizedImage(url?: string | null): boolean {
+  if (!url) return false;
+  const trimmed = url.trim().toLowerCase();
+  if (
+    trimmed.endsWith('.svg') ||
+    trimmed.includes('.svg?') ||
+    trimmed.includes('.svg#') ||
+    trimmed.startsWith('data:image/svg+xml')
+  ) {
+    return true;
+  }
+  // placehold.co serves SVG by default unless explicitly appended with an image raster extension
+  if (trimmed.includes('placehold.co')) {
+    const [pathPart] = trimmed.split('?', 1);
+    if (
+      !pathPart.endsWith('.png') &&
+      !pathPart.endsWith('.webp') &&
+      !pathPart.endsWith('.jpg') &&
+      !pathPart.endsWith('.jpeg')
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+

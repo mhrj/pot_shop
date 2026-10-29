@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { toFa } from '@/lib/format';
+import { isUnoptimizedImage } from '@/lib/image-validation';
 import Container from '@/components/ui/Container';
 
 export const revalidate = 3600;
@@ -134,6 +135,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                         src={article.coverImage}
                         alt={article.title}
                         fill
+                        unoptimized={isUnoptimizedImage(article.coverImage)}
                         className="object-cover transition duration-500 group-hover:scale-105"
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       />

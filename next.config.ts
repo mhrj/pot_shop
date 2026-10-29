@@ -1,4 +1,26 @@
 import type { NextConfig } from 'next';
+import fs from 'fs';
+import path from 'path';
+
+// Ensure .next/cache/images directory exists on startup/build to avoid ENOENT on containerized/PaaS deployments
+try {
+  const baseCache = path.join(process.cwd(), '.next', 'cache');
+  if (fs.existsSync(baseCache)) {
+    const stat = fs.lstatSync(baseCache);
+    if (stat.isSymbolicLink()) {
+      const target = path.resolve(path.dirname(baseCache), fs.readlinkSync(baseCache));
+      if (!fs.existsSync(target)) {
+        fs.mkdirSync(target, { recursive: true });
+      }
+    }
+  }
+  const imagesDir = path.join(process.cwd(), '.next', 'cache', 'images');
+  if (!fs.existsSync(imagesDir)) {
+    fs.mkdirSync(imagesDir, { recursive: true });
+  }
+} catch {
+  // If filesystem is read-only or restricted, continue gracefully
+}
 
 const cspHeader = [
   "default-src 'self'",
@@ -14,7 +36,6 @@ const cspHeader = [
 ].join('; ');
 
 const config: NextConfig = {
-  output: 'standalone',
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,

@@ -12,6 +12,7 @@ import HeroTitle from '@/components/landing/HeroTitle';
 import Container from '@/components/ui/Container';
 import Skeleton from '@/components/ui/Skeleton';
 import ProductCard from '@/components/catalog/ProductCard';
+import { isUnoptimizedImage } from '@/lib/image-validation';
 export const dynamic = 'force-dynamic';
 
 // The home page previously inherited the layout's default title, leaving its
@@ -232,12 +233,13 @@ export default async function HomePage() {
         <div className="order-2 lg:order-1 lg:col-span-5 w-full flex justify-center mt-8 mb-8 lg:mt-0 lg:mb-0">
           <div className="relative w-full max-w-[320px] sm:max-w-[400px] lg:max-w-none mx-auto aspect-square lg:aspect-4/5">
             <Image
-              src={heroImage?.url ?? 'https://placehold.co/800x1000/E8D5C4/3E2723'}
+              src={heroImage?.url || '/images/hero-fallback.webp'}
               alt={heroImage?.alt ?? 'گلدان سفالی دست‌ساز با گیاه سبز'}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 40vw"
               className="object-contain"
+              unoptimized={isUnoptimizedImage(heroImage?.url)}
             />
           </div>
         </div>
@@ -265,6 +267,7 @@ export default async function HomePage() {
               fill
               sizes="(max-width: 1024px) 100vw, 80vw"
               className="object-cover"
+              unoptimized={isUnoptimizedImage(journeyImage.url)}
             />
           </div>
         </Container>
@@ -365,6 +368,7 @@ export default async function HomePage() {
                 fill
                 sizes="100vw"
                 className="object-cover opacity-25"
+                unoptimized={isUnoptimizedImage(ctaImage.url)}
               />
               {/* Scrim keeps body text readable over whatever the admin uploads. */}
               <div

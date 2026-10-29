@@ -28,3 +28,15 @@ export async function verifySessionToken(
     return null;
   }
 }
+
+export function getExpiredSessionCookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    path: '/',
+    maxAge: 0,
+    expires: new Date(0),
+  };
+}
+

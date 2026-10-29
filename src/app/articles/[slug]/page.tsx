@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import Container from '@/components/ui/Container';
+import { isUnoptimizedImage } from '@/lib/image-validation';
 
 export const dynamic = 'force-dynamic';
 
@@ -150,6 +151,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                 priority
                 className="object-cover"
                 sizes="(min-width: 1024px) 768px, 100vw"
+                unoptimized={isUnoptimizedImage(article.coverImage)}
               />
             </div>
           )}
@@ -220,6 +222,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                         fill
                         className="object-cover transition duration-300 group-hover:scale-105"
                         sizes="(min-width: 1024px) 33vw, 100vw"
+                        unoptimized={isUnoptimizedImage(rel.coverImage)}
                       />
                     </div>
                   )}

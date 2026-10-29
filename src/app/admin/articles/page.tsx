@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { toFa } from '@/lib/format';
+import { isUnoptimizedImage } from '@/lib/image-validation';
 import ArticleDeleteButton from '@/components/admin/ArticleDeleteButton';
 
 export const dynamic = 'force-dynamic';
@@ -58,6 +59,7 @@ export default async function AdminArticlesPage() {
                       src={article.coverImage}
                       alt={article.title}
                       fill
+                      unoptimized={isUnoptimizedImage(article.coverImage)}
                       className="object-cover"
                       sizes="64px"
                     />
