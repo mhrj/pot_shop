@@ -22,18 +22,25 @@ try {
   // If filesystem is read-only or restricted, continue gracefully
 }
 
-const cspHeader = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' blob: data: https://placehold.co https://res.cloudinary.com https://storage.iran.liara.ir",
-  "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self' https://*.zarinpal.com https://api.telegram.org https://eitaayar.ir",
-  "frame-ancestors 'self'",
-  "form-action 'self' https://*.zarinpal.com",
-  "base-uri 'self'",
-  "object-src 'none'",
-].join('; ');
+export function getCspHeader(isDev: boolean): string {
+  const directives = [
+    "default-src 'self'",
+    `script-src 'self' ${isDev ? "'unsafe-eval'" : ''} 'unsafe-inline'`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' blob: data: https://placehold.co https://res.cloudinary.com https://storage.iran.liara.ir",
+    "font-src 'self' data: https://fonts.gstatic.com",
+    "connect-src 'self' https://*.zarinpal.com https://api.telegram.org https://eitaayar.ir",
+    "frame-ancestors 'self'",
+    "form-action 'self' https://*.zarinpal.com",
+    "base-uri 'self'",
+    "object-src 'none'",
+  ];
+
+  return directives
+    .map((directive) => directive.replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .join('; ');
+}
 
 const config: NextConfig = {
   reactStrictMode: true,
@@ -57,6 +64,9 @@ const config: NextConfig = {
   },
 
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development';
+    const cspHeader = getCspHeader(isDev);
+
     return [
       {
         source: '/(.*)',
