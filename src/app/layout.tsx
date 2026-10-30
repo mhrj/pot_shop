@@ -4,8 +4,8 @@ import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import TestBanner from '@/components/layout/TestBanner';
-import PersianChatbot from '@/components/chatbot/PersianChatbot';
-import PageViewTracker from '@/components/analytics/PageViewTracker';
+import PersianChatbot from '@/components/layout/PersianChatbot';
+import PageViewTracker from '@/components/layout/PageViewTracker';
 
 const vazirmatn = localFont({
   src: './fonts/Vazirmatn.woff2',

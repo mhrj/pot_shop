@@ -1,26 +1,13 @@
 'use client';
 
-import { forwardRef, useState } from 'react';
+import { useState } from 'react';
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: boolean;
+  ref?: React.Ref<HTMLInputElement>;
 };
 
-/**
- * A password field with a reveal toggle.
- *
- * The sides are spelled physically (`pl-11`, `left-2`) on purpose. The input is
- * pinned to `dir="ltr"` because passwords are typed in Latin, but the button is
- * a sibling of that input, so its `end-*` resolves against the page's direction
- * — RTL, where the inline end is the left edge. Mixing the two conventions puts
- * the icon on the left while padding the right edge, and a long password then
- * runs underneath the icon. Physical values stay correct whichever direction the
- * surrounding page uses.
- */
-const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput(
-  { className, error, ...props },
-  ref,
-) {
+export default function PasswordInput({ className, error, ref, ...props }: Props) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -31,7 +18,7 @@ const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput
         type={visible ? 'text' : 'password'}
         dir="ltr"
         className={
-          `w-full rounded-xl border py-3 pr-4 pl-11 text-sm outline-none transition dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 ${
+          `w-full rounded-xl border py-3 pe-4 ps-11 text-sm outline-none transition dark:bg-flora-950 dark:text-dust-50 dark:placeholder:text-dust-400 ${
             error
               ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500/80 dark:focus:ring-red-500/30'
               : 'border-soil-900/15 focus:border-flora-500 focus:ring-2 focus:ring-flora-500/20 dark:border-dust-50/20 focus:dark:border-flora-500'
@@ -44,13 +31,13 @@ const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput
         aria-label={visible ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}
         aria-pressed={visible}
         tabIndex={-1}
-        className="absolute top-1/2 left-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-soil-700/60 dark:text-dust-400 transition hover:bg-dust-100 dark:hover:bg-flora-900 hover:text-soil-900 dark:hover:text-dust-50 cursor-pointer"
+        className="absolute top-1/2 start-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-soil-700/60 dark:text-dust-400 transition hover:bg-dust-100 dark:hover:bg-flora-900 hover:text-soil-900 dark:hover:text-dust-50 cursor-pointer"
       >
         {visible ? <EyeOffIcon /> : <EyeIcon />}
       </button>
     </div>
   );
-});
+}
 
 function EyeIcon() {
   return (
@@ -89,5 +76,3 @@ function EyeOffIcon() {
     </svg>
   );
 }
-
-export default PasswordInput;

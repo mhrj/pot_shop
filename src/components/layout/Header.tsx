@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { toFa } from '@/lib/format';
-import LogoutButton from '@/components/layout/LogoutButton';
+import LogoutButton from '@/features/auth/components/LogoutButton';
 import MobileNav from '@/components/layout/MobileNav';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 

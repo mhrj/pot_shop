@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { updateOrderStatusAction } from '@/features/admin/actions/order-actions';
+import type { OrderStatus } from '@/lib/orders';
 
 const STATUSES = [
   { key: 'PENDING', label: 'در انتظار پرداخت' },
@@ -43,23 +45,23 @@ export default function OrderStatusForm({
     setError(null);
     setSaved(false);
     startTransition(async () => {
-      const res = await fetch('/api/admin/orders/' + orderId, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status,
-          trackingCode: tracking.trim() || null,
-          shippingCarrier: carrier.trim() || null,
-        }),
+      const res = await updateOrderStatusAction({
+        orderId,
+        status: status as OrderStatus,
+        trackingCode: tracking.trim() || null,
+        shippingCarrier: carrier.trim() || null,
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data?.message ?? 'ذخیره ناموفق بود');
+
+      if (!res.success) {
+        setError(res.error);
         return;
       }
-      setTracking(data?.order?.trackingCode ?? tracking);
-      if (data?.order?.shippingCarrier) {
-        setCarrier(data.order.shippingCarrier);
+
+      if (res.order.trackingCode) {
+        setTracking(res.order.trackingCode);
+      }
+      if (res.order.shippingCarrier) {
+        setCarrier(res.order.shippingCarrier);
       }
       setSaved(true);
       router.refresh();

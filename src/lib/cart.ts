@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { priceCart, type CartTotals, type Tier } from '@/lib/pricing';
 import { parseBundleItems, parseColorOptions } from '@/lib/product-features';
@@ -20,11 +21,30 @@ export function isPaymentAlreadyProcessed(
 export async function getCartTotals(userId: string): Promise<CartTotals> {
   const items = await prisma.cartItem.findMany({
     where: { userId },
-    include: {
+    select: {
+      id: true,
+      productId: true,
+      quantity: true,
+      colorData: true,
       product: {
-        include: {
-          tiers: { orderBy: { minQuantity: 'asc' } },
-          images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          basePriceToman: true,
+          salePriceToman: true,
+          weightGrams: true,
+          unitsPerCarton: true,
+          bundleSize: true,
+          bundleItems: true,
+          stock: true,
+          allowBatchDiscount: true,
+          isActive: true,
+          images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true, alt: true } },
+          tiers: {
+            orderBy: { minQuantity: 'asc' },
+            select: { minQuantity: true, unitPriceToman: true, label: true },
+          },
         },
       },
     },
@@ -65,7 +85,7 @@ export async function addToCart(
   userId: string,
   productId: string,
   quantity: number,
-  colorData?: any,
+  colorData?: Record<string, unknown> | null,
 ) {
   const product = await prisma.product.findFirst({
     where: { id: productId, isActive: true },
@@ -114,8 +134,9 @@ export async function addToCart(
 
   if (!isBundle) {
     const singleColors = parseColorOptions(product.colorOptions, product.stock);
+    const selColor = colorData?.selectedColor as { hexCode?: string } | undefined;
     const chosenHex =
-      colorData?.selectedColor?.hexCode ??
+      selColor?.hexCode ??
       (typeof colorData?.color === 'string' ? colorData.color : null);
 
     if (chosenHex && singleColors.length > 0) {
@@ -128,14 +149,14 @@ export async function addToCart(
     }
   } else if (colorData?.bundleColors) {
     const bundleItems = parseBundleItems(product.bundleItems, product.stock);
-    const bColors = colorData.bundleColors;
+    const bColors = colorData.bundleColors as Record<string | number, unknown>;
     const bundleCount = Math.max(1, Math.floor(target / bundleSize));
 
     for (let idx = 0; idx < bundleItems.length; idx++) {
       const it = bundleItems[idx];
       const itColors = it.colorOptions ?? [];
       const chosen = bColors[idx] ?? bColors[String(idx)];
-      const chosenHex = typeof chosen === 'string' ? chosen : chosen?.hexCode;
+      const chosenHex = typeof chosen === 'string' ? chosen : (chosen as { hexCode?: string })?.hexCode;
 
       if (chosenHex && itColors.length > 0) {
         const opt = itColors.find(
@@ -150,10 +171,12 @@ export async function addToCart(
     }
   }
 
+  const jsonColorData = (colorData as Prisma.InputJsonValue) ?? Prisma.JsonNull;
+
   return prisma.cartItem.upsert({
     where: { userId_productId: { userId, productId } },
-    update: { quantity: target, ...(colorData !== undefined ? { colorData } : {}) },
-    create: { userId, productId, quantity: target, colorData },
+    update: { quantity: target, ...(colorData !== undefined ? { colorData: jsonColorData } : {}) },
+    create: { userId, productId, quantity: target, colorData: jsonColorData },
   });
 }
 

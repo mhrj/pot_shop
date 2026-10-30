@@ -41,7 +41,7 @@ export type PricedLine = {
     unitPriceToman: number;
     saveMoreToman: number;
   } | null;
-  colorData?: any | null;
+  colorData?: unknown;
 };
 
 export type CartTotals = {
@@ -121,7 +121,7 @@ type PriceInput = {
   };
   tiers: Tier[];
   quantity: number;
-  colorData?: any | null;
+  colorData?: unknown;
 };
 
 export function priceLine({ product, tiers, quantity, colorData }: PriceInput): PricedLine {

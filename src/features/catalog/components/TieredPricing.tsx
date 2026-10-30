@@ -136,7 +136,7 @@ export default function TieredPricing({
           (c) => c.hexCode.toUpperCase() === colorCtx.selectedColor?.toUpperCase(),
         );
         if (opt) {
-          const colorName = getColorName(opt.hexCode, (opt as any)?.name, globalColors);
+          const colorName = getColorName(opt.hexCode, opt.name, globalColors);
           return {
             maxCount: Math.max(0, opt.stock),
             limitingItem: opt.stock < product.stock ? {
@@ -179,7 +179,7 @@ export default function TieredPricing({
           const s = opt ? opt.stock : 0;
           if (s < lowestSelectedStock) {
             lowestSelectedStock = s;
-            const cName = getColorName(selectedHex, (opt as any)?.name, globalColors);
+            const cName = getColorName(selectedHex, opt?.name, globalColors);
             const iName = it.title?.trim() || ORDINAL_ITEM_NAMES[idx] || `گلدان ${toFa(idx + 1)}`;
             bottleneck = {
               itemIndex: idx,

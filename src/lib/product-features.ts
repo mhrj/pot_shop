@@ -19,7 +19,7 @@ export function parseFeatures(raw: unknown): ProductFeature[] {
   );
 }
 
-export type ColorOption = { hexCode: string; stock: number };
+export type ColorOption = { hexCode: string; stock: number; name?: string };
 
 export type BundleItem = {
   title: string;
@@ -53,18 +53,20 @@ export function parseColorOptions(raw: unknown, defaultStock: number = 0): Color
         results.push({ hexCode: hex, stock: Math.max(0, defaultStock) });
       }
     } else if (typeof item === 'object' && item !== null) {
-      const rawHex = (item as any).hexCode ?? (item as any).hex;
-      if (typeof rawHex === 'string') {
+      const record = item as Record<string, unknown>;
+      const rawHex = typeof record.hexCode === 'string' ? record.hexCode : typeof record.hex === 'string' ? record.hex : null;
+      if (rawHex) {
         const hex = normalizeHex(rawHex);
         if (hex) {
-          const rawStock = (item as any).stock;
+          const rawStock = record.stock;
           let stockVal = defaultStock;
           if (typeof rawStock === 'number' && Number.isFinite(rawStock) && rawStock >= 0) {
             stockVal = Math.floor(rawStock);
           } else if (typeof rawStock === 'string' && !isNaN(Number(rawStock)) && Number(rawStock) >= 0) {
             stockVal = Math.floor(Number(rawStock));
           }
-          results.push({ hexCode: hex, stock: Math.max(0, stockVal) });
+          const rawName = typeof record.name === 'string' && record.name.trim() ? record.name.trim() : undefined;
+          results.push({ hexCode: hex, stock: Math.max(0, stockVal), name: rawName });
         }
       }
     }

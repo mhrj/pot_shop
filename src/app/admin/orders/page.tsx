@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import OrderStatusBadge from '@/features/admin/components/OrderStatusBadge';
-import StatusBadge from '@/components/ui/StatusBadge';
+import StatusBadge from '@/features/checkout/components/StatusBadge';
 
 const FILTERS = [
   { key: 'all', label: 'همه' },
@@ -35,7 +35,13 @@ export default async function AdminOrdersPage({
     where,
     orderBy: { createdAt: 'desc' },
     take: 100,
-    include: {
+    select: {
+      id: true,
+      orderNumber: true,
+      createdAt: true,
+      totalToman: true,
+      paymentStatus: true,
+      status: true,
       user: { select: { fullName: true, phone: true } },
       _count: { select: { items: true } },
     },

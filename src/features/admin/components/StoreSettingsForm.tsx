@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import ProvinceCitySelect from '@/components/ui/ProvinceCitySelect';
 import { resolveCityCode } from '@/lib/postex';
 import { toFa } from '@/lib/format';
+import { updateStoreSettingsAction } from '@/features/admin/actions/settings-actions';
 
 type SettingsRecord = {
   id?: string;
@@ -18,13 +19,13 @@ export default function StoreSettingsForm({
 }) {
   const [province, setProvince] = useState(initialSettings.originProvince || 'تهران');
   const [city, setCity] = useState(initialSettings.originCity || 'تهران');
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const cityCode = resolveCityCode(city);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
@@ -38,32 +39,20 @@ export default function StoreSettingsForm({
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/admin/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          originProvince: province,
-          originCity: city,
-        }),
+    startTransition(async () => {
+      const res = await updateStoreSettingsAction({
+        originProvince: province,
+        originCity: city,
       });
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        setError(data?.message || 'خطا در ذخیره تنظیمات');
+      if (!res.success) {
+        setError(res.error);
         return;
       }
 
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
-    } catch {
-      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -137,10 +126,10 @@ export default function StoreSettingsForm({
       <div className="flex items-center justify-end pt-2">
         <button
           type="submit"
-          disabled={loading}
+          disabled={isPending}
           className="rounded-2xl bg-flora-900 dark:bg-flora-700 px-6 py-3 text-sm font-black text-white shadow-md shadow-flora-900/20 dark:shadow-none transition hover:bg-flora-700 dark:hover:bg-flora-900 disabled:opacity-60 cursor-pointer"
         >
-          {loading ? 'در حال ثبت…' : 'ثبت تنظیمات'}
+          {isPending ? 'در حال ثبت…' : 'ثبت تنظیمات'}
         </button>
       </div>
     </form>

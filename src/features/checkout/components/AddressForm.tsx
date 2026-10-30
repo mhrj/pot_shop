@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import ProvinceCitySelect from '@/components/ui/ProvinceCitySelect';
 import { FormError } from '@/components/ui/FormError';
 import { IRANIAN_MOBILE_REGEX } from '@/lib/address';
+import { saveAddressAction } from '@/features/checkout/actions/address-actions';
 
 export type AddressRecord = {
   id: string;
@@ -81,7 +82,7 @@ export default function AddressForm({
   const [form, setForm] = useState<FormState>(() => toFormState(address));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [phoneError, setPhoneError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
@@ -158,31 +159,16 @@ export default function AddressForm({
     }
 
     setErrors({});
-    setLoading(true);
-
-    try {
-      const res = await fetch(
-        editing ? `/api/addresses/${address!.id}` : '/api/addresses',
-        {
-          method: editing ? 'PATCH' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        },
-      );
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        setError(data?.message ?? 'ذخیره آدرس با خطا مواجه شد');
+    startTransition(async () => {
+      const res = await saveAddressAction(form, address?.id);
+      if (!res.success) {
+        setError(res.error);
         return;
       }
 
-      onSaved(data.address as AddressRecord);
+      onSaved(res.address as AddressRecord);
       if (!editing) setForm({ ...EMPTY_FORM });
-    } catch {
-      setError('ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کرده و دوباره تلاش کنید.');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -367,10 +353,10 @@ export default function AddressForm({
       <div className="flex gap-3">
         <button
           type="submit"
-          disabled={loading}
+          disabled={isPending}
           className="flex-1 rounded-2xl bg-flora-900 text-white dark:bg-flora-500 dark:text-flora-950 dark:hover:bg-flora-700 px-6 py-3 text-sm font-black transition-colors hover:bg-flora-700 disabled:opacity-60 cursor-pointer"
         >
-          {loading ? 'در حال ذخیره…' : editing ? 'ثبت تغییرات' : 'ذخیره آدرس'}
+          {isPending ? 'در حال ذخیره…' : editing ? 'ثبت تغییرات' : 'ذخیره آدرس'}
         </button>
         {editing && onCancel && (
           <button

@@ -27,7 +27,12 @@ export default async function AdminTagsPage() {
 
   const tags = await prisma.tag.findMany({
     orderBy: { name: 'asc' },
-    include: { _count: { select: { products: true } } },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      _count: { select: { products: true } },
+    },
   });
 
   return (

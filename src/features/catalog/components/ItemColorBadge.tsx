@@ -58,23 +58,26 @@ export default function ItemColorBadge({ colorData, className = '' }: Props) {
     if (typeof data.color === 'string') {
       singleColor = data.color;
     } else if (typeof data.color === 'object' && data.color !== null && 'hexCode' in data.color) {
-      singleColor = String((data.color as any).hexCode);
-      if ('name' in data.color && (data.color as any).name) {
-        singleColorName = String((data.color as any).name);
+      const col = data.color as Record<string, unknown>;
+      singleColor = String(col.hexCode);
+      if ('name' in col && col.name) {
+        singleColorName = String(col.name);
       }
     } else if (typeof data.selectedColor === 'object' && data.selectedColor !== null && 'hexCode' in data.selectedColor) {
-      singleColor = String((data.selectedColor as any).hexCode);
-      if ('name' in data.selectedColor && (data.selectedColor as any).name) {
-        singleColorName = String((data.selectedColor as any).name);
+      const col = data.selectedColor as Record<string, unknown>;
+      singleColor = String(col.hexCode);
+      if ('name' in col && col.name) {
+        singleColorName = String(col.name);
       }
     }
     if (typeof data.bundleColors === 'object' && data.bundleColors !== null) {
       const bMap: Record<string, { hex: string; name?: string }> = {};
-      for (const [k, v] of Object.entries(data.bundleColors as Record<string, any>)) {
+      for (const [k, v] of Object.entries(data.bundleColors as Record<string, unknown>)) {
         if (typeof v === 'string') {
           bMap[k] = { hex: v };
         } else if (typeof v === 'object' && v !== null && 'hexCode' in v) {
-          bMap[k] = { hex: String(v.hexCode), name: v.name ? String(v.name) : undefined };
+          const valObj = v as Record<string, unknown>;
+          bMap[k] = { hex: String(valObj.hexCode), name: valObj.name ? String(valObj.name) : undefined };
         }
       }
       bundleColors = bMap;

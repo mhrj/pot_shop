@@ -10,7 +10,7 @@ export function getVisitorHash(req: Request): string {
   const forwarded = req.headers.get('x-forwarded-for');
   const ip = forwarded
     ? forwarded.split(',')[0].trim()
-    : (req as any).ip || req.headers.get('x-real-ip') || '127.0.0.1';
+    : (req as Request & { ip?: string }).ip || req.headers.get('x-real-ip') || '127.0.0.1';
   const userAgent = req.headers.get('user-agent') || 'unknown';
   const dailySalt = new Date().toISOString().split('T')[0];
 

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import Container from '@/components/ui/Container';
+import { submitWholesaleInquiryAction } from '@/features/landing/actions/wholesale-actions';
 
 export default function WholesaleInquiryForm() {
   const [formData, setFormData] = useState({
@@ -12,12 +13,12 @@ export default function WholesaleInquiryForm() {
     message: '',
   });
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setFieldErrors({});
@@ -38,27 +39,14 @@ export default function WholesaleInquiryForm() {
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/wholesale', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'خطایی در ثبت درخواست رخ داد.');
+    startTransition(async () => {
+      const res = await submitWholesaleInquiryAction(formData);
+      if (!res.success) {
+        setError(res.error);
+        return;
       }
-
       setSuccess(true);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'خطای ناشناخته در ارتباط با سرور.');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -243,11 +231,11 @@ export default function WholesaleInquiryForm() {
 
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={isPending}
                       className="group relative w-full overflow-hidden rounded-xl bg-flora-500 py-3 text-xs font-bold text-soil-950 shadow-lg shadow-flora-500/25 transition duration-300 hover:bg-flora-300 active:scale-[0.99] disabled:opacity-60"
                     >
                       <span className="flex items-center justify-center gap-2">
-                        {loading ? (
+                        {isPending ? (
                           <>
                             <span className="size-4 animate-spin rounded-full border-2 border-soil-950 border-t-transparent" />
                             در حال ثبت استعلام...

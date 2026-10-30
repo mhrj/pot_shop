@@ -64,7 +64,7 @@ function parseItemColorData(raw: unknown): {
     }
   }
   if (typeof parsed !== 'object' || parsed === null) return {};
-  return parsed as any;
+  return parsed as ReturnType<typeof parseItemColorData>;
 }
 
 export default function BundleDetailsAccordion({
@@ -107,8 +107,8 @@ export default function BundleDetailsAccordion({
     if (typeof v === 'string' && v.trim()) {
       bundleColors[k] = { hex: v.trim() };
     } else if (v && typeof v === 'object') {
-      const hex = typeof (v as any).hexCode === 'string' ? (v as any).hexCode.trim() : '';
-      const name = typeof (v as any).name === 'string' ? (v as any).name.trim() : undefined;
+      const hex = typeof v.hexCode === 'string' ? v.hexCode.trim() : '';
+      const name = typeof v.name === 'string' ? v.name.trim() : undefined;
       if (hex) {
         bundleColors[k] = { hex, name };
       }

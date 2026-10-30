@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { getActiveAdmin } from '@/lib/auth';
 import { persistedImageUrlSchema } from '@/lib/image-validation';
@@ -141,7 +142,7 @@ export async function POST(req: Request) {
       categoryId: data.categoryId ? data.categoryId : null,
       material: data.material,
       color: data.color || null,
-      colorOptions: data.colorOptions && data.colorOptions.length > 0 ? (data.colorOptions as any) : null,
+      colorOptions: data.colorOptions && data.colorOptions.length > 0 ? (data.colorOptions as Prisma.InputJsonValue) : Prisma.JsonNull,
       diameterCm: data.diameterCm,
       heightCm: data.heightCm,
       weightGrams: data.weightGrams,
@@ -149,7 +150,7 @@ export async function POST(req: Request) {
       unitsPerCarton: data.unitsPerCarton,
       bundleSize: data.bundleSize ?? 1,
       minOrderQuantity: data.minOrderQuantity ?? 1,
-      bundleItems: data.bundleItems && data.bundleItems.length > 0 ? (data.bundleItems as any) : null,
+      bundleItems: data.bundleItems && data.bundleItems.length > 0 ? (data.bundleItems as Prisma.InputJsonValue) : Prisma.JsonNull,
       basePriceToman: data.basePriceToman,
       salePriceToman: data.salePriceToman && data.salePriceToman > 0 ? data.salePriceToman : null,
       isActive: data.isActive,

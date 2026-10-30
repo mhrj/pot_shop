@@ -15,7 +15,7 @@ type RichTextEditorProps = {
 export default function RichTextEditor({
   content,
   onChange,
-  placeholder = 'محتوای مقاله را اینجا بنویسید...',
+  placeholder: _placeholder = 'محتوای مقاله را اینجا بنویسید...',
 }: RichTextEditorProps) {
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -32,12 +32,12 @@ export default function RichTextEditor({
       StarterKit.configure({
         bulletList: {
           HTMLAttributes: {
-            class: 'list-disc pr-6 space-y-1',
+            class: 'list-disc ps-6 space-y-1',
           },
         },
         orderedList: {
           HTMLAttributes: {
-            class: 'list-decimal pr-6 space-y-1',
+            class: 'list-decimal ps-6 space-y-1',
           },
         },
       }),

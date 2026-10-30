@@ -7,7 +7,7 @@ import { formatToman, toFa } from '@/lib/format';
 import { isUnoptimizedImage } from '@/lib/image-validation';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import type { PricedLine } from '@/lib/pricing';
-import ItemColorBadge from '@/components/ui/ItemColorBadge';
+import ItemColorBadge from '@/features/catalog/components/ItemColorBadge';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
 export default function CartItemRow({ line, stock }: { line: PricedLine; stock: number }) {

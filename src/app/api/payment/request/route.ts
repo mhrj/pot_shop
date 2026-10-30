@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { randomBytes } from 'node:crypto';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
-import { getStockShortages } from '@/lib/cart';
 import { calcShippingToman, priceCart, type Tier } from '@/lib/pricing';
 import { calculateShippingCost, resolveCityCode } from '@/lib/postex';
 import { parseBundleItems, parseColorOptions } from '@/lib/product-features';
@@ -53,11 +53,39 @@ export async function POST(req: Request) {
   // 2) Read cart from the database. Never trust client-side totals.
   const cart = await prisma.cartItem.findMany({
     where: { userId },
-    include: {
+    select: {
+      id: true,
+      productId: true,
+      quantity: true,
+      colorData: true,
       product: {
-        include: {
-          tiers: { orderBy: { minQuantity: 'asc' } },
-          images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          sku: true,
+          material: true,
+          diameterCm: true,
+          heightCm: true,
+          weightGrams: true,
+          unitsPerCarton: true,
+          basePriceToman: true,
+          salePriceToman: true,
+          stock: true,
+          bundleSize: true,
+          allowBatchDiscount: true,
+          isActive: true,
+          bundleItems: true,
+          colorOptions: true,
+          tiers: {
+            orderBy: { minQuantity: 'asc' },
+            select: { minQuantity: true, unitPriceToman: true, label: true },
+          },
+          images: {
+            orderBy: { sortOrder: 'asc' },
+            take: 1,
+            select: { url: true, alt: true },
+          },
         },
       },
     },
@@ -226,9 +254,9 @@ export async function POST(req: Request) {
         create: totals.lines.map((l, idx) => {
           const cartItem = activeItems[idx] ?? activeItems.find((ai) => ai.product.id === l.productId);
           const isBundle = (l.bundleSize ?? 1) > 1;
-          const rawColorData = (l.colorData ?? cartItem?.colorData ?? null) as Record<string, any> | null;
+          const rawColorData = (l.colorData ?? cartItem?.colorData ?? null) as Record<string, unknown> | null;
 
-          let itemColorData: any = rawColorData;
+          let itemColorData: Record<string, unknown> | null = rawColorData;
           if (isBundle && cartItem?.product) {
             const bItems = parseBundleItems(cartItem.product.bundleItems, cartItem.product.stock);
             itemColorData = {
@@ -258,7 +286,7 @@ export async function POST(req: Request) {
             lineTotalToman: l.lineTotalToman,
             lineSavingsToman: l.lineSavingsToman,
             tierLabel: l.tierLabel,
-            colorData: itemColorData ?? null,
+            colorData: (itemColorData as Prisma.InputJsonValue) ?? Prisma.JsonNull,
             isBundle,
             bundleSize: l.bundleSize ?? 1,
           };

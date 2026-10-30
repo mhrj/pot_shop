@@ -51,3 +51,5 @@ export async function getContentMap() {
     }),
   ) as Record<keyof typeof DEFAULT_CONTENT, { title: string; body: string }>;
 }
+
+export type ContentMap = Awaited<ReturnType<typeof getContentMap>>;

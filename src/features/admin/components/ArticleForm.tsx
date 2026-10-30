@@ -149,7 +149,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
         <div>
           <label className="block text-xs font-bold text-soil-800 dark:text-dust-200 mb-2">
             نامک یکتا (Slug)
-            <span className="mr-2 text-[11px] font-normal text-soil-700/60 dark:text-dust-200/60">
+            <span className="ms-2 text-[11px] font-normal text-soil-700/60 dark:text-dust-200/60">
               (در صورت خالی بودن، به صورت خودکار از عنوان تولید می‌شود)
             </span>
           </label>
@@ -212,7 +212,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
         <div>
           <label className="block text-xs font-bold text-soil-800 dark:text-dust-200 mb-2">
             خلاصه مقاله (Excerpt)
-            <span className="mr-2 text-[11px] font-normal text-soil-700/60 dark:text-dust-200/60">
+            <span className="ms-2 text-[11px] font-normal text-soil-700/60 dark:text-dust-200/60">
               (متن کوتاه برای نمایش در کارت‌های لیست مقالات و پیش‌نمایش شبکه‌های اجتماعی)
             </span>
           </label>
@@ -229,7 +229,7 @@ export default function ArticleForm({ initialData }: ArticleFormProps) {
         <div>
           <label className="block text-xs font-bold text-soil-800 dark:text-dust-200 mb-2">
             برچسب‌ها (Tags)
-            <span className="mr-2 text-[11px] font-normal text-soil-700/60 dark:text-dust-200/60">
+            <span className="ms-2 text-[11px] font-normal text-soil-700/60 dark:text-dust-200/60">
               (برچسب‌ها را با ویرگول یا کاما جدا کنید، مثال: خاک، گلدان، نگهداری)
             </span>
           </label>

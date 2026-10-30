@@ -56,8 +56,15 @@ export async function POST(req: Request) {
       type: 'PASSWORD_RESET',
       usedAt: null,
     },
-    orderBy: { createdAt: 'desc' },
-    include: { user: true },
+    select: {
+      id: true,
+      codeHash: true,
+      attempts: true,
+      expiresAt: true,
+      user: {
+        select: { id: true },
+      },
+    },
   });
 
   if (!verification) {
@@ -109,7 +116,7 @@ export async function POST(req: Request) {
   }
 
   // Find user
-  const user = verification.user ?? (await prisma.user.findUnique({ where: { phone } }));
+  const user = verification.user ?? (await prisma.user.findUnique({ where: { phone }, select: { id: true } }));
   if (!user) {
     return NextResponse.json(
       { message: 'کاربری با این شماره موبایل یافت نشد' },

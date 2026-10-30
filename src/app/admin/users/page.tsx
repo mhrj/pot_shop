@@ -25,7 +25,14 @@ export default async function AdminUsersPage({ searchParams }: Props) {
   const users = await prisma.user.findMany({
     where,
     orderBy: { createdAt: 'desc' },
-    include: {
+    select: {
+      id: true,
+      fullName: true,
+      phone: true,
+      email: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
       orders: {
         select: {
           totalToman: true,
@@ -205,7 +212,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                           {paidSpent > 0 ? formatToman(paidSpent) : '۰ تومان'}
                         </Link>
                       </td>
-                      <td className="px-4 py-3.5 text-left">
+                      <td className="px-4 py-3.5 text-end">
                         <Link
                           href={`/admin/users/${user.id}`}
                           className="inline-flex items-center text-xs font-bold text-flora-700 dark:text-flora-300 hover:text-flora-900 dark:hover:text-flora-300"

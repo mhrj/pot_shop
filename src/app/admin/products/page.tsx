@@ -9,9 +9,27 @@ export default async function AdminProductsPage() {
   await requireAdmin();
 
   const products = await prisma.product.findMany({
-    include: {
-      images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-      tags: { include: { tag: true } },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      sku: true,
+      material: true,
+      basePriceToman: true,
+      bundleSize: true,
+      stock: true,
+      isActive: true,
+      isFeatured: true,
+      images: {
+        orderBy: { sortOrder: 'asc' },
+        take: 1,
+        select: { url: true, alt: true },
+      },
+      tags: {
+        select: {
+          tag: { select: { id: true, name: true } },
+        },
+      },
       _count: { select: { orderItems: true } },
     },
     orderBy: { createdAt: 'desc' },

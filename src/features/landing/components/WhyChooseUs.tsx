@@ -94,7 +94,7 @@ export default function WhyChooseUs() {
 
             const cardBody = (
               <div
-                className={`flex h-full flex-col justify-between rounded-3xl border ${adv.border} dark:border-dust-100/10 bg-gradient-to-b ${adv.color} dark:from-flora-900 dark:to-flora-900 dark:bg-flora-900 p-7 shadow-sm text-right ${
+                className={`flex h-full flex-col justify-between rounded-3xl border ${adv.border} dark:border-dust-100/10 bg-gradient-to-b ${adv.color} dark:from-flora-900 dark:to-flora-900 dark:bg-flora-900 p-7 shadow-sm text-start ${
                   isClickable
                     ? 'transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-black/40'
                     : ''
@@ -114,10 +114,10 @@ export default function WhyChooseUs() {
                     </span>
                   </div>
 
-                  <h3 className="mt-6 text-lg font-black text-soil-900 dark:text-dust-50 text-right leading-tight">
+                  <h3 className="mt-6 text-lg font-black text-soil-900 dark:text-dust-50 text-start leading-tight">
                     {adv.title}
                   </h3>
-                  <p className="mt-3 text-xs leading-6 sm:text-sm sm:leading-7 text-soil-700/85 dark:text-dust-200/85 text-right">
+                  <p className="mt-3 text-xs leading-6 sm:text-sm sm:leading-7 text-soil-700/85 dark:text-dust-200/85 text-start">
                     {adv.description}
                   </p>
                 </div>

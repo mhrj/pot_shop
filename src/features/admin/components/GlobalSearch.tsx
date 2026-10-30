@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatToman, toFa, toEn, formatDateFa } from '@/lib/format';
@@ -233,7 +233,7 @@ export default function GlobalSearch() {
                         <button
                           type="button"
                           onClick={() => handleSelect(`/admin/users/${user.id}`)}
-                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-start transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
                         >
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-bold text-soil-900 dark:text-dust-50 truncate">
@@ -294,7 +294,7 @@ export default function GlobalSearch() {
                         <button
                           type="button"
                           onClick={() => handleSelect(`/admin/orders/${order.id}`)}
-                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-start transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
                         >
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-bold text-soil-900 dark:text-dust-50 truncate">
@@ -307,7 +307,7 @@ export default function GlobalSearch() {
                               مشتری: {order.user?.fullName || 'کاربر ناشناس'}
                             </p>
                           </div>
-                          <div className="text-left ms-3">
+                          <div className="text-end ms-3">
                             <p className="text-xs font-black text-soil-900 dark:text-dust-50">
                               {formatToman(order.totalToman)}
                             </p>
@@ -341,7 +341,7 @@ export default function GlobalSearch() {
                         <button
                           type="button"
                           onClick={() => handleSelect(`/admin/products/${prod.id}`)}
-                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-right transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-start transition hover:bg-dust-50 dark:hover:bg-flora-950/70 focus:bg-dust-100 dark:focus:bg-flora-950"
                         >
                           <div className="flex items-center gap-3 min-w-0 flex-1">
                             {prod.images?.[0]?.url ? (
@@ -364,7 +364,7 @@ export default function GlobalSearch() {
                               </p>
                             </div>
                           </div>
-                          <div className="text-left ms-3">
+                          <div className="text-end ms-3">
                             <p className="text-xs font-black text-soil-900 dark:text-dust-50">
                               {formatToman(prod.basePriceToman)}
                             </p>

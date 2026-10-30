@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import OrderStatusBadge from '@/features/admin/components/OrderStatusBadge';
-import StatusBadge from '@/components/ui/StatusBadge';
+import StatusBadge from '@/features/checkout/components/StatusBadge';
 import UserManagementActions from '@/features/admin/components/UserManagementActions';
 import { formatCarrierName } from '@/lib/orders';
 
@@ -19,9 +19,29 @@ export default async function AdminUserDetailPage({ params }: Props) {
   const [user, orders] = await Promise.all([
     prisma.user.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        fullName: true,
+        phone: true,
+        email: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        lastLoginAt: true,
         addresses: {
           orderBy: { isDefault: 'desc' },
+          select: {
+            id: true,
+            label: true,
+            fullName: true,
+            phone: true,
+            province: true,
+            city: true,
+            line1: true,
+            line2: true,
+            postalCode: true,
+            isDefault: true,
+          },
         },
       },
     }),
@@ -29,8 +49,24 @@ export default async function AdminUserDetailPage({ params }: Props) {
       where: { userId: id },
       orderBy: { createdAt: 'desc' },
       take: 30,
-      include: {
-        items: { take: 4 },
+      select: {
+        id: true,
+        orderNumber: true,
+        status: true,
+        paymentStatus: true,
+        createdAt: true,
+        totalToman: true,
+        shippingCarrier: true,
+        refId: true,
+        trackingCode: true,
+        items: {
+          take: 4,
+          select: {
+            id: true,
+            imageUrl: true,
+            productName: true,
+          },
+        },
         _count: { select: { items: true } },
       },
     }),

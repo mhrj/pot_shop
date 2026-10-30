@@ -5,11 +5,11 @@ import { requireAdmin } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
 import OrderStatusBadge from '@/features/admin/components/OrderStatusBadge';
 import OrderStatusForm from '@/features/admin/components/OrderStatusForm';
-import StatusBadge from '@/components/ui/StatusBadge';
-import ItemColorBadge from '@/components/ui/ItemColorBadge';
-import PrintInvoiceButton from '@/components/orders/PrintInvoiceButton';
-import BundleDetailsAccordion from '@/components/orders/BundleDetailsAccordion';
-import { isOrderStatus, ORDER_STATUS_LABELS, TIMELINE, formatCarrierName, getNextShippingDay, getNextShippingDate } from '@/lib/orders';
+import StatusBadge from '@/features/checkout/components/StatusBadge';
+import ItemColorBadge from '@/features/catalog/components/ItemColorBadge';
+import PrintInvoiceButton from '@/features/checkout/components/PrintInvoiceButton';
+import BundleDetailsAccordion from '@/features/checkout/components/BundleDetailsAccordion';
+import { isOrderStatus, ORDER_STATUS_LABELS, TIMELINE, formatCarrierName, getNextShippingDate } from '@/lib/orders';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -36,10 +36,47 @@ export default async function AdminOrderDetailPage({ params }: Props) {
 
   const order = await prisma.order.findUnique({
     where: { id },
-    include: {
+    select: {
+      id: true,
+      orderNumber: true,
+      status: true,
+      paymentStatus: true,
+      createdAt: true,
+      trackingCode: true,
+      shippingCarrier: true,
+      note: true,
+      subtotalToman: true,
+      discountToman: true,
+      shippingToman: true,
+      totalToman: true,
+      channel: true,
+      refId: true,
+      paidAt: true,
+      cardPan: true,
+      shipFullName: true,
+      shipPhone: true,
+      shipProvince: true,
+      shipCity: true,
+      shipLine1: true,
+      shipLine2: true,
+      shipPostalCode: true,
       user: { select: { fullName: true, phone: true, email: true } },
       items: {
-        include: {
+        select: {
+          id: true,
+          productSlug: true,
+          productName: true,
+          sku: true,
+          imageUrl: true,
+          material: true,
+          diameterCm: true,
+          heightCm: true,
+          bundleSize: true,
+          colorData: true,
+          quantity: true,
+          unitToman: true,
+          lineTotalToman: true,
+          tierLabel: true,
           product: {
             select: {
               bundleItems: true,

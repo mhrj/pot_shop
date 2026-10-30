@@ -17,7 +17,37 @@ export default async function SuccessPage({ searchParams }: Props) {
   const order = orderNumber
     ? await prisma.order.findUnique({
         where: { orderNumber },
-        include: { items: true },
+        select: {
+          id: true,
+          orderNumber: true,
+          paymentStatus: true,
+          refId: true,
+          userId: true,
+          createdAt: true,
+          paidAt: true,
+          totalToman: true,
+          shippingToman: true,
+          shippingCarrier: true,
+          shipProvince: true,
+          shipCity: true,
+          shipLine1: true,
+          shipLine2: true,
+          shipPostalCode: true,
+          shipFullName: true,
+          shipPhone: true,
+          items: {
+            select: {
+              id: true,
+              productName: true,
+              quantity: true,
+              unitToman: true,
+              lineTotalToman: true,
+              isBundle: true,
+              bundleSize: true,
+              colorData: true,
+            },
+          },
+        },
       })
     : null;
 

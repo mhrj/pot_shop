@@ -6,8 +6,8 @@ import { calcShippingToman, type CartTotals } from "@/lib/pricing";
 import { formatToman, formatWeight, toFa } from "@/lib/format";
 import { numberToWordsFa } from "@/lib/number-to-words";
 import { resolveCityCode } from "@/lib/postex";
-import ItemColorBadge from "@/components/ui/ItemColorBadge";
-import ShippingScheduleNotice from "@/components/ui/ShippingScheduleNotice";
+import ItemColorBadge from "@/features/catalog/components/ItemColorBadge";
+import ShippingScheduleNotice from "@/features/checkout/components/ShippingScheduleNotice";
 
 type Address = {
   id: string;
@@ -61,7 +61,7 @@ export default function CheckoutForm({
     addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id ?? "",
   );
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
-  const [selectedCarrier, setSelectedCarrier] = useState<string>("پست پیشتاز");
+  const selectedCarrier = "پست پیشتاز";
   const [calculatingShipping, setCalculatingShipping] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);

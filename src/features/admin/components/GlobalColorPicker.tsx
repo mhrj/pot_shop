@@ -47,7 +47,7 @@ export default function GlobalColorPicker({
         <Link
           href="/admin/colors"
           target="_blank"
-          className="font-bold text-flora-700 dark:text-flora-300 underline hover:text-flora-900 dark:hover:text-flora-300 transition mr-1"
+          className="font-bold text-flora-700 dark:text-flora-300 underline hover:text-flora-900 dark:hover:text-flora-300 transition ms-1"
         >
           مدیریت و ثبت رنگ‌ها در پنل
         </Link>
@@ -143,7 +143,7 @@ export default function GlobalColorPicker({
                   <span className="font-bold text-soil-900 dark:text-dust-50">{name}</span>
                   <span className="font-mono text-[10px] text-soil-700/60 dark:text-dust-200/60 dir-ltr">{color.hexCode}</span>
 
-                  <div className="flex items-center gap-1.5 text-[11px] text-soil-700 dark:text-dust-200 font-medium border-r border-soil-900/10 dark:border-dust-50/10 pr-2 mr-1">
+                  <div className="flex items-center gap-1.5 text-[11px] text-soil-700 dark:text-dust-200 font-medium border-e border-soil-900/10 dark:border-dust-50/10 pe-2 me-1">
                     <label htmlFor={`color-stock-${color.hexCode.replace('#', '')}`}>
                       موجودی:
                     </label>

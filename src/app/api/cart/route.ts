@@ -15,7 +15,7 @@ const addSchema = z.object({
   quantity: z.coerce.number().int().min(1).max(5000),
   color: z.union([z.string(), colorOptionSchema]).optional().nullable(),
   selectedColor: colorOptionSchema.optional().nullable(),
-  bundleColors: z.record(z.string(), z.any()).optional().nullable(),
+  bundleColors: z.record(z.string(), z.unknown()).optional().nullable(),
 });
 
 export async function GET() {
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
         ? parsed.data.color
         : selectedColorObj?.hexCode ?? null;
 
-    let colorData: any = null;
+    let colorData: Record<string, unknown> | null = null;
     if (selectedColorObj) {
       colorData = {
         color: colorHex,
