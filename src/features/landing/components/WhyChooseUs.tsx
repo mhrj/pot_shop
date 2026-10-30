@@ -4,14 +4,14 @@ import Container from '@/components/ui/Container';
 const ADVANTAGES = [
   {
     tag: 'گلدان و دکور',
-    title: 'از دکور تا نگهداری گیاه',
+    title: 'گلدون برای هر سلیقه',
     slug: 'pots-decor',
     description:
-      'گلدان‌های سفالی، سرامیکی و دکوراتیو در طرح‌ها و اندازه‌های متنوع؛ برای زیباتر کردن فضای خانه و انتخاب بستری مناسب برای گیاهان.',
+      'از گلدون‌های ساده تا مدل‌های خاص، برای هر گوشه از خونه یه انتخاب داریم.',
     color: 'from-dust-100 to-dust-200/80',
     border: 'border-dust-300/80',
     iconBg: 'bg-dust-300 text-soil-900',
-    action: 'مشاهده گلدان‌ها',
+    action: 'دیدن گلدون‌ها',
     href: '/products?category=pots-decor',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -22,14 +22,14 @@ const ADVANTAGES = [
   },
   {
     tag: 'خاک و بستر رشد',
-    title: 'هر گیاه، خاک مناسب خودش',
+    title: 'خاک مناسب گیاهت',
     slug: 'soil-growth',
     description:
-      'از خاک‌های عمومی تا ترکیب‌های مخصوص گیاهان مختلف، بستری متناسب با نیاز ریشه، میزان رطوبت و شرایط رشد گیاه انتخاب کنید.',
+      'خاک هر گیاه فرق داره. گزینه‌های مختلف رو ببین و مناسب گیاهت انتخاب کن.',
     color: 'from-flora-100/70 to-flora-300/50',
     border: 'border-flora-300/60',
     iconBg: 'bg-flora-300 text-flora-900',
-    action: 'انواع خاک و بستر',
+    action: 'دیدن انواع خاک',
     href: '/products?category=soil-growth',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -41,14 +41,14 @@ const ADVANTAGES = [
   },
   {
     tag: 'لوازم نگهداری',
-    title: 'همه‌چیز برای رسیدگی بهتر',
+    title: 'وسایل نگهداری گیاه',
     slug: 'tools-care',
     description:
-      'ابزار و لوازم کاربردی موردنیاز برای کاشت، تعویض گلدان و مراقبت روزمره از گیاهان را یکجا پیدا کنید.',
+      'از ابزار باغبانی تا وسایل مراقبت از گیاه، چیزهای کاربردی رو یکجا پیدا کن.',
     color: 'from-white to-dust-100/70',
     border: 'border-soil-900/10',
     iconBg: 'bg-soil-100 text-soil-900',
-    action: 'مشاهده ابزارها',
+    action: 'دیدن ابزارها',
     href: '/products?category=tools-care',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -58,14 +58,14 @@ const ADVANTAGES = [
   },
   {
     tag: 'راهنمای جامع',
-    title: 'راهنمای انتخاب و نگهداری',
+    title: 'کمک برای نگهداری بهتر',
     slug: 'product-guide',
     description:
-      'با مطالعه مقالات کارشناسان ما، بهترین گلدان و خاک را برای گیاه خود انتخاب کنید.',
+      'نکته‌های ساده و کاربردی برای انتخاب گلدون، خاک و مراقبت از گیاه‌ها.',
     color: 'from-flora-300/40 to-flora-300/30',
     border: 'border-flora-300/40',
     iconBg: 'bg-flora-300 text-flora-950',
-    action: 'مطالعه مقالات',
+    action: 'خواندن مطالب',
     href: '/articles',
     icon: (
       <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

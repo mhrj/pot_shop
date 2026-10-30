@@ -117,10 +117,15 @@ export default function LandingPageView({
     <section className="py-24">
       <Container className="max-w-3xl text-center">
         <h2 className="text-3xl font-black text-soil-900 dark:text-dust-50 sm:text-4xl">
-          {content.about_title.body}
+          درباره پات استور
         </h2>
-        <p className="mt-5 leading-8 text-soil-700/85 dark:text-dust-200/85">
-          {content.about_body.body}
+        <p className="mt-5 leading-8 text-soil-700/85 dark:text-dust-200/85 whitespace-pre-line">
+          از گلدون و خاک گرفته تا وسایل نگهداری گیاه، هرچی برای گل‌وگیاه‌هاتون لازم دارید، اینجا پیدا می‌کنید.
+          {'\n\n'}
+          چه تازه شروع کرده باشید، چه مدت‌هاست از گیاه‌هاتون مراقبت می‌کنید، سعی می‌کنیم انتخاب رو براتون راحت‌تر کنیم.
+        </p>
+        <p className="mt-5 text-base font-bold text-flora-700 dark:text-flora-300">
+          پات استور؛ برای حال خوب گیاه‌هاتون 🌱
         </p>
       </Container>
 
@@ -129,7 +134,7 @@ export default function LandingPageView({
           <div className="relative aspect-21/9 overflow-hidden rounded-pot bg-white border border-soil-900/5 dark:border-dust-50/10 shadow-[0_12px_32px_-12px_rgba(62,39,35,0.22)] dark:shadow-none">
             <Image
               src={journeyImage.url}
-              alt={journeyImage.alt ?? 'مسیر ساخت گلدان از خاک تا رویش'}
+              alt={journeyImage.alt ?? 'همراهی با گیاهان از خاک تا رویش'}
               fill
               sizes="(max-width: 1024px) 100vw, 80vw"
               className="object-cover"
@@ -251,17 +256,17 @@ export default function LandingPageView({
                 ✨ بدون نیاز به کد تخفیف
               </span>
               <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl leading-tight">
-                خرید عمده و تخفیف پلکانی برای خریدهای بیشتر
+                خرید عمده، به‌صرفه‌تر
               </h2>
               <p className="mt-4 text-sm sm:text-base leading-8 text-flora-100/90">
-                چه برای خانه‌تان چند گلدان بخواهید، چه برای کافه‌تان ۲۰ عدد؛ نیازی به چانه‌زنی نیست. با افزایش تعداد سفارش، قیمت هر واحد به صورت خودکار کاهش می‌یابد.
+                برای خریدهای کم و زیاد، قیمت مناسب داریم. هرچه تعداد بیشتری بخرید، تخفیف بیشتری می‌گیرید.
               </p>
               <ul className="mt-8 space-y-3.5 text-xs sm:text-sm">
                 {[
-                  'محاسبه آنی و خودکار تخفیف در سبد خرید متناسب با تعداد',
-                  'بسته‌بندی استاندارد، ایمن و مقاوم در برابر ضربه برای ارسال',
-                  'شفافیت کامل قیمت‌ها برای تمام محصولات گلدان، خاک و لوازم',
-                  'امکان خرید از یک عدد تا تیراژ عمده بدون محدودیت حداقل سفارش',
+                  'تخفیف خرید عمده و تعداد بالا',
+                  'مناسب خرید خانه، گلخانه و فروشگاه‌ها',
+                  'قیمت مشخص و شفاف برای هر محصول',
+                  'امکان خرید از یک عدد تا تعداد بالا',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3">
                     <span className="mt-1 size-1.5 shrink-0 rounded-full bg-flora-300" />
@@ -342,7 +347,7 @@ export default function LandingPageView({
                     href="#wholesale-inquiry"
                     className="group inline-flex w-full items-center justify-between rounded-xl border border-flora-300/35 bg-white/5 hover:bg-white/10 px-4 py-3 text-xs sm:text-sm font-bold text-white transition-all duration-200 hover:border-flora-300 dark:border-dust-50/20 dark:hover:border-flora-300"
                   >
-                    <span>پروژه بزرگ دارید؟ استعلام قیمت اختصاصی بگیرید</span>
+                    <span>خرید تعداد بالا دارید؟ با ما تماس بگیرید.</span>
                     <span
                       aria-hidden="true"
                       className="transition-transform duration-200 group-hover:-translate-x-1 text-flora-300 font-bold"
