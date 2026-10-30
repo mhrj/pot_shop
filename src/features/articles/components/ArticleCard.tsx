@@ -24,7 +24,7 @@ export default function ArticleCard({ article }: { article: ArticleCardData }) {
       {/* Cover Image */}
       <Link
         href={`/articles/${article.slug}`}
-        className="relative block aspect-[16/10] w-full overflow-hidden rounded-2xl border border-soil-900/5 dark:border-dust-50/10 bg-white"
+        className="relative block aspect-16/10 w-full overflow-hidden rounded-2xl border border-soil-900/5 dark:border-dust-50/10 bg-white"
       >
         {article.coverImage ? (
           <Image
