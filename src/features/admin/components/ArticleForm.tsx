@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import RichTextEditor from '@/components/admin/RichTextEditor';
+import RichTextEditor from '@/features/admin/components/RichTextEditor';
 
 type ArticleData = {
   id?: string;

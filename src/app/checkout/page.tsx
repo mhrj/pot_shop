@@ -4,7 +4,7 @@ import { getCartTotals } from '@/lib/cart';
 import { calculateShippingCost, resolveCityCode } from '@/lib/postex';
 import { calcShippingToman } from '@/lib/pricing';
 import Container from '@/components/ui/Container';
-import CheckoutForm from '@/components/cart/CheckoutForm';
+import CheckoutForm from '@/features/checkout/components/CheckoutForm';
 import { redirect } from 'next/navigation';
 
 export default async function CheckoutPage() {

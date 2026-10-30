@@ -5,10 +5,10 @@ import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { toFa, formatToman } from '@/lib/format';
 import { parseFeatures, parseBundleItems, parseColorOptions } from '@/lib/product-features';
-import TieredPricing from '@/components/product/TieredPricing';
-import ProductGallery from '@/components/product/ProductGallery';
-import ColorPicker from '@/components/product/ColorPicker';
-import { ProductColorProvider } from '@/components/product/ProductColorContext';
+import TieredPricing from '@/features/catalog/components/TieredPricing';
+import ProductGallery from '@/features/catalog/components/ProductGallery';
+import ColorPicker from '@/features/catalog/components/ColorPicker';
+import { ProductColorProvider } from '@/features/catalog/components/ProductColorContext';
 import Container from '@/components/ui/Container';
 export const dynamic = 'force-dynamic';
 

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth';
-import GlobalSearch from '@/components/admin/GlobalSearch';
+import GlobalSearch from '@/features/admin/components/GlobalSearch';
 
 const NAV = [
   { href: '/admin', label: 'داشبورد' },

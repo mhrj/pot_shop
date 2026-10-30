@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { parseFeatures, parseBundleItems, parseColorOptions } from '@/lib/product-features';
-import ProductForm from '@/components/admin/ProductForm';
+import ProductForm from '@/features/admin/components/ProductForm';
 
 type Props = { params: Promise<{ id: string }> };
 

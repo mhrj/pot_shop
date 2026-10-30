@@ -1,7 +1,7 @@
 import { requireAdmin } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { parseFeatures } from '@/lib/product-features';
-import ProductForm from '@/components/admin/ProductForm';
+import ProductForm from '@/features/admin/components/ProductForm';
 
 export default async function NewProductPage() {
   await requireAdmin();

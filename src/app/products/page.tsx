@@ -6,9 +6,9 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { formatToman, toFa } from '@/lib/format';
 import Container from '@/components/ui/Container';
-import ProductCard from '@/components/catalog/ProductCard';
-import TagFilterSelect from '@/components/catalog/TagFilterSelect';
-import BotanicalCanvas from '@/components/landing/BotanicalCanvas';
+import ProductCard from '@/features/catalog/components/ProductCard';
+import TagFilterSelect from '@/features/catalog/components/TagFilterSelect';
+import BotanicalCanvas from '@/features/landing/components/BotanicalCanvas';
 
 // 12 items per page for balanced 2, 3, 4 column grids across screen sizes.
 const PAGE_SIZE = 12;

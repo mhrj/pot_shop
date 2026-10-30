@@ -8,9 +8,9 @@ import {
   type ReportingOrder,
 } from '@/lib/analytics';
 import StatusBadge from '@/components/ui/StatusBadge';
-import LandingImageManager from '@/components/admin/LandingImageManager';
-import SalesChart from '@/components/admin/SalesChart';
-import VisitsChart from '@/components/admin/VisitsChart';
+import LandingImageManager from '@/features/admin/components/LandingImageManager';
+import SalesChart from '@/features/admin/components/SalesChart';
+import VisitsChart from '@/features/admin/components/VisitsChart';
 
 export const revalidate = 300;
 

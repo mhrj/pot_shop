@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import AddressForm, { type AddressRecord } from "@/components/cart/AddressForm";
+import AddressForm, { type AddressRecord } from "@/features/checkout/components/AddressForm";
 import { calcShippingToman, type CartTotals } from "@/lib/pricing";
 import { formatToman, formatWeight, toFa } from "@/lib/format";
 import { numberToWordsFa } from "@/lib/number-to-words";

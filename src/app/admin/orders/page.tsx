@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { formatToman, formatDateFa, toFa } from '@/lib/format';
-import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
+import OrderStatusBadge from '@/features/admin/components/OrderStatusBadge';
 import StatusBadge from '@/components/ui/StatusBadge';
 
 const FILTERS = [

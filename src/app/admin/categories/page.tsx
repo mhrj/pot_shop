@@ -1,7 +1,7 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
-import CategoryRow from '@/components/admin/CategoryRow';
+import CategoryRow from '@/features/admin/components/CategoryRow';
 
 async function createCategory(formData: FormData) {
   'use server';

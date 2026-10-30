@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { formatToman, formatWeight } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import Container from '@/components/ui/Container';
-import CartItemRow from '@/components/cart/CartItemRow';
+import CartItemRow from '@/features/checkout/components/CartItemRow';
 
 export default async function CartPage() {
   const user = await requireUser();

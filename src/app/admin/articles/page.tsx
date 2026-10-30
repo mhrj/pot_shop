@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 import { toFa } from '@/lib/format';
 import { isUnoptimizedImage } from '@/lib/image-validation';
-import ArticleDeleteButton from '@/components/admin/ArticleDeleteButton';
+import ArticleDeleteButton from '@/features/admin/components/ArticleDeleteButton';
 
 export const dynamic = 'force-dynamic';
 

@@ -6,7 +6,7 @@ import type { ProductFeature, BundleItem, ColorOption } from '@/lib/product-feat
 import { formatToman, toFa } from '@/lib/format';
 import { numberToWordsFa } from '@/lib/number-to-words';
 import { FormError } from '@/components/ui/FormError';
-import GlobalColorPicker, { type GlobalColorOption } from '@/components/admin/GlobalColorPicker';
+import GlobalColorPicker, { type GlobalColorOption } from '@/features/admin/components/GlobalColorPicker';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
 type Tier = { minQuantity: number; unitPriceToman: number; label: string };

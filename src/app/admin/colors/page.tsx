@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
-import ColorRow from '@/components/admin/ColorRow';
-import NewColorForm from '@/components/admin/NewColorForm';
+import ColorRow from '@/features/admin/components/ColorRow';
+import NewColorForm from '@/features/admin/components/NewColorForm';
 import { toFa } from '@/lib/format';
 
 export default async function AdminColorsPage() {

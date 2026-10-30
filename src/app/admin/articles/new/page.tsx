@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth';
-import ArticleForm from '@/components/admin/ArticleForm';
+import ArticleForm from '@/features/admin/components/ArticleForm';
 
 export default async function NewArticlePage() {
   await requireAdmin();

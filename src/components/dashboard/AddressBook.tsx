@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import AddressForm, { type AddressRecord } from '@/components/cart/AddressForm';
+import AddressForm, { type AddressRecord } from '@/features/checkout/components/AddressForm';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
 const LABEL_TEXT: Record<AddressRecord['label'], string> = {
